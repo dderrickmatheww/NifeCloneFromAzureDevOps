@@ -6,10 +6,11 @@ import { Ionicons } from '@expo/vector-icons';
 import HomeTab from './Screens/HomeTab';
 import MapTab from './Screens/MapTab';
 import WhatsPoppinTab from './Screens/WhatsPoppinTab';
+import { styles } from './Styles/style';
 
 function HomeScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={styles.viewDark}>
       <HomeTab />
     </View>
   );
@@ -17,7 +18,7 @@ function HomeScreen() {
 
 function MapScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={styles.viewDark}>
       <MapTab />
     </View>
   );
@@ -25,7 +26,7 @@ function MapScreen() {
 
 function WhatsPoppinScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={styles.viewDark}>
       <WhatsPoppinTab />
     </View>
   );
@@ -126,6 +127,7 @@ export default function App() {
       tabBarOptions={{
         activeTintColor: 'tomato',
         inactiveTintColor: 'gray',
+        style: styles.tabDark,
       }}
       >
         <Tab.Screen name="Nerby" component={ MapScreen } />

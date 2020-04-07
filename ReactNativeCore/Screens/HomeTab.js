@@ -3,9 +3,9 @@ import { View, Text } from 'react-native';
 import { styles } from '../Styles/style';
 
 HomeTab = () =>
-  <View style={styles.center}>
-    <Text style={styles.title}>Home Text</Text>
-  </View>
+
+    <Text style={styles.titleDark}>Home Text</Text>
+  
 
 
 export default HomeTab;
