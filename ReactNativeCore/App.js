@@ -3,61 +3,16 @@ import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import HomeTab from './Screens/HomeTab';
-import MapTab from './Screens/MapTab';
-import WhatsPoppinTab from './Screens/WhatsPoppinTab';
+import IconWithBadge from './Screens/Components/IconWithBadge';
+import HomeScreen from './Screens/Components/Home Screen Components/HomeScreen';
+import MapScreen from './Screens/Components/Home Screen Components/MapScreen';
+import WhatsPoppinScreen from './Screens/Components/Home Screen Components/WhatsPoppinScreen';
+import ModalScreen from './Screens/LoginModal';
+import * as firebase from 'firebase';
+import config from './Screens/Firebase/FirebaseConfig';
 
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <HomeTab />
-    </View>
-  );
-}
-
-function MapScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <MapTab />
-    </View>
-  );
-}
-
-function WhatsPoppinScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <WhatsPoppinTab />
-    </View>
-  );
-}
-
-function IconWithBadge({ name, badgeCount, color, size }) {
-  return (
-    <View style={{ width: 24, height: 24, margin: 5 }}>
-      <Ionicons name={name} size={size} color={color} />
-      {badgeCount > 0 && (
-        <View
-          style={{
-            // On React Native < 0.57 overflow outside of parent will not work on Android, see https://git.io/fhLJ8
-            position: 'absolute',
-            right: -6,
-            top: -3,
-            backgroundColor: 'red',
-            borderRadius: 6,
-            width: 12,
-            height: 12,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
-            {badgeCount}
-          </Text>
-        </View>
-      )}
-    </View>
-  );
-}
+//Intialize Firebase Database
+firebase.initializeApp(config);
 
 function HomeIconWithBadge(props) {
   // Here we can pass in badge data to the home icon
@@ -74,9 +29,15 @@ function BeerIconWithBadge(props) {
   return <IconWithBadge {...props} badgeCount={1} />;
 }
 
+function GearIconWithBadge(props) {
+  // Here we can pass in badge data to the whatspoppin icon
+  return <IconWithBadge {...props} badgeCount={1} />;
+}
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -119,6 +80,15 @@ export default function App() {
               />
             );
           }
+          else if (route.name === "Settings") {
+            < GearIconWithBadge 
+              name={
+                iconName = focused ? 'ios-menu' : 'ios-menu' 
+              }
+              size={size}
+              color={color}
+            />
+          }
           // You can return any component that you like here!
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -131,6 +101,7 @@ export default function App() {
         <Tab.Screen name="Nerby" component={ MapScreen } />
         <Tab.Screen name="My Feed" component={ HomeScreen } />
         <Tab.Screen name="Whats Poppin'?" component={ WhatsPoppinScreen } />
+        <Tab.Screen name="Settings" component={ ModalScreen } />
       </Tab.Navigator>
     </NavigationContainer>
   );
