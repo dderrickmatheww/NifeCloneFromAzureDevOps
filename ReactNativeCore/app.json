@@ -12,6 +12,12 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "ios":{
+      "bundleIdentifier": "com.yeetdevops.nife"
+    },
+    "android": {
+      "package": "com.yeetdevops.nife"
+    }
   }
 }

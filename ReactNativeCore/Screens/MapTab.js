@@ -1,17 +1,27 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { styles } from '../Styles/style';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import { render } from 'react-dom';
 
+
 var counter = 0;
+var { width, height } = Dimensions.get('window');
+var ASPECT_RATIO = width / height;
+var LATITUDE_DELTA = 0.0922;
+var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+var PLACES_KEY = "AIzaSyCxryBFGxYu8Fphfhat7S1iLHByQ4sntkE"
 
 class MapTab extends React.Component  {
+  
 
   constructor(props) {
+    
     super(props);
     this.state = {
-      region: null
+      region: null,
+      markers:[]
     };
   }
   mapStyle = [
@@ -177,6 +187,9 @@ class MapTab extends React.Component  {
   ]
 
   clientLocationFunction = (e) => {
+
+    
+    // console.log(e);
     let { width, height } = Dimensions.get('window');
     let ASPECT_RATIO = width / height;
     let LATITUDE = e.nativeEvent.coordinate.latitude;
@@ -191,6 +204,47 @@ class MapTab extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }})
     counter++;
+
+    this.gatherLocalMarkers(e, LATITUDE, LONGITUDE);
+    
+  }
+
+  pressMarker = (e) => {
+    console.log(e.nativeEvent);
+    console.log('Marker pressed');
+  }
+
+  gatherLocalMarkers = (e, lat, long) => {
+    var tempObj = {};
+    fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key='+ PLACES_KEY+ "&"+ buildParameters(lat, long))
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        data = data.results;
+        this.setState({markers: 
+          []
+        });
+        
+        data.forEach(function(place){
+          tempObj = {};
+          tempObj['latlong'] = ""+ place.geometry.location.lat +","+place.geometry.location.long;
+          tempObj['title'] = place.name;
+          this.state.markers.push(tempObj);
+        });
+      });
+
+      function buildParameters(lat, long){
+        var paramString ="";
+        //location, lat long
+        paramString += "location=" + lat+ "," + long + "&";
+        //radius in meters
+        paramString +="radius=1600&";
+        //type
+        paramString +="type=bar"
+
+        return paramString;
+      }
   }
   
   render() {
@@ -200,13 +254,21 @@ class MapTab extends React.Component  {
         provider={PROVIDER_GOOGLE}
         showsMyLocationButton={true}
         showsUserLocation={true}
+        showsPointsOfInterest={true}
         userLocationUpdateInterval={1000}
         region={this.state.region}
         onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
         showsScale={true}
         customMapStyle={this.mapStyle}
         minZoomLevel={15}
-      />
+        maxZoomLevel={20}
+        
+        moveOnMarkerPress={false}
+      >
+
+
+
+      </MapView>
     );
   }
 }

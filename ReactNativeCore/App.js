@@ -7,6 +7,7 @@ import HomeTab from './Screens/HomeTab';
 import MapTab from './Screens/MapTab';
 import WhatsPoppinTab from './Screens/WhatsPoppinTab';
 import { styles } from './Styles/style';
+import * as Location from 'expo-location';
 
 function HomeScreen() {
   return (
@@ -17,6 +18,7 @@ function HomeScreen() {
 }
 
 function MapScreen() {
+  
   return (
     <View style={styles.viewDark}>
       <MapTab />
@@ -78,6 +80,7 @@ function BeerIconWithBadge(props) {
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  Location.requestPermissionsAsync()
   return (
     <NavigationContainer>
       <Tab.Navigator
