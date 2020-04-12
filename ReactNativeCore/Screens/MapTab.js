@@ -21,9 +21,17 @@ class MapTab extends React.Component  {
     super(props);
     this.state = {
       region: null,
-      markers:[]
+      markers: null,
+      isLoaded: false
     };
   }
+
+  // async componentDidMount(lat, long) {
+  //   const response = await this.gatherLocalMarkers(null, lat, long);
+  //   const data = await response.json();
+  //   this.setState({markers:data, isLoaded:true});
+  // }
+
   mapStyle = [
     {
       "elementType": "geometry",
@@ -204,8 +212,10 @@ class MapTab extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }})
     counter++;
-
-    this.gatherLocalMarkers(e, LATITUDE, LONGITUDE);
+    if(this.state.markers == null){
+      this.gatherLocalMarkers(e, LATITUDE, LONGITUDE);
+    }
+    
     
   }
 
@@ -214,40 +224,51 @@ class MapTab extends React.Component  {
     console.log('Marker pressed');
   }
 
-  gatherLocalMarkers = (e, lat, long) => {
-    var tempObj = {};
-    fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key='+ PLACES_KEY+ "&"+ buildParameters(lat, long))
+   gatherLocalMarkers = (e, lat, long) => {
+    
+    
+    
+    fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key='+ PLACES_KEY+ "&"+ buildParameters(lat, long, 8000))
       .then((response) => {
         return response.json();
+        
       })
       .then((data) => {
+        var tmpArry = [];
         data = data.results;
-        this.setState({markers: 
-          []
-        });
-        
+        // console.log(data);
         data.forEach(function(place){
-          tempObj = {};
-          tempObj['latlong'] = ""+ place.geometry.location.lat +","+place.geometry.location.long;
-          tempObj['title'] = place.name;
-          this.state.markers.push(tempObj);
+          // console.log(place);
+          tmpArry.push({
+            "latlng":"" + place.geometry.location.lat +","+place.geometry.location.lng,
+            "title": place.name
+          });
         });
+        return tmpArry;
+      }).then((places) => {
+        if(this.state.markers == null){
+          this.setState({markers: places})
+        }
+        console.log(places)
+        return this.state.markers;
       });
 
-      function buildParameters(lat, long){
+      function buildParameters(lat, long, radius){
         var paramString ="";
         //location, lat long
         paramString += "location=" + lat+ "," + long + "&";
         //radius in meters
-        paramString +="radius=1600&";
+        paramString +="radius="+radius+"&";
         //type
         paramString +="type=bar"
 
         return paramString;
       }
+      
   }
   
   render() {
+    
     return (
       <MapView
         style={styles.map}
@@ -265,7 +286,8 @@ class MapTab extends React.Component  {
         
         moveOnMarkerPress={false}
       >
-
+        
+ 
 
 
       </MapView>
