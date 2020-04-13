@@ -59,6 +59,11 @@ tabDark: {
     alignItems: 'center',
     width: '100%'
   },
+  mapImg: {
+    width: 66,
+    height: 66,
+    marginTop: 50
+  }
 
   
 });

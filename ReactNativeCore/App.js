@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -77,9 +78,46 @@ function BeerIconWithBadge(props) {
   return <IconWithBadge {...props} badgeCount={1} />;
 }
 
+function GatherLocationData(){
+    //  gatherLocalMarkers = (e, lat, long) => {
+    
+    
+    
+  //   fetch('https://api.yelp.com/v3/businesses/search?'+ buildParameters(lat, long, 8000),{headers: new Headers({'Authorization':"Bearer "+ PLACES_KEY})})
+  //     .then((response) => {
+  //       return response.json();
+        
+  //     })
+  //     .then((data) => {
+  //       data = data['businesses'];
+  //       return data;
+  //     })
+  //     .then((places) => {
+  //       if(this.state.markers == null){
+  //         this.setState({markers: places, isLoaded:true})
+  //       }
+  //       console.log(this.state.markers)
+  //     });
+
+  //     function buildParameters(lat, long, radius){
+  //       var paramString ="";
+  //       //location, lat long
+  //       paramString += "latitude=" + lat+ "&longitude=" + long + "&";
+  //       //radius in meters
+  //       paramString +="radius="+radius+"&";
+  //       //type
+  //       paramString +="categories=bar"
+
+  //       return paramString;
+  //     }
+      
+  // }
+}
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const[location, setLocation] = useState(null);
   Location.requestPermissionsAsync()
   return (
     <NavigationContainer>

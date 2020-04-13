@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, Image, Modal } from 'react-native';
 import { styles } from '../Styles/style';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import { render } from 'react-dom';
@@ -10,8 +10,10 @@ var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
 var LATITUDE_DELTA = 0.0922;
 var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+var LATITUDE;
+var LONGITUDE;
 
-var PLACES_KEY = "AIzaSyCxryBFGxYu8Fphfhat7S1iLHByQ4sntkE"
+var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpYmj-BdlVdbiEj-4kadaC9bWOY-c1CjyigMVnY-cGgcHzFUoLh937z3dH-bneoGTXnYx"
 
 class MapTab extends React.Component  {
   
@@ -21,16 +23,124 @@ class MapTab extends React.Component  {
     super(props);
     this.state = {
       region: null,
-      markers: null,
-      isLoaded: false
+      markers: [],
+      isLoaded: false,
+      markerSelected: false,
     };
   }
 
-  // async componentDidMount(lat, long) {
-  //   const response = await this.gatherLocalMarkers(null, lat, long);
-  //   const data = await response.json();
-  //   this.setState({markers:data, isLoaded:true});
-  // }
+  clientLocationFunction = (e) => { 
+    // console.log(e);
+    let { width, height } = Dimensions.get('window');
+    let ASPECT_RATIO = width / height;
+     LATITUDE = e.nativeEvent.coordinate.latitude;
+     LONGITUDE = e.nativeEvent.coordinate.longitude;
+    let LATITUDE_DELTA = 0.0922;
+    let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+    this.setState({region: {
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }})
+    counter++;
+    if(this.state.markers == null){
+      this.componentDidMount();
+    }   
+  }
+
+   gatherLocalMarkers = ( lat, long) => {  
+    fetch('https://api.yelp.com/v3/businesses/search?'+ buildParameters(lat, long, 8000), 
+        {headers: new Headers({'Authorization':"Bearer "+ PLACES_KEY})
+      })
+      .then((response) => {
+        return response.json();
+        
+      })
+      .then((data) => {
+        data = data['businesses'];
+        return data;
+      })
+      .then((places) => {
+        this.setState({markers: places})
+        // console.log(places)
+      });
+
+      function buildParameters(lat, long, radius){
+        var paramString ="";
+        //location, lat long
+        paramString += "latitude=" + lat+ "&longitude=" + long + "&";
+        //radius in meters
+        paramString +="radius="+radius+"&";
+        //type
+        paramString +="categories=bars"
+
+        return paramString;
+      } 
+  }
+
+
+  componentDidMount(){
+    console.log("Lat:" + LATITUDE);
+    console.log("Long:" + LONGITUDE);
+
+    this.gatherLocalMarkers(LATITUDE, LONGITUDE);
+    this.setState({isLoaded:true});
+  }
+  
+  render() {
+    return (
+      this.state.markers != null && this.state.markers != undefined ?
+      <MapView
+      style={styles.map}
+      provider={PROVIDER_GOOGLE}
+      showsMyLocationButton={true}
+      showsUserLocation={true}
+      showsPointsOfInterest={false}
+      userLocationUpdateInterval={1000}
+      region={this.state.region}
+      onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+      showsScale={true}
+      customMapStyle={this.mapStyle}
+      minZoomLevel={15}
+      maxZoomLevel={20}
+      moveOnMarkerPress={false}
+    >
+       {this.state.markers.map(marker => (
+
+          <Marker
+            coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
+            title={marker.name}
+            description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
+            key={marker.id}
+          >
+          </Marker>
+          
+
+        ))}
+    </MapView> :
+
+     <MapView
+      style={styles.map}
+      provider={PROVIDER_GOOGLE}
+      showsMyLocationButton={true} 
+      showsUserLocation={true}
+      showsPointsOfInterest={false}
+      userLocationUpdateInterval={1000}
+      region={this.state.region}
+      onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+      showsScale={true}
+      customMapStyle={this.mapStyle}
+      minZoomLevel={15}
+      maxZoomLevel={20}
+      moveOnMarkerPress={false}
+    >
+       
+    </MapView> 
+      
+    )
+  }
 
   mapStyle = [
     {
@@ -68,10 +178,10 @@ class MapTab extends React.Component  {
     },
     {
       "featureType": "poi",
-      "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#d59563"
+          "color": "#d59563",
+          "visibility":"off"
         }
       ]
     },
@@ -80,7 +190,8 @@ class MapTab extends React.Component  {
       "elementType": "geometry",
       "stylers": [
         {
-          "color": "#263c3f"
+          "color": "#263c3f",
+          "visibility":"off"
         }
       ]
     },
@@ -89,7 +200,8 @@ class MapTab extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#6b9a76"
+          "color": "#6b9a76",
+          "visibility":"off"
         }
       ]
     },
@@ -193,106 +305,6 @@ class MapTab extends React.Component  {
       ]
     }
   ]
-
-  clientLocationFunction = (e) => {
-
-    
-    // console.log(e);
-    let { width, height } = Dimensions.get('window');
-    let ASPECT_RATIO = width / height;
-    let LATITUDE = e.nativeEvent.coordinate.latitude;
-    let LONGITUDE = e.nativeEvent.coordinate.longitude;
-    let LATITUDE_DELTA = 0.0922;
-    let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-    this.setState({region: {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
-    }})
-    counter++;
-    if(this.state.markers == null){
-      this.gatherLocalMarkers(e, LATITUDE, LONGITUDE);
-    }
-    
-    
-  }
-
-  pressMarker = (e) => {
-    console.log(e.nativeEvent);
-    console.log('Marker pressed');
-  }
-
-   gatherLocalMarkers = (e, lat, long) => {
-    
-    
-    
-    fetch('https://maps.googleapis.com/maps/api/place/nearbysearch/json?key='+ PLACES_KEY+ "&"+ buildParameters(lat, long, 8000))
-      .then((response) => {
-        return response.json();
-        
-      })
-      .then((data) => {
-        var tmpArry = [];
-        data = data.results;
-        // console.log(data);
-        data.forEach(function(place){
-          // console.log(place);
-          tmpArry.push({
-            "latlng":"" + place.geometry.location.lat +","+place.geometry.location.lng,
-            "title": place.name
-          });
-        });
-        return tmpArry;
-      }).then((places) => {
-        if(this.state.markers == null){
-          this.setState({markers: places})
-        }
-        console.log(places)
-        return this.state.markers;
-      });
-
-      function buildParameters(lat, long, radius){
-        var paramString ="";
-        //location, lat long
-        paramString += "location=" + lat+ "," + long + "&";
-        //radius in meters
-        paramString +="radius="+radius+"&";
-        //type
-        paramString +="type=bar"
-
-        return paramString;
-      }
-      
-  }
-  
-  render() {
-    
-    return (
-      <MapView
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        showsMyLocationButton={true}
-        showsUserLocation={true}
-        showsPointsOfInterest={true}
-        userLocationUpdateInterval={1000}
-        region={this.state.region}
-        onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-        showsScale={true}
-        customMapStyle={this.mapStyle}
-        minZoomLevel={15}
-        maxZoomLevel={20}
-        
-        moveOnMarkerPress={false}
-      >
-        
- 
-
-
-      </MapView>
-    );
-  }
 }
 
 export default MapTab;
