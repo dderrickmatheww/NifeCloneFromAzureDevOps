@@ -7,7 +7,7 @@ import IconWithBadge from './Screens/Components/IconWithBadge';
 import HomeScreen from './Screens/Components/Home Screen Components/HomeScreen';
 import MapScreen from './Screens/Components/Home Screen Components/MapScreen';
 import WhatsPoppinScreen from './Screens/Components/Home Screen Components/WhatsPoppinScreen';
-import ModalScreen from './Screens/LoginModal';
+import SettingsScreen from './Screens/SettingsTab';
 import * as firebase from 'firebase';
 import config from './Screens/Firebase/FirebaseConfig';
 
@@ -101,7 +101,7 @@ export default function App() {
         <Tab.Screen name="Nerby" component={ MapScreen } />
         <Tab.Screen name="My Feed" component={ HomeScreen } />
         <Tab.Screen name="Whats Poppin'?" component={ WhatsPoppinScreen } />
-        <Tab.Screen name="Settings" component={ ModalScreen } />
+        <Tab.Screen name="Settings" component={ SettingsScreen } />
       </Tab.Navigator>
     </NavigationContainer>
   );

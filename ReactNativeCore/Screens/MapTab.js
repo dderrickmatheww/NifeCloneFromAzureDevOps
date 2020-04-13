@@ -203,6 +203,7 @@ export default class MapTab extends Component  {
         showsScale={true}
         customMapStyle={this.mapStyle}
         minZoomLevel={15}
+        showsPointsOfInterest={false}
       />
     );
   }
