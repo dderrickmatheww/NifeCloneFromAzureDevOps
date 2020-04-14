@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet , Dimensions} from 'react-native'
 
 export const styles = StyleSheet.create({
   center: {
@@ -54,16 +54,26 @@ tabDark: {
   },
 
   map: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%'
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
-  mapImg: {
-    width: 66,
-    height: 66,
-    marginTop: 50
+  mapCont: { 
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    
+  },
+  modalView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    width: Dimensions.get('window').width * 0.75,
+    height: Dimensions.get('window').height * 0.75,
   }
+
+ 
 
   
 });

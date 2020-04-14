@@ -3,7 +3,7 @@ import { View, Text, Dimensions, Image, Modal } from 'react-native';
 import { styles } from '../Styles/style';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import { render } from 'react-dom';
-
+import BarModal from './Components/BarModal';
 
 var counter = 0;
 var { width, height } = Dimensions.get('window');
@@ -26,6 +26,17 @@ class MapTab extends React.Component  {
       markers: [],
       isLoaded: false,
       markerSelected: false,
+      modalProps:{
+        isVisible:false,
+        source:{uri:"#"},
+        barName:"#",
+        rating:"#",
+        reviewCount:"#",
+        price: "#",
+        phone: "#",
+        closed: "#",
+        address: "#",
+      }
     };
   }
 
@@ -45,8 +56,11 @@ class MapTab extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }})
     counter++;
-    if(this.state.markers == null){
-      this.componentDidMount();
+    if(LONGITUDE != undefined){
+      console.log("Lat:" + LATITUDE);
+      console.log("Long:" + LONGITUDE);
+      this.gatherLocalMarkers(LATITUDE, LONGITUDE);
+      this.setState({isLoaded:true});
     }   
   }
 
@@ -80,48 +94,81 @@ class MapTab extends React.Component  {
       } 
   }
 
-
-  componentDidMount(){
-    console.log("Lat:" + LATITUDE);
-    console.log("Long:" + LONGITUDE);
-
-    this.gatherLocalMarkers(LATITUDE, LONGITUDE);
-    this.setState({isLoaded:true});
+  HandleMarkerPress = (e, key) => {
+    // console.log(e.nativeEvent);
+    var places;
+    places = this.state.markers;
+    // console.log(places);
+    var wantedPlace;
+    places.forEach(function(place){
+      if(place.id == key){
+        wantedPlace = place;
+      }
+    });
+    console.log(wantedPlace);
+    this.setState({modalProps:{
+      isVisible: true,
+      source:{uri: "" + wantedPlace.image_url},
+      barName:wantedPlace.name, 
+      rating:wantedPlace.rating,
+      reviewCount:wantedPlace.review_count,
+      price: wantedPlace.price,
+      phone: wantedPlace.display_phone,
+      closed: wantedPlace.is_closed,
+      address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1] ,
+    }});
+    console.log(this.state.modalProps);
   }
+
   
   render() {
     return (
       this.state.markers != null && this.state.markers != undefined ?
-      <MapView
-      style={styles.map}
-      provider={PROVIDER_GOOGLE}
-      showsMyLocationButton={true}
-      showsUserLocation={true}
-      showsPointsOfInterest={false}
-      userLocationUpdateInterval={1000}
-      region={this.state.region}
-      onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-      showsScale={true}
-      customMapStyle={this.mapStyle}
-      minZoomLevel={15}
-      maxZoomLevel={20}
-      moveOnMarkerPress={false}
-    >
-       {this.state.markers.map(marker => (
+      <View style={styles.container}> 
+        <MapView
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
+          showsPointsOfInterest={false}
+          userLocationUpdateInterval={1000}
+          region={this.state.region}
+          onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+          showsScale={true}
+          customMapStyle={this.mapStyle}
+          minZoomLevel={15}
+          maxZoomLevel={20}
+          moveOnMarkerPress={false}
+        >
+        {this.state.markers.map(marker => (
+            <Marker
+              coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
+              title={marker.name}
+              description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
+              key={marker.id}
+              onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
+            >
+            </Marker>
+          ))}
+      </MapView> 
+      <View style={styles.modalView}>
+        <BarModal 
+            isVisible={this.state.modalProps.isVisible}
+            source={this.state.modalProps.source}
+            barName={this.state.modalProps.barName}
+            rating={this.state.modalProps.rating}
+            reviewCount={this.state.modalProps.reviewCount}
+            price={this.state.modalProps.price}
+            phone={this.state.modalProps.phone}
+            closed={this.state.modalProps.closed}
+            address={this.state.modalProps.address} 
+          /> 
+      </View>
+      
+    </View> :
 
-          <Marker
-            coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
-            title={marker.name}
-            description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
-            key={marker.id}
-          >
-          </Marker>
-          
-
-        ))}
-    </MapView> :
-
-     <MapView
+     <View style={styles.container}>
+       <MapView
       style={styles.map}
       provider={PROVIDER_GOOGLE}
       showsMyLocationButton={true} 
@@ -137,8 +184,21 @@ class MapTab extends React.Component  {
       moveOnMarkerPress={false}
     >
        
-    </MapView> 
-      
+      </MapView> 
+        <View style={styles.modalView}>
+          <BarModal 
+              isVisible={this.state.modalProps.isVisible}
+              source={this.state.modalProps.source}
+              barName={this.state.modalProps.barName}
+              rating={this.state.modalProps.rating}
+              reviewCount={this.state.modalProps.reviewCount}
+              price={this.state.modalProps.price}
+              phone={this.state.modalProps.phone}
+              closed={this.state.modalProps.closed}
+              address={this.state.modalProps.address} 
+            /> 
+        </View>
+      </View>
     )
   }
 
