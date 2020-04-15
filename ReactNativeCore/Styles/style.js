@@ -55,7 +55,8 @@ tabDark: {
 
   map: {
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
+    height: (Dimensions.get('window').height * 0.95 ),
+    maxHeight: (Dimensions.get('window').height * 0.95 ),
   },
   mapCont: { 
     flex: 1,
@@ -65,12 +66,14 @@ tabDark: {
     
   },
   modalView: {
-    flex: 1,
+    flex: 3,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
-    width: Dimensions.get('window').width * 0.75,
-    height: Dimensions.get('window').height * 0.75,
+    width: (Dimensions.get('window').width * 0.50),
+    height: (Dimensions.get('window').height * 0.50 ),
+    maxWidth: (Dimensions.get('window').width * 0.50),
+    maxHeight: (Dimensions.get('window').height * 0.50 ),
   }
 
  

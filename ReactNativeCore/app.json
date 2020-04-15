@@ -13,6 +13,9 @@
       "android",
       "web"
     ],
+    // "splash": {
+    //   "image": "./assets/splash.png"
+    // },
     "ios":{
       "bundleIdentifier": "com.yeetdevops.nife"
     },

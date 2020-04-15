@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, Dimensions, Image, Modal } from 'react-native';
+import { View, Text, Dimensions, Image, Modal, StyleSheet } from 'react-native';
 import { styles } from '../Styles/style';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import { render } from 'react-dom';
@@ -26,8 +26,8 @@ class MapTab extends React.Component  {
       markers: [],
       isLoaded: false,
       markerSelected: false,
+      isModalVisible: false,
       modalProps:{
-        isVisible:false,
         source:{uri:"#"},
         barName:"#",
         rating:"#",
@@ -107,7 +107,6 @@ class MapTab extends React.Component  {
     });
     console.log(wantedPlace);
     this.setState({modalProps:{
-      isVisible: true,
       source:{uri: "" + wantedPlace.image_url},
       barName:wantedPlace.name, 
       rating:wantedPlace.rating,
@@ -117,15 +116,73 @@ class MapTab extends React.Component  {
       closed: wantedPlace.is_closed,
       address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1] ,
     }});
+    this.setState({isModalVisible:true});
     console.log(this.state.modalProps);
   }
 
+  closeModal = (e) => {
+    console.log('test');
+    this.setState({isModalVisible:false});
+  }
   
   render() {
     return (
-      this.state.markers != null && this.state.markers != undefined ?
-      <View style={styles.container}> 
+      this.state.markers != null && this.state.markers != undefined ? (this.state.isModalVisible ? (
+      <View> 
         <MapView
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
+          showsPointsOfInterest={false}
+          userLocationUpdateInterval={1000}
+          region={this.state.region}
+          onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+          showsScale={true}
+          customMapStyle={this.mapStyle}
+          minZoomLevel={15}
+          maxZoomLevel={20}
+          moveOnMarkerPress={false}
+        >
+        {this.state.markers.map(marker => (
+          <Marker
+            coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
+            title={marker.name}
+            description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
+            key={marker.id}
+            onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
+          >
+          </Marker>
+        ))}
+      </MapView> 
+          <Modal 
+            style={localStyles.modalView}
+            animationType="slide"
+            visible={this.state.isModalVisible}
+            coverScreen={false}
+            onBackButtonPress={(e) => this.closeModal(e)}
+        >
+            <View style={localStyles.imgCont}>
+                <Image source={this.state.modalProps.source} style={localStyles.img}/>
+            </View>
+            <View styles={{}}>
+                <Text style={localStyles.barName}> {this.state.modalProps.barName}</Text>
+            </View>
+            <View styles={{}}>
+                <Text style={localStyles.rating}>  {this.state.modalProps.rating}/5 rating in {this.state.modalProps.reviewCount} reviews.</Text>
+                <Text style={localStyles.pricing}> Price: {this.state.modalProps.price}</Text>
+            </View>
+            <View styles={{}}>
+                <Text style={localStyles.contact}>  Number: {this.state.modalProps.phone} </Text>
+                <Text style={localStyles.closed}>  Closed: {this.state.modalProps.closed == true ? "Yes" : "No"}</Text>
+            </View>
+            <View styles={{}}>
+                <Text style={localStyles.address}>  {this.state.modalProps.address} </Text>
+            </View>
+        </Modal>
+      
+    </View> ) : 
+    (<MapView
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           showsMyLocationButton={true}
@@ -150,55 +207,28 @@ class MapTab extends React.Component  {
             >
             </Marker>
           ))}
-      </MapView> 
-      <View style={styles.modalView}>
-        <BarModal 
-            isVisible={this.state.modalProps.isVisible}
-            source={this.state.modalProps.source}
-            barName={this.state.modalProps.barName}
-            rating={this.state.modalProps.rating}
-            reviewCount={this.state.modalProps.reviewCount}
-            price={this.state.modalProps.price}
-            phone={this.state.modalProps.phone}
-            closed={this.state.modalProps.closed}
-            address={this.state.modalProps.address} 
-          /> 
-      </View>
-      
-    </View> :
+      </MapView> )):
 
-     <View style={styles.container}>
-       <MapView
-      style={styles.map}
-      provider={PROVIDER_GOOGLE}
-      showsMyLocationButton={true} 
-      showsUserLocation={true}
-      showsPointsOfInterest={false}
-      userLocationUpdateInterval={1000}
-      region={this.state.region}
-      onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-      showsScale={true}
-      customMapStyle={this.mapStyle}
-      minZoomLevel={15}
-      maxZoomLevel={20}
-      moveOnMarkerPress={false}
-    >
-       
-      </MapView> 
-        <View style={styles.modalView}>
-          <BarModal 
-              isVisible={this.state.modalProps.isVisible}
-              source={this.state.modalProps.source}
-              barName={this.state.modalProps.barName}
-              rating={this.state.modalProps.rating}
-              reviewCount={this.state.modalProps.reviewCount}
-              price={this.state.modalProps.price}
-              phone={this.state.modalProps.phone}
-              closed={this.state.modalProps.closed}
-              address={this.state.modalProps.address} 
-            /> 
+      <View style={styles.container}>
+        <MapView
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        showsMyLocationButton={true} 
+        showsUserLocation={true}
+        showsPointsOfInterest={false}
+        userLocationUpdateInterval={1000}
+        region={this.state.region}
+        onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+        showsScale={true}
+        customMapStyle={this.mapStyle}
+        minZoomLevel={15}
+        maxZoomLevel={20}
+        moveOnMarkerPress={false}
+      >
+        
+        </MapView> 
+          
         </View>
-      </View>
     )
   }
 
@@ -365,6 +395,51 @@ class MapTab extends React.Component  {
       ]
     }
   ]
-}
 
+  
+}
+const localStyles = StyleSheet.create({
+  mainCont: {
+      flex:1,
+      justifyContent: "center",
+      alignItems:"center",
+      width: (Dimensions.get('window').width * 0.50),
+      height: (Dimensions.get('window').height * 0.50 ),
+      maxWidth: (Dimensions.get('window').width * 0.50),
+      maxHeight: (Dimensions.get('window').height * 0.50 ),
+  },
+  img: {
+      flex: 1,
+      width: (Dimensions.get('window').width * 0.50),
+      height: (Dimensions.get('window').height * 0.50 ),
+      maxWidth: (Dimensions.get('window').width * 0.50),
+      maxHeight: (Dimensions.get('window').height * 0.50 ),
+      
+  },
+  imgCont: {
+      flex: 1,
+      width: (Dimensions.get('window').width * 0.50),
+      height: (Dimensions.get('window').height * 0.50 ),
+      maxWidth: (Dimensions.get('window').width * 0.50),
+      maxHeight: (Dimensions.get('window').height * 0.50 ),
+  },
+  centeredView: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 22,
+      width: (Dimensions.get('window').width * 0.75),
+      height: (Dimensions.get('window').height * 0.75 ),
+      maxWidth: (Dimensions.get('window').width * 0.75),
+      maxHeight: (Dimensions.get('window').height * 0.75 ),
+    },
+
+    modalView:{
+        margin:20,
+        width: (Dimensions.get('window').width * 0.50),
+        height: (Dimensions.get('window').height * 0.50 ),
+        maxWidth: (Dimensions.get('window').width * 0.50),
+        maxHeight: (Dimensions.get('window').height * 0.50 ),
+    }
+});
 export default MapTab;

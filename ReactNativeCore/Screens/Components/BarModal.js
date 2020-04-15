@@ -13,18 +13,28 @@ class BarModal extends React.Component  {
     constructor(props) {
     
         super(props);
-        this.state = {isVisible: this.props.isVisible};
+        this.state = {isVisible: false};
+    }
+
+    closeModal = () => {
+        this.setState({isVisible: false});
+        console.log('test')
+    }
+
+    componentDidMount(){
+        this.setState({isVisible: this.props.isVisible});
     }
 
     render(){
+        
         return(
-            <View style={localStyles.centeredView}>
+            
                 <Modal 
-                    style={localStyles.modalView
-                      }
+                    style={localStyles.modalView}
                     animationType="slide"
-                    visible={this.props.isVisible}
+                    visible={this.state.isVisible}
                     coverScreen={false}
+                    onSwipeStart={() => this.closeModal()}
                 >
                     <View style={localStyles.imgCont}>
                         <Image source={this.props.source} style={localStyles.img}/>
@@ -44,7 +54,7 @@ class BarModal extends React.Component  {
                         <Text style={localStyles.address}>  {this.props.address} </Text>
                     </View>
                 </Modal>
-            </View>
+            
         )
     }
 }
@@ -54,23 +64,44 @@ const localStyles = StyleSheet.create({
         flex:1,
         justifyContent: "center",
         alignItems:"center",
+        width: (Dimensions.get('window').width * 0.50),
+        height: (Dimensions.get('window').height * 0.50 ),
+        maxWidth: (Dimensions.get('window').width * 0.50),
+        maxHeight: (Dimensions.get('window').height * 0.50 ),
     },
     img: {
         flex: 1,
+        width: (Dimensions.get('window').width * 0.50),
+        height: (Dimensions.get('window').height * 0.50 ),
+        maxWidth: (Dimensions.get('window').width * 0.50),
+        maxHeight: (Dimensions.get('window').height * 0.50 ),
         
     },
     imgCont: {
         flex: 1,
+        width: (Dimensions.get('window').width * 0.50),
+        height: (Dimensions.get('window').height * 0.50 ),
+        maxWidth: (Dimensions.get('window').width * 0.50),
+        maxHeight: (Dimensions.get('window').height * 0.50 ),
     },
     centeredView: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         marginTop: 22,
-        width: Dimensions.get('window').width * 0.75,
-        height: Dimensions.get('window').height * 0.75,
+        width: (Dimensions.get('window').width * 0.75),
+        height: (Dimensions.get('window').height * 0.75 ),
+        maxWidth: (Dimensions.get('window').width * 0.75),
+        maxHeight: (Dimensions.get('window').height * 0.75 ),
       },
-    
+
+      modalView:{
+          margin:20,
+          width: (Dimensions.get('window').width * 0.50),
+          height: (Dimensions.get('window').height * 0.50 ),
+          maxWidth: (Dimensions.get('window').width * 0.50),
+          maxHeight: (Dimensions.get('window').height * 0.50 ),
+      }
   });
 
   
