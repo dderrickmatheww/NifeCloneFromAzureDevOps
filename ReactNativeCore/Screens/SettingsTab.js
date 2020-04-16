@@ -1,28 +1,33 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
 import FireBaseFacebookLogin from './Firebase/FacebookOAuth';
 import FirebaseGoogleLogin from './Firebase/GoogleOAuth';
+import NifeLoginModal from './Components/Home Screen Components/LoginScreen'
 import * as firebase from 'firebase';
+
+const Stack = createStackNavigator();
 
 export default class SettingsScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: null,
     token: null,
-    user: null
+    user: null,
+    modalVisible: false
   }
   //Set login status
-  setLoggedinStatus = async (boolean) => {
-    this.setState({isLoggedin: boolean});
+  setLoggedinStatus = async (dataObj) => {
+    this.setState({ isLoggedin: dataObj.user ? true : false });
   }  
   //Set user data
-  setUserData = async (data, token) => {
-    this.setState({userData: data});
-    this.setState({token: token});
+  setUserData = async (dataObj) => {
+    this.setState({ userData: dataObj.data });
+    this.setState({ token: dataObj.token });
   }
   logout = () => {
-    this.setState({isLoggedin: false});
-    this.setState({userData: null});
+    this.setState({ isLoggedin: false });
+    this.setState({ userData: null });
     firebase.auth().signOut();
    }
    render () {
@@ -43,11 +48,13 @@ export default class SettingsScreen extends Component {
           null
         :
         <View style={styles.container}>
+          <View style={styles.headerContainer}>
+            <Text style={styles.headerText}>Please sign in to edit your settings!</Text>
+          </View>
           <View style={styles.facebookButtonContainer}>
             <TouchableOpacity style={styles.facebookLoginBtn} onPress={() => FireBaseFacebookLogin((dataObj) => {
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
-              console.log(dataObj);
             })}>
               <Text style={styles.loggedOutText}>Login with Facebook</Text>
               <Image
@@ -69,6 +76,25 @@ export default class SettingsScreen extends Component {
                 />
             </TouchableOpacity>
           </View>
+          <View style={styles.nifeButtonContainer}>
+            <TouchableOpacity style={styles.nifeLoginBtn} onPress={() => this.setState({modalVisible: true}) }>
+              <Text style={styles.loggedOutText}>Create account with Nife</Text>
+              <Image
+                style={styles.Logo}
+                source={require("../Media/Images/logoicon.png")}
+              />
+            </TouchableOpacity>
+          </View>
+          <NifeLoginModal modalVisible={this.state.modalVisible} callback={(dataObj) => {
+              if(dataObj) {
+                this.setUserData(dataObj);
+                this.setLoggedinStatus(dataObj);
+              }
+              else {
+                this.setState({modalVisible: false});
+              } 
+            }}
+          />
         </View>
       );
     }
@@ -76,23 +102,26 @@ export default class SettingsScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    top: 0,
     flex: 1,
     backgroundColor: '#e9ebee',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#20232A'
   },
   facebookButtonContainer: {
-    top: 100
+    top: 80
   },
   googleButtonContainer: {
-    top: 120
+    top: 90
+  },
+  nifeButtonContainer: {
+    top: 100
   },
   loggedInContainer: {
     flex: 1,
     backgroundColor: '#e9ebee',
     alignItems: 'center',
-    justifyContent: 'center',
-    top: 150
+    top: 0
   },
   facebookLoginBtn: {
     backgroundColor: '#4267b2',
@@ -100,10 +129,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     height: 50,
-    width: 200,
+    width: 210,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    borderColor: 'white',
+    borderWidth: 1
   },
   googleLoginBtn: {
     backgroundColor: '#228B22',
@@ -111,7 +142,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     height: 50,
-    width: 200,
+    width: 210,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'red',
+    borderWidth: 1
+  },
+  nifeLoginBtn: {
+    backgroundColor: 'black',
+    borderColor: '#FF69B4',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    height: 50,
+    width: 210,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row'
@@ -151,5 +197,12 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+  },
+  headerText: {
+    fontSize: 18,
+    color: 'white'
+  },
+  headerContainer: {
+    top: 60
   }
 });

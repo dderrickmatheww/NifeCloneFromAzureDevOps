@@ -23,7 +23,7 @@ async function FirebaseGoogleLogin (callBack) {
         }
     } 
     catch ({ message }) {
-            alert(`Google Login Error: ${message}`);
+        alert(`Google Login Error: ${message}`);
     }
 }
 
