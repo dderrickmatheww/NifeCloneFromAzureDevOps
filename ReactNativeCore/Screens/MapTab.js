@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import { View, Text, Dimensions, ImageBackground, Image, Modal, StyleSheet, TouchableHighlight } from 'react-native';
+import { View, Text, Dimensions, ImageBackground, Image, Modal, StyleSheet, TouchableHighlight, Slider } from 'react-native';
 import { styles } from '../Styles/style';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import { render } from 'react-dom';
-import BarModal from './Components/BarModal';
+import BarModal from './Components/Map Screen Components/BarModal';
+import {Rating} from 'react-native-ratings';
 
 var counter = 0;
 var { width, height } = Dimensions.get('window');
@@ -16,11 +17,7 @@ var LONGITUDE;
 var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpYmj-BdlVdbiEj-4kadaC9bWOY-c1CjyigMVnY-cGgcHzFUoLh937z3dH-bneoGTXnYx"
 
 class MapTab extends React.Component  {
-  
-
-  
-    
-    
+   
     state = {
       region: null,
       markers: [],
@@ -42,11 +39,11 @@ class MapTab extends React.Component  {
   clientLocationFunction = (e) => { 
     // console.log(e);
     let { width, height } = Dimensions.get('window');
-    let ASPECT_RATIO = width / height;
-     LATITUDE = e.nativeEvent.coordinate.latitude;
-     LONGITUDE = e.nativeEvent.coordinate.longitude;
-    let LATITUDE_DELTA = 0.0922;
-    let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+    ASPECT_RATIO = width / height;
+    LATITUDE = e.nativeEvent.coordinate.latitude;
+    LONGITUDE = e.nativeEvent.coordinate.longitude;
+    LATITUDE_DELTA = 0.0922;
+    LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
     this.setState({region: {
       latitude: LATITUDE,
@@ -159,50 +156,62 @@ class MapTab extends React.Component  {
         >
         
       </MapView>
-      
-          <Modal 
-            style={localStyles.modalView}
+
+        <Modal 
+            
             animationType="slide"
             visible={this.state.isModalVisible}
-           
             onRequestClose={() => this.closeModal(this.state.region)}
+            transparent={true}
         >
+            <View style={localStyles.centeredView}>
+              <View style={localStyles.modalView}>
+                
+                <TouchableHighlight  style={localStyles.closeButton}
+                    onPress={() => {this.setState({isModalVisible:false});
+                }}>
+                  <Image  source={require("../Media/Images/close.png")}/>
+                </TouchableHighlight>
+                  
+                <View style={localStyles.titleCont}>
+                    <Text style={localStyles.modalTitle}>{this.state.modalProps.barName}</Text>
+                  </View>
                 <View style={localStyles.imgCont}>
-                  <ImageBackground source={this.state.modalProps.source} style={localStyles.img}>
-                    <View style={styles.backButton}>
-                      <TouchableHighlight 
-                          onPress={() => {this.setState({isModalVisible:false});
-                      }}>
-                        <Image style={styles.closeButton}source={require("../Media/Images/close.png")}/>
-                      </TouchableHighlight>
-                    </View>
-                    
-
-                  </ImageBackground>
+                      <ImageBackground source={this.state.modalProps.source} style={localStyles.modalImage}/>
                 </View>
-                <View style={localStyles.descCont}>
-                  <View>
-                    <Text style={localStyles.barName}> {this.state.modalProps.barName}</Text>
+                <View  style={localStyles.textCont}>
+                  
+                  <View  style={localStyles.descCont}>
+                    <Rating 
+                      ratingBackgroundColor="#BEB2C8"
+                      startingValue={this.state.modalProps.rating}
+                      showRating={false}
+                      readonly={true}
+                      imageSize={20}
+                      type="custom"
+                      style={localStyles.rating}
+                    />
+                    <Text style={localStyles.ratingText}> in {this.state.modalProps.reviewCount} reviews.</Text> 
                   </View>
-                  <View>
-                    <Text style={localStyles.rating}>  {this.state.modalProps.rating}/5 rating in {this.state.modalProps.reviewCount} reviews.</Text>
+                  <View  style={localStyles.descCont}>
+                    <Text style={localStyles.modalText}>Price: {this.state.modalProps.price}</Text>
                   </View>
-                  <View>
-                    <Text style={localStyles.pricing}> Price: {this.state.modalProps.price}</Text>
+                  <View style={localStyles.descCont}>
+                    <Text style={localStyles.modalText}>Number: {this.state.modalProps.phone} </Text>
                   </View>
-                  <View>
-                    <Text style={localStyles.contact}>  Number: {this.state.modalProps.phone} </Text>
+                  <View style={localStyles.descCont}>
+                    <Text style={localStyles.modalText}>Closed: {this.state.modalProps.closed == true ? "Yes" : "No"}</Text>
                   </View>
-                  <View>
-                    <Text style={localStyles.closed}>  Closed: {this.state.modalProps.closed == true ? "Yes" : "No"}</Text>
-                  </View>
-                  <View>
-                    <Text style={localStyles.address}>  {this.state.modalProps.address} </Text>
+                  <View style={localStyles.descCont}>
+                    <Text style={localStyles.modalText}>{this.state.modalProps.address} </Text>
                   </View>
                 </View>
+              </View>
+            </View>
+                
                  
         </Modal>
-      
+        
     </View> ) : 
     (<MapView
           style={styles.map}
@@ -422,23 +431,107 @@ class MapTab extends React.Component  {
 }
 const localStyles = StyleSheet.create({
   
-  img: {
-      flex: 1,
-      
+  
+  
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  imgCont: {
-      flex: 1,
-      marginHorizontal: 50,
+  modalView: {
+    width:"90%",
+    height:"90%",
+    marginBottom:"15%",
+    marginTop:"0%",
+    marginHorizontal: "2.5%",
+    backgroundColor: "#20232a",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex:1,
+  },
+  closeButton:{
+    left: "55%",
+    top: "-7.5%",
   },
 
-    modalView:{
-      marginVertical:60,
-      marginHorizontal: 50,
+  imgCont: {
+    flex: 1,
+    backgroundColor: '#5D5E60',
+    alignItems: 'center',
+    justifyContent: 'center',
+    
+    borderColor:"#5D5E60",
+    borderWidth: 10,
+    borderRadius: 20,
+    width:'100%',
   },
-    descCont: {
-      flex: 1,
-      marginTop:"5%", 
-      marginHorizontal: 50,
+  modalImage:{
+    width: '100%',
+    height: '100%',
+    borderColor:"#BEB2C8",
+    borderWidth: 10,
+    borderRadius: 20,
   },
+
+  textCont:{
+    bottom:"-10%",
+    width:"100%",
+    backgroundColor: "#5D5E60",
+    borderRadius:20,
+  },
+  descCont: {
+    borderRadius: 20,
+    borderColor: "black",
+    borderWidth: 1,
+    backgroundColor:"#BEB2C8",
+    margin:"1%",
+  },
+  modalText:{
+    color: "#20232a",
+    padding: 5,
+    marginLeft:"1%",
+    fontWeight:"bold",
+  },
+
+  titleCont: {
+    backgroundColor:"#5D5E60",
+    width: '100%',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: "-7.5%"
+  },
+  modalTitle:{
+    color: "#20232a",
+    padding: 5,
+    fontSize:24,
+    borderRadius: 20,
+    textAlign:"center",
+    fontWeight:'bold',
+    backgroundColor:"#BEB2C8",
+    marginVertical:"2%",
+    width:"90%",
+
+  },
+  ratingText:{
+    color: "#20232a",
+    padding: 5,
+    fontWeight:"bold",
+    textAlign:"center"
+  },
+  rating:{
+    marginTop:"2%",
+    marginBottom:"1%",
+  }
+
 });
 export default MapTab;

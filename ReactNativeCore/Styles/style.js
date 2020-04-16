@@ -67,7 +67,10 @@ tabDark: {
   },
 
   closeButton:{
-    alignItems:"flex-end"
+    
+    left: "42.5%",
+    top:"55%",
+    
   }
  
 
