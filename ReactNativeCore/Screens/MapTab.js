@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View, Text, Dimensions, Image, Modal, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, ImageBackground, Image, Modal, StyleSheet, TouchableHighlight } from 'react-native';
 import { styles } from '../Styles/style';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import { render } from 'react-dom';
@@ -18,14 +18,13 @@ var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpY
 class MapTab extends React.Component  {
   
 
-  constructor(props) {
+  
     
-    super(props);
-    this.state = {
+    
+    state = {
       region: null,
       markers: [],
       isLoaded: false,
-      markerSelected: false,
       isModalVisible: false,
       modalProps:{
         source:{uri:"#"},
@@ -38,7 +37,7 @@ class MapTab extends React.Component  {
         address: "#",
       }
     };
-  }
+  
 
   clientLocationFunction = (e) => { 
     // console.log(e);
@@ -95,6 +94,20 @@ class MapTab extends React.Component  {
   }
 
   HandleMarkerPress = (e, key) => {
+
+    let { width, height } = Dimensions.get('window');
+    let ASPECT_RATIO = width / height;
+     LATITUDE = e.nativeEvent.coordinate.latitude;
+     LONGITUDE = e.nativeEvent.coordinate.longitude;
+    let LATITUDE_DELTA = 0.0922;
+    let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+    this.setState({region: {
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }})
     // console.log(e.nativeEvent);
     var places;
     places = this.state.markers;
@@ -105,7 +118,7 @@ class MapTab extends React.Component  {
         wantedPlace = place;
       }
     });
-    console.log(wantedPlace);
+    // console.log(wantedPlace);
     this.setState({modalProps:{
       source:{uri: "" + wantedPlace.image_url},
       barName:wantedPlace.name, 
@@ -117,17 +130,17 @@ class MapTab extends React.Component  {
       address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1] ,
     }});
     this.setState({isModalVisible:true});
-    console.log(this.state.modalProps);
+    console.log(this.state.isModalVisible);
   }
 
   closeModal = (e) => {
-    console.log('test');
     this.setState({isModalVisible:false});
   }
   
   render() {
     return (
-      this.state.markers != null && this.state.markers != undefined ? (this.state.isModalVisible ? (
+      this.state.markers != null && this.state.markers != undefined ? 
+      this.state.isModalVisible ? (
       <View> 
         <MapView
           style={styles.map}
@@ -144,41 +157,50 @@ class MapTab extends React.Component  {
           maxZoomLevel={20}
           moveOnMarkerPress={false}
         >
-        {this.state.markers.map(marker => (
-          <Marker
-            coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
-            title={marker.name}
-            description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
-            key={marker.id}
-            onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
-          >
-          </Marker>
-        ))}
-      </MapView> 
+        
+      </MapView>
+      
           <Modal 
             style={localStyles.modalView}
             animationType="slide"
             visible={this.state.isModalVisible}
-            coverScreen={false}
-            onBackButtonPress={(e) => this.closeModal(e)}
+           
+            onRequestClose={() => this.closeModal(this.state.region)}
         >
-            <View style={localStyles.imgCont}>
-                <Image source={this.state.modalProps.source} style={localStyles.img}/>
-            </View>
-            <View styles={{}}>
-                <Text style={localStyles.barName}> {this.state.modalProps.barName}</Text>
-            </View>
-            <View styles={{}}>
-                <Text style={localStyles.rating}>  {this.state.modalProps.rating}/5 rating in {this.state.modalProps.reviewCount} reviews.</Text>
-                <Text style={localStyles.pricing}> Price: {this.state.modalProps.price}</Text>
-            </View>
-            <View styles={{}}>
-                <Text style={localStyles.contact}>  Number: {this.state.modalProps.phone} </Text>
-                <Text style={localStyles.closed}>  Closed: {this.state.modalProps.closed == true ? "Yes" : "No"}</Text>
-            </View>
-            <View styles={{}}>
-                <Text style={localStyles.address}>  {this.state.modalProps.address} </Text>
-            </View>
+                <View style={localStyles.imgCont}>
+                  <ImageBackground source={this.state.modalProps.source} style={localStyles.img}>
+                    <View style={styles.backButton}>
+                      <TouchableHighlight 
+                          onPress={() => {this.setState({isModalVisible:false});
+                      }}>
+                        <Image style={styles.closeButton}source={require("../Media/Images/close.png")}/>
+                      </TouchableHighlight>
+                    </View>
+                    
+
+                  </ImageBackground>
+                </View>
+                <View style={localStyles.descCont}>
+                  <View>
+                    <Text style={localStyles.barName}> {this.state.modalProps.barName}</Text>
+                  </View>
+                  <View>
+                    <Text style={localStyles.rating}>  {this.state.modalProps.rating}/5 rating in {this.state.modalProps.reviewCount} reviews.</Text>
+                  </View>
+                  <View>
+                    <Text style={localStyles.pricing}> Price: {this.state.modalProps.price}</Text>
+                  </View>
+                  <View>
+                    <Text style={localStyles.contact}>  Number: {this.state.modalProps.phone} </Text>
+                  </View>
+                  <View>
+                    <Text style={localStyles.closed}>  Closed: {this.state.modalProps.closed == true ? "Yes" : "No"}</Text>
+                  </View>
+                  <View>
+                    <Text style={localStyles.address}>  {this.state.modalProps.address} </Text>
+                  </View>
+                </View>
+                 
         </Modal>
       
     </View> ) : 
@@ -207,7 +229,7 @@ class MapTab extends React.Component  {
             >
             </Marker>
           ))}
-      </MapView> )):
+      </MapView> ):
 
       <View style={styles.container}>
         <MapView
@@ -399,47 +421,24 @@ class MapTab extends React.Component  {
   
 }
 const localStyles = StyleSheet.create({
-  mainCont: {
-      flex:1,
-      justifyContent: "center",
-      alignItems:"center",
-      width: (Dimensions.get('window').width * 0.50),
-      height: (Dimensions.get('window').height * 0.50 ),
-      maxWidth: (Dimensions.get('window').width * 0.50),
-      maxHeight: (Dimensions.get('window').height * 0.50 ),
-  },
+  
   img: {
       flex: 1,
-      width: (Dimensions.get('window').width * 0.50),
-      height: (Dimensions.get('window').height * 0.50 ),
-      maxWidth: (Dimensions.get('window').width * 0.50),
-      maxHeight: (Dimensions.get('window').height * 0.50 ),
       
   },
   imgCont: {
       flex: 1,
-      width: (Dimensions.get('window').width * 0.50),
-      height: (Dimensions.get('window').height * 0.50 ),
-      maxWidth: (Dimensions.get('window').width * 0.50),
-      maxHeight: (Dimensions.get('window').height * 0.50 ),
+      marginHorizontal: 50,
   },
-  centeredView: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 22,
-      width: (Dimensions.get('window').width * 0.75),
-      height: (Dimensions.get('window').height * 0.75 ),
-      maxWidth: (Dimensions.get('window').width * 0.75),
-      maxHeight: (Dimensions.get('window').height * 0.75 ),
-    },
 
     modalView:{
-        margin:20,
-        width: (Dimensions.get('window').width * 0.50),
-        height: (Dimensions.get('window').height * 0.50 ),
-        maxWidth: (Dimensions.get('window').width * 0.50),
-        maxHeight: (Dimensions.get('window').height * 0.50 ),
-    }
+      marginVertical:60,
+      marginHorizontal: 50,
+  },
+    descCont: {
+      flex: 1,
+      marginTop:"5%", 
+      marginHorizontal: 50,
+  },
 });
 export default MapTab;

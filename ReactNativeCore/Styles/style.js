@@ -65,17 +65,10 @@ tabDark: {
     justifyContent: 'center',
     
   },
-  modalView: {
-    flex: 3,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-    width: (Dimensions.get('window').width * 0.50),
-    height: (Dimensions.get('window').height * 0.50 ),
-    maxWidth: (Dimensions.get('window').width * 0.50),
-    maxHeight: (Dimensions.get('window').height * 0.50 ),
-  }
 
+  closeButton:{
+    alignItems:"flex-end"
+  }
  
 
   
