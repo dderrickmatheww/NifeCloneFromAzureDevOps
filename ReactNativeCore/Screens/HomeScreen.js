@@ -4,7 +4,9 @@ import { styles } from '../Styles/style';
 
 HomeTab = () =>
 
-    <Text style={styles.titleDark}>Home Text</Text>
+<View style={styles.container}>
+    <Text style={styles.titleDark}>hOME</Text>
+</View>
   
 
 

@@ -2,8 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 18828,
+  "packagerPid": 16028,
   "expoServerNgrokUrl": "https://hf-v3r.mattdpalumbo.reactnativecore.exp.direct",
   "packagerNgrokUrl": "https://packager.hf-v3r.mattdpalumbo.reactnativecore.exp.direct",
-  "ngrokPid": 23100
+  "ngrokPid": 9732,
+  "webpackServerPort": null
 }

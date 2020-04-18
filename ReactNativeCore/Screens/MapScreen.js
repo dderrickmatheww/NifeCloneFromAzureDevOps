@@ -16,7 +16,7 @@ var LONGITUDE;
 
 var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpYmj-BdlVdbiEj-4kadaC9bWOY-c1CjyigMVnY-cGgcHzFUoLh937z3dH-bneoGTXnYx"
 
-class MapTab extends React.Component  {
+class MapScreen extends React.Component  {
    
     state = {
       region: null,
@@ -534,4 +534,4 @@ const localStyles = StyleSheet.create({
   }
 
 });
-export default MapTab;
+export default MapScreen;
