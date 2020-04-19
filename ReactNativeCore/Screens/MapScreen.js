@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
-import { View, Text, Dimensions, ImageBackground, Image, Modal, StyleSheet, TouchableHighlight, Slider } from 'react-native';
-import { styles } from '../Styles/style';
+import React from 'react';
+import { View,  Dimensions,  StyleSheet} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
-import { render } from 'react-dom';
 import BarModal from './Components/Map Screen Components/BarModal';
-import {Rating} from 'react-native-ratings';
+import DrawerButton from '../Screens/Universal Components/DrawerButton';
+import theme from '../Styles/theme';
+
 
 var counter = 0;
 var { width, height } = Dimensions.get('window');
@@ -13,27 +13,199 @@ var LATITUDE_DELTA = 0.0922;
 var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 var LATITUDE;
 var LONGITUDE;
-
 var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpYmj-BdlVdbiEj-4kadaC9bWOY-c1CjyigMVnY-cGgcHzFUoLh937z3dH-bneoGTXnYx"
 
 class MapScreen extends React.Component  {
-   
-    state = {
-      region: null,
-      markers: [],
-      isLoaded: false,
-      isModalVisible: false,
-      modalProps:{
-        source:{uri:"#"},
-        barName:"#",
-        rating:"#",
-        reviewCount:"#",
-        price: "#",
-        phone: "#",
-        closed: "#",
-        address: "#",
-      }
-    };
+ 
+  mapStyle = [
+    {
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": theme.DARK
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": theme.LIGHT_PINK
+        }
+      ]
+    },
+    {
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#242f3e"
+        }
+      ]
+    },
+    {
+      "featureType": "administrative.locality",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": theme.LIGHT_PINK
+        }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "stylers": [
+        {
+          "color": "#d59563",
+          "visibility":"off"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#263c3f",
+          "visibility":"off"
+        }
+      ]
+    },
+    {
+      "featureType": "poi.park",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#6b9a76",
+          "visibility":"off"
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": theme.MEDIUM_PINK
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": theme.LIGHT
+        }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": theme.LIGHT_PINK
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": theme.DARK_PINK
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": theme.LIGHT
+        }
+      ]
+    },
+    {
+      "featureType": "road.highway",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#f3d19c"
+        }
+      ]
+    },
+    {
+      "featureType": "transit",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": "#2f3948"
+        }
+      ]
+    },
+    {
+      "featureType": "transit.station",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#d59563"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+        {
+          "color": theme.BLUE
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry.stroke",
+      "stylers": [
+        {
+          "color": theme.TURQUOISE
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [
+        {
+          "color": "#515c6d"
+        }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+        {
+          "color": "#17263c"
+        }
+      ]
+    }
+  ];
+
+  state = {
+    region: null,
+    markers: [],
+    isLoaded: false,
+    isModalVisible: false,
+    modalProps:{
+      source:{uri:"#"},
+      barName:"#",
+      rating:"#",
+      reviewCount:"#",
+      price: "#",
+      phone: "#",
+      closed: "#",
+      address: "#",
+    }
+  };
   
 
   clientLocationFunction = (e) => { 
@@ -138,9 +310,10 @@ class MapScreen extends React.Component  {
     return (
       this.state.markers != null && this.state.markers != undefined ? 
       this.state.isModalVisible ? (
-      <View> 
+        //ifModal is visible
+      <View  style={localStyles.container}> 
         <MapView
-          style={styles.map}
+          style={localStyles.map}
           provider={PROVIDER_GOOGLE}
           showsMyLocationButton={true}
           showsUserLocation={true}
@@ -153,68 +326,28 @@ class MapScreen extends React.Component  {
           minZoomLevel={15}
           maxZoomLevel={20}
           moveOnMarkerPress={false}
-        >
-        
+        >     
       </MapView>
-
-        <Modal 
-            
-            animationType="slide"
-            visible={this.state.isModalVisible}
-            onRequestClose={() => this.closeModal(this.state.region)}
-            transparent={true}
-        >
-            <View style={localStyles.centeredView}>
-              <View style={localStyles.modalView}>
-                
-                <TouchableHighlight  style={localStyles.closeButton}
-                    onPress={() => {this.setState({isModalVisible:false});
-                }}>
-                  <Image  source={require("../Media/Images/close.png")}/>
-                </TouchableHighlight>
-                  
-                <View style={localStyles.titleCont}>
-                    <Text style={localStyles.modalTitle}>{this.state.modalProps.barName}</Text>
-                  </View>
-                <View style={localStyles.imgCont}>
-                      <ImageBackground source={this.state.modalProps.source} style={localStyles.modalImage}/>
-                </View>
-                <View  style={localStyles.textCont}>
-                  
-                  <View  style={localStyles.descCont}>
-                    <Rating 
-                      ratingBackgroundColor="#BEB2C8"
-                      startingValue={this.state.modalProps.rating}
-                      showRating={false}
-                      readonly={true}
-                      imageSize={20}
-                      type="custom"
-                      style={localStyles.rating}
-                    />
-                    <Text style={localStyles.ratingText}> in {this.state.modalProps.reviewCount} reviews.</Text> 
-                  </View>
-                  <View  style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>Price: {this.state.modalProps.price}</Text>
-                  </View>
-                  <View style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>Number: {this.state.modalProps.phone} </Text>
-                  </View>
-                  <View style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>Closed: {this.state.modalProps.closed == true ? "Yes" : "No"}</Text>
-                  </View>
-                  <View style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>{this.state.modalProps.address} </Text>
-                  </View>
-                </View>
-              </View>
-            </View>
-                
-                 
-        </Modal>
+      <BarModal 
+            isVisible={this.state.isModalVisible}
+            source={this.state.modalProps.source}
+            barName={this.state.modalProps.barName}
+            rating={this.state.modalProps.rating}
+            reviewCount={this.state.modalProps.reviewCount}
+            price={this.state.modalProps.price}
+            phone={this.state.modalProps.phone}
+            closed={this.state.modalProps.closed}
+            address={this.state.modalProps.address} 
+            onPress={() => this.closeModal()}
+          > 
+        </BarModal>
         
+        <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
     </View> ) : 
-    (<MapView
-          style={styles.map}
+    //if modal is not visible, show markers
+    (<View style={localStyles.container}>  
+      <MapView
+          style={localStyles.map}
           provider={PROVIDER_GOOGLE}
           showsMyLocationButton={true}
           showsUserLocation={true}
@@ -235,203 +368,62 @@ class MapScreen extends React.Component  {
               description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
               key={marker.id}
               onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
+              pinColor="#FF33CC"
             >
             </Marker>
           ))}
-      </MapView> ):
-
-      <View style={styles.container}>
-        <MapView
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        showsMyLocationButton={true} 
-        showsUserLocation={true}
-        showsPointsOfInterest={false}
-        userLocationUpdateInterval={1000}
-        region={this.state.region}
-        onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-        showsScale={true}
-        customMapStyle={this.mapStyle}
-        minZoomLevel={15}
-        maxZoomLevel={20}
-        moveOnMarkerPress={false}
-      >
-        
-        </MapView> 
-          
-        </View>
+      </MapView>       
+      <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+    </View>):
+  //before markers are loaded
+    <View  style={localStyles.container}>
+      
+      <MapView
+      style={localStyles.map}
+      provider={PROVIDER_GOOGLE}
+      showsMyLocationButton={true} 
+      showsUserLocation={true}
+      showsPointsOfInterest={false}
+      userLocationUpdateInterval={1000}
+      region={this.state.region}
+      onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+      showsScale={true}
+      customMapStyle={this.mapStyle}
+      minZoomLevel={15}
+      maxZoomLevel={20}
+      moveOnMarkerPress={false}
+    >
+      
+      </MapView> 
+      <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress}/>      
+      </View>
     )
   }
-
-  mapStyle = [
-    {
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#746855"
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "administrative.locality",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#d59563"
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "stylers": [
-        {
-          "color": "#d59563",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#263c3f",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#6b9a76",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#38414e"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#212a37"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#9ca5b3"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#746855"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#1f2835"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#f3d19c"
-        }
-      ]
-    },
-    {
-      "featureType": "transit",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#2f3948"
-        }
-      ]
-    },
-    {
-      "featureType": "transit.station",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#d59563"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#17263c"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": "#515c6d"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#17263c"
-        }
-      ]
-    }
-  ]
-
-  
 }
+
 const localStyles = StyleSheet.create({
-  
-  
+  container: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  overlay: {
+    position: 'absolute',
+    top:"5%",
+    left: "5%",
+    opacity: 0.75,
+    backgroundColor: theme.DARK,
+  },
+
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+
+  drawerButton:{
+    backgroundColor: theme.DARK,
+    position:"absolute",
+    alignSelf:"flex-start",
+    top:"-30%"
+  },
   
   centeredView: {
     flex: 1,
@@ -459,8 +451,8 @@ const localStyles = StyleSheet.create({
     zIndex:1,
   },
   closeButton:{
-    left: "55%",
-    top: "-7.5%",
+    left: "0%",
+    top: "0%",
   },
 
   imgCont: {

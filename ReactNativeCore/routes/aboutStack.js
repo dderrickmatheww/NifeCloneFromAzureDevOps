@@ -7,8 +7,8 @@ const Stack = createStackNavigator();
 
 export default AboutStack = () => {
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="About" component={AboutScreen} options={{title: 'About Nife'}} />
+      <Stack.Navigator headerMode="none">
+        <Stack.Screen name="About" component={AboutScreen} headerMode="none" />
       </Stack.Navigator>
   );
 };

@@ -6,10 +6,10 @@ import Test from '../Screens/TestScreen';
 
 const Stack = createStackNavigator();
 
-export default AboutStack = () => {
+export default HomeStack = () => {
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home}  />
+      <Stack.Navigator headerMode="none">
+        <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Test" component={Test}  />
       </Stack.Navigator>
   );
