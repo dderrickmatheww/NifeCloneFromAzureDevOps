@@ -1,4 +1,5 @@
-import { StyleSheet , Dimensions} from 'react-native'
+import { StyleSheet } from 'react-native'
+import theme from '../Styles/theme';
 
 export const styles = StyleSheet.create({
   center: {
@@ -10,6 +11,11 @@ export const styles = StyleSheet.create({
     fontSize: 36,
     marginBottom: 16,
     color: "white"
+  },
+  titleVice: {
+    fontSize: 36,
+    marginBottom: 16,
+    color: theme.LIGHT_PINK
   },
 
   viewDark: {
@@ -54,9 +60,9 @@ tabDark: {
   },
 
   map: {
-    width: Dimensions.get('window').width,
-    height: (Dimensions.get('window').height * 0.95 ),
-    maxHeight: (Dimensions.get('window').height * 0.95 ),
+
+    width: "100%",
+    height: "100%",
   },
   mapCont: { 
     flex: 1,
@@ -68,11 +74,17 @@ tabDark: {
 
   closeButton:{
     
-    left: "42.5%",
-    top:"55%",
-    
-  }
+    left: "50%",
+    top:"50%",
+    zIndex:2,
+  },
  
-
+  overlay: {
+    position: 'absolute',
+    top:"5%",
+    left: "5%",
+    opacity: 0.75,
+    backgroundColor: theme.DARK,
+  },
   
 });
