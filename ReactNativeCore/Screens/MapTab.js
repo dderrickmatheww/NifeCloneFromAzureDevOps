@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { View, Text, Dimensions } from 'react-native';
 import { styles } from '../Styles/style';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import { render } from 'react-dom';
 
 var counter = 0;
 
-class MapTab extends React.Component  {
+export default class MapTab extends Component  {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      region: null
-    };
-  }
+  state = {
+    region: null
+  };
+
   mapStyle = [
     {
       "elementType": "geometry",
@@ -206,9 +203,8 @@ class MapTab extends React.Component  {
         showsScale={true}
         customMapStyle={this.mapStyle}
         minZoomLevel={15}
+        showsPointsOfInterest={false}
       />
     );
   }
 }
-
-export default MapTab;
