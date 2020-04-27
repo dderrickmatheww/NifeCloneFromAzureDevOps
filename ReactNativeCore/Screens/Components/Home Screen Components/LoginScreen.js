@@ -123,6 +123,13 @@ export default class NifeLoginModal extends Component {
                             > 
                             <Text>Sign up</Text>
                             </TouchableOpacity>
+                            <Text style={styles.loginSwitchText}>Already have an account?</Text>
+                            <TouchableOpacity
+                                onPress={() => this.setState({signUp: false})}
+                                style={styles.loginSwitch}
+                            > 
+                            <Text>Login</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
@@ -152,7 +159,7 @@ export default class NifeLoginModal extends Component {
                                 onPress={ () => this.authenticateUser('login')}
                                 style={styles.loginBtn}
                             > 
-                            <Text>Login up</Text>
+                            <Text>Login</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -192,6 +199,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     loginBtn: {
+        top: 70,
+        backgroundColor: 'lightgrey',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 20,
@@ -199,6 +208,20 @@ const styles = StyleSheet.create({
         width: 200,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    loginSwitch: {
+        top: 90,
+        backgroundColor: 'lightgrey',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        height: 50,
+        width: 75,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loginSwitchText: {
+        top: 80
     },
     centeredView: {
     flex: 1,
@@ -219,7 +242,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    height: 450
+    height: 475
     },
     openButton: {
         backgroundColor: "#F194FF",
