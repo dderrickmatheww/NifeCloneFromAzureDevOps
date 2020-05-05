@@ -59,4 +59,4 @@ buck-out/
 *.env
 
 #Expo Settings
-.expo/
+.expo
