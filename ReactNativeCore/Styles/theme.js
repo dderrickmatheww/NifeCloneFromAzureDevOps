@@ -47,10 +47,10 @@ export default class MapTab extends Component  {
     },
     {
       "featureType": "poi",
-      "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#d59563"
+          "color": "#d59563",
+          "visibility":"off"
         }
       ]
     },
@@ -59,7 +59,8 @@ export default class MapTab extends Component  {
       "elementType": "geometry",
       "stylers": [
         {
-          "color": "#263c3f"
+          "color": "#263c3f",
+          "visibility":"off"
         }
       ]
     },
@@ -68,7 +69,8 @@ export default class MapTab extends Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#6b9a76"
+          "color": "#6b9a76",
+          "visibility":"off"
         }
       ]
     },

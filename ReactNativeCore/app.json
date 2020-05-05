@@ -12,6 +12,20 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "splash":{
+      "image": "./Media/Images/Splash.png"
+    },
+    
+    "ios":{
+      "bundleIdentifier": "com.yeetdevops.nife"
+    },
+    "android": {
+      "package": "com.yeetdevops.nife",
+      "userInterfaceStyle": "dark"
+    },
+    "androidStatusBar" : {
+      "barStyle":"light-content"
+    }
   }
 }
