@@ -1,8 +1,18 @@
 import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+import IconWithBadge from './Screens/Components/IconWithBadge';
+import * as firebase from 'firebase';
+import config from './Screens/Firebase/FirebaseConfig';
 import Navigator from './routes/drawer';
+//Intialize Firebase Database
+firebase.initializeApp(config);
 
 
-function wrapme() {
+
+//function wrapme() {
 // function CustomDrawerContent(props, { navigation }) {
 //   return (
 //     <DrawerContentScrollView {...props}>
@@ -67,7 +77,6 @@ function wrapme() {
 //       )}
 //     </View>
 //   );
-// }
 
 // function HomeIconWithBadge(props) {
 //   // Here we can pass in badge data to the home icon
@@ -83,28 +92,11 @@ function wrapme() {
 //   // Here we can pass in badge data to the whatspoppin icon
 //   return <IconWithBadge {...props} badgeCount={1} />;
 // }
-
-
-// const Drawer = createDrawerNavigator();
-
-// export default function App() {
-//   const[location, setLocation] = useState(null);
-//   Location.requestPermissionsAsync()
-//   return (
-//     <NavigationContainer>
-//       <Drawer.Navigator drawerContent={(props) => <CustomDrawerContent {...props} />} initialRouteName="My Feed" drawerType={'back'} drawerStyle={{
-//     backgroundColor: '#20232a', color: "white",
-//     width: 180,
-//   }}>    
-//         <Drawer.Screen style={styles.viewDark} name="Nearby" component={ Map } />
-//         <Drawer.Screen name="My Feed" component={ Home } />
-//         <Drawer.Screen name="Whats Poppin'?" component={ WhatsPoppinScreen } />
-//       </Drawer.Navigator>
-//     </NavigationContainer>
-//   );
 // }
 
-}
+
+
+
 
 export default function App() {
   return(

@@ -1,21 +1,17 @@
-export default {
-    FONT_SMALL: 12,
-    FONT_MEDIUM: 14,
-    FONT_LARGE: 16,
-    DARK: "#20232A",
-    LIGHT: "#E2E4E3",
-    GREY: "#A3B4AD",
-    LIGHT_GREY:"#91a79e",
-    LIGHT_PURPLE: "#9757b8",
-    PURPLE: "#8806CE",
-    PINK: "#FF33CC",
-    LIGHT_PINK:"#eca6c4",
-    MEDIUM_PINK:"#F69E95",
-    DARK_PINK: "#AB3D5C",
-    BLUE: "#74BBFB",
-    TURQUOISE: "#08E8DE",
+import React, { Component } from 'react';
+import { View, Text, Dimensions } from 'react-native';
+import { styles } from '../Styles/style';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
-    mapTheme: [
+var counter = 0;
+
+export default class MapTab extends Component  {
+
+  state = {
+    region: null
+  };
+
+  mapStyle = [
     {
       "elementType": "geometry",
       "stylers": [
@@ -178,4 +174,39 @@ export default {
       ]
     }
   ]
-  };
+
+  clientLocationFunction = (e) => {
+    let { width, height } = Dimensions.get('window');
+    let ASPECT_RATIO = width / height;
+    let LATITUDE = e.nativeEvent.coordinate.latitude;
+    let LONGITUDE = e.nativeEvent.coordinate.longitude;
+    let LATITUDE_DELTA = 0.0922;
+    let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+    this.setState({region: {
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }})
+    counter++;
+  }
+  
+  render() {
+    return (
+      <MapView
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        showsMyLocationButton={true}
+        showsUserLocation={true}
+        userLocationUpdateInterval={1000}
+        region={this.state.region}
+        onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
+        showsScale={true}
+        customMapStyle={this.mapStyle}
+        minZoomLevel={15}
+        showsPointsOfInterest={false}
+      />
+    );
+  }
+}
