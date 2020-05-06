@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 17388,
-  "expoServerNgrokUrl": "https://3p-299.mattdpalumbo.reactnativecore.exp.direct",
-  "packagerNgrokUrl": "https://packager.3p-299.mattdpalumbo.reactnativecore.exp.direct",
-  "ngrokPid": 19212,
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
   "webpackServerPort": null
 }

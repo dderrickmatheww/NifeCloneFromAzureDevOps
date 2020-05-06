@@ -1,17 +1,29 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from '../Styles/style';
-import DrawerButton from '../Screens/Universal Components/DrawerButton';
+import * as firebase from 'firebase';
 
 
 
-HomeTab = ({navigation}) =>
+class HomeScreen extends React.Component  {
 
-<View style={styles.viewDark}>
-    <DrawerButton drawerButtonColor="#eca6c4" onPress={() => navigation.openDrawer()} ></DrawerButton>
-    <Text style={styles.titleVice}>My Feed</Text>
-</View>
-  
+    state = {
+        isLoggedIn: firebase.auth().currentUser ? true : false,
+        user: firebase.auth().currentUser
+    }
 
-
-export default HomeTab;
+    render() {
+        return (
+            this.state.isLoggedIn ? 
+            <View style={styles.viewDark}>
+                <Text style={styles.titleVice}>My Feed</Text>
+            </View> 
+            : 
+            <View style={styles.viewDark}>
+                <Text style={styles.titleVice}>Please login or sign up to see your feed!</Text>
+                <TouchableOpacity style={styles.navigateLoginBtn} onPress={() => this.props.navigation.navigate('Settings')}><Text>Login/Sign Up</Text></TouchableOpacity>
+            </View>
+        )
+    }
+}
+export default HomeScreen;

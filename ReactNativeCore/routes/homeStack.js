@@ -1,16 +1,19 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../Screens/HomeScreen';
-import Test from '../Screens/TestScreen';
+import HomeScreen from '../Screens/HomeScreen';
 
+function Feed({navigation}){
+  return(
+    <HomeScreen onDrawerPress={() => navigation.openDrawer()} navigation={navigation}></HomeScreen>
+  );
+}
 
 const Stack = createStackNavigator();
 
 export default HomeStack = () => {
   return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Test" component={Test}  />
+        <Stack.Screen name="My Feed" component={Feed} />
       </Stack.Navigator>
   );
 };

@@ -26,7 +26,7 @@ async function FireBaseFacebookLogin (callBack) {
         .then(async data => {
           const credential = firebase.auth.FacebookAuthProvider.credential(token);
           await firebase.auth().signInWithCredential(credential).catch((error) => {console.log(error)});
-          dataObj['data'] = data;
+          dataObj['data'] = firebase.auth().currentUser;
           dataObj['token'] = token;
           dataObj['user'] = firebase.auth().currentUser;
           callBack(dataObj);

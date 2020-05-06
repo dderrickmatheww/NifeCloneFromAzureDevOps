@@ -15,33 +15,29 @@ export const styles = StyleSheet.create({
   titleVice: {
     fontSize: 36,
     marginBottom: 16,
-    color: theme.LIGHT_PINK
+    color: theme.LIGHT_PINK,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-
   viewDark: {
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a'
-},
-
-tabDark: {
-
-  backgroundColor: '#20232a'
-},
-
+  },
+  tabDark: {
+    backgroundColor: '#20232a'
+  },
   title: {
     fontSize: 36,
     marginBottom: 16,
     color: 'black'
   },
-
   view: {
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
   },
-
   androidButtonText: {
     color: 'blue',
     fontSize: 20
@@ -51,16 +47,13 @@ tabDark: {
       justifyContent: 'center',
       alignItems: 'center'
   },
-
   bkgdImage:{
     resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
-
   map: {
-
     width: "100%",
     height: "100%",
   },
@@ -71,20 +64,133 @@ tabDark: {
     justifyContent: 'center',
     
   },
-
   closeButton:{
-    
     left: "50%",
     top:"50%",
     zIndex:2,
   },
- 
   overlay: {
     position: 'absolute',
     top:"5%",
     left: "5%",
     opacity: 0.75,
     backgroundColor: theme.DARK,
+  }, 
+  loginContainer: {
+    top: 0,
+    flex: 1,
+    backgroundColor: '#e9ebee',
+    alignItems: 'center',
+    backgroundColor: '#20232A'
   },
-  
+  facebookButtonContainer: {
+    top: 80
+  },
+  googleButtonContainer: {
+    top: 90
+  },
+  nifeButtonContainer: {
+    top: 100
+  },
+  loggedInContainer: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#20232A'
+  },
+  facebookLoginBtn: {
+    backgroundColor: '#4267b2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    height: 50,
+    width: 210,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'white',
+    borderWidth: 1
+  },
+  navigateLoginBtn: {
+    backgroundColor: 'grey',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    height: 50,
+    width: 210,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'white',
+    borderWidth: 1
+  },
+  googleLoginBtn: {
+    backgroundColor: '#228B22',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    height: 50,
+    width: 210,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'red',
+    borderWidth: 1
+  },
+  nifeLoginBtn: {
+    backgroundColor: 'black',
+    borderColor: '#FF69B4',
+    borderWidth: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    height: 50,
+    width: 210,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  logoutBtn: {
+    backgroundColor: 'grey',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    position: "absolute",
+    bottom: 0,
+    top: 700,
+    height: 35,
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  Logo: {
+    width: 25, 
+    height: 25,
+    left: 2,
+    borderColor: "#fff",
+    borderWidth: .2,
+    borderRadius: 5
+  },
+  loggedOutText: {
+    color: "#fff",
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  profilePic: {
+    width: 50, 
+    height: 50, 
+    borderRadius: 50,
+    bottom: 105,
+    left: 30
+  },
+  header: {
+    flexDirection: 'row',
+    top: 200
+  },
+  headerText: {
+    fontSize: 18,
+    color: 'white'
+  },
+  headerContainer: {
+    top: 60
+  }
 });
