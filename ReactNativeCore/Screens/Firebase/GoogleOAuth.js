@@ -7,7 +7,8 @@ async function FirebaseGoogleLogin (callBack) {
     let dataObj = {};
     try {
         let { type, accessToken, user } = await Google.logInAsync({
-            clientId: GOOGLE_OAUTH_WEB_CODE
+            androidClientId: "690308281698-i9t0qi4r00qbkr1k69b0qf0edc81lfl5.apps.googleusercontent.com",
+            iosClientId:"690308281698-s3g5bo9uahmd3orm4aeljhac5gnlgr1l.apps.googleusercontent.com"
         });
         if (type === 'success') {
             /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
