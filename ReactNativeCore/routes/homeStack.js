@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 export default HomeStack = () => {
   return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="My Feed" component={Feed} />
+        <Stack.Screen name="Home" component={Feed} />
       </Stack.Navigator>
   );
 };
