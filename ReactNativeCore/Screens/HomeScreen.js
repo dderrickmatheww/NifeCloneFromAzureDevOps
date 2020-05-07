@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles } from '../Styles/style';
+import getFeedData from './FeedComponents/GetFeedData';
 import * as firebase from 'firebase';
 
 
@@ -9,7 +10,8 @@ class HomeScreen extends React.Component  {
 
     state = {
         isLoggedIn: firebase.auth().currentUser ? true : false,
-        user: firebase.auth().currentUser
+        user: firebase.auth().currentUser,
+        theFeed: null
     }
 
     render() {

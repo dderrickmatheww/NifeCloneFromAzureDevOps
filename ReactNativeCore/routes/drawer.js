@@ -2,12 +2,10 @@ import * as React from 'react';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeStack from '../routes/homeStack';
-import AboutStack from '../routes/aboutStack';
 import MapStack from '../routes/mapStack';
 import SettingsTab from '../Screens/SettingsTab';
 import theme from '../Styles/theme';
-import { ThemeColors } from 'react-navigation';
-import { color } from 'react-native-reanimated';
+import PoppinStack from './poppinStack';
 
 const Drawer = createDrawerNavigator();
 
@@ -33,7 +31,7 @@ export default function Navigator() {
         initialRouteName="Home" 
         overlayColor="#20232A" >
         <Drawer.Screen  name="Home" component={HomeStack} />
-        <Drawer.Screen name="About" component={AboutStack} />
+        <Drawer.Screen name="What's Poppin'?" component={PoppinStack} />
         <Drawer.Screen name="Map" component={MapStack} /> 
         <Drawer.Screen name="Settings" component={SettingsTab} /> 
       </Drawer.Navigator>
