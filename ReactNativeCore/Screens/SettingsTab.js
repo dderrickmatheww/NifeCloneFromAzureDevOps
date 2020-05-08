@@ -4,14 +4,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import FireBaseFacebookLogin from './Firebase/FacebookOAuth';
 import FirebaseGoogleLogin from './Firebase/GoogleOAuth';
 import NifeLoginModal from './Components/Home Screen Components/LoginScreen'
+import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
 
-const Stack = createStackNavigator();
-
-export default class SettingsScreen extends Component {
+export default class SettingsTab extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
-    userData: null,
+    userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
     token: null,
     user: null,
     modalVisible: false
@@ -38,8 +37,8 @@ export default class SettingsScreen extends Component {
               <View style={styles.header}>
                 <Image
                   style={styles.profilePic}
-                  source={{ uri: this.state.userData.picture.data.url ? this.state.userData.picture.data.url : this.state.userData.photoURL }} />
-                <Text style={{ fontSize: 18, height: 40, color: 'black', bottom: 90, marginHorizontal: 50 }}>Welcome, {this.state.userData.name ? this.state.userData.name : this.state.userData.displayName}!</Text>
+                  source={{ uri: this.state.userData ? this.state.userData.providerData[0].photoURL : null }} />
+                <Text style={{ fontSize: 18, height: 40, color: 'white', bottom: 90, marginHorizontal: 50 }}>Welcome, {this.state.userData.name ? this.state.userData.name : this.state.userData.displayName}!</Text>
               </View>
               <TouchableOpacity style={styles.logoutBtn} onPress={() => this.logout()}>
                 <Text style={{ color: "#fff" }}>Logout</Text>
@@ -47,7 +46,7 @@ export default class SettingsScreen extends Component {
             </View> :
           null
         :
-        <View style={styles.container}>
+        <View style={styles.loginContainer}>
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>Please sign in to edit your settings!</Text>
           </View>
@@ -67,7 +66,6 @@ export default class SettingsScreen extends Component {
             <TouchableOpacity style={styles.googleLoginBtn} onPress={() => FirebaseGoogleLogin((dataObj) => {
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
-              console.log(dataObj);
             })}>
               <Text style={styles.loggedOutText}>Login with Google</Text>
               <Image
@@ -99,110 +97,3 @@ export default class SettingsScreen extends Component {
       );
     }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    top: 0,
-    flex: 1,
-    backgroundColor: '#e9ebee',
-    alignItems: 'center',
-    backgroundColor: '#20232A'
-  },
-  facebookButtonContainer: {
-    top: 80
-  },
-  googleButtonContainer: {
-    top: 90
-  },
-  nifeButtonContainer: {
-    top: 100
-  },
-  loggedInContainer: {
-    flex: 1,
-    backgroundColor: '#e9ebee',
-    alignItems: 'center',
-    top: 0
-  },
-  facebookLoginBtn: {
-    backgroundColor: '#4267b2',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    height: 50,
-    width: 210,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderColor: 'white',
-    borderWidth: 1
-  },
-  googleLoginBtn: {
-    backgroundColor: '#228B22',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    height: 50,
-    width: 210,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderColor: 'red',
-    borderWidth: 1
-  },
-  nifeLoginBtn: {
-    backgroundColor: 'black',
-    borderColor: '#FF69B4',
-    borderWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    height: 50,
-    width: 210,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
-  },
-  logoutBtn: {
-    backgroundColor: 'grey',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    position: "absolute",
-    bottom: 0,
-    top: 470,
-    height: 35,
-    width: 150,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  Logo: {
-    width: 25, 
-    height: 25,
-    left: 2,
-    borderColor: "#fff",
-    borderWidth: .2,
-    borderRadius: 5
-  },
-  loggedOutText: {
-    color: "#fff",
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  profilePic: {
-    width: 100, 
-    height: 100, 
-    borderRadius: 50,
-    bottom: 130,
-    left: 45
-  },
-  header: {
-    flexDirection: 'row',
-  },
-  headerText: {
-    fontSize: 18,
-    color: 'white'
-  },
-  headerContainer: {
-    top: 60
-  }
-});
