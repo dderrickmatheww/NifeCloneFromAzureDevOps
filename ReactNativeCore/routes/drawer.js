@@ -6,6 +6,7 @@ import MapStack from '../routes/mapStack';
 import SettingsTab from '../Screens/SettingsTab';
 import theme from '../Styles/theme';
 import PoppinStack from './poppinStack';
+import ProfileStack from './profileStack';
 
 const Drawer = createDrawerNavigator();
 
@@ -30,6 +31,7 @@ export default function Navigator() {
         }} 
         initialRouteName="Home" 
         overlayColor="#20232A" >
+        <Drawer.Screen  name="FriendsList" component={ProfileStack} />
         <Drawer.Screen  name="Home" component={HomeStack} />
         <Drawer.Screen name="What's Poppin'?" component={PoppinStack} />
         <Drawer.Screen name="Map" component={MapStack} /> 
