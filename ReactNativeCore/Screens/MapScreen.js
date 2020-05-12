@@ -223,8 +223,16 @@ class MapScreen extends React.Component  {
       longitude: LONGITUDE,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
-    }})
-    SetUserLocationData(this.state.region);
+    }});
+
+    //Sets user location inside of the local storage using Async Storage
+    var region = {
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }
+    SetUserLocationData(region);
     counter++;
     if(LONGITUDE != undefined){
       console.log("Lat:" + LATITUDE);

@@ -162,6 +162,27 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  dataRow: {
+    backgroundColor: 'grey',
+    borderRadius: 20,
+    position: "absolute",
+    top: 100,
+    height: 50,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dataRowContainer: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: '#20232a',
+    marginBottom: 70
+  },
+  dataRowScrollView: {
+    flex: 1,
+    backgroundColor: '#20232a'
+  },
   Logo: {
     width: 25, 
     height: 25,

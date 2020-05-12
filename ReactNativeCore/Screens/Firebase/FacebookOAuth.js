@@ -32,7 +32,7 @@ async function FireBaseFacebookLogin (callBack) {
             await AsyncStorage.setItem('FBToken', token);
           }
           catch (err) {
-            console.log(err + 'AsyncStorage Error');
+            console.log(err + ' AsyncStorage Error');
           }
           dataObj['token'] = token;
           dataObj['user'] = firebase.auth().currentUser;
