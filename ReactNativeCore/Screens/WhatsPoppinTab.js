@@ -18,10 +18,9 @@ class WhatsPoppin extends React.Component  {
 
     grabFeedData = () => {
         if(this.state.isLoggedIn) {
-            let token = this.state.user.providerData[0].uid;
             let provider = this.state.user.providerData[0].providerId;
             let query = this.state.query
-            getFeedData(token, provider, query, function(dataObj){
+            getFeedData(provider, query, function(dataObj){
                 console.log(dataObj)
             });
         }
