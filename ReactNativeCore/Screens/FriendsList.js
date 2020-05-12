@@ -20,7 +20,7 @@ class FriendsList extends React.Component  {
       }
       //Set login status
       setLoggedinStatus = async (dataObj) => {
-        this.setState({ isLoggedin: dataObj.user ? true : false });
+        this.setState({ isLoggedin: dataObj ? true : false });
       }  
       //Set user data
       setUserData = async (dataObj) => {
