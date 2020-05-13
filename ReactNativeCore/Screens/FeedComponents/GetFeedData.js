@@ -7,17 +7,27 @@ import * as firebase from 'firebase';
 const BUNDLE_ID = 'com.reactnativecore';
 
 export default async function getFeedData (provider, query, callBack) {
+    let dataObj = {};
+    let token, lat, long;
     if(query) {
         if(provider == 'facebook.com') {
-            let dataObj = {};
             await Facebook.initializeAsync(FACEBOOK_APP_ID, BUNDLE_ID);
-            token = await AsyncStorage.getItem('FBToken');
+            await AsyncStorage.multiGet(['FBToken', 'userLocationData'], function(err, result){
+                if (err) {
+                    console.log('Async Storage Error');
+                }
+                else {
+                    token = result[0][1];
+                    lat = result[1][1].split(',')[0];
+                    long = result[1][1].split(',')[1];
+                }
+            });
             try {
                 // Get the user's name using Facebook's Graph API
-                fetch('https://graph.facebook.com/search?type=place&q='+ query +'&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
+                fetch('https://graph.facebook.com/search?type=place&q='+ query +'&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
                 .then(response => response.json())
                 .then(async data => {
-                    dataObj['data'] = data;
+                    dataObj['data'] = data.data;
                     callBack(dataObj);
                 })
                 .catch(e => console.log(e))
@@ -28,8 +38,7 @@ export default async function getFeedData (provider, query, callBack) {
     }
     else {
         if(provider == 'facebook.com') {
-            let dataObj = {};
-            var token, lat, long;
+            
             await Facebook.initializeAsync(FACEBOOK_APP_ID, BUNDLE_ID);
             await AsyncStorage.multiGet(['FBToken', 'userLocationData'], function(err, result){
                 if (err) {
