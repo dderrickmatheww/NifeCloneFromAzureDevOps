@@ -1,6 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
-import { View, Text,  StyleSheet, Image, ScrollView} from 'react-native';
+import { View, Text,  StyleSheet, Image, ScrollView, ActivityIndicator} from 'react-native';
 import {styles} from '../Styles/style';
 import DrawerButton from './Universal Components/DrawerButton';
 import theme from '../Styles/theme';
@@ -8,7 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import {GetFriends} from '../Screens/Firebase/FriendsUtil'
 import 'firebase/firestore';
 
-
+var defPhoto = require('../Media/Images/logoicon.png')
 class FriendsList extends React.Component  {
     state = {
         isLoggedin: firebase.auth().currentUser ? true : false,
@@ -16,7 +16,7 @@ class FriendsList extends React.Component  {
         token: null,
         user: null,
         modalVisible: false,
-        friends: [],
+        friends: null,
       }
       //Set login status
       setLoggedinStatus = async (dataObj) => {
@@ -58,16 +58,18 @@ class FriendsList extends React.Component  {
                   <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
                   <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
                 </View>
-                <ScrollView >
-                  {this.state.friends.map(friend => (
-                    <Text>{friend}</Text>
+                <ScrollView style={localStyles.ScrollView}>
+                  {this.state.friends.map((friend, i)=> (
+                    <View style={localStyles.friendCont}>
+                      <Image style={localStyles.friendPic} source={friend.providerData != null ? {uri: friend.providerData[0].photoURL} : defPhoto}/><Text style={localStyles.name} key={i}>{friend.displayName}</Text>
+                    </View>
                   ))}
                 </ScrollView>
-                <View style={localStyles.loggedInSubView}>
-                  <TouchableOpacity>
+                {/* <View style={localStyles.loggedInSubView}>
+                  <TouchableOpacity onPress={() => SeedAddFriend(firebase.firestore())}>
                         <Text >GetFriends</Text>
                   </TouchableOpacity>
-                </View>
+                </View> */}
 
                {/* keep this button at the bottom */}
                 <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
@@ -80,7 +82,7 @@ class FriendsList extends React.Component  {
                   <Text style={localStyles.FriendCount}>Loading Friends...</Text>
                 </View>
               <View style={localStyles.loggedInSubView}>
-                <Text style={localStyles.name}>Your Friends</Text>
+                <ActivityIndicator size="large" color="#eca6c4"></ActivityIndicator>
               </View> 
             {/* keep this button at the bottom */}
               <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
@@ -100,9 +102,10 @@ const localStyles = StyleSheet.create({
   loggedInSubView:{
     flex: 1, 
     backgroundColor: theme.DARK,
-    width: "95%",
-    justifyContent:"flex-start",
-    alignItems:"flex-start",
+    width: "100%",
+    justifyContent:"center",
+    marginBottom:"10%",
+    alignItems:"center",
   },
   HeaderCont:{
     flex: 1, 
@@ -112,7 +115,8 @@ const localStyles = StyleSheet.create({
     justifyContent:"flex-end",
     alignItems:"center",
     borderBottomColor: theme.LIGHT_PINK,
-    borderBottomWidth: 2
+    borderBottomWidth: 2,
+
   },
   profilePic: {
     width: 75, 
@@ -120,14 +124,23 @@ const localStyles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: "5%"
   },
+  friendPic: {
+    width: 50, 
+    height: 50, 
+    borderRadius: 50,
+  },
+  friendCont:{
+    flexDirection: "row",
+    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomWidth: 1,
+  },
   name: {
-    fontSize: 15,
+    fontSize: 18,
     color: theme.LIGHT_PINK,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
-    borderBottomColor:theme.LIGHT_PINK,
-    borderBottomWidth: 1,
+    marginLeft:'2.5%',
     width: "100%"
   },
   FriendCount: {
@@ -144,8 +157,18 @@ const localStyles = StyleSheet.create({
     color: theme.LIGHT_PINK,
     justifyContent: 'center',
     alignItems: 'center'
+    
   },
-  
+  ScrollView: {
+    flex: 1,
+    width:"100%",
+    borderLeftWidth:2,
+    borderLeftColor: theme.LIGHT_PINK,
+    borderRightWidth:2,
+    borderRightColor: theme.LIGHT_PINK,
+    paddingHorizontal: "5%",
+    paddingBottom: "1%"
+  }
   });
 
 export default FriendsList;

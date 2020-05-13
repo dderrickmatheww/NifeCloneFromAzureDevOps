@@ -12,7 +12,7 @@ import {decode, encode} from 'base-64'
 if (! global.btoa) {global.btoa = encode}
 
 if (! global.atob) {global.atob = decode}
-console.ignoredYellowBox = ['Setting a timer'];
+
 //Intialize Firebase Database
 firebase.initializeApp(config);
 
@@ -99,10 +99,6 @@ firebase.initializeApp(config);
 //   return <IconWithBadge {...props} badgeCount={1} />;
 // }
 // }
-
-
-
-
 
 export default function App() {
   return(
