@@ -1,9 +1,9 @@
 import * as firebase from 'firebase';
 
 export async function GetFriends (db, email, callback) {
-    console.log('poop1');
+    console.log('Getting Friends');
     let friendsArr = [];
-    var path = new firebase.firestore.FieldPath('friends', 'mattdpalumbo@gmail.com')
+    var path = new firebase.firestore.FieldPath('friends', email)
     let docRef = db.collection('users').where(path, '==', true).get()
       .then( (friends) => {
         friends.forEach(function(friend){
