@@ -1,15 +1,16 @@
 import React from 'react';
-import { GOOGLE_OAUTH_WEB_CODE } from 'react-native-dotenv';
+import { GOOGLE_OAUTH_WEB_CODE,  ANDROID_GOOGLE_OAUTH_WEB_CODE, IOS_GOOGLE_OAUTH_WEB_CODE} from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
+import {VerifyUser} from '../Firebase/UserUtil'
 
 async function FirebaseGoogleLogin (callBack) {
     let dataObj = {};
     try {
         let result = await Google.logInAsync({
-            androidClientId: "690308281698-i9t0qi4r00qbkr1k69b0qf0edc81lfl5.apps.googleusercontent.com",
-            iosClientId:"690308281698-s3g5bo9uahmd3orm4aeljhac5gnlgr1l.apps.googleusercontent.com",
-            clientId: "690308281698-i9t0qi4r00qbkr1k69b0qf0edc81lfl5.apps.googleusercontent.com"
+            androidClientId: ANDROID_GOOGLE_OAUTH_WEB_CODE,
+            iosClientId:IOS_GOOGLE_OAUTH_WEB_CODE,
+            clientId: GOOGLE_OAUTH_WEB_CODE
         });
         if (result.type === 'success') {
            
@@ -22,6 +23,9 @@ async function FirebaseGoogleLogin (callBack) {
             dataObj['token'] = result.accessToken;
             dataObj['user'] = firebase.auth().currentUser;
             console.log(dataObj.user);
+            VerifyUser(firebase.firestore(), dataObj.user, dataObj.user.email, (data) =>{
+                console.log(data);
+            });
             callBack(dataObj);
         }
     } 

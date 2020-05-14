@@ -7,6 +7,12 @@ import IconWithBadge from './Screens/Components/IconWithBadge';
 import * as firebase from 'firebase';
 import config from './Screens/Firebase/FirebaseConfig';
 import Navigator from './routes/drawer';
+import {decode, encode} from 'base-64'
+
+if (! global.btoa) {global.btoa = encode}
+
+if (! global.atob) {global.atob = decode}
+
 //Intialize Firebase Database
 firebase.initializeApp(config);
 
@@ -93,10 +99,6 @@ firebase.initializeApp(config);
 //   return <IconWithBadge {...props} badgeCount={1} />;
 // }
 // }
-
-
-
-
 
 export default function App() {
   return(
