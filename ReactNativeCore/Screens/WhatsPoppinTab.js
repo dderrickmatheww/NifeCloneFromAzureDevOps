@@ -5,6 +5,7 @@ import getFeedData from './FeedComponents/GetFeedData';
 import DataRow from './FeedComponents/DataRow';
 import * as firebase from 'firebase';
 import InputWithIcon from '../Screens/Components/InputWithIcon';
+
 class WhatsPoppin extends React.Component  {
 
     state = {
@@ -13,7 +14,8 @@ class WhatsPoppin extends React.Component  {
         query: null,
         feedData: null,
         DataRoWKey: 0,
-        modalVisable: false
+        modalVisable: false,
+        postData: null
     }
     
       
@@ -48,8 +50,9 @@ class WhatsPoppin extends React.Component  {
             let provider = this.state.user.providerData[0].providerId;
             let query = this.state.query;
             getFeedData(provider, query, (dataObj) => {
-                console.log(dataObj.data);
-                this.setState({ feedData: dataObj.data });
+                this.setState({ 
+                    feedData: dataObj.data
+                });
             });
         }
     }
@@ -74,20 +77,16 @@ class WhatsPoppin extends React.Component  {
                                 description={data.description}
                                 website={data.website}
                                 key={this.state.DataRoWKey++}
-                                onPress={() => this.onDataRowPress(boolean)}
+                                phone={data.phone}
+                                FBlink={data.link}
+                                website={data.website}
+                                specialties={data.restaurant_specialties}
+                                onPress={(boolean) => this.onDataRowPress(boolean)}
+                                modalVisability={this.state.modalVisable}
                             />
                         ))}
                         <View style={{ height: 120 }} />
-                        <Modal
-                            visible={this.state.modalVisible}
-                            animationType="slide"
-                            transparent={true}
-                        >
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                </View>
-                            </View>
-                        </Modal>
+                        
                     </ScrollView>
                 : 
                 <View>

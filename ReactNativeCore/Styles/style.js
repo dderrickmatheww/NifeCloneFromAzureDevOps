@@ -253,5 +253,34 @@ export const styles = StyleSheet.create({
     height: 25,
     margin: 5,
     alignItems: 'center'
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    top: 100,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  modalText: {
+      marginBottom: 15,
+      textAlign: "center"
+  },
+  closeBtn: {
+    left: 135,
+    bottom: 20
+  },
+  modalScrollView : {
+    height: 500,
+    borderRadius: 20, 
+    top: 120
   }
 });
