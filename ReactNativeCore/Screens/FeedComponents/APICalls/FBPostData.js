@@ -6,7 +6,6 @@ const FBPostData = (dataObj, token, returnData) => {
         fetch('https://graph.facebook.com/v7.0/' + dataObj.page.id + '/posts?&access_token='+ token)
         .then(response => response.json())
         .then(async data => {
-            console.log(data);
             dataObj['PostData'] = data;
             returnData(dataObj);
         })

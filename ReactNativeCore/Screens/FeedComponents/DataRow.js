@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Modal, Linking, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Modal, Linking, ScrollView, RefreshControl } from 'react-native';
 import { styles } from '../../Styles/style';
 import * as firebase from 'firebase';
 
@@ -30,7 +30,9 @@ export default class DataRow extends React.Component  {
                         transparent={true}
                     >
                         <View style={styles.centeredView}>
-                            <ScrollView style={ styles.modalScrollView }>
+                            <ScrollView 
+                                style={ styles.modalScrollView }
+                            >
                                 <View style={styles.modalView}>
                                     <TouchableOpacity style={styles.closeBtn}
                                         onPress={() => {this.setState({modalVisable: false})}}
@@ -51,7 +53,7 @@ export default class DataRow extends React.Component  {
                                                             this.props.specialties.drinks == "0" &&
                                                             this.props.specialties.lunch == "0" ?
                                                             null :
-                                                            <Text>{this.props.name} specialties: </Text>
+                                                            <Text>{this.props.name}'s specialties: </Text>
                                                         )
                                                     }
                                                     {
@@ -79,7 +81,7 @@ export default class DataRow extends React.Component  {
                                         }
                                     <View>
                                         <Text style={{color: 'blue'}}
-                                            onPress={() => Linking.openURL(this.props.FBlink)}>
+                                            onPress={() => Linking.openURL(this.props.link)}>
                                             Facebook Page
                                         </Text>
                                         <Text style={{color: 'blue'}}

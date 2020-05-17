@@ -15,10 +15,8 @@ class WhatsPoppin extends React.Component  {
         feedData: null,
         DataRoWKey: 0,
         modalVisable: false,
-        postData: null
+        tweetData: null
     }
-    
-      
 
     async componentDidMount () {
         await this.grabFeedData();
@@ -60,33 +58,32 @@ class WhatsPoppin extends React.Component  {
     render() {
         return (
             this.state.isLoggedIn ? 
-                this.state.feedData ? 
+                this.state.IsData ? 
                     <ScrollView style={styles.dataRowScrollView}>
                         <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
-                        {this.state.feedData.map(data => (
-                            <DataRow 
-                                name={data.name}
-                                link={data.link}
-                                city={data.location.city}
-                                street={data.location.street}
-                                state={data.location.state}
-                                zip={data.location.zip}
-                                lat={data.location.latitude}
-                                long={data.location.longitude}
-                                about={data.about}
-                                description={data.description}
-                                website={data.website}
-                                key={this.state.DataRoWKey++}
-                                phone={data.phone}
-                                FBlink={data.link}
-                                website={data.website}
-                                specialties={data.restaurant_specialties}
-                                onPress={(boolean) => this.onDataRowPress(boolean)}
-                                modalVisability={this.state.modalVisable}
-                            />
-                        ))}
+                        {
+                            this.state.feedData.map(data => (
+                                <DataRow 
+                                    key={ this.state.DataRoWKey++ }
+                                    phone={ data.phone }
+                                    specialties={ data.restaurant_specialties }
+                                    name={ data.name }
+                                    link={ data.link }
+                                    city={ data.location ? data.location.city : null }
+                                    street={ data.location ? data.location.street : null }
+                                    state={ data.location ? data.location.state : null }
+                                    zip={ data.location ? data.location.zip : null }
+                                    lat={ data.location ? data.location.latitude :  null }
+                                    long={ data.location ? data.location.longitude : null }
+                                    about={ data.about }
+                                    description={ data.description }
+                                    website={ data.website }
+                                    modalVisability={ this.state.modalVisable }
+                                    tweetData={ this.state.tweetData }
+                                />
+                            ))
+                        }
                         <View style={{ height: 120 }} />
-                        
                     </ScrollView>
                 : 
                 <View>

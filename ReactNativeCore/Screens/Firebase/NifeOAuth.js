@@ -15,7 +15,7 @@ async function FireBaseNifeLogin (signUpInfo, loginInfo, callBack) {
               callBack(null, errorMessage)
             }
         });
-        dataObj['data'] = null;
+        dataObj['data'] = firebase.auth().currentUser;
         dataObj['token'] = null;
         dataObj['user'] = firebase.auth().currentUser;
         callBack(dataObj);
@@ -34,7 +34,7 @@ async function FireBaseNifeLogin (signUpInfo, loginInfo, callBack) {
               callBack(null, errorMessage)
             }
         });
-        dataObj['data'] = null;
+        dataObj['data'] = firebase.auth().currentUser;
         dataObj['token'] = null;
         dataObj['user'] = firebase.auth().currentUser;
         callBack(dataObj);

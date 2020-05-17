@@ -3,6 +3,7 @@ import * as Facebook from 'expo-facebook';
 import { FACEBOOK_APP_ID } from 'react-native-dotenv';
 import { AsyncStorage  } from 'react-native';
 import * as firebase from 'firebase';
+import Config from '../Universal Components/ConfigFunctions';
 //Intialize Facebook Login
 const BUNDLE_ID = 'com.reactnativecore';
 
@@ -26,16 +27,11 @@ async function FireBaseFacebookLogin (callBack) {
         .then(response => response.json())
         .then(async data => {
           const credential = firebase.auth.FacebookAuthProvider.credential(token);
-          await firebase.auth().signInWithCredential(credential).catch((error) => {console.log(error)});
+          await firebase.auth().signInWithCredential(credential).catch((error) => {console.log('Firebase Facebook Auth Error: ' + error)});
           dataObj['data'] = firebase.auth().currentUser;
-          try{
-            await AsyncStorage.setItem('FBToken', token);
-          }
-          catch (err) {
-            console.log(err + ' AsyncStorage Error');
-          }
           dataObj['token'] = token;
           dataObj['user'] = firebase.auth().currentUser;
+          Config.SetAsyncStorageVar('FBToken', token);
           callBack(dataObj);
         })
         .catch(e => console.log(e))
