@@ -5,7 +5,7 @@ import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import theme from '../Styles/theme';
 import SetUserLocationData from './FeedComponents/SetUserLocationData';
-
+import Util from '../scripts/Util';
 
 var counter = 0;
 var { width, height } = Dimensions.get('window');
@@ -205,7 +205,9 @@ class MapScreen extends React.Component  {
       phone: "#",
       closed: "#",
       address: "#",
-    }
+    },
+    friendData:null,
+    userData:null
   };
   
 
@@ -306,6 +308,22 @@ class MapScreen extends React.Component  {
 
   closeModal = (e) => {
     this.setState({isModalVisible:false});
+  }
+
+  getAsyncStorageData = () => {
+    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
+      this.setState({friendData: friends});
+      console.log('Friends: ' + this.state.friendData);
+      
+    });
+    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
+      this.setState({userData: userData});
+      console.log('User: ' + this.state.userData);
+    });
+  }
+
+  componentDidMount() {
+    this.getAsyncStorageData();  
   }
   
   render() {

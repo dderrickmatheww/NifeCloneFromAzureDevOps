@@ -34,6 +34,17 @@ const Config = {
                 });
             }
         });
+    },
+
+    GetAsyncStorageVar: async (name, callback) => {
+        await AsyncStorage.getItem(name, async function(err, result){
+            if(err){
+                console.log(err);
+            }
+            if(result){
+                callback(result);
+            }
+        });
     }
 } 
 export default Config;

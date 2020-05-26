@@ -26,8 +26,8 @@ const Util = {
     },
     
      location: {
-        SaveLocation: function(db, email, callback){
-            SaveLocation(db, email, callback);
+        SaveLocation: function(db, email, location, callback){
+            SaveLocation(db, email, location, callback);
         }
     
     },
@@ -35,6 +35,9 @@ const Util = {
      asyncStorage:{
         SetAsyncStorageVar: async (name, value) => {
             Config.SetAsyncStorageVar(name, value);
+        },
+        GetAsyncStorageVar: async (name, callback) => {
+            Config.GetAsyncStorageVar(name, callback);
         }
     }
 }

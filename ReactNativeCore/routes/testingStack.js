@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 export default poppinStack = () => {
   return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Testing" component={Testing} options={{title: 'Testing'}} />
+        <Stack.Screen   name="Testing" component={Testing} options={{title: 'Testing'}} />
       </Stack.Navigator>
   );
 };

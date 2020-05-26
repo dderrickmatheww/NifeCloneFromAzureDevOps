@@ -2,7 +2,7 @@ import React from 'react';
 import { GOOGLE_OAUTH_WEB_CODE,  ANDROID_GOOGLE_OAUTH_WEB_CODE, IOS_GOOGLE_OAUTH_WEB_CODE} from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
-import {VerifyUser} from '../Firebase/UserUtil'
+import {VerifyUser} from '../user/UserUtil'
 
 async function FirebaseGoogleLogin (callBack) {
     let dataObj = {};

@@ -23,6 +23,7 @@
     "expo-google-app-auth": "^8.1.0",
     "expo-location": "^8.1.0",
     "expo-permissions": "^8.1.0",
+    "expo-task-manager": "^8.1.0",
     "firebase": "^7.14.3",
     "firebase-app": "0.0.1",
     "firebase-auth": "^0.1.2",

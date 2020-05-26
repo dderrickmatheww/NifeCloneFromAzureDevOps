@@ -16,6 +16,7 @@ class TestingScreen extends React.Component  {
     }
 
     componentDidMount () {
+        console.log("Current User: " + firebase.auth().currentUser)
         this.setState({user: firebase.auth().currentUser});
         this.setState({isLoggedIn: firebase.auth().currentUser ? true : false});
         this.setState({db: firebase.firestore()});
@@ -23,15 +24,15 @@ class TestingScreen extends React.Component  {
 
     render() {
         return (
-            !this.state.user ? 
+            this.state.user == null ? 
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
             </View> 
             : 
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => Util.friends.GetFriends(this.state.db, this.state.user.email, 
+                <TouchableOpacity style={localStyles.btn} onPress={() => Util.asyncStorage.GetAsyncStorageVar('Friends',
                 (data) => {console.log(data)})}>
-                        <Text>Test</Text>
+                        <Text>Get Friends</Text>
                 </TouchableOpacity>
             </View>
         )
