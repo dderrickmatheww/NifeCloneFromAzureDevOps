@@ -1,12 +1,17 @@
 
 
-export async function GetRemoteUserData (db, email, callback) {
+export async function GetUserData (db, email, callback) {
     db.collection('users').doc(email).get()
       .then( (data) => {
         if(data.data()){
-            console.log('User Exists...');
-            let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date()}, {merge:true})
-            callback(data.data());
+            if(data){
+                console.log('User Exists...');
+                let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date()}, {merge:true})
+                callback(data.data());
+            }
+            else {
+                console.log("Error: No such user exists!")
+            }
         }
     });
 }
@@ -18,6 +23,7 @@ export async function VerifyUser (db, user, email, callback) {
       .then( (data) => {
         if(data.data()){
             console.log('User Exists...');
+            let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date()}, {merge:true})
             callback(data.data());
         } else {
             console.log('User Does not Exists...');
