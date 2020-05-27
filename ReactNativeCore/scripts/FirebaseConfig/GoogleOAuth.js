@@ -1,16 +1,16 @@
 import React from 'react';
-import { AndroidClientKey, IOSClientKey, ClientKey } from 'react-native-dotenv';
+import { GOOGLE_OAUTH_WEB_CODE,  ANDROID_GOOGLE_OAUTH_WEB_CODE, IOS_GOOGLE_OAUTH_WEB_CODE} from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
-import Config from '../Universal Components/ConfigFunctions';
+import {VerifyUser} from '../user/UserUtil'
 
 async function FirebaseGoogleLogin (callBack) {
     let dataObj = {};
     try {
         let result = await Google.logInAsync({
-            androidClientId: AndroidClientKey,
-            iosClientId: IOSClientKey,
-            clientId: ClientKey
+            androidClientId: ANDROID_GOOGLE_OAUTH_WEB_CODE,
+            iosClientId:IOS_GOOGLE_OAUTH_WEB_CODE,
+            clientId: GOOGLE_OAUTH_WEB_CODE
         });
         if (result.type === 'success') {
             /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
@@ -20,6 +20,10 @@ async function FirebaseGoogleLogin (callBack) {
             Config.SetAsyncStorageVar('GOToken', result.accessToken);
             dataObj['data'] = firebase.auth().currentUser;
             dataObj['user'] = firebase.auth().currentUser;
+            console.log(dataObj.user);
+            VerifyUser(firebase.firestore(), dataObj.user, dataObj.user.email, (data) =>{
+                console.log(data);
+            });
             callBack(dataObj);
         }
     } 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import FireBaseFacebookLogin from './Firebase/FacebookOAuth';
-import FirebaseGoogleLogin from './Firebase/GoogleOAuth';
+import FireBaseFacebookLogin from '../scripts/FirebaseConfig/FacebookOAuth';
+import FirebaseGoogleLogin from '../scripts/FirebaseConfig/GoogleOAuth';
 import NifeLoginModal from './Components/Home Screen Components/LoginScreen'
 import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
@@ -64,6 +64,7 @@ export default class SettingsTab extends Component {
           </View>
           <View style={styles.googleButtonContainer}>
             <TouchableOpacity style={styles.googleLoginBtn} onPress={() => FirebaseGoogleLogin((dataObj) => {
+              // console.log(dataObj);
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
             })}>
