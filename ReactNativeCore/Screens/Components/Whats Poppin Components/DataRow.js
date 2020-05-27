@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, Modal, Linking, ScrollView } from 'react-native';
-import { styles } from '../../Styles/style';
-import * as firebase from 'firebase';
+import { styles } from '../../../Styles/style';
 
 export default class DataRow extends React.Component  {
     state = {
@@ -20,7 +19,7 @@ export default class DataRow extends React.Component  {
                     >
                         <Image
                             style={styles.LogoData}
-                            source={require("../../Media/Images/fblogo.png")}
+                            source={require("../../../Media/Images/fblogo.png")}
                         />
                         <Text style={styles.facebookDataText}>{this.props.name} in {this.props.city}, {this.props.state}</Text>
                     </TouchableOpacity>
@@ -37,7 +36,7 @@ export default class DataRow extends React.Component  {
                                     <TouchableOpacity style={styles.closeBtn}
                                         onPress={() => {this.setState({modalVisable: false})}}
                                     >
-                                        <Image style={styles.close} source={require("../../Media/Images/close.png")}/>
+                                        <Image style={styles.close} source={require("../../../Media/Images/close.png")}/>
                                     </TouchableOpacity>
                                     <Text>{this.props.name}</Text>
                                     <Text>Address: {this.props.street} {this.props.city}, {this.props.state} {this.props.zip}</Text>

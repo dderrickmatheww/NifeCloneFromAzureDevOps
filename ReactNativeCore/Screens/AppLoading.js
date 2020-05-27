@@ -16,13 +16,10 @@ class AppLoading extends React.Component  {
 const localStyles = StyleSheet.create({
   ImageBackground:{
     flex:1,
-
     width:"75%",
     height:"75%",
     resizeMode:"cover"
-    
   },
-  
-  });
+});
 
 export default AppLoading;

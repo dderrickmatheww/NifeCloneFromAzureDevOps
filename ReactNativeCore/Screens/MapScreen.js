@@ -4,7 +4,6 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import theme from '../Styles/theme';
-import SetUserLocationData from './FeedComponents/SetUserLocationData';
 import Util from '../scripts/Util';
 
 var counter = 0;
@@ -234,7 +233,7 @@ class MapScreen extends React.Component  {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     }
-    SetUserLocationData(region);
+    Util.location.SetUserLocationData(region);
     counter++;
     if(LONGITUDE != undefined){
       console.log("Lat:" + LATITUDE);

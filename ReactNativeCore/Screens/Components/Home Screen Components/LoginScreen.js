@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Image, Modal } from 'react-native';
-import FireBaseNifeLogin from '../../../scripts/FirebaseConfig/NifeOAuth';
-import InputWithIcon from '../InputWithIcon';
+import Util from '../../../scripts/Util';
+import InputWithIcon from '../../Universal Components/InputWithIcon';
 
 export default class NifeLoginModal extends Component {
     state = {
@@ -51,7 +51,7 @@ export default class NifeLoginModal extends Component {
                     alert('Your password must be great than eight characters!')
                 }
                 else {
-                    FireBaseNifeLogin(this.state, null, (dataObj, error) => {
+                    Util.dataCalls.Nife.login(this.state, null, (dataObj, error) => {
                         if(error) {
                             alert(error);
                             this.resetPasswordField();
@@ -67,7 +67,7 @@ export default class NifeLoginModal extends Component {
             }
         } 
         else {
-            FireBaseNifeLogin(null, this.state, (dataObj, error) => {
+            Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
                 if(error) {
                     alert(error);
                     this.resetPasswordField();

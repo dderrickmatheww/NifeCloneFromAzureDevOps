@@ -1,16 +1,16 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { styles } from '../Styles/style';
-import getFeedData from './FeedComponents/GetFeedData';
-import DataRow from './FeedComponents/DataRow';
+import getFeedData from './Components/Whats Poppin Components/GetFeedData';
+import DataRow from './Components/Whats Poppin Components/DataRow';
 import * as firebase from 'firebase';
-import InputWithIcon from '../Screens/Components/InputWithIcon';
+import InputWithIcon from './Universal Components/InputWithIcon';
 
 class WhatsPoppin extends React.Component  {
 
     state = {
         isLoggedIn: firebase.auth().currentUser ? true : false,
-        user: firebase.auth().currentUser,
+        user: firebase.auth().currentUser ? firebase.auth().currentUser : null,
         query: null,
         feedData: null,
         DataRoWKey: 0,
@@ -45,9 +45,8 @@ class WhatsPoppin extends React.Component  {
 
     grabFeedData = () => {
         if(this.state.isLoggedIn) {
-            let provider = this.state.user.providerData[0].providerId;
             let query = this.state.query;
-            getFeedData(provider, query, (dataObj) => {
+            getFeedData(query, (dataObj) => {
                 this.setState({ 
                     feedData: dataObj.data
                 });
@@ -58,7 +57,7 @@ class WhatsPoppin extends React.Component  {
     render() {
         return (
             this.state.isLoggedIn ? 
-                this.state.IsData ? 
+                this.state.feedData ? 
                     <ScrollView style={styles.dataRowScrollView}>
                         <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
                         {

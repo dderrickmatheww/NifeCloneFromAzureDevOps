@@ -1,11 +1,10 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import { View, Text,  StyleSheet, Image, ScrollView, ActivityIndicator} from 'react-native';
-import {styles} from '../Styles/style';
+import { styles } from '../Styles/style';
 import DrawerButton from './Universal Components/DrawerButton';
 import theme from '../Styles/theme';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import {GetFriends} from '../Screens/Firebase/FriendsUtil'
+import Util from '../scripts/Util';
 import 'firebase/firestore';
 
 var defPhoto = require('../Media/Images/logoicon.png')
@@ -13,8 +12,6 @@ class FriendsList extends React.Component  {
     state = {
         isLoggedin: firebase.auth().currentUser ? true : false,
         userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
-        token: null,
-        user: null,
         modalVisible: false,
         friends: null,
       }
@@ -25,8 +22,8 @@ class FriendsList extends React.Component  {
       //Set user data
       setUserData = async (dataObj) => {
         this.setState({ userData: dataObj});
-        this.setState({ token: dataObj });
       }
+
       logout = () => {
         this.setState({ isLoggedin: false });
         this.setState({ userData: null });
@@ -40,11 +37,11 @@ class FriendsList extends React.Component  {
         let data = {};
         let user = firebase.auth().currentUser;
         data['user'] = user;
-        console.log(data.user)
+        console.log(data.user);
         this.setUserData(data.user);
         this.setLoggedinStatus(data.user);
-        GetFriends(firebase.firestore(),  this.state.userData.email, (data) =>{
-          console.log(data)
+        Util.friends.GetFriends(firebase.firestore(),  this.state.userData.email, (data) =>{
+          console.log(data);
           this.setFriends(data);
         });
     }
