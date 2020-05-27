@@ -1,5 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
+import { TWITTER_CONSUMER_API_KEY, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET } from 'react-native-dotenv';
+import * as Crypto from 'expo-crypto';
 
 const TwitterTweetData = async (dataObj, returnData) => {
     let tweetData = [];
@@ -16,7 +18,16 @@ const TwitterTweetData = async (dataObj, returnData) => {
     });
     for(i = 0; i < dataObj.data.length; i++) {
         try {
-            fetch('https://api.twitter.com/1.1/search/tweets.json?q='+ dataObj.data[i].name +'&geocode='+lat+','+long+',20mi&result_type=recent&count=5')
+            fetch('https://api.twitter.com/1.1/search/tweets.json?q='+ dataObj.data[i].name +'&geocode='+lat+','+long+',20mi&result_type=recent&count=5', {
+                headers: 'authorization: \
+                OAuth oauth_consumer_key="'+ TWITTER_CONSUMER_API_KEY +'", \
+                oauth_nonce="'+ Crypto.randomBytes(32).toString('hex') +'", \
+                oauth_signature="'+ Crypto.randomBytes(32).toString('hex') +'", \
+                oauth_signature_method="HMAC-SHA1", \
+                oauth_timestamp="'+ Math.floor(new Date().getTime() / 1000)+'", \
+                oauth_token="'+TWITTER_ACCESS_TOKEN+'", \
+                oauth_version="1.0"'
+            })
             .then(response => response.json())
             .then(async data => {
                 console.log(data)
