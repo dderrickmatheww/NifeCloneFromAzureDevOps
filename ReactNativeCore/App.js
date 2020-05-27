@@ -1,105 +1,90 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import IconWithBadge from './Screens/Components/IconWithBadge';
-import * as firebase from 'firebase';
-import config from './Screens/Firebase/FirebaseConfig';
 import Navigator from './routes/drawer';
+import {decode, encode} from 'base-64';
+import * as firebase from 'firebase';
+import Util from './scripts/Util'
+import config from './scripts/FirebaseConfig/FirebaseConfig';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
+
+if (! global.btoa) {global.btoa = encode}
+
+if (! global.atob) {global.atob = decode}
+var userSignedIn = false;
+var loadingDone = false;
+
 //Intialize Firebase Database
 firebase.initializeApp(config);
 
 
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // setWantedData(firebase.firestore(), firebase.auth().currentUser);
+    getNeededData(firebase.firestore(), firebase.auth().currentUser);
+    getLocationAsync((location)=>{
+      console.log(location);
+      setWantedData(firebase.firestore(), firebase.auth().currentUser, location);
+    });
+    
+    userSignedIn = true;
+  } else {
+    console.log('User signed out');
+  }
+});
 
-//function wrapme() {
-// function CustomDrawerContent(props, { navigation }) {
-//   return (
-//     <DrawerContentScrollView {...props}>
-//       <DrawerItemList {...props} />
-//       <DrawerItem
-//         label="Help"
-//         onPress={() => navigation.jumpTo('Nerby', { owner: 'Satya' })}
-//       />
-//     </DrawerContentScrollView>
-//   );
-// }
+async function getLocationAsync(callback) {
+  // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+  const { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status === 'granted') {
+    Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+      callback(location);
+    });
+    
+  } else {
+    throw new Error('Location permission not granted');
+  }
+}
 
-// function Home({ navigation }) {
-//   return (
-//     <View style={styles.viewDark}>
-//       <HomeScreen />
-//     </View>
-//   );
-// }
 
-// function Map({ navigation }) {
+function getNeededData(db, currentUser){
+  let friends = null;
+  let user = null;
+  console.log('running data grabber')
+  if(currentUser){
+    console.log('User exists');
+    Util.user.GetUserData(db, currentUser.email, (data)=>{
+      user = JSON.stringify(data);
+      Util.asyncStorage.SetAsyncStorageVar('User', user);
+      // console.log(user);
+      // console.log("################################################################################################");
+    });
   
-//   return (
-//     <View style={styles.viewDark}>
-//       <MapScreen></MapScreen>
-//     </View>
-//   );
-// }
+    Util.friends.GetFriends(db, currentUser.email, (data)=>{
+      console.log('Got Friend Data');
+      friends = JSON.stringify(data);
+      Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+      // console.log(friends);
+      // console.log("################################################################################################");
+    });
+    loadingDone = true;
+  } else {
+    console.log('no user!')
+    loadingDone = true;
+  }
+}
 
-// function WhatsPoppinScreen({ navigation }) {
-//   return (
-//     <View style={styles.viewDark}>
-
-//       <WhatsPoppinTab />
-//     </View>
-//   );
-// }
-
-// function IconWithBadge({ name, badgeCount, color, size }) {
-//   return (
-//     <View style={{ width: 24, height: 24, margin: 5 }}>
-//       <Ionicons name={name} size={size} color={color} />
-//       {badgeCount > 0 && (
-//         <View
-//           style={{
-//             // On React Native < 0.57 overflow outside of parent will not work on Android, see https://git.io/fhLJ8
-//             position: 'absolute',
-//             right: -6,
-//             top: -3,
-//             backgroundColor: 'red',
-//             borderRadius: 6,
-//             width: 12,
-//             height: 12,
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//           }}
-//         >
-//           <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
-//             {badgeCount}
-//           </Text>
-//         </View>
-//       )}
-//     </View>
-//   );
-
-// function HomeIconWithBadge(props) {
-//   // Here we can pass in badge data to the home icon
-//   return <IconWithBadge {...props} badgeCount={3} />;
-// }
-
-// function MapIconWithBadge(props) {
-//   // Here we can pass in badge data to the map icon
-//   return <IconWithBadge {...props} badgeCount={1} />;
-// }
-
-// function BeerIconWithBadge(props) {
-//   // Here we can pass in badge data to the whatspoppin icon
-//   return <IconWithBadge {...props} badgeCount={1} />;
-// }
-// }
-
-
-
-
+function setWantedData(db, currentUser, location ){
+  Util.location.SaveLocation(db, currentUser.email, location, () =>{
+    console.log('save location');
+  });
+}
 
 export default function App() {
+  
   return(
-    <Navigator/>
+
+      <Navigator />
   );
 }
+

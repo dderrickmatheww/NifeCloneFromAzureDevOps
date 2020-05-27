@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Image, Modal } from 'react-native';
-import FireBaseNifeLogin from '../../Firebase/NifeOAuth';
+import FireBaseNifeLogin from '../../../scripts/FirebaseConfig/NifeOAuth';
 import InputWithIcon from '../InputWithIcon';
 
 export default class NifeLoginModal extends Component {

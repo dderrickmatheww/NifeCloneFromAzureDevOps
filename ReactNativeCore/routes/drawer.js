@@ -6,20 +6,15 @@ import MapStack from '../routes/mapStack';
 import SettingsTab from '../Screens/SettingsTab';
 import theme from '../Styles/theme';
 import PoppinStack from './poppinStack';
+import TestingStack from './testingStack';
+import * as firebase from 'firebase';
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent(props){
-  return(
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props}/>
 
-    </DrawerContentScrollView>
-  );
-}
 
 export default function Navigator() {
-  return (
+  return ( 
     <NavigationContainer>
       <Drawer.Navigator drawerContentOptions={{
           activeTintColor:theme.LIGHT_PINK,
@@ -28,13 +23,14 @@ export default function Navigator() {
         drawerStyle={{
           backgroundColor: theme.DARK
         }} 
-        initialRouteName="Home" 
+        initialRouteName='Home'
         overlayColor="#20232A" >
+        <Drawer.Screen  name="Test" component={TestingStack} />
         <Drawer.Screen  name="Home" component={HomeStack} />
         <Drawer.Screen name="What's Poppin'?" component={PoppinStack} />
         <Drawer.Screen name="Map" component={MapStack} /> 
         <Drawer.Screen name="Settings" component={SettingsTab} /> 
       </Drawer.Navigator>
-    </NavigationContainer>
+    </NavigationContainer> 
   );
 }
