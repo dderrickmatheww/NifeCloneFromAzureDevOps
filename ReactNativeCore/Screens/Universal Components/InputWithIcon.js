@@ -2,11 +2,11 @@ import * as React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function InputWithIcon({ name, color, size, placeHolderText, returnKey, secureText, onChangeText, type, keyboardType, value }) {
+export default function InputWithIcon({ name, color, size, placeHolderText, returnKey, secureText, onChangeText, type, keyboardType, value, styles, onSubmit }) {
     return (
       <View style={{ width: '100%', height: 24, margin: 10 }}>
         <TextInput
-            style={styles.textInput}
+            style={styles}
             placeholder={placeHolderText}
             placeholderTextColor={'lightgrey'}
             returnKeyType={returnKey}
@@ -21,18 +21,8 @@ export default function InputWithIcon({ name, color, size, placeHolderText, retu
             }
             value={value}
             onChangeText={(text) => onChangeText(text, type)}
+            onSubmitEditing={(text, eventCount, target) => onSubmit(text, eventCount, target)}
         />
       </View>
     );
   }
-
-const styles = StyleSheet.create({
-    textInput: {
-      borderBottomWidth: 1,
-      borderBottomColor: 'lightgrey',
-      width: 250,
-      height: 25,
-      margin: 5,
-      alignItems: 'center'
-    }
-})

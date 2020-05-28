@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
-import { createStackNavigator } from '@react-navigation/stack';
-import FireBaseFacebookLogin from '../scripts/FirebaseConfig/FacebookOAuth';
-import FirebaseGoogleLogin from '../scripts/FirebaseConfig/GoogleOAuth';
+import { View, TouchableOpacity, Text, Image } from 'react-native';
+import Util from '../scripts/Util';
 import NifeLoginModal from './Components/Home Screen Components/LoginScreen'
 import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
@@ -11,27 +9,23 @@ export default class SettingsTab extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
-    token: null,
-    user: null,
     modalVisible: false
   }
   //Set login status
   setLoggedinStatus = async (dataObj) => {
-    this.setState({ isLoggedin: dataObj.user ? true : false });
+    this.setState({ isLoggedin: dataObj.data ? true : false });
   }  
   //Set user data
   setUserData = async (dataObj) => {
     this.setState({ userData: dataObj.data });
-    this.setState({ token: dataObj.token });
   }
   logout = () => {
     this.setState({ isLoggedin: false });
-    this.setState({ userData: null });
     firebase.auth().signOut();
    }
    render () {
       return ( 
-          this.state.isLoggedin ?
+        this.state.isLoggedin ?
           this.state.userData ?
             <View style={styles.loggedInContainer}>
               <View style={styles.header}>
@@ -51,7 +45,7 @@ export default class SettingsTab extends Component {
             <Text style={styles.headerText}>Please sign in to edit your settings!</Text>
           </View>
           <View style={styles.facebookButtonContainer}>
-            <TouchableOpacity style={styles.facebookLoginBtn} onPress={() => FireBaseFacebookLogin((dataObj) => {
+            <TouchableOpacity style={styles.facebookLoginBtn} onPress={() => Util.dataCalls.Facebook.login((dataObj) => {
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
             })}>
@@ -63,7 +57,7 @@ export default class SettingsTab extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.googleButtonContainer}>
-            <TouchableOpacity style={styles.googleLoginBtn} onPress={() => FirebaseGoogleLogin((dataObj) => {
+            <TouchableOpacity style={styles.googleLoginBtn} onPress={() => Util.dataCalls.Google.login((dataObj) => {
               // console.log(dataObj);
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
@@ -91,7 +85,7 @@ export default class SettingsTab extends Component {
               }
               else {
                 this.setState({modalVisible: false});
-              } 
+              }
             }}
           />
         </View>

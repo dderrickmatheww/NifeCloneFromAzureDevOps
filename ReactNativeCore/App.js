@@ -3,7 +3,6 @@ import Navigator from './routes/drawer';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './scripts/Util'
-import config from './scripts/FirebaseConfig/FirebaseConfig';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
@@ -14,7 +13,7 @@ var userSignedIn = false;
 var loadingDone = false;
 
 //Intialize Firebase Database
-firebase.initializeApp(config);
+firebase.initializeApp(Util.dataCalls.Firebase.config);
 
 //When a user is signed into firebase, gets user/friend data sets to async, sets users location to async
 firebase.auth().onAuthStateChanged(function(user) {
