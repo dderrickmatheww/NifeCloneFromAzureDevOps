@@ -5,7 +5,6 @@ import * as firebase from 'firebase';
 import Util from './scripts/Util'
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
-import * as TaskManager from 'expo-task-manager';
 
 if (! global.btoa) {global.btoa = encode}
 
@@ -16,7 +15,7 @@ var loadingDone = false;
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
-
+//When a user is signed into firebase, gets user/friend data sets to async, sets users location to async
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     // setWantedData(firebase.firestore(), firebase.auth().currentUser);
@@ -50,6 +49,7 @@ function getNeededData(db, currentUser){
   let friends = null;
   let user = null;
   console.log('running data grabber')
+  //if user exits get user data, get friend data set to async 
   if(currentUser){
     console.log('User exists');
     Util.user.GetUserData(db, currentUser.email, (data)=>{
@@ -73,6 +73,7 @@ function getNeededData(db, currentUser){
   }
 }
 
+//sends user login location to db
 function setWantedData(db, currentUser, location ){
   Util.location.SaveLocation(db, currentUser.email, location, () =>{
     console.log('save location');

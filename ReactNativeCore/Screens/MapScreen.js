@@ -1,10 +1,12 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet} from 'react-native';
+import { View,  Dimensions,  StyleSheet, Image} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import theme from '../Styles/theme';
 import Util from '../scripts/Util';
+import { Ionicons } from '@expo/vector-icons';
+import { PLACES_KEY } from 'react-native-dotenv'
 
 var counter = 0;
 var { width, height } = Dimensions.get('window');
@@ -13,7 +15,6 @@ var LATITUDE_DELTA = 0.0922;
 var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 var LATITUDE;
 var LONGITUDE;
-var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpYmj-BdlVdbiEj-4kadaC9bWOY-c1CjyigMVnY-cGgcHzFUoLh937z3dH-bneoGTXnYx"
 
 class MapScreen extends React.Component  {
  
@@ -85,7 +86,7 @@ class MapScreen extends React.Component  {
       "elementType": "geometry",
       "stylers": [
         {
-          "color": theme.MEDIUM_PINK
+          "color": theme.LIGHT
         }
       ]
     },
@@ -205,11 +206,11 @@ class MapScreen extends React.Component  {
       closed: "#",
       address: "#",
     },
-    friendData:null,
-    userData:null
+    friendData:[],
+    userData:[]
   };
   
-
+//updates location
   clientLocationFunction = (e) => { 
     // console.log(e);
     let { width, height } = Dimensions.get('window');
@@ -226,7 +227,6 @@ class MapScreen extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }});
 
-    //Sets user location inside of the local storage using Async Storage
     var region = {
       latitude: LATITUDE,
       longitude: LONGITUDE,
@@ -234,45 +234,20 @@ class MapScreen extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }
     Util.location.SetUserLocationData(region);
+    SetUserLocationData(this.state.region);
+    
     counter++;
     if(LONGITUDE != undefined){
       console.log("Lat:" + LATITUDE);
       console.log("Long:" + LONGITUDE);
       this.gatherLocalMarkers(LATITUDE, LONGITUDE);
       this.setState({isLoaded:true});
+
     }   
   }
 
-   gatherLocalMarkers = ( lat, long) => {  
-    fetch('https://api.yelp.com/v3/businesses/search?'+ buildParameters(lat, long, 8000), 
-        {headers: new Headers({'Authorization':"Bearer "+ PLACES_KEY})
-      })
-      .then((response) => {
-        return response.json();
-        
-      })
-      .then((data) => {
-        data = data['businesses'];
-        return data;
-      })
-      .then((places) => {
-        this.setState({markers: places})
-        // console.log(places)
-      });
-
-      function buildParameters(lat, long, radius){
-        var paramString ="";
-        //location, lat long
-        paramString += "latitude=" + lat+ "&longitude=" + long + "&";
-        //radius in meters
-        paramString +="radius="+radius+"&";
-        //type
-        paramString +="categories=bars"
-
-        return paramString;
-      } 
-  }
-
+  //gets the data from the modal, matches with markers saved in state
+  //puts matching data on modal. 
   HandleMarkerPress = (e, key) => {
 
     let { width, height } = Dimensions.get('window');
@@ -310,28 +285,79 @@ class MapScreen extends React.Component  {
       address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1] ,
     }});
     this.setState({isModalVisible:true});
-    console.log(this.state.isModalVisible);
+    // console.log(this.state.isModalVisible);
   }
 
   closeModal = (e) => {
     this.setState({isModalVisible:false});
   }
 
-  getAsyncStorageData = () => {
+   //gathers all bars within 8 km.
+  gatherLocalMarkers = ( lat, long) => {
+    fetch('https://api.yelp.com/v3/businesses/search?'+ buildParameters(lat, long, 8000), 
+        {headers: new Headers({'Authorization':"Bearer "+ PLACES_KEY})
+      })
+      .then((response) => {
+        return response.json();
+        
+      })
+      .then((data) => {
+        data = data['businesses'];
+        return data;
+      })
+      .then((places) => {
+        if(this.state.friendData.length > 0){
+          // console.log(this.state.friendData);
+          // console.log('');
+          // console.log(places);
+          let friends = this.state.friendData;
+          let bars = places;
+          if(friends != null && friends != undefined){
+            bars.forEach((bar)=>{
+              var tempFriendArr = [];
+              friends.forEach((friend)=>{
+                if((friend.lastVisited != null && friend.lastVisited != undefined) && (friend.lastVisited == bar.id)){
+                  tempFriendArr.push(friend);
+                }
+              });
+              bar['lastVisitedBy'] = tempFriendArr;
+              
+            }); 
+          }
+          
+          this.setState({markers:bars});
+        }
+      });
+
+      function buildParameters(lat, long, radius){
+        var paramString ="";
+        //location, lat long
+        paramString += "latitude=" + lat+ "&longitude=" + long + "&";
+        //radius in meters
+        paramString +="radius="+radius+"&";
+        //type
+        paramString +="categories=bars"
+
+        return paramString;
+      } 
+  }
+
+  //gets user and friend data
+  getAsyncStorageData = (callback) => {
     Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
-      this.setState({friendData: friends});
-      console.log('Friends: ' + this.state.friendData);
-      
+      this.setState({friendData: JSON.parse(friends)});
+      // console.log('Friends: ' + this.state.friendData);
     });
     Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
-      this.setState({userData: userData});
-      console.log('User: ' + this.state.userData);
+      this.setState({userData: JSON.parse(userData)});
+      // console.log('User: ' + this.state.userData);
     });
   }
 
-  componentDidMount() {
-    this.getAsyncStorageData();  
+  componentDidMount(){
+    this.getAsyncStorageData();
   }
+    
   
   render() {
     return (
@@ -389,6 +415,7 @@ class MapScreen extends React.Component  {
           moveOnMarkerPress={false}
         >
         {this.state.markers.map(marker => (
+          
             <Marker
               coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
               title={marker.name}
@@ -396,9 +423,28 @@ class MapScreen extends React.Component  {
               key={marker.id}
               onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
               pinColor="#FF33CC"
+              calloutOffset={{x: 0.6, y: 0.4}}
+              calloutAnchor={{x: 0.6, y: 0.4}}
             >
+              <View style={{width:"150%"}}>
+                {marker.lastVisitedBy.map((friend, i) =>(
+                    <Image style={{
+                      position:"relative",
+                      width: 40,
+                      height: 40,
+                      borderRadius: 50,
+                      bottom: -15,
+                      right: i+2,
+                    }} source={{uri:friend.photoSource}} key={friend.email} resizeMode="contain"/>
+                ))}
+              </View>
+              
+              <Ionicons style={{ marginTop:25,marginLeft:12.5}} name="ios-beer" size={32} color={theme.PINK} backgroundColor="white"/>
             </Marker>
-          ))}
+            
+            
+          
+          ))} 
       </MapView>       
       <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
     </View>):
@@ -432,6 +478,13 @@ const localStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+  },
+  friendPic:{
+    position:"relative",
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    bottom: -15
   },
   overlay: {
     position: 'absolute',
