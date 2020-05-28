@@ -110,12 +110,25 @@ export const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1
   },
+  facebookDataBtn: {
+    backgroundColor: '#4267b2',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    width: 370,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'white',
+    borderWidth: 1
+  },
   navigateLoginBtn: {
     backgroundColor: 'grey',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    height: 50,
+    height: 90,
     width: 210,
     alignItems: 'center',
     justifyContent: 'center',
@@ -162,6 +175,20 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  dataRowContainer: {
+    flex: 1,
+    top: 100,
+    maxHeight: 50,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: '#20232a',
+    marginBottom: 20
+  },
+  dataRowScrollView: {
+    flex: 1,
+    backgroundColor: '#20232a',
+    height: 'auto'
+  },
   Logo: {
     width: 25, 
     height: 25,
@@ -170,10 +197,26 @@ export const styles = StyleSheet.create({
     borderWidth: .2,
     borderRadius: 5
   },
+  LogoData: {
+    width: 25, 
+    height: 25,
+    position: 'absolute',
+    left: 7,
+    borderColor: "#fff",
+    borderWidth: .2,
+    borderRadius: 5
+  },
   loggedOutText: {
     color: "#fff",
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  facebookDataText: {
+    color: "#fff",
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 10,
+    overflow: 'hidden'
   },
   profilePic: {
     width: 50, 
@@ -192,5 +235,52 @@ export const styles = StyleSheet.create({
   },
   headerContainer: {
     top: 60
+  },
+  searchBar: {
+    top: 60,
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
+    width: 350,
+    height: 25,
+    margin: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  textInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
+    width: 250,
+    height: 25,
+    margin: 5,
+    alignItems: 'center'
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    top: 100,
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  modalText: {
+      marginBottom: 15,
+      textAlign: "center"
+  },
+  closeBtn: {
+    left: 135,
+    bottom: 20
+  },
+  modalScrollView : {
+    height: 500,
+    borderRadius: 20, 
+    top: 120
   }
 });

@@ -4,7 +4,6 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import theme from '../Styles/theme';
-import SetUserLocationData from './FeedComponents/SetUserLocationData';
 import Util from '../scripts/Util';
 import { Ionicons } from '@expo/vector-icons';
 import { PLACES_KEY } from 'react-native-dotenv'
@@ -228,7 +227,15 @@ class MapScreen extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }});
 
+    var region = {
+      latitude: LATITUDE,
+      longitude: LONGITUDE,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA
+    }
+    Util.location.SetUserLocationData(region);
     SetUserLocationData(this.state.region);
+    
     counter++;
     if(LONGITUDE != undefined){
       console.log("Lat:" + LATITUDE);
