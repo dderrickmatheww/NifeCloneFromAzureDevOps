@@ -419,7 +419,7 @@ class MapScreen extends React.Component  {
               calloutOffset={{x: 0.6, y: 0.4}}
               calloutAnchor={{x: 0.6, y: 0.4}}
             >
-              <View style={{width:"150%"}}>
+              <View style={{width:"150%", flex:1}}>
                 {marker.lastVisitedBy.map((friend, i) =>(
                     <Image style={{
                       position:"relative",
