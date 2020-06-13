@@ -96,6 +96,7 @@ export const styles = StyleSheet.create({
   nifeButtonContainer: {
     top: 100
   },
+  
   loggedInContainer: {
     flex: 1,
     alignItems: 'center',

@@ -5,11 +5,13 @@ import {
     StyleSheet,
     Text,
     View,
-    ImageBackground
+    ImageBackground,
+    ActivityIndicator
 } from "react-native";
-import {Ionicons} from '@expo/vector-icons';
-import {Rating} from 'react-native-ratings';
+import { Ionicons } from '@expo/vector-icons';
+import { Rating } from 'react-native-ratings';
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Util from '../../../scripts/Util';
 import * as firebase from 'firebase';
 
 class BarModal extends React.Component  {
@@ -17,12 +19,29 @@ class BarModal extends React.Component  {
       isVisible: false,
       isLoggedin: firebase.auth().currentUser ? true : false,
       userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
-      checkedIn: false
+      checkedIn: ""
     };
 
     closeModal = () => {
         this.setState({isVisible: false});
         console.log('test')
+    }
+
+    async componentDidMount() {
+      await this.IsUserCheckedInLocal();
+    }
+    
+    IsUserCheckedInLocal = async () => {
+      if(this.state.userData) {
+        Util.user.IsUserCheckedIn(this.state.userData.email, this.props.buisnessUID, (boolean) => {
+          this.setState({ 
+            checkedIn: boolean
+          });
+        });
+      }
+      else {
+        return;
+      }
     }
 
     render(){     
@@ -46,7 +65,6 @@ class BarModal extends React.Component  {
                       <ImageBackground source={this.props.source} style={localStyles.modalImage}/>
                 </View>
                 <View  style={localStyles.textCont}>
-                  
                   <View  style={localStyles.descCont}>
                     <Rating 
                       ratingBackgroundColor="#BEB2C8"
@@ -72,78 +90,88 @@ class BarModal extends React.Component  {
                     <Text style={localStyles.modalText}>{this.props.address} </Text>
                   </View>
                 </View>
-              </View>
-              {
+                {
                 this.state.isLoggedin ? 
                   this.state.userData ? 
-                    this.state.checkedIn ?
-                      <View> 
-                        <TouchableOpacity
-                          onPress={() => { 
-                            let email = this.state.userData.providerData ? this.state.userData.providerData.email : this.state.userData.email;
-                            let buinessUID = "23hslefhsks";
-                            Util.user.CheckOut(buinessUID, email, (boolean) => {
-                              this.setState({
-                                checkedIn: boolean
+                    !this.state.checkedIn == "" ?
+                      this.state.checkedIn == 'true' ?
+                        <View> 
+                          <TouchableOpacity
+                            onPress={() => { 
+                              Util.asyncStorage.GetAsyncStorageVar("User", (userData) => {
+                                let user = JSON.parse(userData);
+                                Util.user.CheckOut(user.email, (boolean) => {
+                                  this.setState({
+                                    checkedIn: boolean
+                                  });
+                                });
+                              })
+                            }}
+                            style={localStyles.descCont}
+                          >
+                            <Text style={localStyles.modalText}>Check out</Text>
+                          </TouchableOpacity>
+                        </View>
+                        :
+                        <View>
+                          <TouchableOpacity
+                            onPress={() => { 
+                              let email = this.state.userData.email;
+                              let buisnessUID = this.props.buisnessUID;
+                              Util.user.CheckIn(buisnessUID, email, "Public", (boolean) => {
+                                this.setState({
+                                  checkedIn: boolean
+                                });
                               });
-                            });
-                          }}
-                        >
-                          <Text>Check out</Text>
-                        </TouchableOpacity>
+                            }}
+                            style={localStyles.descCont}
+                          >
+                            <Text style={localStyles.modalText}>Check in publicly</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => {
+                              let email = this.state.userData.email;
+                              let buisnessUID = this.props.buisnessUID;
+                              Util.user.CheckIn(buisnessUID, email, "Friends Only", (boolean) => {
+                                this.setState({
+                                  checkedIn: boolean
+                                });
+                              });
+                            }}
+                            style={localStyles.descCont}
+                          >
+                            <Text style={localStyles.modalText}>Check in with just friends</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() => {
+                              let email = this.state.userData.email;
+                              let buisnessUID = this.props.buisnessUID;
+                              Util.user.CheckIn(buisnessUID, email, "Private", (boolean) => {
+                                this.setState({
+                                  checkedIn: boolean
+                                });
+                              });
+                            }}
+                            style={localStyles.descCont}
+                          >
+                            <Text style={localStyles.modalText}>Check in privatly</Text>
+                          </TouchableOpacity>
+                        </View> 
+                        :
+                        <View style={localStyles.activityIndicator}>
+                            <ActivityIndicator 
+                                size={'large'}
+                                color={'#ff1493'}
+                            />
                       </View>
-                      :
-                      <View>
-                        <TouchableOpacity
-                          onPress={() => { 
-                            let email = this.state.userData.providerData ? this.state.userData.providerData.email : this.state.userData.email;
-                            let buinessUID = "23hslefhsks";
-                            Util.user.CheckIn(buinessUID, email, "Public", (boolean) => {
-                              this.setState({
-                                checkedIn: boolean
-                              });
-                            });
-                          }}
-                        >
-                          <Text>Check in publicly</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => {
-                            let email = this.state.userData.providerData ? this.state.userData.providerData.email : this.state.userData.email;
-                            let buinessUID = "23hslefhsks";
-                            Util.user.CheckIn(buinessUID, email, "Friends Only", (boolean) => {
-                              this.setState({
-                                checkedIn: boolean
-                              });
-                            });
-                          }}
-                        >
-                          <Text>Check in with just friends</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => {
-                            let email = this.state.userData.providerData ? this.state.userData.providerData.email : this.state.userData.email;
-                            let buinessUID = "23hslefhsks";
-                            Util.user.CheckIn(buinessUID, email, "Private", (boolean) => {
-                              this.setState({
-                                checkedIn: boolean
-                              });
-                            });
-                          }}
-                        >
-                          <Text>Check in privatly</Text>
-                        </TouchableOpacity>
-                      </View> 
                     :
                     <View>
 
                     </View>
                   : null
-              }
-              
+                }
+              </View>
             </View>
-                
-                 
         </Modal>
             
         )
@@ -156,7 +184,13 @@ const localStyles = StyleSheet.create({
     left: "55%",
     top: "-7.5%",
   }, 
-
+  activityIndicator: {
+    top: '15%',
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: '#20232a'
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
@@ -164,12 +198,14 @@ const localStyles = StyleSheet.create({
   },
   modalView: {
     width:"90%",
-    height:"90%",
+    height:"80%",
     marginBottom:"15%",
-    marginTop:"0%",
+    marginTop:"20%",
     marginHorizontal: "2.5%",
     backgroundColor: "#20232a",
     borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#ff1493",
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
@@ -202,9 +238,8 @@ const localStyles = StyleSheet.create({
     borderWidth: 10,
     borderRadius: 20,
   },
-
   textCont:{
-    bottom:"-10%",
+    margin:"10%",
     width:"100%",
     backgroundColor: "#5D5E60",
     borderRadius:20,

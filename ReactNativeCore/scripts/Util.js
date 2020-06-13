@@ -2,7 +2,7 @@ import { GetFriends, AddFriend } from "./friends/FriendsUtil";
 import { AsyncStorage } from 'react-native';
 import { VerifyUser, GetUserData } from "./user/UserUtil";
 import { SaveLocation } from "./location/LocationUtil";
-import { FACEBOOK_APP_ID, GOOGLE_API_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
+import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
@@ -38,25 +38,37 @@ const Util = {
             {
                 merge: true
             });
-            returnData(true);
+            returnData('true');
         },
-        CheckOut: async (buisnessUID, email, returnData) => {
-          let db = firebase.firestore();
-          let setCheckInData = await db.collection('userCheckIn').doc(email);
-          //Grab the buisness UID
-          //Make sure the user exists
-          setCheckInData.get().data().forEach(element, index, () => {
-            let elementBuisnessUID = element.buisnessUID;
-            if(buisnessUID == elementBuisnessUID) {
-              setCheckInData.delete()
-              .then(() => {
-                returnData(false);
-              })
-              .catch((err) => {
-                console.log('Error deleting CheckIn: ', err);
-              });
-            }
-          });
+        CheckOut: async (email, returnData) => {
+            let db = firebase.firestore();
+            let setLoc = await db.collection('users').doc(email);
+            setLoc.set({
+            checkIn: {
+                buisnessUID: "",
+                checkInTime: "",
+                privacy: ""
+            }},
+            {
+                merge: true
+            });
+            returnData('false');
+        },
+        IsUserCheckedIn: (email, buisnessUID, returnData) => {
+            let db = firebase.firestore();
+            Util.user.GetUserData(db, email, (userData) => {
+                let user = userData;
+                console.log(user);
+                if(user.checkIn.checkInTime == "") {
+                    returnData("false");
+                }
+                else if (user.checkIn.buinessUID == buisnessUID) {
+                    returnData("true");
+                }
+                else {
+                    returnData("true");
+                }
+            })
         }
     },
     location: {
@@ -66,6 +78,12 @@ const Util = {
         SetUserLocationData: function (region) {
             var latAndLong = region.latitude + ',' + region.longitude;
             Util.asyncStorage.SetAsyncStorageVar('userLocationData', latAndLong);
+        },
+        GetUserLocation: (returnData) => {
+            Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+                Util.location.SetUserLocationData(location.coords);
+                returnData(location.coords);
+            });
         }
     },
     asyncStorage: {
@@ -140,7 +158,7 @@ const Util = {
                 callback(returnArray[0]);
             }
         },
-        GetAsyncVar: async (name, callback) => {
+        GetAsyncStorageVar: async (name, callback) => {
             let returnArray = [];
             await AsyncStorage.getItem(name, async (err, result) => { 
                 if(err) {
@@ -397,6 +415,30 @@ const Util = {
                     }
                 }
             }
+        },
+        Yelp: {
+            placeData: (baseUrl, params, returnData) => {
+                fetch(baseUrl + params, 
+                    {headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY})
+                })
+                .then((data) => data.json())
+                .then((response) => {
+                    returnData(response['businesses']);
+                })
+                .catch((err) => {
+                    console.log("Yelp API Place Data Error: " + err);
+                });
+            },
+            buildParameters: (lat, long, radius) => {
+                var paramString ="";
+                //location, lat long
+                paramString += "latitude=" + lat+ "&longitude=" + long + "&";
+                //radius in meters
+                paramString +="radius="+radius+"&";
+                //type
+                paramString +="categories=bars"
+                return paramString;
+            } 
         },
         Firebase: {
             config: {

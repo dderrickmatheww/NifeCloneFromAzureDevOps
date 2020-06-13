@@ -1,25 +1,25 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet} from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, PLACESKEY } from 'react-native-maps';
+import { View,  Dimensions,  StyleSheet, Text, ActivityIndicator } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import Util from '../scripts/Util';
 import theme from '../Styles/theme';
+import styles from '../Styles/style';
 
-var counter = 0;
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
 var LATITUDE_DELTA = 0.0922;
 var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 var LATITUDE;
 var LONGITUDE;
-var PLACES_KEY = PLACESKEY;
 
 class MapScreen extends React.Component  {
  
   state = {
     region: null,
     markers: [],
+    userLocation: {},
     isLoaded: false,
     isModalVisible: false,
     modalProps:{
@@ -209,77 +209,56 @@ class MapScreen extends React.Component  {
     }
   ];
 
-  clientLocationFunction = (e) => { 
-    // console.log(e);
-    let { width, height } = Dimensions.get('window');
-    ASPECT_RATIO = width / height;
-    LATITUDE = e.nativeEvent.coordinate.latitude;
-    LONGITUDE = e.nativeEvent.coordinate.longitude;
-    LATITUDE_DELTA = 0.0922;
-    LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-
-    this.setState({region: {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
-    }});
-
-    //Sets user location inside of the local storage using Async Storage
-    var region = {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
-    }
-    Util.location.SetUserLocationData(region);
-    counter++;
-    if(LONGITUDE != undefined){
-      console.log("Lat:" + LATITUDE);
-      console.log("Long:" + LONGITUDE);
-      this.gatherLocalMarkers(LATITUDE, LONGITUDE);
-      this.setState({isLoaded:true});
-    }   
+  clientLocationFunction = () => { 
+    Util.location.GetUserLocation(async (userLocation) => {
+      let { width, height } = Dimensions.get('window');
+      ASPECT_RATIO = width / height;
+      LATITUDE = userLocation.latitude;
+      LONGITUDE = userLocation.longitude;
+      LATITUDE_DELTA = 0.0922;
+      LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+      this.setState({region: {
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+      }});
+      //Sets user location inside of the local storage using Async Storage
+      var region = {
+        latitude: LATITUDE,
+        longitude: LONGITUDE,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+      }
+      Util.location.SetUserLocationData(region);
+      if(LONGITUDE != undefined){
+        console.log("Lat:" + LATITUDE);
+        console.log("Long:" + LONGITUDE);
+        await this.gatherLocalMarkers(LATITUDE, LONGITUDE, userLocation);
+        this.setState({ isLoaded:true });
+      }    
+    });
   }
-
-   gatherLocalMarkers = ( lat, long) => {  
-    fetch('https://api.yelp.com/v3/businesses/search?'+ buildParameters(lat, long, 8000), 
-        {headers: new Headers({'Authorization':"Bearer "+ PLACES_KEY})
-      })
-      .then((response) => {
-        return response.json();
-        
-      })
-      .then((data) => {
-        data = data['businesses'];
-        return data;
-      })
-      .then((places) => {
-        this.setState({markers: places})
-        // console.log(places)
+  gatherLocalMarkers = (lat, long, userLocation) => {  
+    let baseURL = 'https://api.yelp.com/v3/businesses/search?';
+    let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
+    Util.dataCalls.Yelp.placeData(baseURL, params, (data) => {
+      this.setState({
+        markers: data,
+        userLocation: userLocation
       });
-
-      function buildParameters(lat, long, radius){
-        var paramString ="";
-        //location, lat long
-        paramString += "latitude=" + lat+ "&longitude=" + long + "&";
-        //radius in meters
-        paramString +="radius="+radius+"&";
-        //type
-        paramString +="categories=bars"
-
-        return paramString;
-      } 
+    });
   }
 
   HandleMarkerPress = (e, key) => {
-
     let { width, height } = Dimensions.get('window');
     let ASPECT_RATIO = width / height;
-     LATITUDE = e.nativeEvent.coordinate.latitude;
-     LONGITUDE = e.nativeEvent.coordinate.longitude;
+     LATITUDE = this.state.userLocation.latitude;
+     LONGITUDE = this.state.userLocation.longitude;
     let LATITUDE_DELTA = 0.0922;
     let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+    var places = this.state.markers;
+    var wantedPlace;
 
     this.setState({region: {
       latitude: LATITUDE,
@@ -287,142 +266,143 @@ class MapScreen extends React.Component  {
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA
     }})
-    // console.log(e.nativeEvent);
-    var places;
-    places = this.state.markers;
-    // console.log(places);
-    var wantedPlace;
+
     places.forEach(function(place){
       if(place.id == key){
         wantedPlace = place;
       }
     });
-    // console.log(wantedPlace);
-    this.setState({modalProps:{
-      source:{uri: "" + wantedPlace.image_url},
-      barName:wantedPlace.name, 
-      rating:wantedPlace.rating,
-      reviewCount:wantedPlace.review_count,
-      price: wantedPlace.price,
-      phone: wantedPlace.display_phone,
-      closed: wantedPlace.is_closed,
-      address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1] ,
-    }});
-    this.setState({isModalVisible:true});
-    console.log(this.state.isModalVisible);
+
+    this.setState({
+      modalProps:{
+        source:{uri: "" + wantedPlace.image_url},
+        barName:wantedPlace.name, 
+        rating:wantedPlace.rating,
+        reviewCount:wantedPlace.review_count,
+        price: wantedPlace.price,
+        phone: wantedPlace.display_phone,
+        closed: wantedPlace.is_closed,
+        address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1]
+      }
+    });
+    this.setState({isModalVisible: true});
   }
 
   closeModal = (e) => {
-    this.setState({isModalVisible:false});
+    this.setState({isModalVisible: false});
   }
 
   getAsyncStorageData = () => {
     Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
       this.setState({friendData: friends});
-      console.log('Friends: ' + this.state.friendData);
     });
     Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
       this.setState({userData: userData});
-      console.log('User: ' + this.state.userData);
     });
+    this.clientLocationFunction();
   }
 
  componentDidMount() {
-    this.getAsyncStorageData();  
+    this.getAsyncStorageData();
   }
   
   render() {
     return (
-      this.state.markers != null && this.state.markers != undefined ? 
-      this.state.isModalVisible ? (
-        //ifModal is visible
-      <View  style={localStyles.container}> 
-        <MapView
-          style={localStyles.map}
-          provider={PROVIDER_GOOGLE}
-          showsMyLocationButton={true}
-          showsUserLocation={true}
-          showsPointsOfInterest={false}
-          userLocationUpdateInterval={1000}
-          region={this.state.region}
-          onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-          showsScale={true}
-          customMapStyle={this.mapStyle}
-          minZoomLevel={15}
-          maxZoomLevel={20}
-          moveOnMarkerPress={false}
-        >     
-      </MapView>
-      <BarModal 
-            isVisible={this.state.isModalVisible}
-            source={this.state.modalProps.source}
-            barName={this.state.modalProps.barName}
-            rating={this.state.modalProps.rating}
-            reviewCount={this.state.modalProps.reviewCount}
-            price={this.state.modalProps.price}
-            phone={this.state.modalProps.phone}
-            closed={this.state.modalProps.closed}
-            address={this.state.modalProps.address} 
-            onPress={() => this.closeModal()}
-          > 
-        </BarModal>
-        
-        <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
-    </View> ) : 
-    //if modal is not visible, show markers
-    (<View style={localStyles.container}>  
-      <MapView
-          style={localStyles.map}
-          provider={PROVIDER_GOOGLE}
-          showsMyLocationButton={true}
-          showsUserLocation={true}
-          showsPointsOfInterest={false}
-          userLocationUpdateInterval={1000}
-          region={this.state.region}
-          onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-          showsScale={true}
-          customMapStyle={this.mapStyle}
-          minZoomLevel={15}
-          maxZoomLevel={20}
-          moveOnMarkerPress={false}
-        >
-        {this.state.markers.map(marker => (
-            <Marker
-              coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
-              title={marker.name}
-              description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
-              key={marker.id}
-              onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
-              pinColor="#FF33CC"
-            >
-            </Marker>
-          ))}
-      </MapView>       
-      <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
-    </View>):
-  //before markers are loaded
-    <View  style={localStyles.container}>
-      
-      <MapView
-      style={localStyles.map}
-      provider={PROVIDER_GOOGLE}
-      showsMyLocationButton={true} 
-      showsUserLocation={true}
-      showsPointsOfInterest={false}
-      userLocationUpdateInterval={1000}
-      region={this.state.region}
-      onUserLocationChange={(e) => {counter == 0 ? this.clientLocationFunction(e, counter) : null}}
-      showsScale={true}
-      customMapStyle={this.mapStyle}
-      minZoomLevel={15}
-      maxZoomLevel={20}
-      moveOnMarkerPress={false}
-    >
-      
-      </MapView> 
-      <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress}/>      
+      this.state.isLoaded ?
+
+        this.state.markers != null 
+        && 
+        this.state.markers != undefined ? 
+
+          this.state.isModalVisible ? (
+          //if Modal is visible
+          <View  style={localStyles.container}> 
+            <MapView
+              style={localStyles.map}
+              provider={PROVIDER_GOOGLE}
+              showsMyLocationButton={true}
+              showsUserLocation={true}
+              showsPointsOfInterest={false}
+              userLocationUpdateInterval={1000}
+              region={this.state.region}
+              onUserLocationChange={(e) => {null}}
+              showsScale={true}
+              customMapStyle={this.mapStyle}
+              minZoomLevel={15}
+              maxZoomLevel={20}
+              moveOnMarkerPress={false}
+            >     
+          </MapView>
+          <BarModal 
+                isVisible={this.state.isModalVisible}
+                source={this.state.modalProps.source}
+                barName={this.state.modalProps.barName}
+                rating={this.state.modalProps.rating}
+                reviewCount={this.state.modalProps.reviewCount}
+                price={this.state.modalProps.price}
+                phone={this.state.modalProps.phone}
+                closed={this.state.modalProps.closed}
+                address={this.state.modalProps.address}
+                onPress={() => this.closeModal()}
+                buisnessUID={"23hslefhsks"}
+              > 
+            </BarModal>
+            
+            <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+        </View> 
+        ) 
+          :
+        //if modal is not visible, show markers
+        (
+          <View style={localStyles.container}>  
+            <MapView
+                style={localStyles.map}
+                provider={PROVIDER_GOOGLE}
+                showsMyLocationButton={true}
+                showsUserLocation={true}
+                showsPointsOfInterest={false}
+                userLocationUpdateInterval={1000}
+                region={this.state.region}
+                onUserLocationChange={(e) => {null}}
+                showsScale={true}
+                customMapStyle={this.mapStyle}
+                minZoomLevel={15}
+                maxZoomLevel={20}
+                moveOnMarkerPress={false}
+              >
+              {this.state.markers.map(marker => (
+                  <Marker
+                    coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
+                    key={marker.id}
+                    onCalloutPress={(e) => console.log(e)}
+                    pinColor="#FF33CC"
+                  > 
+                    <Callout 
+                      tooltip={true}
+                      onPress={(e) => {this.HandleMarkerPress(e, marker.id)}}
+                    >
+                      <View style={localStyles.callOutMarker}>
+                        <Text>{marker.name}</Text>
+                        <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
+                      </View>
+                    </Callout>
+                  </ Marker>
+                ))}
+            </MapView>       
+            <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+          </View>
+        ) 
+        :
+        null
+    :
+      <View style={localStyles.activityIndicator}>
+            <ActivityIndicator 
+                size={'large'}
+                color={'#ff1493'}
+            />
+            <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress}/>
       </View>
-    )
+  ) 
   }
 }
 
@@ -430,6 +410,20 @@ const localStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+  },
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: '#20232a'
+  },
+  callOutMarker: {
+    backgroundColor: 'white',
+    borderRadius: 3,
+    padding: 5,
+    margin: 5,
+    justifyContent: 'center',
+    alignContent: 'center'
   },
   overlay: {
     position: 'absolute',
