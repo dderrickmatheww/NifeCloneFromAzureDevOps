@@ -17,7 +17,7 @@ export default class SettingsTab extends Component {
   }  
   //Set user data
   setUserData = async (dataObj) => {
-    this.setState({ userData: dataObj.data });
+    this.setState({ userData: dataObj.user });
   }
   logout = () => {
     this.setState({ isLoggedin: false });
@@ -58,8 +58,7 @@ export default class SettingsTab extends Component {
           </View>
           <View style={styles.googleButtonContainer}>
             <TouchableOpacity style={styles.googleLoginBtn} onPress={() => Util.dataCalls.Google.login((dataObj) => {
-              // console.log(dataObj);
-              this.setUserData(dataObj);
+              this.setUserData(dataObj.user);
               this.setLoggedinStatus(dataObj);
             })}>
               <Text style={styles.loggedOutText}>Login with Google</Text>

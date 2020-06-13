@@ -16,6 +16,14 @@ export async function GetUserData (db, email, callback) {
     });
 }
 
+export async function UpdateUser (db, email, updateObject, callback) {
+   var userRef = db.collection('users').doc(email);
+    userRef.set(updateObject, {merge:true})
+    .then(()=>{
+        console.log('User Updated...');
+    });
+}
+
 export async function VerifyUser (db, user, email, callback) {
     console.log('Checking For User...');
 

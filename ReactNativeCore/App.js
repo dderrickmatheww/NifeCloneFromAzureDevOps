@@ -5,6 +5,8 @@ import * as firebase from 'firebase';
 import Util from './scripts/Util'
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import AppLoading from './Screens/AppLoading';
+import Settings from './Screens/SettingsTab';
 
 if (! global.btoa) {global.btoa = encode}
 
@@ -14,35 +16,28 @@ var loadingDone = false;
 
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
 //When a user is signed into firebase, gets user/friend data sets to async, sets users location to async
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    // setWantedData(firebase.firestore(), firebase.auth().currentUser);
-    getNeededData(firebase.firestore(), firebase.auth().currentUser);
-    getLocationAsync((location)=>{
-      console.log(location);
-      setWantedData(firebase.firestore(), firebase.auth().currentUser, location);
-    });
-    
+    console.log('Auth Changed!');
+    // console.log("App.js user: " + user);
+      getLocationAsync((location)=>{
+        setWantedData(firebase.firestore(), user, location,()=>{
+          getNeededData(firebase.firestore(), user);
+        });        
+      }
+    )
     userSignedIn = true;
+    loadingDone = true;
   } else {
-    console.log('User signed out');
+    loadingDone = true
+    console.log('No user');
   }
 });
 
-async function getLocationAsync(callback) {
-  // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
-  const { status } = await Permissions.askAsync(Permissions.LOCATION);
-  if (status === 'granted') {
-    Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
-      callback(location);
-    });
-    
-  } else {
-    throw new Error('Location permission not granted');
-  }
-}
+
 
 
 function getNeededData(db, currentUser){
@@ -73,17 +68,37 @@ function getNeededData(db, currentUser){
   }
 }
 
+async function getLocationAsync(callback) {
+  // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+  const { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status === 'granted') {
+    var loc;
+    Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+      console.log("Lat: " + location.coords.latitude + " Long: " + location.coords.longitude);
+      loc = location.coords;
+      Location.reverseGeocodeAsync(location.coords).then((region)=>{
+        console.log(region[0]);
+        loc['region'] = region[0];
+        console.log(loc);
+        callback(loc)
+      });
+    });
+    
+  } else {
+    throw new Error('Location permission not granted');
+  }
+}
 //sends user login location to db
-function setWantedData(db, currentUser, location ){
+function setWantedData(db, currentUser, location, callback){
   Util.location.SaveLocation(db, currentUser.email, location, () =>{
     console.log('save location');
+    callback();
   });
 }
 
 export default function App() {
-  
-  return(
 
+  return(
       <Navigator />
   );
 }
