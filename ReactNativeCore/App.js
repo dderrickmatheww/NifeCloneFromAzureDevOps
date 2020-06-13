@@ -1,108 +1,105 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import IconWithBadge from './Screens/Components/IconWithBadge';
-import HomeScreen from './Screens/Components/Home Screen Components/HomeScreen';
-import MapScreen from './Screens/Components/Home Screen Components/MapScreen';
-import WhatsPoppinScreen from './Screens/Components/Home Screen Components/WhatsPoppinScreen';
-import SettingsScreen from './Screens/SettingsTab';
+import Navigator from './routes/drawer';
+import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
-import config from './Screens/Firebase/FirebaseConfig';
+import Util from './scripts/Util'
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+import AppLoading from './Screens/AppLoading';
+import Settings from './Screens/SettingsTab';
+
+if (! global.btoa) {global.btoa = encode}
+
+if (! global.atob) {global.atob = decode}
+var userSignedIn = false;
+var loadingDone = false;
 
 //Intialize Firebase Database
-firebase.initializeApp(config);
+firebase.initializeApp(Util.dataCalls.Firebase.config);
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
-function HomeIconWithBadge(props) {
-  // Here we can pass in badge data to the home icon
-  return <IconWithBadge {...props} badgeCount={3} />;
+//When a user is signed into firebase, gets user/friend data sets to async, sets users location to async
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    console.log('Auth Changed!');
+    // console.log("App.js user: " + user);
+      getLocationAsync((location)=>{
+        setWantedData(firebase.firestore(), user, location,()=>{
+          getNeededData(firebase.firestore(), user);
+        });        
+      }
+    )
+    userSignedIn = true;
+    loadingDone = true;
+  } else {
+    loadingDone = true
+    console.log('No user');
+  }
+});
+
+
+
+
+function getNeededData(db, currentUser){
+  let friends = null;
+  let user = null;
+  console.log('running data grabber')
+  //if user exits get user data, get friend data set to async 
+  if(currentUser){
+    console.log('User exists');
+    Util.user.GetUserData(db, currentUser.email, (data)=>{
+      user = JSON.stringify(data);
+      Util.asyncStorage.SetAsyncStorageVar('User', user);
+      // console.log(user);
+      // console.log("################################################################################################");
+    });
+  
+    Util.friends.GetFriends(db, currentUser.email, (data)=>{
+      console.log('Got Friend Data');
+      friends = JSON.stringify(data);
+      Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+      // console.log(friends);
+      // console.log("################################################################################################");
+    });
+    loadingDone = true;
+  } else {
+    console.log('no user!')
+    loadingDone = true;
+  }
 }
 
-function MapIconWithBadge(props) {
-  // Here we can pass in badge data to the map icon
-  return <IconWithBadge {...props} badgeCount={1} />;
+async function getLocationAsync(callback) {
+  // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+  const { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status === 'granted') {
+    var loc;
+    Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+      console.log("Lat: " + location.coords.latitude + " Long: " + location.coords.longitude);
+      loc = location.coords;
+      Location.reverseGeocodeAsync(location.coords).then((region)=>{
+        console.log(region[0]);
+        loc['region'] = region[0];
+        console.log(loc);
+        callback(loc)
+      });
+    });
+    
+  } else {
+    throw new Error('Location permission not granted');
+  }
 }
-
-function BeerIconWithBadge(props) {
-  // Here we can pass in badge data to the whatspoppin icon
-  return <IconWithBadge {...props} badgeCount={1} />;
+//sends user login location to db
+function setWantedData(db, currentUser, location, callback){
+  Util.location.SaveLocation(db, currentUser.email, location, () =>{
+    console.log('save location');
+    callback();
+  });
 }
-
-function GearIconWithBadge(props) {
-  // Here we can pass in badge data to the whatspoppin icon
-  return <IconWithBadge {...props} badgeCount={1} />;
-}
-
-const Tab = createBottomTabNavigator();
 
 export default function App() {
 
-  return (
-    <NavigationContainer>
-      <Tab.Navigator
-       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'My Feed') {
-            return (
-              <HomeIconWithBadge 
-                name={
-                  iconName = focused
-                  ? 'ios-home'
-                  : 'ios-home'
-                }
-                size={size}
-                color={color}
-              />
-            )
-          } 
-          else if (route.name === 'Nerby') {
-            return (
-              <MapIconWithBadge 
-                  name={
-                    iconName = focused ? 'md-locate' : 'md-locate'
-                  }
-                  size={size}
-                  color={color}
-              />
-            )
-            
-          }
-          else if (route.name === "Whats Poppin'?") {
-            return (
-              <BeerIconWithBadge 
-                  name={
-                    iconName = focused ? 'ios-beer' : 'ios-beer' 
-                  }
-                  size={size}
-                  color={color}
-              />
-            );
-          }
-          else if (route.name === "Settings") {
-            < GearIconWithBadge 
-              name={
-                iconName = focused ? 'ios-menu' : 'ios-menu' 
-              }
-              size={size}
-              color={color}
-            />
-          }
-          // You can return any component that you like here!
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'gray',
-      }}
-      >
-        <Tab.Screen name="Nerby" component={ MapScreen } />
-        <Tab.Screen name="My Feed" component={ HomeScreen } />
-        <Tab.Screen name="Whats Poppin'?" component={ WhatsPoppinScreen } />
-        <Tab.Screen name="Settings" component={ SettingsScreen } />
-      </Tab.Navigator>
-    </NavigationContainer>
+  return(
+      <Navigator />
   );
 }
+

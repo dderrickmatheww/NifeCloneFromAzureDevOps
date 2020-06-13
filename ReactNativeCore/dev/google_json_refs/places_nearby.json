@@ -1,0 +1,35 @@
+Object {
+    "html_attributions": Array [],
+    "results": Array [
+      Object {
+        "geometry": Object {
+          "location": Object {
+            "lat": 32.97543799999999,
+            "lng": -80.00328999999999,
+          },
+          "viewport": Object {
+            "northeast": Object {
+              "lat": 32.97683403029149,
+              "lng": -80.0022177697085,
+            },
+            "southwest": Object {
+              "lat": 32.97413606970849,
+              "lng": -80.0049157302915,
+            },
+          },
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/bar-71.png",
+        "id": "9cbb84345d750d147189dffcff36da5eeef8f5f1",
+        "name": "Nowhere Bar and Grill",
+        "opening_hours": Object {
+          "open_now": true,
+        },
+        "photos": Array [
+          Object {
+            "height": 4032,
+            "html_attributions": Array [
+              "<a href=\"https://maps.google.com/maps/contrib/105485379630161176542\">Angie Gainey Ursetti</a>",
+            ],
+            "photo_reference": "CmRaAAAAyAJ4czjwwgCrNjcF_v9TXUayPq8P5w5gSrXRDzNQ3s27URp3kgNkqJ3gjnH_NiAg69sCEiwykp-xQQ89AOpetsXcq20W6L-tuyeYCod2QYnqKbeiRC_QaEAYC0moxt8ZEhBUpxvqApFEXQRHetykzpLVGhQKJDJrzI9t1aD6XWs95rRfp0ku7A",
+            "width": 3024,
+          },
