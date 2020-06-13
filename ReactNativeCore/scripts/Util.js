@@ -6,16 +6,17 @@ import { FACEBOOK_APP_ID, GOOGLE_API_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCE
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
-import randomString from 'random-string';
 import jsSHA from "jssha";
+import * as Device from 'expo-device';
+import * as Location from 'expo-location';
 
 const Util = {
     friends: {
         GetFriends: function(db, email, callback){
-            GetFriends(db, email, callback)
+            GetFriends(db, email, callback);
         },
         AddFriend: function(db, email, callback){
-            AddFriend(db, email, callback)
+            AddFriend(db, email, callback);
         }
     },
     user: {
@@ -23,7 +24,39 @@ const Util = {
             VerifyUser(db, user, email, callback);
         },
         GetUserData: function(db, email, callback){
-            GetUserData(db, email, callback)
+            GetUserData(db, email, callback);
+        },
+        CheckIn: async (buisnessUID, email, privacy, returnData) => {
+            let db = firebase.firestore();
+            let setLoc = await db.collection('users').doc(email);
+            setLoc.set({
+            checkIn: {
+                buisnessUID: buisnessUID,
+                checkInTime: new Date().toUTCString(),
+                privacy: privacy
+            }},
+            {
+                merge: true
+            });
+            returnData(true);
+        },
+        CheckOut: async (buisnessUID, email, returnData) => {
+          let db = firebase.firestore();
+          let setCheckInData = await db.collection('userCheckIn').doc(email);
+          //Grab the buisness UID
+          //Make sure the user exists
+          setCheckInData.get().data().forEach(element, index, () => {
+            let elementBuisnessUID = element.buisnessUID;
+            if(buisnessUID == elementBuisnessUID) {
+              setCheckInData.delete()
+              .then(() => {
+                returnData(false);
+              })
+              .catch((err) => {
+                console.log('Error deleting CheckIn: ', err);
+              });
+            }
+          });
         }
     },
     location: {
@@ -223,7 +256,7 @@ const Util = {
             }
         },
         Twitter: {
-            tweetData: async (dataObj, returnData) => {
+            tweetData: async function (dataObj, returnData) {
                 var twitObj = {
                     method: 'GET'
                 };
@@ -245,19 +278,23 @@ const Util = {
                           headers: myHeaders,
                           redirect: 'follow'
                         };
-                        fetch(twitObj.url + twitObj.paramStr, requestOptions)
+                        await fetch(twitObj.url + twitObj.paramStr, requestOptions)
                         .then(response => response.json())
                         .then(result => {
+                            console.log(result)
                             if(result && !result.errors && result.statuses.length > 0) {
-                                twitObj.CombinedObj.data[i]['TwitterData'] = result.statuses;
+                                twitObj['TwitterData'] = result.statuses;
                             }
                         })
                         .catch(error => console.log('error', error));
+                        if(twitObj.TwitterData){
+                            dataObj.data[i]['TwitterData'] = twitObj.TwitterData;
+                        }
                     } catch ({ message }) {
                         alert(`Twitter Query Error: ${message}`);
                     }
                 }
-                returnData(twitObj['CombinedObj']);
+                returnData(dataObj);
             } 
         },
         Google: {
@@ -448,12 +485,21 @@ const Util = {
             }
         }
     },
-    BasicUtil: {
+    basicUtil: {
         mergeObject: (obj1, obj2) => {
             for (var attr in obj2) {
                 obj1[attr] = obj2[attr];
             }
             return obj1;
+        },
+        grabCurrentDeviceInfo: (returnData) => {
+            let dataObj = {};
+            dataObj['simulator'] = Device.isDevice;
+            dataObj['modelName'] = Device.modelName;
+            dataObj['userGivenDeviceName'] = Device.deviceName;
+            dataObj['osName'] = Device.osName;
+            dataObj['totalMemory'] = Device.totalMemory;
+            returnData(dataObj);
         }
     }
 }

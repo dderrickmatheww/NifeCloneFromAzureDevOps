@@ -1,10 +1,10 @@
 import React from 'react';
 import { View,  Dimensions,  StyleSheet} from 'react-native';
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, PLACESKEY } from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
-import theme from '../Styles/theme';
 import Util from '../scripts/Util';
+import theme from '../Styles/theme';
 
 var counter = 0;
 var { width, height } = Dimensions.get('window');
@@ -13,10 +13,29 @@ var LATITUDE_DELTA = 0.0922;
 var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 var LATITUDE;
 var LONGITUDE;
-var PLACES_KEY = "oxasBCCJwzHDUwcBp7bdHyMqZ8nMEqptWcK9pIkDDagJqQ-5lCZ6r5A19FsSpYmj-BdlVdbiEj-4kadaC9bWOY-c1CjyigMVnY-cGgcHzFUoLh937z3dH-bneoGTXnYx"
+var PLACES_KEY = PLACESKEY;
 
 class MapScreen extends React.Component  {
  
+  state = {
+    region: null,
+    markers: [],
+    isLoaded: false,
+    isModalVisible: false,
+    modalProps:{
+      source:{uri:"#"},
+      barName:"#",
+      rating:"#",
+      reviewCount:"#",
+      price: "#",
+      phone: "#",
+      closed: "#",
+      address: "#",
+    },
+    friendData:null,
+    userData:null
+  };
+  
   mapStyle = [
     {
       "elementType": "geometry",
@@ -190,26 +209,6 @@ class MapScreen extends React.Component  {
     }
   ];
 
-  state = {
-    region: null,
-    markers: [],
-    isLoaded: false,
-    isModalVisible: false,
-    modalProps:{
-      source:{uri:"#"},
-      barName:"#",
-      rating:"#",
-      reviewCount:"#",
-      price: "#",
-      phone: "#",
-      closed: "#",
-      address: "#",
-    },
-    friendData:null,
-    userData:null
-  };
-  
-
   clientLocationFunction = (e) => { 
     // console.log(e);
     let { width, height } = Dimensions.get('window');
@@ -321,7 +320,6 @@ class MapScreen extends React.Component  {
     Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
       this.setState({friendData: friends});
       console.log('Friends: ' + this.state.friendData);
-      
     });
     Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
       this.setState({userData: userData});
@@ -329,7 +327,7 @@ class MapScreen extends React.Component  {
     });
   }
 
-  componentDidMount() {
+ componentDidMount() {
     this.getAsyncStorageData();  
   }
   

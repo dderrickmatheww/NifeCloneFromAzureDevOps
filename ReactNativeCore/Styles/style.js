@@ -1,11 +1,15 @@
+import React from 'react';
 import { StyleSheet } from 'react-native'
-import theme from '../Styles/theme';
+import theme from './theme';
 
 export const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  textFont: {
+    
   },
   titleDark: {
     fontSize: 36,
@@ -110,18 +114,13 @@ export const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1
   },
-  facebookDataBtn: {
-    backgroundColor: '#4267b2',
-    paddingVertical: 10,
+  dataRowScroll: {
+    backgroundColor: theme.DARK,
     paddingHorizontal: 20,
-    borderRadius: 20,
+    borderRadius: 15,
     width: 370,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderColor: 'white',
-    borderWidth: 1
+    borderColor: '#ff1493',
+    borderWidth: 2
   },
   navigateLoginBtn: {
     backgroundColor: 'grey',
@@ -177,8 +176,8 @@ export const styles = StyleSheet.create({
   },
   dataRowContainer: {
     flex: 1,
-    top: 100,
-    maxHeight: 50,
+    top: 70,
+    height: 330,
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a',
@@ -198,12 +197,13 @@ export const styles = StyleSheet.create({
     borderRadius: 5
   },
   LogoData: {
-    width: 25, 
-    height: 25,
+    width: 50, 
+    height: 50,
+    top: 10,
     position: 'absolute',
-    left: 7,
+    left: 5,
     borderColor: "#fff",
-    borderWidth: .2,
+    borderWidth: 1,
     borderRadius: 5
   },
   loggedOutText: {
@@ -212,11 +212,66 @@ export const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   facebookDataText: {
-    color: "#fff",
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 10,
-    overflow: 'hidden'
+    color: "black",
+    top: 0,
+    top: 10,
+    position: 'absolute',
+    fontSize: 13,
+    fontFamily: theme.fontFamily
+  },
+  facebookScrollText: {
+    color: "black",
+    fontSize: 16,
+    fontFamily: theme.fontFamily
+  },
+  dataRowDescription: {
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    width: '80%',
+    fontSize: 16,
+    top: 20,
+    right: '10%',
+    fontFamily: theme.fontFamily
+  },
+  dataRowSpecialties: {
+    top: 30,
+    width: '80%',
+    right: '10%',
+    fontFamily: theme.fontFamily
+  },
+  dataRowLinks: {
+    top: 40,
+    width: '80%',
+    right: '10%',
+    fontFamily: theme.fontFamily
+  },
+  twitterDataRowSection: {
+    borderRadius: 20,
+    left: -25,
+    width: '90%',
+    borderColor: '#00bfff',
+    padding: 20,
+    borderWidth: 1.5,
+    backgroundColor: 'white',
+    margin: 5,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    width: 375, 
+    height: 375
+  },
+  twitterDataContainerSection: {
+    left: -25,
+    width: '70%',
+  },
+  facebookDataRowSection: {
+    borderRadius: 20,
+    left: -25,
+    width: '100%',
+    borderColor: '#4267b2',
+    padding: 20,
+    borderWidth: 1.5,
+    backgroundColor: 'white',
+    margin: 5
   },
   profilePic: {
     width: 50, 
