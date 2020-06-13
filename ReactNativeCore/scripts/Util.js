@@ -140,20 +140,15 @@ const Util = {
             }
         },
         GetAsyncVar: async (name, callback) => {
-            let returnArray = [];
             await AsyncStorage.getItem(name, async (err, result) => { 
                 if(err) {
                     console.log('Async Error getting variable ' + name + ' ' + err);
                 }
-                else {
-                    returnArray.push(result);
+                if(result) {
+                    callback(result);
                     console.log('Grabbed Async variable: ' + name + ' from Async Storage!');
                 }
             });
-            if (returnArray.length > 0) {
-                console.log(returnArray[0]);
-                callback(returnArray[0]);
-            }
         }
     },
     dataCalls: {
@@ -195,6 +190,7 @@ const Util = {
                         .then(response => response.json())
                         .then(async data => {
                             dataObj['data'] = data.data;
+                            console.log(dataObj.data);
                             //Grabs post from FB based for default
                             returnData(dataObj);
                         })
@@ -245,7 +241,13 @@ const Util = {
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
                         callBack(dataObj);
                       })
-                      .catch(e => console.log(e))
+                      .catch((error) => {
+                        console.log("Firebase Google Auth Error: ");
+                        console.log("Error Code: " + error.code);
+                        console.log("Error Message: " + error.message);
+                        console.log("Error Email: " + error.email);
+                        console.log("Error Creds: " + error.credential);
+                    });
                   } else {
                     // type === 'cancel'
                   }
@@ -335,17 +337,26 @@ const Util = {
                         iosClientId: IOSClientKey,
                         clientId: ClientKey
                     });
+                    console.log(result);
                     if (result.type === 'success') {
                         /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
-                        const googleCredential = firebase.auth.GoogleAuthProvider.credential(result.idToken);
+                        const googleCredential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
                         // Sign-in the user with the credential
-                        await firebase.auth().signInWithCredential(googleCredential).catch((error) => {console.log("Firebase Google Auth Error: " + error)});
-                        dataObj['data'] = firebase.auth().currentUser;
-                        Util.asyncStorage.SetAsyncStorageVar('GOToken', result.accessToken);
-                        Util.user.VerifyUser(firebase.firestore(), dataObj.data, dataObj.data.email, (data) =>{
-                            console.log(data);
+                        console.log(googleCredential);
+                        await firebase.auth().signInWithCredential(googleCredential).catch((error) => {
+                            console.log("Firebase Google Auth Error: ");
+                            console.log("Error Code: " + error.code);
+                            console.log("Error Message: " + error.message);
+                            console.log("Error Email: " + error.email);
+                            console.log("Error Creds: " + error.credential);
                         });
+                        dataObj['user'] = firebase.auth().currentUser;
+                        dataObj['data'] = firebase.auth();
+                        // Util.asyncStorage.SetAsyncStorageVar('GOToken', result.accessToken);
                         callBack(dataObj);
+                    }
+                    else{
+                        console.log(result);
                     }
                 } 
                 catch ({ message }) {

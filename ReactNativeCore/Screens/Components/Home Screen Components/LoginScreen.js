@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Image, Modal } from 'react-native';
-import FireBaseNifeLogin from '../../Firebase/NifeOAuth';
-import InputWithIcon from '../InputWithIcon';
+import Util from '../../../scripts/Util';
+import InputWithIcon from '../../Universal Components/InputWithIcon';
 
 export default class NifeLoginModal extends Component {
     state = {
@@ -51,7 +51,7 @@ export default class NifeLoginModal extends Component {
                     alert('Your password must be great than eight characters!')
                 }
                 else {
-                    FireBaseNifeLogin(this.state, null, (dataObj, error) => {
+                    Util.dataCalls.Nife.login(this.state, null, (dataObj, error) => {
                         if(error) {
                             alert(error);
                             this.resetPasswordField();
@@ -67,7 +67,7 @@ export default class NifeLoginModal extends Component {
             }
         } 
         else {
-            FireBaseNifeLogin(null, this.state, (dataObj, error) => {
+            Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
                 if(error) {
                     alert(error);
                     this.resetPasswordField();
@@ -106,16 +106,16 @@ export default class NifeLoginModal extends Component {
                             </TouchableOpacity>
                             <Text style={styles.modalText}>Hello, please fill out the following information and press "Sign-up" once finished! Thank you!</Text>
                             <View style={ styles.email }>
-                                <InputWithIcon name={'ios-mail'} color={'black'} size={12} placeHolderText={'Email'} returnKey={'next'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'email'} keyboardType={'email-address'} value={this.state.email}/>
+                                <InputWithIcon name={'ios-mail'} color={'black'} size={12} placeHolderText={'Email'} returnKey={'next'} secureText={false} styles={styles.textInput} onChangeText={(text, type) => this.onChangeText(text, type)} type={'email'} keyboardType={'email-address'} value={this.state.email} onSubmit={(text, eventCount, target) => null}/>
                             </View>
                             <View style={ styles.password1 }>
-                                <InputWithIcon name={'ios-lock'} color={'black'} size={12} placeHolderText={'Password'} returnKey={'next'} secureText={true}  onChangeText={(text, type) => this.onChangeText(text, type)} type={'password1'} keyboardType={'default'} value={this.state.password1}/>
+                                <InputWithIcon name={'ios-lock'} color={'black'} size={12} placeHolderText={'Password'} returnKey={'next'} secureText={true} styles={styles.textInput}  onChangeText={(text, type) => this.onChangeText(text, type)} type={'password1'} keyboardType={'default'} value={this.state.password1} onSubmit={(text, eventCount, target) => null}/>
                             </View>
                             <View style={ styles.password2 }>
-                                <InputWithIcon name={'ios-lock'} color={'black'} size={12} placeHolderText={'Password again'} returnKey={'next'}  secureText={true} onChangeText={(text, type) => this.onChangeText(text, type)} type={'password2'} keyboardType={'default'} value={this.state.password2}/>
+                                <InputWithIcon name={'ios-lock'} color={'black'} size={12} placeHolderText={'Password again'} returnKey={'next'}  secureText={true} styles={styles.textInput} onChangeText={(text, type) => this.onChangeText(text, type)} type={'password2'} keyboardType={'default'} value={this.state.password2} onSubmit={(text, eventCount, target) => null}/>
                             </View>
                             <View style={ styles.displayName }>
-                                <InputWithIcon name={'ios-person'} color={'black'} size={12} placeHolderText={'Display Name'} returnKey={'done'} secureText={false}  onChangeText={(text, type) => this.onChangeText(text, type)} type={'displayName'} keyboardType={'default'} value={this.state.displayName}/>
+                                <InputWithIcon name={'ios-person'} color={'black'} size={12} placeHolderText={'Display Name'} returnKey={'done'} secureText={false} styles={styles.textInput}  onChangeText={(text, type) => this.onChangeText(text, type)} type={'displayName'} keyboardType={'default'} value={this.state.displayName} onSubmit={(text, eventCount, target) => null}/>
                             </View>
                             <TouchableOpacity
                                 onPress={() => this.authenticateUser('sign-up')}
@@ -229,20 +229,20 @@ const styles = StyleSheet.create({
     alignItems: "center"
     },
     modalView: {
-    margin: 30,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    height: 475
+        margin: 30,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+        height: 475
     },
     openButton: {
         backgroundColor: "#F194FF",
