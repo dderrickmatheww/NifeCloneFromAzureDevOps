@@ -5,6 +5,8 @@ import * as firebase from 'firebase';
 import Util from './scripts/Util'
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import AppLoading from './Screens/AppLoading';
+import Settings from './Screens/SettingsTab';
 
 if (! global.btoa) {global.btoa = encode}
 
@@ -28,7 +30,9 @@ firebase.auth().onAuthStateChanged(function(user) {
       }
     )
     userSignedIn = true;
+    loadingDone = true;
   } else {
+    loadingDone = true
     console.log('No user');
   }
 });
@@ -68,11 +72,15 @@ async function getLocationAsync(callback) {
   // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
   const { status } = await Permissions.askAsync(Permissions.LOCATION);
   if (status === 'granted') {
+    var loc;
     Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
-      console.log("location: " + location.latitude + " : " + location.longitude)
-      Location.reverseGeocodeAsync({location:{latitude: location.latitude, longitude: location.longitude}}).then((region)=>{
-        console.log(region);
-        return location['region'] = region;
+      console.log("Lat: " + location.coords.latitude + " Long: " + location.coords.longitude);
+      loc = location.coords;
+      Location.reverseGeocodeAsync(location.coords).then((region)=>{
+        console.log(region[0]);
+        loc['region'] = region[0];
+        console.log(loc);
+        callback(loc)
       });
     });
     
