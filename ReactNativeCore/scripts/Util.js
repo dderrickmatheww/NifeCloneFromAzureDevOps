@@ -1,12 +1,11 @@
 import { GetFriends, AddFriend } from "./friends/FriendsUtil";
 import { AsyncStorage } from 'react-native';
-import { VerifyUser, GetUserData } from "./user/UserUtil";
+import { VerifyUser, GetUserData, UpdateUser } from "./user/UserUtil";
 import { SaveLocation } from "./location/LocationUtil";
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
-import * as Random from 'expo-random';
 
 const Util = {
     friends: {
@@ -23,6 +22,9 @@ const Util = {
         },
         GetUserData: function(db, email, callback){
             GetUserData(db, email, callback)
+        },
+        UpdateUser: function(db, email, updateObject, callback){
+            UpdateUser(db, email, updateObject, callback)
         }
     },
     location: {
@@ -111,7 +113,7 @@ const Util = {
                 if(err) {
                     console.log('Async Error getting variable ' + name + ' ' + err);
                 }
-                else {
+                if(result) {
                     callback(result);
                     console.log('Grabbed Async variable: ' + name + ' from Async Storage!');
                 }
@@ -208,7 +210,13 @@ const Util = {
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
                         callBack(dataObj);
                       })
-                      .catch(e => console.log(e))
+                      .catch((error) => {
+                        console.log("Firebase Google Auth Error: ");
+                        console.log("Error Code: " + error.code);
+                        console.log("Error Message: " + error.message);
+                        console.log("Error Email: " + error.email);
+                        console.log("Error Creds: " + error.credential);
+                    });
                   } else {
                     // type === 'cancel'
                   }
@@ -297,17 +305,26 @@ const Util = {
                         iosClientId: IOSClientKey,
                         clientId: ClientKey
                     });
+                    console.log(result);
                     if (result.type === 'success') {
                         /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
-                        const googleCredential = firebase.auth.GoogleAuthProvider.credential(result.idToken);
+                        const googleCredential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
                         // Sign-in the user with the credential
-                        await firebase.auth().signInWithCredential(googleCredential).catch((error) => {console.log("Firebase Google Auth Error: " + error)});
-                        dataObj['data'] = firebase.auth().currentUser;
-                        Util.asyncStorage.SetAsyncStorageVar('GOToken', result.accessToken);
-                        Util.user.VerifyUser(firebase.firestore(), dataObj.data, dataObj.data.email, (data) =>{
-                            console.log(data);
+                        console.log(googleCredential);
+                        await firebase.auth().signInWithCredential(googleCredential).catch((error) => {
+                            console.log("Firebase Google Auth Error: ");
+                            console.log("Error Code: " + error.code);
+                            console.log("Error Message: " + error.message);
+                            console.log("Error Email: " + error.email);
+                            console.log("Error Creds: " + error.credential);
                         });
+                        dataObj['user'] = firebase.auth().currentUser;
+                        dataObj['data'] = firebase.auth();
+                        // Util.asyncStorage.SetAsyncStorageVar('GOToken', result.accessToken);
                         callBack(dataObj);
+                    }
+                    else{
+                        console.log(result);
                     }
                 } 
                 catch ({ message }) {

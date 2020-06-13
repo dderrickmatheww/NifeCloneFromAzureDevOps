@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet, Image} from 'react-native';
+import { View,  Dimensions,  StyleSheet, Image, FlatList} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
@@ -234,7 +234,6 @@ class MapScreen extends React.Component  {
       longitudeDelta: LONGITUDE_DELTA
     }
     Util.location.SetUserLocationData(region);
-    SetUserLocationData(this.state.region);
     
     counter++;
     if(LONGITUDE != undefined){
@@ -283,6 +282,7 @@ class MapScreen extends React.Component  {
       phone: wantedPlace.display_phone,
       closed: wantedPlace.is_closed,
       address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1] ,
+      lastVisitedBy: wantedPlace.lastVisitedBy
     }});
     this.setState({isModalVisible:true});
     // console.log(this.state.isModalVisible);
@@ -344,11 +344,11 @@ class MapScreen extends React.Component  {
 
   //gets user and friend data
   getAsyncStorageData = (callback) => {
-    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
+    Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
       this.setState({friendData: JSON.parse(friends)});
       // console.log('Friends: ' + this.state.friendData);
     });
-    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
+    Util.asyncStorage.GetAsyncVar('User', (userData) => {
       this.setState({userData: JSON.parse(userData)});
       // console.log('User: ' + this.state.userData);
     });
@@ -357,7 +357,13 @@ class MapScreen extends React.Component  {
   componentDidMount(){
     this.getAsyncStorageData();
   }
-    
+  
+  generateFriendBubbles = (friend) => {
+    console.log(friend);
+    return(
+      <Image style={localStyles.friendPic} source={{uri:friend.item.photoSource}}/>
+    )
+  }
   
   render() {
     return (
@@ -415,34 +421,34 @@ class MapScreen extends React.Component  {
           moveOnMarkerPress={false}
         >
         {this.state.markers.map(marker => (
-          
-            <Marker
-              coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
-              title={marker.name}
-              description={"Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews."}
-              key={marker.id}
-              onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
-              pinColor="#FF33CC"
-              calloutOffset={{x: 0.6, y: 0.4}}
-              calloutAnchor={{x: 0.6, y: 0.4}}
-            >
-              <View style={{width:"150%", flex:1}}>
-                {marker.lastVisitedBy.map((friend, i) =>(
-                    <Image style={{
-                      position:"relative",
+          <View style={{flex:1, width:"100%"}} key={marker.id}>
+              <Marker
+                coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
+                title={marker.name}
+                description={marker.lastVisitedBy.length == 0 ? "Rated " + marker.rating + "/5 stars in " + marker.review_count + " reviews." : "" + marker.lastVisitedBy.length + " friends visited recently."}
+                key={marker.id}
+                onCalloutPress={(e) => this.HandleMarkerPress(e, marker.id)}
+                pinColor="#FF33CC"
+                calloutOffset={{x: 0.5, y: 0.25}}
+                calloutAnchor={{x: 0.5, y: 0.25}}
+              >
+                <View style={{flex:1, width:"100%"}}>
+                  {
+                    marker.lastVisitedBy.map((friend, i) => (
+                      <Image style={{position:"relative",
                       width: 40,
                       height: 40,
                       borderRadius: 50,
-                      bottom: -15,
-                      right: i+2,
-                    }} source={{uri:friend.photoSource}} key={friend.email} resizeMode="contain"/>
-                ))}
-              </View>
-              
-              <Ionicons style={{ marginTop:25,marginLeft:12.5}} name="ios-beer" size={32} color={theme.PINK} backgroundColor="white"/>
-            </Marker>
-            
-            
+                      left: i+1}} 
+                      key={i}
+                      source={{uri:friend.photoSource}}/>
+                    ))
+                  }
+                
+                  <Ionicons style={(marker.lastVisitedBy.length == 0 ? localStyles.markerNotVisited : localStyles.markerVisited)} name="ios-beer" size={32} color={theme.PINK} backgroundColor="white"/>
+                </View>
+              </Marker>
+            </View>
           
           ))} 
       </MapView>       
@@ -475,6 +481,10 @@ class MapScreen extends React.Component  {
 }
 
 const localStyles = StyleSheet.create({
+  markerVisited:{
+    marginTop: 12,
+    position:"relative"
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -484,7 +494,8 @@ const localStyles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 50,
-    bottom: -15
+    bottom: 12,
+    marginRight:126
   },
   overlay: {
     position: 'absolute',
