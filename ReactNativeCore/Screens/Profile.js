@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 export default class ProfileScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
-    userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
+    userData: null,
     modalVisible: false,
     friendData:null,
     isUsersProfile:true,
@@ -24,7 +24,7 @@ export default class ProfileScreen extends Component {
     if(this.state.isUsersProfile){
       Util.asyncStorage.GetAsyncVar('User', (userData) => {
         this.setState({userData: JSON.parse(userData)});
-        console.log('User: ' + this.state.userData);
+        console.log('User: ' + JSON.stringify(this.state.userData));
       });
     } else {
       this.setState({userData: this.state.userData});
@@ -48,6 +48,14 @@ export default class ProfileScreen extends Component {
   }
   componentDidMount(){
     this.getAsyncStorageData();
+    this.rerender = this.props.navigation.addListener('focus', () => {
+      this.componentDidMount();
+    });
+    
+  }
+
+  componentWillUnmount() {
+    this.rerender();
   }
 
    render () {
@@ -64,7 +72,7 @@ export default class ProfileScreen extends Component {
                   
                   <View style={localStyles.LocAndFriends}>
                     <View style={{alignSelf:"flex-start", width:"50%"}}>
-                      <Text  style={localStyles.FriendCount}>South Carolina</Text>
+                      <Text  style={localStyles.FriendCount}>{this.state.userData.loginLocation.region.city}, {this.state.userData.loginLocation.region.region}</Text>
                     </View>
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
                       <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{userData: this.state.userData, friendData:this.state.friendData}})}>
@@ -77,13 +85,14 @@ export default class ProfileScreen extends Component {
               {/* bio */}
                   <View> 
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                      Bio: I like to drink beer, go to a bar drink more beer, and avoid peeing while dreaming. 
+                      Bio: {this.state.userData.bio ? "None" : this.state.userData.bio}
                     </Text>
                   </View>
                   <View>
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                        Favorite Drinks: Amber Ale, Fat Tire, Red Stripe, Gaelic Ale
-                    </Text>
+                          Favorite Drinks: {this.state.userData.favoriteDrinks ? this.state.userData.favoriteDrinks : "None"}
+                    </Text>  
+                  
                   </View>
                   <View>
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
@@ -202,7 +211,7 @@ const localStyles = StyleSheet.create({
     width: "100%"
   },
   FriendCount: {
-    fontSize: 15,
+    fontSize: 13,
     marginTop: "2%",
     marginBottom: "1%",
     color: theme.LIGHT_PINK,

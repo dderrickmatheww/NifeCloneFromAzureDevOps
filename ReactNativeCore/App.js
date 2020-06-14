@@ -5,19 +5,17 @@ import * as firebase from 'firebase';
 import Util from './scripts/Util'
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
-import AppLoading from './Screens/AppLoading';
-import Settings from './Screens/SettingsTab';
+// import AppLoading from './Screens/AppLoading';
+// import Settings from './Screens/SettingsTab';
 
 if (! global.btoa) {global.btoa = encode}
 
 if (! global.atob) {global.atob = decode}
-var userSignedIn = false;
-var loadingDone = false;
 
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
+  
 //When a user is signed into firebase, gets user/friend data sets to async, sets users location to async
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
@@ -29,20 +27,12 @@ firebase.auth().onAuthStateChanged(function(user) {
         });        
       }
     )
-    userSignedIn = true;
-    loadingDone = true;
   } else {
-    loadingDone = true
     console.log('No user');
   }
 });
 
-
-
-
 function getNeededData(db, currentUser){
-  let friends = null;
-  let user = null;
   console.log('running data grabber')
   //if user exits get user data, get friend data set to async 
   if(currentUser){
@@ -61,10 +51,8 @@ function getNeededData(db, currentUser){
       // console.log(friends);
       // console.log("################################################################################################");
     });
-    loadingDone = true;
   } else {
     console.log('no user!')
-    loadingDone = true;
   }
 }
 
@@ -75,10 +63,11 @@ async function getLocationAsync(callback) {
     var loc;
     Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
       console.log("Lat: " + location.coords.latitude + " Long: " + location.coords.longitude);
-      loc = location.coords;
       Location.reverseGeocodeAsync(location.coords).then((region)=>{
-        console.log(region[0]);
-        loc['region'] = region[0];
+        loc = {
+          coords: location.coords,
+          region: region[0]
+        }                  
         console.log(loc);
         callback(loc)
       });
@@ -88,6 +77,8 @@ async function getLocationAsync(callback) {
     throw new Error('Location permission not granted');
   }
 }
+
+
 //sends user login location to db
 function setWantedData(db, currentUser, location, callback){
   Util.location.SaveLocation(db, currentUser.email, location, () =>{
@@ -97,7 +88,7 @@ function setWantedData(db, currentUser, location, callback){
 }
 
 export default function App() {
-
+  console.ignoredYellowBox = ['Setting a timer'];
   return(
       <Navigator />
   );

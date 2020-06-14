@@ -9,15 +9,15 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
-var maxDateValue = new Date();
-maxDateValue.setFullYear( maxDateValue.getFullYear() - 18 );
+
 
 export default class EditProfile extends Component {
   
 
   state = {
     userData:  null,
-    dateOfBirth: null || undefined ? maxDateValue : maxDateValue,
+    dateOfBirth: null,
+    maxDateValue: null,
     gender: 'other',
     sexualOrientation: 'other',
     bio:null,
@@ -25,20 +25,42 @@ export default class EditProfile extends Component {
     showDatePicker: false,
   }
 
+  setMaxDate = () => {
+    var maxDateValue = new Date();
+    maxDateValue.setFullYear( maxDateValue.getFullYear() - 18 );
+    this.setState({maxDateValue:maxDateValue})
+  }
+
   //Set user data
   setUserData = async (dataObj) => {
     
     Util.asyncStorage.GetAsyncVar('User', (user) => {
-      this.setState({userData: JSON.parse(user)});
-      this.setState({
-        gender: user.gender,
-        sexualOrientation: user.sexualOrientation,
-        bio: user.bio,
-        favoriteDrinks: user.favoriteDrinks
-      });
-      this.onDOBChange(user.dateOfBirth)
-      console.log('User: ' + this.state.userData);
+      user = JSON.parse(user);
+      this.setState({userData: user});
+      // console.log("User: " + JSON.stringify(this.state.userData));
+
+      this.setState({dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.state.maxDateValue});
+      
+
+      this.setState({gender: user.gender ? JSON.stringify(user.gender) : "other"});
+     
+
+      this.setState({sexualOrientation: user.sexualOrientation ? JSON.stringify(user.sexualOrientation) : 'other'});
+      
+
+      this.setState({bio: user.bio ? JSON.stringify(user.bio) : ""});
+      
+      
+      this.setState({favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks: []});
+      
+      console.log("sexualOrientation:" + this.state.sexualOrientation);
+      console.log("dateOfBirth: " + this.state.dateOfBirth.toLocaleDateString('en-US'));
+      console.log("gender: " + this.state.gender);
+      console.log("bio: " + this.state.bio);
+      console.log("favoriteDrinks: " + this.state.favoriteDrinks);
     });
+
+      
   }
 
    //gets user and friend data
@@ -46,35 +68,31 @@ export default class EditProfile extends Component {
     this.setUserData();
   }
   componentDidMount(){
-    this.getAsyncStorageData();
+    this.setMaxDate();
+    this.getAsyncStorageData();  
   }
-
-  
 
   onDOBChange = (event, selectedDate) => {
     var date = new Date(selectedDate);
-    date = date.toLocaleDateString("en-US");
-    this.setState({dateOfBirth: selectedDate});
-    this.setState({showDatePicker:false})
+    this.setState({dateOfBirth: date});
+    console.log("New DOB: " + this.state.dateOfBirth)
+    this.setState({showDatePicker:false});
   }
 
-  onFavoriteDrinkChange = (text) => {
-      var drinkArr;
-      drinkArr = text.toString().split(',');
-      this.state.favoriteDrinks = drinkArr;
-      
-  }
   
   onGenderChange = (gender) => {
+    console.log(gender);
     this.setState({gender:gender})
   }
 
   onSexualOrientationChange = (orientation) => {
+    console.log(orientation);
     this.setState({sexualOrientation:orientation})
   }
 
   onBioChange = (bio) => {
     bio = bio.nativeEvent.text;
+    console.log(bio);
     this.setState({bio:bio})
   }
 
@@ -89,19 +107,26 @@ export default class EditProfile extends Component {
       drinkArr = fieldText.split(',');
     }
 
-    console.log("result text: " + typeof(drinkArr));
+    console.log("result text: " + drinkArr);
     this.setState({favoriteDrinks:drinkArr});
   }
 
   onSave = () => {
+    console.log('Saving attempted');
     var profileInfo = {
-      dateOfBirth: this.state.dateOfBirth,
+      dateOfBirth: new Date(this.state.dateOfBirth),
       gender: this.state.gender,
       sexualOrientation: this.state.sexualOrientation,
       bio: this.state.bio,
       favoriteDrinks: this.state.favoriteDrinks
     }
-    Util.user.UpdateUser(firebase.firestore(), this.state.userData.email, profileInfo
+      console.log("sexualOrientation:" + this.state.sexualOrientation);
+      console.log("dateOfBirth: " + this.state.dateOfBirth.toLocaleDateString('en-US'));
+      console.log("gender: " + this.state.gender);
+      console.log("bio: " + this.state.bio);
+      console.log("favoriteDrinks: " + this.state.favoriteDrinks);
+
+    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
     , (data)=>{
         console.log('saving attempted');
     });
@@ -112,13 +137,16 @@ export default class EditProfile extends Component {
     updatedUser = JSON.stringify(updatedUser);
     Util.asyncStorage.SetAsyncStorageVar('User', updatedUser);
     this.getAsyncStorageData();
+
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
+
     function extend(dest, src) {
       for(var key in src) {
           dest[key] = src[key];
       }
       return dest;
     }
+      
   }
 
    render () {
@@ -142,7 +170,7 @@ export default class EditProfile extends Component {
                   <View style={localStyles.fieldCont}> 
                     <View style={{flexDirection:"row", width:"90%"}}>
                       <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                        Date of Birth:  {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString('en-US'): "None given."}
+                        Date of Birth:  {this.state.dateOfBirth ? this.state.dateOfBirth.toLocaleDateString('en-US'): "None given."}
                         
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft:50, paddingBottom:5}}
@@ -157,7 +185,7 @@ export default class EditProfile extends Component {
                         <DateTimePicker
                           mode={"date"}
                           value={this.state.dateOfBirth}
-                          maximumDate={maxDateValue}
+                          maximumDate={this.state.maxDateValue}
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
                         />
@@ -171,7 +199,7 @@ export default class EditProfile extends Component {
                     </Text>
                     <Picker 
                       style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 50,}}
-                      selectedValue={this.state.gender}
+                      selectedValue={this.state.gender ? this.state.gender : "other"}
                       onValueChange={(value) => this.onGenderChange(value)}
                     >
                       <Picker.Item label="Male" value="male"/>
@@ -185,7 +213,7 @@ export default class EditProfile extends Component {
                       Sexual Orientation: 
                     </Text>
                     <Picker
-                    selectedValue={this.state.sexualOrientation}
+                    selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
                       style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 50,}}
                       onValueChange={(value) => this.onSexualOrientationChange(value)}
                     >

@@ -20,7 +20,7 @@ export async function UpdateUser (db, email, updateObject, callback) {
    var userRef = db.collection('users').doc(email);
     userRef.set(updateObject, {merge:true})
     .then(()=>{
-        console.log('User Updated...');
+        callback();
     });
 }
 
