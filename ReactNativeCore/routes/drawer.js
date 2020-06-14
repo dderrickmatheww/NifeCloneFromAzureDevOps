@@ -50,7 +50,7 @@ class Navigator extends React.Component  {
           drawerStyle={{
             backgroundColor: theme.DARK
           }} 
-          initialRouteName='Profile'
+          initialRouteName='Home'
           overlayColor="#20232A" >
           <Drawer.Screen  name="Test" component={TestingStack} />
           <Drawer.Screen  name="Profile" component={profileStack} />
