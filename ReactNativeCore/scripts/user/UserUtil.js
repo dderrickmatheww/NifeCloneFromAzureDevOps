@@ -31,18 +31,18 @@ export async function VerifyUser (db, user, email, callback) {
       .then( (data) => {
         if(data.data()){
             console.log('User Exists...');
-            let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date()}, {merge:true})
+            let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true})
             callback(data.data());
         } else {
             console.log('User Does not Exists...');
             // console.log(Object.keys(user));
             if(user != undefined || user != null){
                 let buildUser = {
-                    createdAt: new Date(),
+                    createdAt: new Date().toUTCString(),
                     displayName: user.displayName,
                     email: user.email,
                     emailVerified: user.emailVerified,
-                    lastLoginAt: new Date(),
+                    lastLoginAt: new Date().toUTCString(),
                     phoneNumber: (user.phoneNumber == undefined || user.phoneNumber == null ? "555-555-5555" : user.phoneNumber),
                     photoSouce: user.photoURL,
                     providerData: user.providerData[0]

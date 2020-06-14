@@ -2,18 +2,21 @@ import { GetFriends, AddFriend } from "./friends/FriendsUtil";
 import { AsyncStorage } from 'react-native';
 import { VerifyUser, GetUserData, UpdateUser } from "./user/UserUtil";
 import { SaveLocation } from "./location/LocationUtil";
-import { FACEBOOK_APP_ID, GOOGLE_API_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
+import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
+import jsSHA from "jssha";
+import * as Device from 'expo-device';
+import * as Location from 'expo-location';
 
 const Util = {
     friends: {
         GetFriends: function(db, email, callback){
-            GetFriends(db, email, callback)
+            GetFriends(db, email, callback);
         },
         AddFriend: function(db, email, callback){
-            AddFriend(db, email, callback)
+            AddFriend(db, email, callback);
         }
     },
     user: {
@@ -24,7 +27,56 @@ const Util = {
             GetUserData(db, email, callback)
         },
         UpdateUser: function(db, email, updateObject, callback){
-            UpdateUser(db, email, updateObject, callback)
+            UpdateUser(db, email, updateObject, callback);
+        },
+        CheckIn: async (buisnessUID, email, privacy, returnData) => {
+            let db = firebase.firestore();
+            let setLoc = await db.collection('users').doc(email);
+            setLoc.set({
+            checkIn: {
+                buisnessUID: buisnessUID,
+                checkInTime: new Date().toUTCString(),
+                privacy: privacy
+            },
+            lastVisited: {
+                buisnessUID: buisnessUID,
+                checkInTime: new Date().toUTCString(),
+                privacy: privacy
+            }},
+            {
+                merge: true
+            });
+            returnData('true');
+        },
+        CheckOut: async (email, returnData) => {
+            let db = firebase.firestore();
+            let setLoc = await db.collection('users').doc(email);
+            setLoc.set({
+            checkIn: {
+                buisnessUID: "",
+                checkInTime: "",
+                privacy: ""
+            }},
+            {
+                merge: true
+            });
+            returnData('false');
+        },
+        IsUserCheckedIn: (email, buisnessUID, returnData) => {
+            let db = firebase.firestore();
+            Util.user.GetUserData(db, email, (userData) => {
+                let user = userData;
+                console.log(user);
+                if(user.checkIn.checkInTime == "") {
+                    returnData("false");
+                }
+                else if (user.checkIn.buinessUID == buisnessUID) {
+                    returnData("true");
+                }
+                else {
+                    returnData("true");
+                }
+            })
         }
     },
     location: {
@@ -34,6 +86,12 @@ const Util = {
         SetUserLocationData: function (region) {
             var latAndLong = region.latitude + ',' + region.longitude;
             Util.asyncStorage.SetAsyncStorageVar('userLocationData', latAndLong);
+        },
+        GetUserLocation: (returnData) => {
+            Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+                Util.location.SetUserLocationData(location.coords);
+                returnData(location.coords);
+            });
         }
     },
     asyncStorage: {
@@ -108,16 +166,21 @@ const Util = {
                 callback(returnArray[0]);
             }
         },
-        GetAsyncVar: async (name, callback) => {
+        GetAsyncStorageVar: async (name, callback) => {
+            let returnArray = [];
             await AsyncStorage.getItem(name, async (err, result) => { 
                 if(err) {
                     console.log('Async Error getting variable ' + name + ' ' + err);
                 }
-                if(result) {
-                    callback(result);
+                else {
+                    returnArray.push(result);
                     console.log('Grabbed Async variable: ' + name + ' from Async Storage!');
                 }
             });
+            if (returnArray.length > 0) {
+                console.log(returnArray[0]);
+                callback(returnArray[0]);
+            }
         }
     },
     dataCalls: {
@@ -159,7 +222,6 @@ const Util = {
                         .then(response => response.json())
                         .then(async data => {
                             dataObj['data'] = data.data;
-                            console.log(dataObj.data);
                             //Grabs post from FB based for default
                             returnData(dataObj);
                         })
@@ -226,44 +288,45 @@ const Util = {
             }
         },
         Twitter: {
-            tweetData: async (dataObj, returnData) => {
-                let tweetData = [];
-                let lat, long;
-                Util.asyncStorage.GetAsyncVar('userLocationData', (result) => {
-                    lat = result.split(',')[0];
-                    long = result.split(',')[1];
+            tweetData: async function (dataObj, returnData) {
+                var twitObj = {
+                    method: 'GET'
+                };
+                await Util.asyncStorage.GetAsyncVar('userLocationData', (result) => {
+                    twitObj['lat'] = result.split(',')[0].slice(0, 5);
+                    twitObj['long'] = result.split(',')[1].slice(0, 6);
                 });
                 for(i = 0; i < dataObj.data.length; i++) {
+                    twitObj['url'] = "https://api.twitter.com/1.1/search/tweets.json";
+                    twitObj['paramObj'] = {"q": dataObj.data[i].name, "count": "1", "geocode": twitObj.lat+","+twitObj.long+",20mi", "result_type": "recent"};
+                    twitObj['paramStr'] = "?q="+dataObj.data[i].name+"&count=1&geocode="+twitObj.lat+","+twitObj.long+",20mi&result_type=recent";
+                    twitObj['OAuthString'] = await Util.dataCalls.OAuth.grantAuthorization(twitObj.method, twitObj.url, twitObj.paramObj);
                     try {
-                        console.log('Twitter Key: ' + TWITTER_CONSUMER_API_KEY);
-                        console.log('--------------------------------')
-                        console.log('Twitter Token: ' + TWITTER_ACCESS_TOKEN);
-                        console.log('--------------------------------')
-                        console.log(dataObj.data[i].name);
-                        
                         var myHeaders = new Headers();
-                        myHeaders.append("Authorization", "OAuth oauth_consumer_key=\"8OoSRU84Gfb6T0IbP0yY7qD6E\",oauth_token=\"296469241-ejzzBd6CUdUmd2Vx8e4jzTZfV1Jx4xzxKwNei9Wq\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"1590613600\",oauth_nonce=\"5ON4IEI3hhM\",oauth_version=\"1.0\",oauth_signature=\"oKIG4aZ7sPVt6G2ZGZ5h3lkqm4w%3D\"");
-                        myHeaders.append("Cookie", "personalization_id=\"v1_tjATmWWAiUBgrIjq7IMu2A==\"; lang=en; guest_id=v1%3A159061359971224804");
-
+                        myHeaders.append("Authorization", twitObj.OAuthString);
+                        myHeaders.append("Cookie", "personalization_id=\""+TWITTER_PERSONALIZATION_ID+"\"; guest_id="+TWITTER_GUEST_ID+"; lang=en");
                         var requestOptions = {
-                        method: 'GET',
-                        headers: myHeaders,
-                        redirect: 'follow'
+                          method: 'GET',
+                          headers: myHeaders,
+                          redirect: 'follow'
                         };
-
-                        fetch("https://api.twitter.com/1.1/search/tweets.json?q="+ dataObj.data[i].name +"&result_type=recent&count=5", requestOptions)
+                        await fetch(twitObj.url + twitObj.paramStr, requestOptions)
                         .then(response => response.json())
-                        .then(async data => {
-                            console.log(data);
-                            // dataObj['data'] = data.data;
-                            // //Grabs post from FB based for default
-                            // returnData(dataObj);
+                        .then(result => {
+                            console.log(result)
+                            if(result && !result.errors && result.statuses.length > 0) {
+                                twitObj['TwitterData'] = result.statuses;
+                            }
                         })
-                        .catch(e => console.log(e)); 
+                        .catch(error => console.log('error', error));
+                        if(twitObj.TwitterData){
+                            dataObj.data[i]['TwitterData'] = twitObj.TwitterData;
+                        }
                     } catch ({ message }) {
                         alert(`Twitter Query Error: ${message}`);
                     }
                 }
+                returnData(dataObj);
             } 
         },
         Google: {
@@ -376,6 +439,32 @@ const Util = {
                 }
             }
         },
+        Yelp: {
+            placeData: (baseUrl, params, friendData, returnData) => {
+                fetch(baseUrl + params, 
+                    {headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY})
+                })
+                .then((data) => data.json())
+                .then((response) => {
+                    let friends = friendData;
+                    let bars = response;
+                    returnData(response['businesses']);
+                })
+                .catch((err) => {
+                    console.log("Yelp API Place Data Error: " + err);
+                });
+            },
+            buildParameters: (lat, long, radius) => {
+                var paramString ="";
+                //location, lat long
+                paramString += "latitude=" + lat+ "&longitude=" + long + "&";
+                //radius in meters
+                paramString +="radius="+radius+"&";
+                //type
+                paramString +="categories=bars"
+                return paramString;
+            } 
+        },
         Firebase: {
             config: {
                 apiKey: apiKey,
@@ -387,6 +476,97 @@ const Util = {
                 appId: appId,
                 measurementId: measurementId
             }
+        },
+        OAuth: {
+            grantAuthorization: async (httpMethod, baseUrl, reqParams) => {
+                const consumerKey = TWITTER_CONSUMER_API_KEY,
+                    consumerSecret = TWITTER_CONSUMER_SECERT_API_SECRET,
+                    accessToken = TWITTER_ACCESS_TOKEN,
+                    accessTokenSecret = TWITTER_ACCESS_SECRET;
+                // timestamp as unix epoch
+                let timestamp  = Math.round(Date.now() / 1000);;
+                // nonce as base64 encoded unique random string
+                let nonce = btoa(consumerKey + ':' + timestamp);
+                // generate signature from base string & signing key
+                let baseString = Util.dataCalls.OAuth.generateBaseString(httpMethod, baseUrl, reqParams, consumerKey, accessToken, timestamp, nonce);
+                let signingKey = Util.dataCalls.OAuth.generateSigningKey(consumerSecret, accessTokenSecret);
+                let signature  = Util.dataCalls.OAuth.generateSignature(baseString, signingKey);
+                // return interpolated string
+                return oAuthObjstr = 'OAuth ' +
+                    'oauth_consumer_key="'  + consumerKey       + '", ' +
+                    'oauth_nonce="'         + nonce             + '", ' +
+                    'oauth_signature="'     + signature         + '", ' +
+                    'oauth_signature_method="HMAC-SHA1", '              +
+                    'oauth_timestamp="'     + timestamp         + '", ' +
+                    'oauth_token="'         + accessToken       + '", ' +
+                    'oauth_version="1.0"';
+                   
+            },
+            generateSignature: (base_string, signing_key) => {
+                var signature = Util.dataCalls.OAuth.generateHMAC_SHA1Hash(base_string, signing_key);
+                return Util.dataCalls.OAuth.percentEncode(signature);
+            },
+            generateBaseString: (method, url, params, key, token, timestamp, nonce) => {
+                return method
+                + '&' + Util.dataCalls.OAuth.percentEncode(url)
+                + '&' + Util.dataCalls.OAuth.percentEncode(Util.dataCalls.OAuth.generateSortedParamString(params, key, token, timestamp, nonce));
+            },
+            generateSigningKey: (consumer_secret, token_secret) => {
+                return consumer_secret + '&' + token_secret;
+            },
+            percentEncode: (str) => {
+                return encodeURIComponent(str).replace(/[!*()']/g, (character) => {
+                    return '%' + character.charCodeAt(0).toString(16);
+                });
+            },
+            generateHMAC_SHA1Hash: (string, secret) => {
+                let shaObj = new jsSHA("SHA-1", "TEXT");
+                shaObj.setHMACKey(secret, "TEXT");
+                shaObj.update(string);
+                let hmac = shaObj.getHMAC("B64");
+                return hmac;
+            },
+            generateSortedParamString: (params, key, token, timestamp, nonce) => {
+                // Merge oauth params & request params to single object
+                let paramObj = Util.BasicUtil.mergeObject(
+                    {
+                        oauth_consumer_key : key,
+                        oauth_nonce : nonce,
+                        oauth_signature_method : 'HMAC-SHA1',
+                        oauth_timestamp : timestamp,
+                        oauth_token : token,
+                        oauth_version : '1.0'
+                    },
+                    params
+                );
+                // Sort alphabetically
+                let paramObjKeys = Object.keys(paramObj);
+                let len = paramObjKeys.length;
+                paramObjKeys.sort();
+                // Interpolate to string with format as key1=val1&key2=val2&...
+                let paramStr = paramObjKeys[0] + '=' + paramObj[paramObjKeys[0]];
+                for (var i = 1; i < len; i++) {
+                    paramStr += '&' + paramObjKeys[i] + '=' + Util.dataCalls.OAuth.percentEncode(decodeURIComponent(paramObj[paramObjKeys[i]]));
+                }
+                return paramStr;
+            }
+        }
+    },
+    basicUtil: {
+        mergeObject: (obj1, obj2) => {
+            for (var attr in obj2) {
+                obj1[attr] = obj2[attr];
+            }
+            return obj1;
+        },
+        grabCurrentDeviceInfo: (returnData) => {
+            let dataObj = {};
+            dataObj['simulator'] = Device.isDevice;
+            dataObj['modelName'] = Device.modelName;
+            dataObj['userGivenDeviceName'] = Device.deviceName;
+            dataObj['osName'] = Device.osName;
+            dataObj['totalMemory'] = Device.totalMemory;
+            returnData(dataObj);
         }
     }
 }

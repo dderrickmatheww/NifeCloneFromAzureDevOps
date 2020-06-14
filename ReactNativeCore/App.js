@@ -32,6 +32,19 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
+async function getLocationAsync(callback) {
+  // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+ const { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status === 'granted') {
+    Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+      callback(location);
+    });
+  } else {
+      throw new Error('Location permission not granted');
+  }
+}
+
+
 function getNeededData(db, currentUser){
   console.log('running data grabber')
   //if user exits get user data, get friend data set to async 
