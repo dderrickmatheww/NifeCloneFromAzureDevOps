@@ -47,14 +47,14 @@ class BarModal extends React.Component  {
     render(){     
         return(         
             <Modal 
-            animationType="slide"
-            visible={this.props.isVisible}
-            transparent={true}
+              animationType="slide"
+              visible={this.props.isVisible}
+              transparent={true}
             >
             <View style={localStyles.centeredView}>
               <View style={localStyles.modalView}>
                 <TouchableHighlight  style={localStyles.closeButton}
-                      onPress={this.props.onPress}
+                    onPress={this.props.onPress}
                   >
                   <Ionicons name="ios-close" size={32} color="#E2E4E3"/>
                 </TouchableHighlight>
