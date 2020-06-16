@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { Rating } from 'react-native-ratings';
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Util from '../../../scripts/Util';
 import * as firebase from 'firebase';
 

@@ -1,7 +1,4 @@
-import { GetFriends, AddFriend } from "./friends/FriendsUtil";
 import { AsyncStorage } from 'react-native';
-import { VerifyUser, GetUserData, UpdateUser } from "./user/UserUtil";
-import { SaveLocation } from "./location/LocationUtil";
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
@@ -12,22 +9,88 @@ import * as Location from 'expo-location';
 
 const Util = {
     friends: {
-        GetFriends: function(db, email, callback){
-            GetFriends(db, email, callback);
+        GetFriends: function(db, email, callback) {
+            let friendsArr = [];
+            var path = new firebase.firestore.FieldPath('friends', email);
+            let docRef = db.collection('users').where(path, '==', true);
+            docRef.get().then((friends) => {
+                friends.forEach(function(friend) {
+                    if(friend.data().displayName) {
+                        friendsArr.push(friend.data());
+                    }
+                });
+                Util.baseUrl.consoleLog('GetFriends', true);
+                callback(friendsArr);
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('GetFriends', false);
+                console.log("Firebase Error: " + error);
+            });
         },
         AddFriend: function(db, email, callback){
-            AddFriend(db, email, callback);
+            Util.baseUrl.consoleLog('AddFriend', true);
         }
     },
     user: {
         VerifyUser: function(db, user, email, callback){
-            VerifyUser(db, user, email, callback);
+            db.collection('users').doc(email).get()
+            .then(async (data) => {
+                if(data.data()){
+                    await db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
+                    Util.baseUrl.consoleLog('VerifyUser', true);
+                    callback(data.data());
+                } 
+                else {
+                    if(user != undefined || user != null) {
+                        let buildUser = {
+                            createdAt: new Date().toUTCString(),
+                            displayName: user.displayName,
+                            email: user.email,
+                            emailVerified: user.emailVerified,
+                            lastLoginAt: new Date().toUTCString(),
+                            phoneNumber: (user.phoneNumber == undefined || user.phoneNumber == null ? "555-555-5555" : user.phoneNumber),
+                            photoSouce: user.photoURL,
+                            providerData: user.providerData[0]
+                        }
+                        db.collection('users').doc(email).set(buildUser)
+                        .then((data) => {
+                            callback(buildUser);
+                            Util.basicUtil.consoleLog('VerifyUser', true);
+                        });
+                    } else {
+                        Util.basicUtil.consoleLog('VerifyUser', false);
+                    }
+                }
+            });
         },
         GetUserData: function(db, email, callback){
-            GetUserData(db, email, callback)
+            db.collection('users').doc(email).get()
+            .then((data) => {
+              if(data.data()){
+                db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
+                Util.basicUtil.consoleLog('GetUserData', true);
+                callback(data.data());
+              }
+              else {
+                Util.basicUtil.consoleLog('GetUserData', false);
+              }
+          })
+          .catch((error) => {
+                Util.basicUtil.consoleLog('GetUserData', false);
+                console.log("Firebase Error: " + error);
+          });
         },
         UpdateUser: function(db, email, updateObject, callback){
-            UpdateUser(db, email, updateObject, callback);
+            db.collection('users').doc(email);
+            userRef.set(updateObject, {merge:true})
+            .then(() => {
+                Util.basicUtil.consoleLog('UpdateUser', true);
+                callback()
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('UpdateUser', false);
+                console.log("Firebase Error: " + error);
+            });
         },
         CheckIn: async (buisnessUID, email, privacy, returnData) => {
             let db = firebase.firestore();
@@ -45,8 +108,15 @@ const Util = {
             }},
             {
                 merge: true
+            })
+            then(() => {
+                Util.basicUtil.consoleLog('CheckIn', true);
+                returnData('true');
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('CheckIn', false);
+                console.log("Firebase Error: " + error);
             });
-            returnData('true');
         },
         CheckOut: async (email, returnData) => {
             let db = firebase.firestore();
@@ -59,38 +129,69 @@ const Util = {
             }},
             {
                 merge: true
+            })
+            then(() => {
+                Util.basicUtil.consoleLog('CheckOut', true);
+                returnData('false');
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('CheckOut', false);
+                console.log("Firebase Error: " + error);
             });
-            returnData('false');
         },
         IsUserCheckedIn: (email, buisnessUID, returnData) => {
             let db = firebase.firestore();
-            Util.user.GetUserData(db, email, (userData) => {
-                let user = userData;
-                console.log(user);
-                if(user.checkIn.checkInTime == "") {
-                    returnData("false");
-                }
-                else if (user.checkIn.buinessUID == buisnessUID) {
-                    returnData("true");
-                }
-                else {
-                    returnData("true");
-                }
-            })
+            try {
+                Util.user.GetUserData(db, email, (userData) => {
+                    let user = userData;
+                    console.log(user);
+                    if(user.checkIn.checkInTime == "") {
+                        returnData("false");
+                    }
+                    else if (user.checkIn.buinessUID == buisnessUID) {
+                        returnData("true");
+                    }
+                    else {
+                        returnData("true");
+                    }
+                });
+                Util.basicUtil.consoleLog('IsUserCheckedIn', true);
+            }
+            catch (error) {
+                Util.basicUtil.consoleLog('IsUserCheckedIn', false);
+                console.log('Catch error: ' + error);
+            }
         }
     },
     location: {
         SaveLocation: function(db, email, location, callback){
-            SaveLocation(db, email, location, callback);
+            let setLoc = db.collection('users').doc(email);
+            setLoc
+            .set({ loginLocation: location }, {merge: true})
+            then(() => {
+                Util.basicUtil.consoleLog('SaveLocation', true);
+                callback();
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('SaveLocation', false);
+                console.log("Firebase Error: " + error);
+            });
         },
         SetUserLocationData: function (region) {
             var latAndLong = region.latitude + ',' + region.longitude;
             Util.asyncStorage.SetAsyncStorageVar('userLocationData', latAndLong);
+            Util.basicUtil.consoleLog('SaveLocation', true);
         },
         GetUserLocation: (returnData) => {
-            Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+            Location.getCurrentPositionAsync({enableHighAccuracy:true})
+            .then((location) => {
                 Util.location.SetUserLocationData(location.coords);
+                Util.basicUtil.consoleLog('GetUserLocation', true);
                 returnData(location.coords);
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('GetUserLocation', false);
+                console.log("Expo Location Error: " + error);
             });
         }
     },
@@ -210,11 +311,14 @@ const Util = {
                         .then(response => response.json())
                         .then(async data => {
                             dataObj['data'] = data.data;
-                            console.log(dataObj.data);
+                            Util.basicUtil.consoleLog("Facbook's placeData", true);
                             //Grabs post from FB based for user query
                             returnData(dataObj);
                         })
-                        .catch(e => console.log(e));
+                        .catch((e) => {
+                            Util.basicUtil.consoleLog("Facbook's placeData", false);
+                            console.log("Facebook Graph API Error: " + e);
+                        });
                     } 
                     // Get the Whats Poppin feed using Facebook's Graph API for default
                     else {
@@ -222,17 +326,21 @@ const Util = {
                         .then(response => response.json())
                         .then(async data => {
                             dataObj['data'] = data.data;
+                            Util.basicUtil.consoleLog("Facbook's placeData", true);
                             //Grabs post from FB based for default
                             returnData(dataObj);
                         })
-                        .catch(e => console.log(e));
+                        .catch((e) => {
+                            Util.basicUtil.consoleLog("Facbook's placeData", false);
+                            console.log("Facebook Graph API Error: " + e);
+                        });
                     }
                 } catch ({ message }) {
-                    alert(`Facebook Query Error: ${message}`);
+                    Util.basicUtil.consoleLog("Facbook's placeData", false);
+                    console.log(`Facebook's placeData Query Error: ${message}`);
                 }
             },
             postData: async (dataObj, token, returnData) => {
-                console.log(dataObj);
                 await Facebook.initializeAsync(FACEBOOK_APP_ID, BUNDLE_ID);
                 try {
                     // Get the user's name using Facebook's Graph API
@@ -240,11 +348,16 @@ const Util = {
                     .then(response => response.json())
                     .then(async data => {
                         dataObj['PostData'] = data;
+                        Util.basicUtil.consoleLog("Facbook's postData", true);
                         returnData(dataObj);
                     })
-                    .catch(e => console.log(e));
+                    .catch((e) => {
+                        Util.basicUtil.consoleLog("Facbook's postData", false);
+                        console.log("Facebook Graph API Error: " + e);
+                    });
                 } catch ({ message }) {
-                    alert(`Facebook Query Error: ${message}`);
+                    Util.basicUtil.consoleLog("Facbook's postData", false);
+                    console.log(`Facebook's postData Query Error: ${message}`);
                 }
             },
             login: async (callBack) => {
@@ -264,26 +377,29 @@ const Util = {
                   if (type === 'success') {
                     // Get the user's name using Facebook's Graph API
                     fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`)
-                      .then(response => response.json())
-                      .then(async data => {
+                    .then(response => response.json())
+                    .then(async data => {
                         const credential = firebase.auth.FacebookAuthProvider.credential(token);
-                        await firebase.auth().signInWithCredential(credential).catch((error) => { console.log('Firebase Facebook Auth Error: ' + error); });
+                        await firebase.auth().signInWithCredential(credential)
+                        .catch((error) => { 
+                            Util.basicUtil.consoleLog("Facbook's login", false);
+                            console.log('Firebase Facebook Auth Error: ' + error); 
+                        });
                         dataObj['data'] = firebase.auth().currentUser;
+                        Util.basicUtil.consoleLog("Facbook's login", true);
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
                         callBack(dataObj);
-                      })
-                      .catch((error) => {
-                        console.log("Firebase Google Auth Error: ");
-                        console.log("Error Code: " + error.code);
-                        console.log("Error Message: " + error.message);
-                        console.log("Error Email: " + error.email);
-                        console.log("Error Creds: " + error.credential);
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.consoleLog("Facbook's login", false);
+                        console.log("Firebase Facebook Auth Error: " + error.message);
                     });
                   } else {
                     // type === 'cancel'
                   }
                 } catch ({ message }) {
-                  alert(`Facebook Login Error: ${message}`);
+                  Util.basicUtil.consoleLog("Facbook's login", false);
+                  console.log(`Facebook Login Error: ${message}`);
                 }
             }
         },
@@ -313,19 +429,23 @@ const Util = {
                         await fetch(twitObj.url + twitObj.paramStr, requestOptions)
                         .then(response => response.json())
                         .then(result => {
-                            console.log(result)
                             if(result && !result.errors && result.statuses.length > 0) {
                                 twitObj['TwitterData'] = result.statuses;
                             }
                         })
-                        .catch(error => console.log('error', error));
+                        .catch((error) => {
+                            Util.basicUtil.consoleLog("Twitter's tweetData", false);
+                            console.log(`Twitter's tweetData Error: ${error}`);
+                        });
                         if(twitObj.TwitterData){
                             dataObj.data[i]['TwitterData'] = twitObj.TwitterData;
                         }
                     } catch ({ message }) {
+                        Util.basicUtil.consoleLog("Twitter's tweetData", false);
                         alert(`Twitter Query Error: ${message}`);
                     }
                 }
+                Util.basicUtil.consoleLog("Twitter's tweetData", true);
                 returnData(dataObj);
             } 
         },
@@ -341,9 +461,13 @@ const Util = {
                         .then(async data => {
                             dataObj['data'] = data.data;
                             //Grabs post from Google based on query
+                            Util.basicUtil.consoleLog("Google's placeData", true);
                             returnData(dataObj);
                         })
-                        .catch(e => console.log(e));
+                        .catch((e) => {
+                            Util.basicUtil.consoleLog("Google's placeData", false);
+                            console.log("Google Map Query API Error: " + e);
+                        });
                     }
                     // Get the Whats Poppin feed using Google's Map API for default
                     else {
@@ -352,12 +476,17 @@ const Util = {
                         .then(async data => {
                             dataObj['data'] = data.data;
                             //Grabs post from Google based for default
+                            Util.basicUtil.consoleLog("Google's placeData", true);
                             returnData(dataObj);
                         })
-                        .catch(e => console.log(e));
+                        .catch((e) => {
+                            Util.basicUtil.consoleLog("Google's placeData", false);
+                            console.log("Google Map Default API Error: " + e);
+                        });
                     }
                 } catch ({ message }) {
-                    alert(`Facebook Query Error: ${message}`);
+                    Util.basicUtil.consoleLog("Google's placeData", false);
+                    alert(`Google placeData Error: ${message}`);
                 }
             },
             login: async function (callBack) {
@@ -368,30 +497,26 @@ const Util = {
                         iosClientId: IOSClientKey,
                         clientId: ClientKey
                     });
-                    console.log(result);
                     if (result.type === 'success') {
                         /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
                         const googleCredential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
-                        // Sign-in the user with the credential
-                        console.log(googleCredential);
-                        await firebase.auth().signInWithCredential(googleCredential).catch((error) => {
-                            console.log("Firebase Google Auth Error: ");
-                            console.log("Error Code: " + error.code);
-                            console.log("Error Message: " + error.message);
-                            console.log("Error Email: " + error.email);
-                            console.log("Error Creds: " + error.credential);
+                        await firebase.auth().signInWithCredential(googleCredential)
+                        .catch((error) => {
+                            Util.basicUtil.consoleLog("Google's login", false);
+                            console.log("Firebase Google Auth Error: " + error.message);
                         });
                         dataObj['user'] = firebase.auth().currentUser;
                         dataObj['data'] = firebase.auth();
-                        // Util.asyncStorage.SetAsyncStorageVar('GOToken', result.accessToken);
+                        Util.basicUtil.consoleLog("Google's login", true);
                         callBack(dataObj);
                     }
                     else{
-                        console.log(result);
+                        //Handles cancel
                     }
                 } 
                 catch ({ message }) {
-                    alert(`Google Login Error: ${message}`);
+                    Util.basicUtil.consoleLog("Google's login", false);
+                    alert(`Google login Error: ${message}`);
                 }
             }
         },
@@ -403,38 +528,38 @@ const Util = {
                     try {
                         let email = signUpInfo.email;
                         let password = signUpInfo.password1
-                        firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-                            // Handle Errors here.
-                            if(error) {
-                                var errorMessage = error.message;
-                                callBack(null, errorMessage)
-                            }
+                        firebase.auth().createUserWithEmailAndPassword(email, password)
+                        .catch(function(error) {
+                            Util.basicUtil.consoleLog("Nife's sign-up", false);
+                            console.log("Nife sign-up Error: " + error);
                         });
                         dataObj['data'] = firebase.auth().currentUser;
                         dataObj['token'] = null;
                         dataObj['user'] = firebase.auth().currentUser;
+                        Util.basicUtil.consoleLog("Nife's sign-up", true);
                         callBack(dataObj);
                     } catch ({ message }) {
-                        alert(`Nife Sign-up Error: ${message}`);
+                        Util.basicUtil.consoleLog("Nife's sign-up", false);
+                        alert(`Nife sign-up Error: ${message}`);
                     }
                 }
                 else {
                     try {
                         let email = loginInfo.email;
                         let password = loginInfo.password1
-                        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-                            // Handle Errors here.
-                            if(error) {
-                                var errorMessage = error.message;
-                                callBack(null, errorMessage)
-                            }
+                        firebase.auth().signInWithEmailAndPassword(email, password)
+                        .catch(function(error) {
+                            Util.basicUtil.consoleLog("Nife's login", false);
+                            console.log("Nife login Error: " + error);
                         });
                         dataObj['data'] = firebase.auth().currentUser;
                         dataObj['token'] = null;
                         dataObj['user'] = firebase.auth().currentUser;
+                        Util.basicUtil.consoleLog("Nife's login", true);
                         callBack(dataObj);
                     } catch ({ message }) {
-                        alert(`Nife Login Error: ${message}`);
+                        Util.basicUtil.consoleLog("Nife's login", false);
+                        alert(`Nife login Error: ${message}`);
                     }
                 }
             }
@@ -447,11 +572,25 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     let friends = friendData;
-                    let bars = response;
+                    let bars = response['businesses'];
+                    var tempFriendArr = [];
+                    console.log(friendData)
+                    if(friends){
+                        bars.forEach((bar)=>{
+                            friends.forEach((friend) => {
+                                if((friend.lastVisited) && (friend.lastVisited.buinessUID == bar.id)){
+                                    tempFriendArr.push(friend);
+                                }
+                            });
+                        });
+                    }
+                    response["businesses"]['lastVisitedBy'] = tempFriendArr;
+                    Util.basicUtil.consoleLog("Yelp's placeData", true);
                     returnData(response['businesses']);
                 })
                 .catch((err) => {
-                    console.log("Yelp API Place Data Error: " + err);
+                    Util.basicUtil.consoleLog("Yelp's placeData", false);
+                    console.log("Yelp's placeData Error: " + err);
                 });
             },
             buildParameters: (lat, long, radius) => {
@@ -567,6 +706,14 @@ const Util = {
             dataObj['osName'] = Device.osName;
             dataObj['totalMemory'] = Device.totalMemory;
             returnData(dataObj);
+        },
+        consoleLog: (fucnName, type) => {
+            if(type == true) {
+                console.log("" + fucnName + " ran successfully!");
+            }
+            else {
+                console.log("" + fucnName + " failed.");
+            }
         }
     }
 }

@@ -307,7 +307,6 @@ class MapScreen extends React.Component  {
   }
   
   generateFriendBubbles = (friend) => {
-    console.log(friend);
     return(
       <Image style={localStyles.friendPic} source={{uri:friend.item.photoSource}}/>
     )
@@ -393,16 +392,18 @@ class MapScreen extends React.Component  {
                       <View style={localStyles.callOutMarker}>
                         <Text>{marker.name}</Text>
                         <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
-                        {
-                          marker.lastVisitedBy.map((friend, i) => (
-                            <Image style={{position:"relative",
-                            width: 40,
-                            height: 40,
-                            borderRadius: 50,
-                            left: i+1}} 
-                            key={i}
-                            source={{uri:friend.photoSource}}/>
-                          ))
+                        { marker.lastVisitedBy.length > 0 ?
+                            marker.lastVisitedBy.map((friend, i) => (
+                              <Image style={{position:"relative",
+                                width: 40,
+                                height: 40,
+                                borderRadius: 50,
+                                left: i+1}} 
+                                key={i}
+                                source={{uri:friend.photoSource}}
+                              />
+                            ))
+                          : null
                         }
                       </View>
                     </Callout>
