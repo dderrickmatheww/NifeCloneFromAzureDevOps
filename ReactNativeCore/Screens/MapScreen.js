@@ -225,13 +225,6 @@ class MapScreen extends React.Component  {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }});
-      var region = {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-      Util.location.SetUserLocationData(region);
       await this.gatherLocalMarkers(LATITUDE, LONGITUDE, this.state.friendData, userLocation);
       this.setState({ isLoaded: true });
     });

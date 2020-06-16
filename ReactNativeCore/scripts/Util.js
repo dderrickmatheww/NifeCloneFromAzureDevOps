@@ -198,34 +198,35 @@ const Util = {
         SetAsyncStorageVar: async (name, value) => {
             await AsyncStorage.getItem(name, async function(err, result){
                 if(err) {
+                    Util.basicUtil.consoleLog("SetAsyncStorageVar's getItem", false);
                     console.log('Async Getting Storage Error: ' + err);
                 }
                 else {
                     if (!result) {
-                        console.log('No previous varible!');
                         await AsyncStorage.setItem(name, value, function(err){
                             if (err) {
+                                Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", false);
                                 console.log('Async Setting Storage Error: ' + err);
                             }
                             else {
-                                console.log('Set varible!');
+                                Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", true);
                             }
                         });
                     }
                     else {
-                        console.log('Previous version of varible found!');
                         await AsyncStorage.removeItem(name, async function(err){
                             if (err) {
+                                Util.basicUtil.consoleLog("SetAsyncStorageVar's removeItem", false);
                                 console.log('Async Removing Storage Error: ' + err);
                             }
                             else {
-                                console.log('Removed previous version of varible!');
                                 await AsyncStorage.setItem(name, value, function(err){
                                     if (err) {
+                                        Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", false);
                                         console.log('Async Setting Storage Error: ' + err);
                                     }
                                     else {
-                                        console.log('Set new version of varible!');
+                                        Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", true);
                                     }
                                 });
                             }
@@ -237,15 +238,16 @@ const Util = {
         IsAsyncVariableSet: async (name) => {
             await AsyncStorage.getItem(name, async function(err, result){ 
                 if (err) {
+                    Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", false);
                     console.log('Async Getting Storage Error: ' + err);
                 }
                 else {
                     if(result) {
-                        console.log('Found Async Variable: ' + name);
+                        Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", true);
                         return true;
                     }
                     else {
-                        console.log('Did not find Async Variable: ' + name);
+                        Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", true);
                         return false;
                     }
                 }
@@ -255,30 +257,35 @@ const Util = {
             let returnArray = [];
             await AsyncStorage.multiGet(arrayOfNames, (err, result) => {
                 if (err) {
+                    Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", false);
                     console.log('Async Multiget Storage Error: ' + err);
                 }
                 else {
-                    console.log('Grabbed all items from Async Storage!');
                     returnArray.push(result);
                 }
             });
             if (returnArray.length > 0) {
+                Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", true);
                 callback(returnArray[0]);
+            }
+            else {
+                console.log('No results found of variable names: ' + arrayOfNames);
+                Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", true);
             }
         },
         GetAsyncStorageVar: async (name, callback) => {
             let returnArray = [];
             await AsyncStorage.getItem(name, async (err, result) => { 
                 if(err) {
+                    Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", false);
                     console.log('Async Error getting variable ' + name + ' ' + err);
                 }
                 else {
                     returnArray.push(result);
-                    console.log('Grabbed Async variable: ' + name + ' from Async Storage!');
                 }
             });
             if (returnArray.length > 0) {
-                console.log(returnArray[0]);
+                Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", true);
                 callback(returnArray[0]);
             }
         }
@@ -708,14 +715,12 @@ const Util = {
         },
         consoleLog: (fucnName, type) => {
             if(type == true) {
-                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                console.log('\n');
                 console.log("" + fucnName + " ran successfully!");
-                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             }
             else {
-                console.log("**********************");
+                console.log('\n');
                 console.log("" + fucnName + " failed.");
-                console.log("**********************");
             }
         }
     }

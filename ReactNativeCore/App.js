@@ -2,7 +2,8 @@ import * as React from 'react';
 import Navigator from './routes/drawer';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
-import Util from './scripts/Util'
+import Util from './scripts/Util';
+import Location from 'expo-location'
 import * as Permissions from 'expo-permissions';
 
 if (! global.btoa) {global.btoa = encode}
