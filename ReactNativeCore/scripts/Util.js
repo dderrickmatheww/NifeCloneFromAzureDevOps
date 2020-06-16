@@ -708,10 +708,14 @@ const Util = {
         },
         consoleLog: (fucnName, type) => {
             if(type == true) {
+                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 console.log("" + fucnName + " ran successfully!");
+                console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             }
             else {
+                console.log("**********************");
                 console.log("" + fucnName + " failed.");
+                console.log("**********************");
             }
         }
     }
