@@ -17,11 +17,12 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log('Auth Changed!');
       getLocationAsync((location) => {
-        setWantedData(firebase.firestore(), user, location,()=>{
+        console.log('Location App.js')
+        setWantedData(firebase.firestore(), user, location, () => {
+          console.log('wantedData App.js')
           getNeededData(firebase.firestore(), user);
         });        
-      }
-    )
+      })
   } else {
     console.log('No user');
   }
@@ -42,6 +43,7 @@ async function getLocationAsync(callback) {
 
 function getNeededData(db, currentUser){
   //if user exits get user data, get friend data set to async 
+  console.log('wantedData App.js', currentUser)
   if(currentUser){
     console.log('User exists');
     Util.user.GetUserData(db, currentUser.email, (data) => {
@@ -59,7 +61,7 @@ function getNeededData(db, currentUser){
 
 //sends user login location to db
 function setWantedData(db, currentUser, location, callback){
-  Util.location.SaveLocation(db, currentUser.email, location, () =>{
+  Util.location.SaveLocation(db, currentUser.email, location, () => {
     callback();
   });
 }

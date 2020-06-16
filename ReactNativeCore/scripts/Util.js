@@ -183,8 +183,7 @@ const Util = {
             Util.basicUtil.consoleLog('SaveLocation', true);
         },
         GetUserLocation: (returnData) => {
-            Location.getCurrentPositionAsync({enableHighAccuracy:true})
-            .then((location) => {
+            Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Util.location.SetUserLocationData(location.coords);
                 Util.basicUtil.consoleLog('GetUserLocation', true);
                 returnData(location.coords);
