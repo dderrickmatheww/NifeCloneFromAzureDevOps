@@ -24,14 +24,14 @@ export default class ProfileScreen extends Component {
   //Set user data
   setUserData = async (dataObj) => {
     
-    Util.asyncStorage.GetAsyncVar('User', (userData) => {
+    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
       this.setState({userData: JSON.parse(userData)});
       console.log('User: ' + JSON.stringify(this.state.userData));
     });
   }
 
   setFriendData = async (dataObj) => {
-    Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
+    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
       this.setState({friendData: JSON.parse(friends)});
       // console.log('Friends: ' + this.state.friendData);
     });
