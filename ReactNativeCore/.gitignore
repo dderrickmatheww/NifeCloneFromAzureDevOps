@@ -57,3 +57,6 @@ buck-out/
 
 #Passwords
 *.env
+
+#Expo Settings
+.expo
