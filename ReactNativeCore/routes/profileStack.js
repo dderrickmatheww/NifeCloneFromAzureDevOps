@@ -5,7 +5,7 @@ import FriendsList from '../Screens/Components/Profile Screen Components/Friends
 import EditProfile from '../Screens/Components/Profile Screen Components/EditProfile';
 import ProfileScreen from '../Screens/Profile';
 
-function Friends({navigation}){
+function Friends({ navigation}){
   return(
     <FriendsList onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
@@ -16,9 +16,10 @@ function Profile({navigation}){
   );
 }
 
-function Edit({navigation}){
+function Edit({route, navigation}){
+  const { user } = route.params;
   return(
-    <EditProfile onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></EditProfile>
+    <EditProfile user={user} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></EditProfile>
   );
 }
 

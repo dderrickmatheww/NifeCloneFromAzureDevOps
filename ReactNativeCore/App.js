@@ -6,9 +6,12 @@ import Util from './scripts/Util';
 import Location from 'expo-location'
 import * as Permissions from 'expo-permissions';
 
+
 if (! global.btoa) {global.btoa = encode}
 
 if (! global.atob) {global.atob = decode}
+var userSignedIn = false;
+var loadingDone = false;
 
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
@@ -17,6 +20,7 @@ firebase.initializeApp(Util.dataCalls.Firebase.config);
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     console.log('Auth Changed!');
+
       getLocationAsync((location) => {
         console.log('Location App.js')
         setWantedData(firebase.firestore(), user, location, () => {
@@ -24,10 +28,13 @@ firebase.auth().onAuthStateChanged(function(user) {
           getNeededData(firebase.firestore(), user);
         });        
       })
+
   } else {
+    loadingDone = true
     console.log('No user');
   }
 });
+
 
 async function getLocationAsync(callback) {
   // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
@@ -43,6 +50,7 @@ async function getLocationAsync(callback) {
 
 
 function getNeededData(db, currentUser){
+
   //if user exits get user data, get friend data set to async 
   console.log('wantedData App.js', currentUser)
   if(currentUser){
@@ -55,10 +63,15 @@ function getNeededData(db, currentUser){
       let friends = JSON.stringify(data);
       Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
     });
+    loadingDone = true;
   } else {
+
     console.log('no user!');
   }
 }
+
+
+
 
 //sends user login location to db
 function setWantedData(db, currentUser, location, callback){
@@ -68,7 +81,7 @@ function setWantedData(db, currentUser, location, callback){
 }
 
 export default function App() {
-  console.ignoredYellowBox = ['Setting a timer'];
+
   return(
       <Navigator />
   );

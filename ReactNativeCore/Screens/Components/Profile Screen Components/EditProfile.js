@@ -23,6 +23,7 @@ export default class EditProfile extends Component {
     bio:null,
     favoriteDrinks: [],
     showDatePicker: false,
+    doneLoading: false,
   }
 
   setMaxDate = () => {
@@ -32,44 +33,36 @@ export default class EditProfile extends Component {
   }
 
   //Set user data
-  setUserData = async (dataObj) => {
+  setUserData = async () => {
     
-    Util.asyncStorage.GetAsyncVar('User', (user) => {
-      user = JSON.parse(user);
+      var user = this.props.user;
       this.setState({userData: user});
-      // console.log("User: " + JSON.stringify(this.state.userData));
+      console.log("User: " + JSON.stringify(user));
 
       this.setState({dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.state.maxDateValue});
       
 
-      this.setState({gender: user.gender ? JSON.stringify(user.gender) : "other"});
+      this.setState({gender: user.gender ? user.gender : "other"});
      
 
-      this.setState({sexualOrientation: user.sexualOrientation ? JSON.stringify(user.sexualOrientation) : 'other'});
+      this.setState({sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other'});
       
 
-      this.setState({bio: user.bio ? JSON.stringify(user.bio) : ""});
+      this.setState({bio: user.bio ? user.bio : ""});
       
       
       this.setState({favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks: []});
       
-      console.log("sexualOrientation:" + this.state.sexualOrientation);
-      console.log("dateOfBirth: " + this.state.dateOfBirth.toLocaleDateString('en-US'));
-      console.log("gender: " + this.state.gender);
-      console.log("bio: " + this.state.bio);
-      console.log("favoriteDrinks: " + this.state.favoriteDrinks);
-    });
-
       
+      this.setState({doneLoading: true});
+
   }
 
    //gets user and friend data
-  getAsyncStorageData = (callback) => {
-    this.setUserData();
-  }
+
   componentDidMount(){
     this.setMaxDate();
-    this.getAsyncStorageData();  
+    this.setUserData();    
   }
 
   onDOBChange = (event, selectedDate) => {
@@ -91,13 +84,12 @@ export default class EditProfile extends Component {
   }
 
   onBioChange = (bio) => {
-    bio = bio.nativeEvent.text;
     console.log(bio);
     this.setState({bio:bio})
   }
 
   onFavoriteDrinkChange = (drinks) => {
-    var fieldText = drinks.nativeEvent.text;
+    var fieldText = drinks;
     fieldText = fieldText.toString();
     var drinkArr = [];
     if(fieldText.indexOf(',') == -1){
@@ -136,23 +128,36 @@ export default class EditProfile extends Component {
     var updatedUser = extend(user, profileInfo);
     updatedUser = JSON.stringify(updatedUser);
     Util.asyncStorage.SetAsyncStorageVar('User', updatedUser);
-    this.getAsyncStorageData();
+    this.setUserData();
 
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
 
     function extend(dest, src) {
       for(var key in src) {
-          dest[key] = src[key];
+          if(key=='dateOfBirth'){
+            dest[key] = {seconds:new Date(src[key]).getTime()/1000};
+          }
+          else if(typeof(src[key]) == "string" ){
+            dest[key] = src[key].replace(String.fromCharCode(92), '').replace('"',"");
+          }
+          else {
+            dest[key] = src[key];
+          }   
       }
       return dest;
     }
       
   }
 
+  onCancel = () => {
+    console.log('Canceling Edit')
+    this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
+  }
+
    render () {
       return ( 
         ////////////////////////////////////////
-          this.state.userData ?
+          this.state.doneLoading ?
             <View style={styles.loggedInContainer}>
               <View style={localStyles.HeaderCont}>
                   <View style={{flexDirection:"row"}}>
@@ -229,7 +234,8 @@ export default class EditProfile extends Component {
                       Bio: 
                     </Text>
                     <TextInput numberOfLines={5}
-                    onEndEditing={(text)=> this.onBioChange(text)}
+                    onChangeText={text => this.onBioChange(text)}
+                    value={this.state.bio}
                     style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, alignItems:"flex-start", justifyContent:"flex-start"}}>
 
                     </TextInput>
@@ -241,9 +247,11 @@ export default class EditProfile extends Component {
                     </Text>
                     {/* index one to on change */}
                     <TextInput
-                    onEndEditing={(text)=> this.onFavoriteDrinkChange(text)}
-                    style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 5,}}>
-
+                    onChangeText={text => this.onFavoriteDrinkChange(text)}
+                    style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 5,}}
+                    value={this.state.favoriteDrinks.toString()}
+                    >
+                      
                     </TextInput>
                     
                   </View>
@@ -253,7 +261,12 @@ export default class EditProfile extends Component {
                 onPress={()=> this.onSave()}
               >
                 <Ionicons name="ios-checkmark-circle-outline" size={30} color={theme.LIGHT_PINK} />
-                
+              </TouchableOpacity>
+
+              <TouchableOpacity style={localStyles.CancelOverlay}
+                onPress={()=> this.onCancel()}
+              >
+                <Ionicons name="ios-close-circle-outline" size={30} color={theme.LIGHT_PINK} />
               </TouchableOpacity>
               <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View>
@@ -282,6 +295,14 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top:"6%",
     left: "90.5%",
+    backgroundColor: theme.DARK,
+    borderRadius: 10,
+    paddingVertical:0,
+  },
+  CancelOverlay: {
+    position: 'absolute',
+    top:"6%",
+    left: "80%",
     backgroundColor: theme.DARK,
     borderRadius: 10,
     paddingVertical:0,
@@ -382,4 +403,3 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   }
 });
-

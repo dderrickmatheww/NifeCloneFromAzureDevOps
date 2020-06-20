@@ -18,28 +18,29 @@ const Drawer = createDrawerNavigator();
 
 class Navigator extends React.Component  {
 
-   saveLocation = (currentUser) => {
-    // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
-    const { status } =  Permissions.askAsync(Permissions.LOCATION);
-    if (status === 'granted') {
-      Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
-        Util.location.SaveLocation(firebase.firestore(), currentUser.email, location, () =>{
-          console.log('saved location');
-        });
-      });
+  //  saveLocation = (currentUser) => {
+  //   // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
+  //   const { status } =  Permissions.askAsync(Permissions.LOCATION);
+  //   if (status === 'granted') {
+  //     Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
+  //       Util.location.SaveLocation(firebase.firestore(), currentUser.email, location, () =>{
+  //         console.log('saved location');
+  //       });
+  //     });
       
-    } else {
-      throw new Error('Location permission not granted');
-    }
-  }
+  //   } else {
+  //     throw new Error('Location permission not granted');
+  //   }
+  // }
 
 
-  componentDidMount(){
-    console.log('drawer mounted')
-    if(firebase.auth.currentUser){
-        setInterval(() => this.saveLocation(firebase.auth.currentUser), 10000)
-    }
-  }
+  // componentDidMount(){
+  //   console.log('drawer mounted')
+  //   if(firebase.auth.currentUser){
+  //       setInterval(() => this.saveLocation(firebase.auth.currentUser), 10000)
+  //   }
+  // }
+  
   render(){
     return ( 
       <NavigationContainer>
@@ -50,7 +51,7 @@ class Navigator extends React.Component  {
           drawerStyle={{
             backgroundColor: theme.DARK
           }} 
-          initialRouteName='Home'
+          initialRouteName='Test'
           overlayColor="#20232A" >
           <Drawer.Screen  name="Test" component={TestingStack} />
           <Drawer.Screen  name="Profile" component={profileStack} />
