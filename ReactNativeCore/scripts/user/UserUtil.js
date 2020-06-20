@@ -6,13 +6,15 @@ export async function GetUserData (db, email, callback) {
         if(data.data()){
             if(data){
                 console.log('User Exists...');
-                let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date()}, {merge:true})
+                // let setDoc = db.collection('users').doc(email).set({lastLoginAt: new Date()}, {merge:true})
                 callback(data.data());
             }
             else {
                 console.log("Error: No such user exists!")
             }
         }
+    }).catch((error)=>{
+        console.error(error);
     });
 }
 
