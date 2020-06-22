@@ -8,12 +8,13 @@ import ProfileScreen from '../Screens/Profile';
 
 function Friends({ navigation}){
   return(
-    <FriendsList onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
+    <FriendsList navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
 }
-function Profile({navigation}){
+function Profile({route, navigation}){
+  const { user, isUserProfile} = route.params;
   return(
-    <ProfileScreen onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 
