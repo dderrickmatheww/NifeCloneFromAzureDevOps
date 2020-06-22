@@ -99,17 +99,19 @@ const Util = {
         CheckIn: async (buisnessUID, email, privacy, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
+            let lastVisited = {};
+            lastVisited[buisnessUID] = {
+                checkInTime: new Date().toUTCString(),
+                privacy: privacy
+            }
             setLoc.set({
-            checkIn: {
-                buisnessUID: buisnessUID,
-                checkInTime: new Date().toUTCString(),
-                privacy: privacy
+                checkIn: {
+                    buisnessUID: buisnessUID,
+                    checkInTime: new Date().toUTCString(),
+                    privacy: privacy
+                },
+                lastVisited
             },
-            lastVisited: {
-                buisnessUID: buisnessUID,
-                checkInTime: new Date().toUTCString(),
-                privacy: privacy
-            }},
             {
                 merge: true
             })

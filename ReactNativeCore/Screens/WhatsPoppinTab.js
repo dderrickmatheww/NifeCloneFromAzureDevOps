@@ -5,6 +5,7 @@ import getFeedData from './Components/Whats Poppin Components/GetFeedData';
 import DataRow from './Components/Whats Poppin Components/DataRow';
 import * as firebase from 'firebase';
 import InputWithIcon from './Universal Components/InputWithIcon';
+import PleaseLogin from './Universal Components/PleaseLogin';
 import AppLoading from './AppLoading';
 
 class WhatsPoppin extends React.Component  {
@@ -95,10 +96,10 @@ class WhatsPoppin extends React.Component  {
                         />
                     </View>
                 : 
-                <View style={styles.viewDark}>
-                    <Text style={styles.titleVice}>Please login or sign up to see your feed!</Text>
-                    <TouchableOpacity style={styles.navigateLoginBtn} onPress={() => this.props.navigation.navigate('Settings')}><Text>Login/Sign Up</Text></TouchableOpacity>
-                </View>
+                <PleaseLogin 
+                    navigation={this.props.navigation}
+                    appName={`What's poppin' feed`}
+                />
             :
             <ScrollView style={styles.viewDark}>
                 
