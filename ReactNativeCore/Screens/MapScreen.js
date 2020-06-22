@@ -390,6 +390,7 @@ class MapScreen extends React.Component  {
                         <Text>{marker.name}</Text>
                         <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
                         { marker.lastVisitedBy && marker.lastVisitedBy.length > 0 ?
+
                             marker.lastVisitedBy.map((friend, i) => (
                               <Image style={{position:"relative",
                                 width: 40,

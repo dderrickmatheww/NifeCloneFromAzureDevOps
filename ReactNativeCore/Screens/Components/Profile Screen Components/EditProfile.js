@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, TextInput,ScrollView, Picker} from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Picker} from 'react-native';
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../../Universal Components/DrawerButton';
@@ -7,7 +7,9 @@ import theme from '../../../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import {
+  TextInput
+} from 'react-native-paper';
 
 
 
@@ -233,10 +235,13 @@ export default class EditProfile extends Component {
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
                       Bio: 
                     </Text>
-                    <TextInput numberOfLines={5}
+                    <TextInput numberOfLines={2}
+                    mode={"flat"}
+                    label=""
+                    placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
                     value={this.state.bio}
-                    style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, alignItems:"flex-start", justifyContent:"flex-start"}}>
+                    style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5,}}>
 
                     </TextInput>
                   </View>
@@ -247,6 +252,9 @@ export default class EditProfile extends Component {
                     </Text>
                     {/* index one to on change */}
                     <TextInput
+                    mode={"flat"}
+                    label=""
+                    placeholder={"What're you drinkin'?"}
                     onChangeText={text => this.onFavoriteDrinkChange(text)}
                     style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 5,}}
                     value={this.state.favoriteDrinks.toString()}

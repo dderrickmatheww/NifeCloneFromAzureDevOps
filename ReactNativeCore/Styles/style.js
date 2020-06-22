@@ -100,7 +100,8 @@ export const styles = StyleSheet.create({
   loggedInContainer: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#20232A'
+    backgroundColor: '#20232A',
+    elevation:4
   },
   facebookLoginBtn: {
     backgroundColor: '#4267b2',
@@ -287,7 +288,7 @@ export const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    color: 'white'
+    color:theme.LIGHT_PINK
   },
   headerContainer: {
     top: 60

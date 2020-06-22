@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, ActivityIndicator, StyleSheet, TouchableHighlightComponent } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  Title,
+  Caption,
+  Text,
+  Headline,
+  Chip,
+  Surface
+} from 'react-native-paper';
 import Util from '../scripts/Util';
 import { styles } from '../Styles/style';
-import DrawerButton from './Universal Components/DrawerButton';
 import theme from '../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
@@ -50,7 +57,7 @@ export default class ProfileScreen extends Component {
   componentDidMount(){
     this.getAsyncStorageData();
     this.rerender = this.props.navigation.addListener('focus', () => {
-      this.setUserData();
+      this.componentDidMount();
     });
   }
 
@@ -75,62 +82,128 @@ export default class ProfileScreen extends Component {
       return ( 
         ////////////////////////////////////////
           this.state.userData ?
-            <View style={styles.loggedInContainer}>
-              <View style={localStyles.HeaderCont}>
-                  <Image style={localStyles.profilePic}source={{ uri: this.state.userData ? this.state.userData.photoSouce : null }} />
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={localStyles.Header}>{this.state.userData.displayName}, {this.genderUpperCase(this.state.userData.gender)} - {this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000)}</Text>
-                    
-                  </View>
-                  
-                  <View style={localStyles.LocAndFriends}>
-                    <View style={{alignSelf:"flex-start", width:"50%"}}>
-                      <Text  style={localStyles.FriendCount}>{this.state.userData.loginLocation.region.city}, {this.state.userData.loginLocation.region.region}</Text>
-                    </View>
-                    <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends'})}>
-                        <Text style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Friends</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-              </View>
-              <View style={localStyles.mainCont}> 
-              {/* bio */}
-                  <View> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                      Bio: {this.state.userData.bio ?  this.state.userData.bio : "None"}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                          Favorite Drinks: {this.state.userData.favoriteDrinks ? this.state.userData.favoriteDrinks.toString() : "None"}
-                    </Text>  
-                  
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                      Favorite Bars: Cutty's, Big Gun, Ghost Monkey, Frothy Beards
-                    </Text>
-                  </View>
-                
-              </View>
-              <TouchableOpacity style={localStyles.EditOverlay}
-                onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
-              >
-                <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
-              </TouchableOpacity>
+          <Surface style={styles.loggedInContainer}>
+            <View style={localStyles.navHeader}>
+              {/* Drawer Button */}
+              <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
+                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
+              </TouchableOpacity> 
+              
+              {/* Add Friend */}
               <TouchableOpacity style={localStyles.AddFriendOverlay}
                 //  onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit'})}
               >
                 <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Add Friend</Text>
               </TouchableOpacity>
-              <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+
+              {/* Edit Profile */}
+              <TouchableOpacity style={localStyles.EditOverlay}
+                onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
+              >
+                <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
+              </TouchableOpacity>
             </View>
+            <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
+              <View style={localStyles.HeaderCont}>
+                <View style={{flexDirection:"column", justifyContent:"center"}}>
+                    <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
+                    <Title style={localStyles.headerAgeGender}> {this.genderUpperCase(this.state.userData.gender)}, {this.genderUpperCase(this.state.userData.sexualOrientation)}  - {this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000)}</Title>
+                </View>
+                <Image style={localStyles.profilePic}source={{ uri: this.state.userData ? this.state.userData.photoSouce : null }} />
+                <Caption  style={localStyles.FriendCount}>Casual Socialite | 420 Points</Caption>
+                  
+                  <View style={localStyles.LocAndFriends}>
+                    <View style={{alignSelf:"flex-start", width:"50%"}}>
+                      <Caption  style={localStyles.FriendCount}>{this.state.userData.loginLocation.region.city}, {this.state.userData.loginLocation.region.region}</Caption>
+                    </View>
+                    <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends'})}>
+                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Friends</Caption>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+              </View>
+              <View style={localStyles.mainCont}> 
+              {/* status */}
+                  <View style={localStyles.profRow}> 
+                    <Title style={localStyles.descTitle}>
+                      Status: 
+                    </Title>
+                    <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status : "Lookin for what's poppin!"}</Caption>
+                  </View>
+                  {/* bio */}
+                  <View style={localStyles.profRow}> 
+                    <Title style={localStyles.descTitle}>
+                      Bio: 
+                    </Title>
+                    <Caption  style={localStyles.caption}>{this.state.userData.bio ?  this.state.userData.bio : "None"}</Caption>
+                  </View>
+                  {/* fave drinks */}
+                  <View style={localStyles.profRow}>
+                    <Title style={localStyles.descTitle}>
+                          Favorite Drinks: 
+                    </Title>
+                    
+                    <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
+                    {
+                        this.state.userData.favoriteDrinks ? 
+                        this.state.userData.favoriteDrinks.map((drink)=>(
+                          
+                            <Chip mode={"outlined"}  
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                              {drink}
+                            </Chip>
+                          
+                        ))
+                        :
+                        <Chip mode={"outlined"}  
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                          None
+                        </Chip>
+                      }
+                    </ScrollView>
+                      
+                    
+                  </View>
+                  {/* favorite bars */}
+                  <View style={localStyles.profRow}>
+                    <Title style={localStyles.descTitle}>
+                      Favorite Bars: 
+                    </Title>
+                    <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
+                      <Chip mode={"outlined"}  
+                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                        }} 
+                        textStyle={{color:theme.LIGHT_PINK}}>
+                        Cutty's
+                      </Chip>
+                      <Chip mode={"outlined"}  
+                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                        }} 
+                        textStyle={{color:theme.LIGHT_PINK}}>
+                        Big Gun
+                      </Chip>
+                      <Chip mode={"outlined"}  
+                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                        }} 
+                        textStyle={{color:theme.LIGHT_PINK}}>
+                        Ghost Monkey
+                      </Chip>
+                    </ScrollView>
+                  </View>
+                
+              </View>
+              
+            </ScrollView>
+            </Surface>
             :
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-                <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View> 
         
       );
@@ -138,6 +211,58 @@ export default class ProfileScreen extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  drinksChipCont:{
+    flex:1,
+    flexDirection:"row",
+    alignItems:"flex-start"
+  },
+  navHeader:{
+    marginTop:40,
+    flexDirection:"row",
+    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomWidth:1,
+    width:"98%"
+  },
+  EditOverlay: {
+    position:"relative",
+    left: 215,
+    alignSelf:"flex-end",
+    opacity: 0.75,
+    backgroundColor: theme.DARK,
+    borderRadius: 10,
+    marginBottom:5,
+  },
+  DrawerOverlay: {
+    alignSelf:"flex-start",
+    opacity: 0.75,
+    backgroundColor: theme.DARK,
+    borderRadius: 10,
+    paddingVertical:0,
+  },
+
+  AddFriendOverlay: {
+    position:"relative",
+    left: 195,
+    alignSelf:"flex-end",
+    opacity: 0.75,
+    backgroundColor: theme.DARK,
+    borderRadius: 5,
+    marginBottom:7.5,
+    borderWidth:1,
+    borderColor: theme.LIGHT_PINK
+  },
+  profRow:{
+    marginVertical: 10
+  },
+  descTitle:{
+    fontSize: 18, 
+    color: theme.LIGHT_PINK
+  },
+  caption:{
+    fontSize: 14, 
+    color: theme.LIGHT_PINK,
+    marginLeft: 15
+  },
   mainCont:{
     width:"95%",
     flex:1,
@@ -146,27 +271,6 @@ const localStyles = StyleSheet.create({
     justifyContent:"flex-start",
   },
 
-  EditOverlay: {
-    position: 'absolute',
-    top:"6%",
-    left: "92.5%",
-    opacity: 0.75,
-    backgroundColor: theme.DARK,
-    borderRadius: 10,
-    paddingVertical:0,
-  },
-
-  AddFriendOverlay: {
-    position: 'absolute',
-    top:"7%",
-    left: "70%",
-    opacity: 0.75,
-    backgroundColor: theme.DARK,
-    borderRadius: 5,
-    paddingVertical:0,
-    borderWidth:1,
-    borderColor: theme.LIGHT_PINK
-  },
 
   LocAndFriends:{
     flexDirection: "row",
@@ -175,11 +279,8 @@ const localStyles = StyleSheet.create({
     width:"90%"
   },
   loggedInContainer:{
-    alignItems:"flex-start", 
-    flex: 1, 
-    flexDirection: "column",
-    backgroundColor: theme.DARK,
-    alignItems:"center",
+    paddingHorizontal:10,
+    paddingBottom:25
   },
   loggedInSubView:{
     flex: 1, 
@@ -198,13 +299,14 @@ const localStyles = StyleSheet.create({
     alignItems:"center",
     borderBottomColor: theme.LIGHT_PINK,
     borderBottomWidth: 2,
+    marginTop:120
 
   },
   profilePic: {
-    width: 75, 
-    height: 75, 
-    borderRadius: 50,
-    marginBottom: "5%"
+    width: 150, 
+    height: 150, 
+    borderRadius: 10,
+    marginBottom: "2.5%"
   },
   friendPic: {
     width: 50, 
@@ -226,20 +328,29 @@ const localStyles = StyleSheet.create({
     width: "100%"
   },
   FriendCount: {
-    fontSize: 13,
+    fontSize: 12,
     marginTop: "2%",
     marginBottom: "1%",
     color: theme.LIGHT_PINK,
     justifyContent: 'center',
     alignItems: 'center'
   },
-  Header: {
+  headerName: {
     fontSize: 20,
     fontWeight: "bold",
     color: theme.LIGHT_PINK,
     justifyContent: 'center',
-    alignItems: 'center'
-    
+    alignItems: 'center',
+    textAlign:"center"
+  },
+  headerAgeGender: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: theme.LIGHT_PINK,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign:"center",
+    marginTop:-10
   },
   ScrollView: {
     flex: 1,

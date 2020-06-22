@@ -26,39 +26,46 @@ class TestingScreen extends React.Component  {
     }
 
     getAsyncStorageData = () => {
-        // Util.asyncStorage.GetAsyncVar('User', (userData) => {
-        //   this.setState({user: JSON.parse(userData)});
-        // //   console.log("Current User: " + this.state.user);
-        // });
-        // Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
-        //     this.setState({friendData: JSON.parse(friends)});
-        //     // console.log('Friends: ' + this.state.friendData);
-        //   });
+        Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
+          this.setState({user: JSON.parse(userData)});
+        //   console.log("Current User: " + this.state.user);
+        });
+        Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
+            this.setState({friendData: JSON.parse(friends)});
+            // console.log('Friends: ' + this.state.friendData);
+          });
       }
 
     componentDidMount () {
         
-        // this.getAsyncStorageData();
-        this.setState({isLoggedIn: firebase.auth().currentUser ? true : false});
+        this.getAsyncStorageData();
         this.setState({db: firebase.firestore()});
+        
+    }
+
+    testFunc = () => {
+        for(i=1; i <100; i++){
+            Util.user.UpdateUser(firebase.firestore(), i+'@'+i+'.com', {privacySettings: {public:true}},() =>{
+                console.log(i+'@'+i+'.com updated')
+            });
+        }
         
     }
 
     render() {
         return (
-            firebase.auth().currentUser ? 
-            <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-            </View> 
-            : 
-
+            this.state.user ? 
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => Util.user.GetUserData(firebase.firestore(), firebase.auth().currentUser.email, (user) =>{
-                    console.log(user);
-                })}>
+                <TouchableOpacity style={localStyles.btn} onPress={() => this.testFunc()}>
                         <Text>Get Friends</Text>
                 </TouchableOpacity>
             </View>
+            
+            : 
+            <View style={styles.viewDark}>
+                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+            </View> 
+            
         )
     }
 }
