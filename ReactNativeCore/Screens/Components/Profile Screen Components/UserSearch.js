@@ -8,7 +8,6 @@ import {
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
-import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 
 export default class UserSearch extends Component {
@@ -31,10 +30,10 @@ export default class UserSearch extends Component {
 
   onUserQuery = () => {
     let wantedUsers = [];
-    Util.user.QueryPublicUsers(firebase.firestore(), this.state.searchText, this.state.take, (users) =>{
+    Util.user.QueryPublicUsers(this.state.searchText, this.state.take, (users) =>{
       console.log("Public Users: \n" + JSON.stringify(users));
       users.forEach((user)=>{wantedUsers.push(user)});
-      Util.user.QueryPrivateUsers(firebase.firestore(), this.state.searchText, (privUsers) =>{
+      Util.user.QueryPrivateUsers(this.state.searchText, (privUsers) =>{
         console.log("Private Users: \n" + JSON.stringify(privUsers));
         users.forEach((privUsers)=>{wantedUsers.push(privUsers)});
         this.setState({queriedUsers:wantedUsers});
@@ -44,8 +43,6 @@ export default class UserSearch extends Component {
 
    render () {
       return ( 
-        ////////////////////////////////////////
-
           <View style={localStyles.mainCont}>
             <Surface style={localStyles.navHeader}>
               {/* Drawer Button */}

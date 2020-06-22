@@ -32,16 +32,18 @@ const Util = {
         }
     },
     user: {
-        VerifyUser: function(db, user, email, callback){
+        VerifyUser: function(user, email, callback){
+            let db = firebase.firestore();
             db.collection('users').doc(email).get()
             .then(async (data) => {
                 if(data.data()){
-                    await db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
+                    let dbUser = data.data();
                     Util.basicUtil.consoleLog('VerifyUser', true);
-                    callback(data.data());
-                } 
+                    callback(dbUser);
+                }
                 else {
                     if(user != undefined || user != null) {
+                        let providerObj = Util.user.BuildProviderObj(user.providerData[0]);
                         let buildUser = {
                             createdAt: new Date().toUTCString(),
                             displayName: user.displayName,
@@ -49,8 +51,8 @@ const Util = {
                             emailVerified: user.emailVerified,
                             lastLoginAt: new Date().toUTCString(),
                             phoneNumber: (user.phoneNumber == undefined || user.phoneNumber == null ? "555-555-5555" : user.phoneNumber),
-                            photoSouce: user.photoURL,
-                            providerData: user.providerData[0]
+                            photoSource: user.photoURL,
+                            providerData: providerObj
                         }
                         db.collection('users').doc(email).set(buildUser)
                         .then((data) => {
@@ -61,7 +63,21 @@ const Util = {
                         Util.basicUtil.consoleLog('VerifyUser', false);
                     }
                 }
-            });
+            })
+            .catch((err) => {
+                Util.basicUtil.consoleLog('VerifyUser', false);
+                console.log('Firebase Error: ' +  err);
+            })
+        },
+        BuildProviderObj: (obj) => {
+            providerObj = {};
+            providerObj['displayName'] = obj.displayName;
+            providerObj['email'] = obj.email;
+            providerObj['phoneNumber'] = obj.phoneNumber;
+            providerObj['photoURL'] = obj.photoURL;
+            providerObj['providerId'] = obj.providerId;
+            providerObj['uid'] = obj.uid;
+            return providerObj;
         },
         GetUserData: function(db, email, callback){
             db.collection('users').doc(email).get()
@@ -163,7 +179,8 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        QueryPublicUsers: function(db, query, take, callback){
+        QueryPublicUsers: function(query, take, callback){
+            let db = firebase.firestore();
             var path = new firebase.firestore.FieldPath('privacy', "public");
             let usersRef = db.collection('users').limit(take);
             usersRef.where(path, '==', true)
@@ -188,7 +205,8 @@ const Util = {
                 console.log("Firebase Error: " + error);
           });
         },
-        QueryPrivateUsers: function(db, query, take, callback){
+        QueryPrivateUsers: function(query, take, callback){
+            let db = firebase.firestore();
             var path = new firebase.firestore.FieldPath('privacy', "public");
             let usersRef = db.collection('users').limit(take);
             usersRef.where(path, '==', false).where('email', '==', query)
@@ -436,9 +454,8 @@ const Util = {
                             console.log('Firebase Facebook Auth Error: ' + error); 
                         });
                         dataObj['data'] = firebase.auth().currentUser;
-                        Util.basicUtil.consoleLog("Facbook's login", true);
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
-                        Util.user.VerifyUser(firebase.firestore(), firebase.auth().currentUser, firebase.auth().currentUser.email);
+                        Util.basicUtil.consoleLog("Facbook's login", true);
                         callBack(dataObj);
                     })
                     .catch((error) => {
@@ -559,7 +576,6 @@ const Util = {
                         dataObj['user'] = firebase.auth().currentUser;
                         dataObj['data'] = firebase.auth();
                         Util.basicUtil.consoleLog("Google's login", true);
-                        Util.user.VerifyUser(firebase.firestore(), firebase.auth().currentUser, firebase.auth().currentUser.email);
                         callBack(dataObj);
                     }
                     else{
