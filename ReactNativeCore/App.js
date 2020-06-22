@@ -16,11 +16,8 @@ firebase.initializeApp(Util.dataCalls.Firebase.config);
 //When a user is signed into firebase, gets user/friend data sets to async, sets users location to async
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    console.log('Auth Changed!');
       getLocationAsync((location) => {
-        console.log('Location App.js')
         setWantedData(firebase.firestore(), user, location, () => {
-          console.log('wantedData App.js')
           getNeededData(firebase.firestore(), user);
         });        
       })
@@ -43,10 +40,8 @@ async function getLocationAsync(callback) {
 
 
 function getNeededData(db, currentUser){
-  //if user exits get user data, get friend data set to async 
-  console.log('wantedData App.js', currentUser)
+  //if user exits get user data, get friend data set to async
   if(currentUser){
-    console.log('User exists');
     Util.user.GetUserData(db, currentUser.email, (data) => {
       let user = JSON.stringify(data);
       Util.asyncStorage.SetAsyncStorageVar('User', user);
