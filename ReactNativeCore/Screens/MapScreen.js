@@ -33,9 +33,11 @@ class MapScreen extends React.Component  {
       phone: "#",
       closed: "#",
       address: "#",
+      id: "#"
     },
     friendData:null,
-    userData:null
+    userData:null,
+    buisnessUID: null
   };
   
   mapStyle = [
@@ -234,6 +236,7 @@ class MapScreen extends React.Component  {
     let baseURL = 'https://api.yelp.com/v3/businesses/search?';
     let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
+      console.log(data)
       this.setState({
         markers: data,
         userLocation: userLocation
@@ -275,7 +278,8 @@ class MapScreen extends React.Component  {
         price: wantedPlace.price,
         phone: wantedPlace.display_phone,
         closed: wantedPlace.is_closed,
-        address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1]
+        address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1],
+        id: wantedPlace.id
       }
     });
     this.setState({isModalVisible: true});
@@ -343,7 +347,7 @@ class MapScreen extends React.Component  {
                 closed={this.state.modalProps.closed}
                 address={this.state.modalProps.address}
                 onPress={() => this.closeModal()}
-                buisnessUID={"23hslefhsks"}
+                buisnessUID={this.state.modalProps.id}
               > 
             </BarModal>
             
@@ -385,8 +389,8 @@ class MapScreen extends React.Component  {
                       <View style={localStyles.callOutMarker}>
                         <Text>{marker.name}</Text>
                         <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
+                        { marker.lastVisitedBy && marker.lastVisitedBy.length > 0 ?
 
-                         {marker.lastVisitedBy != null || marker.lastVisitedBy != undefined || marker.lastVisitedBy.length > 0 ?
                             marker.lastVisitedBy.map((friend, i) => (
                               <Image style={{position:"relative",
                                 width: 40,

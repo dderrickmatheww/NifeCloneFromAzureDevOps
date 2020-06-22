@@ -12,16 +12,10 @@ firebase.initializeApp(Util.dataCalls.Firebase.config);
 if (! global.btoa) {global.btoa = encode}
 
 if (! global.atob) {global.atob = decode}
-var loadingDone = false;
 
-// const theme = {
-//   ...DefaultTheme,
-//   colors: {
-//     ...DefaultTheme.colors,
-//     primary: 'tomato',
-//     accent: 'yellow',
-//   },
-// };
+//Intialize Firebase Database
+firebase.initializeApp(Util.dataCalls.Firebase.config);
+
 
 _loadResourcesAsync = async () => {
   return Promise.all([
@@ -44,6 +38,7 @@ const theme = {
     placeholder: themeUtil.LIGHT_PINK_OPAC
   },
 };
+
 
 export default function App() {
 

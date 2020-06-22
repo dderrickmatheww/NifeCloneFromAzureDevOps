@@ -28,7 +28,7 @@ const Util = {
             });
         },
         AddFriend: function(db, email, callback){
-            Util.baseUrl.consoleLog('AddFriend', true);
+            Util.basicUtil.consoleLog('AddFriend', true);
         }
     },
     user: {
@@ -37,7 +37,7 @@ const Util = {
             .then(async (data) => {
                 if(data.data()){
                     await db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
-                    Util.baseUrl.consoleLog('VerifyUser', true);
+                    Util.basicUtil.consoleLog('VerifyUser', true);
                     callback(data.data());
                 } 
                 else {
@@ -109,7 +109,7 @@ const Util = {
             {
                 merge: true
             })
-            then(() => {
+            .then(() => {
                 Util.basicUtil.consoleLog('CheckIn', true);
                 returnData('true');
             })
@@ -130,7 +130,7 @@ const Util = {
             {
                 merge: true
             })
-            then(() => {
+            .then(() => {
                 Util.basicUtil.consoleLog('CheckOut', true);
                 returnData('false');
             })
@@ -144,7 +144,6 @@ const Util = {
             try {
                 Util.user.GetUserData(db, email, (userData) => {
                     let user = userData;
-                    console.log(user);
                     if(user.checkIn.checkInTime == "") {
                         returnData("false");
                     }
@@ -622,20 +621,19 @@ const Util = {
                 })
                 .then((data) => data.json())
                 .then((response) => {
-                    let friends = friendData;
+                    let friends = JSON.parse(friendData);
                     let bars = response['businesses'];
-                    var tempFriendArr = [];
-                    console.log(friendData)
-                    if(friends){
-                        bars.forEach((bar)=>{
+                    if(friends.length > 0){
+                        var tempFriendArr = [];
+                        bars.forEach((bar) => {
                             friends.forEach((friend) => {
                                 if((friend.lastVisited) && (friend.lastVisited.buinessUID == bar.id)){
                                     tempFriendArr.push(friend);
                                 }
                             });
                         });
+                        response["businesses"]['lastVisitedBy'] = tempFriendArr;
                     }
-                    response["businesses"]['lastVisitedBy'] = tempFriendArr;
                     Util.basicUtil.consoleLog("Yelp's placeData", true);
                     returnData(response['businesses']);
                 })
