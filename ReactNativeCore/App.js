@@ -4,8 +4,8 @@ import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './scripts/Util';
 import Loading from './Screens/AppLoading';
-import { Provider as PaperProvider } from 'react-native-paper';
-
+import themeUtil from './Styles/theme'
+import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
@@ -23,12 +23,33 @@ var loadingDone = false;
 //   },
 // };
 
+_loadResourcesAsync = async () => {
+  return Promise.all([
+    Font.loadAsync({
+      ...Icon.Ionicons.font,
+      ...Icon.MaterialCommunityIcons.font,
+    }),
+  ]);
+};
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 2,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: themeUtil.DARK,
+    accent: themeUtil.LIGHT_PINK,
+    background : themeUtil.DARK,
+    text: themeUtil.LIGHT_PINK,
+    placeholder: themeUtil.LIGHT_PINK_OPAC
+  },
+};
 
 export default function App() {
 
   return(
     <PaperProvider
-      // theme={theme}
+      theme={theme}
     >
       <Navigator />
     </PaperProvider>

@@ -15,9 +15,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import theme from '../../../Styles/theme';
-
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 export function DrawerContent(props) {
 
@@ -65,8 +63,8 @@ export function DrawerContent(props) {
                     <Drawer.Section style={styles.drawerSection}>
                         <DrawerItem style={styles.text}
                             icon={() => (
-                                <Icon 
-                                name="home-outline" 
+                                <MaterialCommunityIcons 
+                                name="home" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
                                 />
@@ -76,8 +74,8 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem 
                             icon={() => (
-                                <Icon 
-                                name="account-outline" 
+                                <MaterialCommunityIcons 
+                                name="account" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
                                 />
@@ -87,7 +85,18 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem 
                             icon={() => (
-                                <Icon 
+                                <Ionicons 
+                                name="ios-people" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Friends</Text>}
+                            onPress={() => {props.navigation.navigate('Profile', {screen:'Friends'})}}
+                        />
+                        <DrawerItem 
+                            icon={() => (
+                                <MaterialCommunityIcons 
                                 name="glass-mug" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
@@ -98,7 +107,7 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem 
                             icon={() => (
-                                <Icon 
+                                <MaterialCommunityIcons 
                                 name="map-outline" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
@@ -109,14 +118,36 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem 
                             icon={() => (
-                                <Icon 
-                                name="settings-outline" 
+                                <Ionicons 
+                                name="md-search" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
+                            onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
+                        />
+                        <DrawerItem 
+                            icon={() => (
+                                <MaterialCommunityIcons 
+                                name="settings" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Settings</Text>}
                             onPress={() => {props.navigation.navigate('Settings')}}
+                        />
+                        <DrawerItem 
+                            icon={() => (
+                                <MaterialCommunityIcons 
+                                name="settings" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Test</Text>}
+                            onPress={() => {props.navigation.navigate('Test')}}
                         />
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
@@ -134,7 +165,7 @@ export function DrawerContent(props) {
             <Drawer.Section style={styles.bottomDrawerSection}>
                 <DrawerItem 
                     icon={() => (
-                        <Icon 
+                        <MaterialCommunityIcons 
                         name="exit-to-app" 
                         color={theme.LIGHT_PINK}
                         size={20}

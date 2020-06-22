@@ -39,26 +39,33 @@ class TestingScreen extends React.Component  {
     componentDidMount () {
         
         this.getAsyncStorageData();
-        this.setState({isLoggedIn: firebase.auth().currentUser ? true : false});
         this.setState({db: firebase.firestore()});
+        
+    }
+
+    testFunc = () => {
+        for(i=1; i <100; i++){
+            Util.user.UpdateUser(firebase.firestore(), i+'@'+i+'.com', {privacySettings: {public:true}},() =>{
+                console.log(i+'@'+i+'.com updated')
+            });
+        }
         
     }
 
     render() {
         return (
             this.state.user ? 
-            <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-            </View> 
-            : 
-
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => Util.user.GetUserData(firebase.firestore(), firebase.auth().currentUser.email, (user) =>{
-                    console.log(user);
-                })}>
+                <TouchableOpacity style={localStyles.btn} onPress={() => this.testFunc()}>
                         <Text>Get Friends</Text>
                 </TouchableOpacity>
             </View>
+            
+            : 
+            <View style={styles.viewDark}>
+                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+            </View> 
+            
         )
     }
 }

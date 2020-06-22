@@ -161,7 +161,50 @@ const Util = {
                 Util.basicUtil.consoleLog('IsUserCheckedIn', false);
                 console.log('Catch error: ' + error);
             }
-        }
+        },
+        QueryPublicUsers: function(db, query, take, callback){
+            var path = new firebase.firestore.FieldPath('privacy', "public");
+            let usersRef = db.collection('users').limit(take);
+            usersRef.where(path, '==', true)
+            .then((data) => {
+              if(data.data()){
+                let queriedUsers = data.data();
+                let wantedUsers = [];
+                Util.basicUtil.consoleLog('QueryUsers', true);
+                queriedUsers.forEach((user)=>{
+                    if(user.indexOf(query) != -1){
+                        wantedUsers.push(user);
+                    }
+                });
+                callback(wantedUsers);
+              }
+              else {
+                Util.basicUtil.consoleLog('QueryUsers', false);
+              }
+          })
+          .catch((error) => {
+                Util.basicUtil.consoleLog('QueryUsers', false);
+                console.log("Firebase Error: " + error);
+          });
+        },
+        QueryPrivateUsers: function(db, query, take, callback){
+            var path = new firebase.firestore.FieldPath('privacy', "public");
+            let usersRef = db.collection('users').limit(take);
+            usersRef.where(path, '==', false).where('email', '==', query)
+            .then((data) => {
+              if(data.data()){
+                Util.basicUtil.consoleLog('QueryUsers', true);
+                callback(data.data());
+              }
+              else {
+                Util.basicUtil.consoleLog('QueryUsers', false);
+              }
+          })
+          .catch((error) => {
+                Util.basicUtil.consoleLog('QueryUsers', false);
+                console.log("Firebase Error: " + error);
+          });
+        },
     },
     location: {
         SaveLocation: function(db, email, location, callback){
@@ -394,6 +437,7 @@ const Util = {
                         dataObj['data'] = firebase.auth().currentUser;
                         Util.basicUtil.consoleLog("Facbook's login", true);
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
+                        Util.user.VerifyUser(firebase.firestore(), firebase.auth().currentUser, firebase.auth().currentUser.email);
                         callBack(dataObj);
                     })
                     .catch((error) => {

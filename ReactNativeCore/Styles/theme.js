@@ -11,6 +11,7 @@ export default {
   PURPLE: "#8806CE",
   PINK: "#FF33CC",
   LIGHT_PINK:"#eca6c4",
+  LIGHT_PINK_OPAC:"rgba(236, 166, 196, .5)",
   MEDIUM_PINK:"#F69E95",
   DARK_PINK: "#AB3D5C",
   BLUE: "#74BBFB",

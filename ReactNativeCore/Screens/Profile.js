@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
-import { View,SafeAreaView,  ScrollView, TouchableOpacity, Image, ActivityIndicator, StyleSheet, TouchableHighlightComponent } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import {
-  Avatar,
   Title,
   Caption,
-  Paragraph,
-  Drawer,
   Text,
-  TouchableRipple,
-  Switch,
   Headline,
   Chip,
   Surface
 } from 'react-native-paper';
 import Util from '../scripts/Util';
 import { styles } from '../Styles/style';
-import DrawerButton from './Universal Components/DrawerButton';
 import theme from '../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
