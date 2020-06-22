@@ -33,13 +33,13 @@ class FriendsList extends React.Component {
   }
 
   setUserData = async (dataObj) => {
-    Util.asyncStorage.GetAsyncVar('User', (userData) => {
+    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
       this.setState({ userData: JSON.parse(userData) });
       //console.log('User: ' + this.state.userData);
     });
   }
   setFriendData = async (dataObj) => {
-    Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
+    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
       this.setState({ friends: JSON.parse(friends) });
       // console.log('Friends: ' + this.state.friendData);
     });

@@ -15,24 +15,23 @@ export default class ProfileScreen extends Component {
     friendData:null,
     isUsersProfile:true,
   }
+
+  
   //Set login status
   setLoggedinStatus = async (dataObj) => {
     this.setState({ isLoggedin: dataObj.data ? true : false });
   }  
   //Set user data
   setUserData = async (dataObj) => {
-    if(this.state.isUsersProfile){
-      Util.asyncStorage.GetAsyncVar('User', (userData) => {
-        this.setState({userData: JSON.parse(userData)});
-        console.log('User: ' + JSON.stringify(this.state.userData));
-      });
-    } else {
-      this.setState({userData: this.state.userData});
-    }
-
+    
+    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
+      this.setState({userData: JSON.parse(userData)});
+      console.log('User: ' + JSON.stringify(this.state.userData));
+    });
   }
+
   setFriendData = async (dataObj) => {
-    Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
+    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
       this.setState({friendData: JSON.parse(friends)});
       // console.log('Friends: ' + this.state.friendData);
     });
@@ -43,20 +42,34 @@ export default class ProfileScreen extends Component {
    }
    //gets user and friend data
   getAsyncStorageData = (callback) => {
+    this.setState({userData:null})
     this.setUserData();
     this.setFriendData();
   }
+
   componentDidMount(){
     this.getAsyncStorageData();
     this.rerender = this.props.navigation.addListener('focus', () => {
-      this.componentDidMount();
+      this.setUserData();
     });
-    
   }
 
   componentWillUnmount() {
     this.rerender();
   }
+
+   calculateAge = (birthday) => { // birthday is a date
+    var bDay = new Date(birthday);
+    var ageDifMs = Date.now() - bDay.getTime();
+    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  }
+
+  genderUpperCase = (gender) => {
+    return gender.charAt(0).toUpperCase() + gender.slice(1);
+  }
+
+  
 
    render () {
       return ( 
@@ -66,7 +79,7 @@ export default class ProfileScreen extends Component {
               <View style={localStyles.HeaderCont}>
                   <Image style={localStyles.profilePic}source={{ uri: this.state.userData ? this.state.userData.photoSouce : null }} />
                   <View style={{flexDirection:"row"}}>
-                    <Text style={localStyles.Header}>{this.state.userData.displayName}</Text>
+                    <Text style={localStyles.Header}>{this.state.userData.displayName}, {this.genderUpperCase(this.state.userData.gender)} - {this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000)}</Text>
                     
                   </View>
                   
@@ -75,7 +88,7 @@ export default class ProfileScreen extends Component {
                       <Text  style={localStyles.FriendCount}>{this.state.userData.loginLocation.region.city}, {this.state.userData.loginLocation.region.region}</Text>
                     </View>
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{userData: this.state.userData, friendData:this.state.friendData}})}>
+                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends'})}>
                         <Text style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Friends</Text>
                       </TouchableOpacity>
                     </View>
@@ -85,12 +98,12 @@ export default class ProfileScreen extends Component {
               {/* bio */}
                   <View> 
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                      Bio: {this.state.userData.bio ? "None" : this.state.userData.bio}
+                      Bio: {this.state.userData.bio ?  this.state.userData.bio : "None"}
                     </Text>
                   </View>
                   <View>
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK}}>
-                          Favorite Drinks: {this.state.userData.favoriteDrinks ? this.state.userData.favoriteDrinks : "None"}
+                          Favorite Drinks: {this.state.userData.favoriteDrinks ? this.state.userData.favoriteDrinks.toString() : "None"}
                     </Text>  
                   
                   </View>
@@ -102,14 +115,14 @@ export default class ProfileScreen extends Component {
                 
               </View>
               <TouchableOpacity style={localStyles.EditOverlay}
-                onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit'})}
+                onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
               >
                 <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
               </TouchableOpacity>
               <TouchableOpacity style={localStyles.AddFriendOverlay}
                 //  onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit'})}
               >
-                <Ionicons name="md-add-circle-outline" size={24} color={theme.LIGHT_PINK} />
+                <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Add Friend</Text>
               </TouchableOpacity>
               <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View>
@@ -145,12 +158,14 @@ const localStyles = StyleSheet.create({
 
   AddFriendOverlay: {
     position: 'absolute',
-    top:"6%",
+    top:"7%",
     left: "70%",
     opacity: 0.75,
     backgroundColor: theme.DARK,
-    borderRadius: 10,
+    borderRadius: 5,
     paddingVertical:0,
+    borderWidth:1,
+    borderColor: theme.LIGHT_PINK
   },
 
   LocAndFriends:{

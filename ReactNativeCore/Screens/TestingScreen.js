@@ -26,19 +26,19 @@ class TestingScreen extends React.Component  {
     }
 
     getAsyncStorageData = () => {
-        Util.asyncStorage.GetAsyncVar('User', (userData) => {
-          this.setState({user: JSON.parse(userData)});
-        //   console.log("Current User: " + this.state.user);
-        });
-        Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
-            this.setState({friendData: JSON.parse(friends)});
-            // console.log('Friends: ' + this.state.friendData);
-          });
+        // Util.asyncStorage.GetAsyncVar('User', (userData) => {
+        //   this.setState({user: JSON.parse(userData)});
+        // //   console.log("Current User: " + this.state.user);
+        // });
+        // Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
+        //     this.setState({friendData: JSON.parse(friends)});
+        //     // console.log('Friends: ' + this.state.friendData);
+        //   });
       }
 
     componentDidMount () {
         
-        this.getAsyncStorageData();
+        // this.getAsyncStorageData();
         this.setState({isLoggedIn: firebase.auth().currentUser ? true : false});
         this.setState({db: firebase.firestore()});
         
@@ -46,15 +46,16 @@ class TestingScreen extends React.Component  {
 
     render() {
         return (
-            this.state.friendData.length == 0 ? 
+            firebase.auth().currentUser ? 
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
             </View> 
             : 
 
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => Util.asyncStorage.GetAsyncStorageVar('Friends',
-                (data) => {console.log(data)})}>
+                <TouchableOpacity style={localStyles.btn} onPress={() => Util.user.GetUserData(firebase.firestore(), firebase.auth().currentUser.email, (user) =>{
+                    console.log(user);
+                })}>
                         <Text>Get Friends</Text>
                 </TouchableOpacity>
             </View>

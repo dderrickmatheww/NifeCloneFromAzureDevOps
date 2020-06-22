@@ -81,7 +81,7 @@ const Util = {
           });
         },
         UpdateUser: function(db, email, updateObject, callback){
-            db.collection('users').doc(email);
+            let userRef = db.collection('users').doc(email);
             userRef.set(updateObject, {merge:true})
             .then(() => {
                 Util.basicUtil.consoleLog('UpdateUser', true);
