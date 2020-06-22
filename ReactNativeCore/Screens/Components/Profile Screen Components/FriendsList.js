@@ -90,9 +90,11 @@ class FriendsList extends React.Component {
           </View>
           <ScrollView style={localStyles.ScrollView}>
             {this.state.friends.map((friend, i) => (
-              <View style={localStyles.friendCont}  key={i}>
-                <Image style={localStyles.friendPic} source={friend.providerData != null ? { uri: friend.providerData.photoURL } : defPhoto} /><Text style={localStyles.name}>{friend.displayName}</Text>
+              <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user:friend, isUserProfile:false}})}>
+              <View style={localStyles.friendCont}>
+                <Image style={localStyles.friendPic} source={ friend.providerData != null ? {uri:friend.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{friend.displayName}</Text>
               </View>
+            </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

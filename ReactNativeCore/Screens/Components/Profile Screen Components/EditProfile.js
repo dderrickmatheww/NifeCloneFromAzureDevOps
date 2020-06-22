@@ -241,8 +241,8 @@ export default class EditProfile extends Component {
                     placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
                     value={this.state.bio}
-                    style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5,}}>
-
+                    style={{backgroundColor:theme.LIGHT, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5,}}>
+                    
                     </TextInput>
                   </View>
 
@@ -256,7 +256,7 @@ export default class EditProfile extends Component {
                     label=""
                     placeholder={"What're you drinkin'?"}
                     onChangeText={text => this.onFavoriteDrinkChange(text)}
-                    style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 5,}}
+                    style={{backgroundColor:theme.LIGHT,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5,}}
                     value={this.state.favoriteDrinks.toString()}
                     >
                       

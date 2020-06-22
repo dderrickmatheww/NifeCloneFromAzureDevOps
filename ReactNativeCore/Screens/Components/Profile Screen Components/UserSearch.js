@@ -3,7 +3,8 @@ import { View, ScrollView, TouchableOpacity, Image, ActivityIndicator, StyleShee
 import {
   Surface,
   Paragraph,
-  Searchbar
+  Searchbar,
+  Text
 } from 'react-native-paper';
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
@@ -11,13 +12,16 @@ import theme from '../../../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 
+var defPhoto = require('../../../Media/Images/logoicon.png')
+
 export default class UserSearch extends Component {
 
   state = {
     queriedUsers:null,
     skip:0,
     take:50,
-    searchText:null
+    searchText:null,
+    isSearching: false,
   }
 
   componentDidMount(){
@@ -29,16 +33,20 @@ export default class UserSearch extends Component {
     console.log(query);
   }
 
-  onUserQuery = () => {
-    let wantedUsers = [];
-    Util.user.QueryPublicUsers(firebase.firestore(), this.state.searchText, this.state.take, (users) =>{
+  onUserQuery = (query) => {
+    let queryText = query.nativeEvent.text;
+    let wantedUsers = []
+    this.setState({isSearching:true});
+    Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) =>{
       console.log("Public Users: \n" + JSON.stringify(users));
       users.forEach((user)=>{wantedUsers.push(user)});
-      Util.user.QueryPrivateUsers(firebase.firestore(), this.state.searchText, (privUsers) =>{
-        console.log("Private Users: \n" + JSON.stringify(privUsers));
-        users.forEach((privUsers)=>{wantedUsers.push(privUsers)});
-        this.setState({queriedUsers:wantedUsers});
-      });
+      this.setState({queriedUsers:wantedUsers});
+      this.setState({isSearching:true});
+      // Util.user.QueryPrivateUsers(firebase.firestore(), queryText,  this.state.take,(privUsers) =>{
+      //   console.log("Private Users: \n" + JSON.stringify(privUsers));
+      //   users.forEach((privUsers)=>{wantedUsers.push(privUsers)});
+      //   this.setState({queriedUsers:wantedUsers});
+      // });
     });
   }
 
@@ -59,7 +67,7 @@ export default class UserSearch extends Component {
                     <Searchbar
                       placeholder="Search for drinking buddies..."
                       onChangeText={(query) => this.onChangeSearch(query)}
-                      onBlur={() => this.onUserQuery()}
+                      onEndEditing={(query) => this.onUserQuery(query)}
                       value={this.state.searchText}
                       inputStyle={{color:theme.LIGHT_PINK, }}
                       style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, alignSelf:"flex-start"}}
@@ -70,9 +78,16 @@ export default class UserSearch extends Component {
                   {
                     this.state.queriedUsers ? 
 
-                    <Paragraph style={localStyles.paragraph}>Queried Users...</Paragraph>
-                    :
-                    <Paragraph style={localStyles.paragraph}>No Users...</Paragraph>
+                    this.state.queriedUsers.map((user, i) => (
+                      <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user:user, isUserProfile:false}})}>
+                        <View style={localStyles.friendCont}>
+                          <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
+                        </View>
+                      </TouchableOpacity>
+                      
+                    ))
+                    : this.state.isSearching ?
+                    <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> : <Paragraph style={localStyles.paragraph}>No Users...</Paragraph> 
                   }
                   </ScrollView>
                 </View>
@@ -85,6 +100,25 @@ export default class UserSearch extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  friendPic: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  friendCont: {
+    flexDirection: "row",
+    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomWidth: 1,
+  },
+  name: {
+    fontSize: 18,
+    color: theme.LIGHT_PINK,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: '.5%',
+    marginLeft: '2.5%',
+    width: "100%"
+  },
   searchBarCont:{
     flex:1,
     flexDirection:"column",

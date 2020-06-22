@@ -113,7 +113,6 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-      this.state.userChecked ?
       this.state.userData ?    
         <NavigationContainer>
           <Drawer.Navigator 
@@ -141,10 +140,7 @@ class Navigator extends React.Component {
         : 
         <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
-        <View style={styles.viewDark}>
-            <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-        </View> 
-        :
+
         <Loading></Loading>
     );
   }

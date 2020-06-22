@@ -81,7 +81,10 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Profile</Text>}
-                            onPress={() => {props.navigation.navigate('Profile')}}
+                            onPress={() => {
+                                props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, isUserProfile:true}})
+                                props.navigation.closeDrawer()    
+                            }}
                         />
                         <DrawerItem 
                             icon={() => (
