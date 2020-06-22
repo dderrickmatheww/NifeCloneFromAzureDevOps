@@ -4,10 +4,7 @@ import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import Util from '../scripts/Util';
-import { Ionicons } from '@expo/vector-icons';
-import { PLACES_KEY } from 'react-native-dotenv'
 import theme from '../Styles/theme';
-import styles from '../Styles/style';
 
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
@@ -236,7 +233,6 @@ class MapScreen extends React.Component  {
     let baseURL = 'https://api.yelp.com/v3/businesses/search?';
     let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
-      console.log(data)
       this.setState({
         markers: data,
         userLocation: userLocation
