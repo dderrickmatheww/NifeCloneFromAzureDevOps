@@ -19,7 +19,7 @@ const Util = {
                         friendsArr.push(friend.data());
                     }
                 });
-                Util.baseUrl.consoleLog('GetFriends', true);
+                Util.basicUtil.consoleLog('GetFriends', true);
                 callback(friendsArr);
             })
             .catch((error) => {
@@ -168,7 +168,7 @@ const Util = {
             let setLoc = db.collection('users').doc(email);
             setLoc
             .set({ loginLocation: location }, {merge: true})
-            then(() => {
+            .then(() => {
                 Util.basicUtil.consoleLog('SaveLocation', true);
                 callback();
             })
@@ -514,6 +514,7 @@ const Util = {
                         dataObj['user'] = firebase.auth().currentUser;
                         dataObj['data'] = firebase.auth();
                         Util.basicUtil.consoleLog("Google's login", true);
+                        Util.user.VerifyUser(firebase.firestore(), firebase.auth().currentUser, firebase.auth().currentUser.email);
                         callBack(dataObj);
                     }
                     else{

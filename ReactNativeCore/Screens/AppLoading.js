@@ -8,7 +8,10 @@ class AppLoading extends React.Component  {
 
     render(){
         return(
-            <View style={{flex:1}}><ImageBackground source={image} style={localStyles.ImageBackground}></ImageBackground></View>
+          <View style={{flex:1, justifyContent:"center"}}>
+            <ImageBackground source={image} style={localStyles.ImageBackground}></ImageBackground>
+          </View>
+            
         )
     }
 }
@@ -16,9 +19,7 @@ class AppLoading extends React.Component  {
 const localStyles = StyleSheet.create({
   ImageBackground:{
     flex:1,
-    width:"75%",
-    height:"75%",
-    resizeMode:"cover"
+    resizeMode:"contain"
   },
 });
 

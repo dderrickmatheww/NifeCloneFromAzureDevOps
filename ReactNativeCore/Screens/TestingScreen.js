@@ -26,19 +26,19 @@ class TestingScreen extends React.Component  {
     }
 
     getAsyncStorageData = () => {
-        // Util.asyncStorage.GetAsyncVar('User', (userData) => {
-        //   this.setState({user: JSON.parse(userData)});
-        // //   console.log("Current User: " + this.state.user);
-        // });
-        // Util.asyncStorage.GetAsyncVar('Friends', (friends) => {
-        //     this.setState({friendData: JSON.parse(friends)});
-        //     // console.log('Friends: ' + this.state.friendData);
-        //   });
+        Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
+          this.setState({user: JSON.parse(userData)});
+        //   console.log("Current User: " + this.state.user);
+        });
+        Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
+            this.setState({friendData: JSON.parse(friends)});
+            // console.log('Friends: ' + this.state.friendData);
+          });
       }
 
     componentDidMount () {
         
-        // this.getAsyncStorageData();
+        this.getAsyncStorageData();
         this.setState({isLoggedIn: firebase.auth().currentUser ? true : false});
         this.setState({db: firebase.firestore()});
         
@@ -46,7 +46,7 @@ class TestingScreen extends React.Component  {
 
     render() {
         return (
-            firebase.auth().currentUser ? 
+            this.state.user ? 
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
             </View> 

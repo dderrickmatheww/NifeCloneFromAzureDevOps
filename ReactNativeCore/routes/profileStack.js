@@ -28,7 +28,7 @@ const Stack = createStackNavigator();
 export default poppinStack = () => {
   return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} />
+        <Stack.Screen he name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} />
         <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}} />
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} />
       </Stack.Navigator>
