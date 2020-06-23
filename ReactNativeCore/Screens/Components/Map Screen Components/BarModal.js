@@ -101,8 +101,7 @@ class BarModal extends React.Component  {
                           <TouchableOpacity
                             onPress={() => { 
                               let email = this.state.userData.email;
-                              let buisnessUID = this.props.buisnessUID;
-                              Util.user.CheckOut(user.email, (boolean) => {
+                              Util.user.CheckOut(email, (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });
