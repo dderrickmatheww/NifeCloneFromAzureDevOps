@@ -17,6 +17,7 @@ import {
 import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
 
+const defPhoto = require('../../../Media/Images/logoicon.png');
 export function DrawerContent(props) {
 
     return(
@@ -26,9 +27,9 @@ export function DrawerContent(props) {
                     <View style={styles.userInfoSection}>
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             <Avatar.Image 
-                                source={{
-                                    uri: props.user.providerData.photoURL
-                                }}
+                                source={props.user.providerData ? {
+                                     uri:  props.user.photoSource  
+                                }: defPhoto}
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
