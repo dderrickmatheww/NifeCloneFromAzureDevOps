@@ -32,40 +32,45 @@ const Util = {
         }
     },
     user: {
-        VerifyUser: function(db, user, email, callback){
+        VerifyUser: function(user, email, callback){
+            let db = firebase.firestore();
             db.collection('users').doc(email).get()
             .then(async (data) => {
                 if(data.data()){
                     let dbUser = data.data();
-                    if(dbUser.providerData){
-                        await db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
-                        Util.basicUtil.consoleLog('VerifyUser', true);
-                        callback(data.data());
-                    } 
-                    else {
-                        if(user != undefined || user != null) {
-                            let buildUser = {
-                                createdAt: new Date().toUTCString(),
-                                displayName: user.displayName,
-                                email: user.email,
-                                emailVerified: user.emailVerified,
-                                lastLoginAt: new Date().toUTCString(),
-                                phoneNumber: (user.phoneNumber == undefined || user.phoneNumber == null ? "555-555-5555" : user.phoneNumber),
-                                photoSource: user.photoURL,
-                                providerData: user.providerData[0]
-                            }
-                            db.collection('users').doc(email).set(buildUser)
-                            .then((data) => {
-                                callback(buildUser);
-                                Util.basicUtil.consoleLog('VerifyUser', true);
-                            });
-                        } else {
-                            Util.basicUtil.consoleLog('VerifyUser', false);
+                    Util.basicUtil.consoleLog('VerifyUser', true);
+                    callback(dbUser);
+                }
+                else {
+                    if(user != undefined || user != null) {
+                        let providerObj = Util.user.BuildProviderObj(user.providerData[0]);
+                        let buildUser = {
+                            createdAt: new Date().toUTCString(),
+                            displayName: user.displayName,
+                            email: user.email,
+                            emailVerified: user.emailVerified,
+                            lastLoginAt: new Date().toUTCString(),
+                            phoneNumber: (user.phoneNumber == undefined || user.phoneNumber == null ? "555-555-5555" : user.phoneNumber),
+                            photoSource: user.photoURL,
+                            providerData: providerObj
                         }
                     }
-                } 
-                
-            });
+                }
+            })
+            .catch((err) => {
+                Util.basicUtil.consoleLog('VerifyUser', false);
+                console.log('Firebase Error: ' +  err);
+            })
+        },
+        BuildProviderObj: (obj) => {
+            providerObj = {};
+            providerObj['displayName'] = obj.displayName;
+            providerObj['email'] = obj.email;
+            providerObj['phoneNumber'] = obj.phoneNumber;
+            providerObj['photoURL'] = obj.photoURL;
+            providerObj['providerId'] = obj.providerId;
+            providerObj['uid'] = obj.uid;
+            return providerObj;
         },
         GetUserData: function(db, email, callback){
             db.collection('users').doc(email).get()
@@ -80,8 +85,8 @@ const Util = {
               }
           })
           .catch((error) => {
-                Util.basicUtil.consoleLog('GetUserData', false);
-                console.log("Firebase Error: " + error);
+            Util.basicUtil.consoleLog('GetUserData', false);
+            console.log("Firebase Error: " + error);
           });
         },
         UpdateUser: function(db, email, updateObject, callback){
@@ -150,7 +155,7 @@ const Util = {
             try {
                 Util.user.GetUserData(db, email, (userData) => {
                     let user = userData;
-                    if(user.checkIn.checkInTime == "") {
+                    if(!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
                         returnData("false");
                     }
                     else if (user.checkIn.buinessUID == buisnessUID) {
@@ -254,6 +259,34 @@ const Util = {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
                 console.log("Expo Location Error: " + error);
             });
+        }
+    },
+    date: {
+        TimeSince: (date) => {
+            var seconds = Math.floor((new Date() - date) / 1000);
+            
+            var interval = Math.floor(seconds / 31536000);
+            
+            if (interval > 1) {
+                return interval + " years";
+            }
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) {
+                return interval + " months";
+            }
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) {
+                return interval + " days";
+            }
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) {
+                return interval + " hours";
+            }
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) {
+                return interval + " minutes";
+            }
+            return Math.floor(seconds) + " seconds";
         }
     },
     asyncStorage: {
@@ -454,9 +487,8 @@ const Util = {
                             console.log('Firebase Facebook Auth Error: ' + error); 
                         });
                         dataObj['data'] = firebase.auth().currentUser;
-                        Util.basicUtil.consoleLog("Facbook's login", true);
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
-                        Util.user.VerifyUser(firebase.firestore(), firebase.auth().currentUser, firebase.auth().currentUser.email);
+                        Util.basicUtil.consoleLog("Facbook's login", true);
                         callBack(dataObj);
                     })
                     .catch((error) => {
@@ -577,7 +609,6 @@ const Util = {
                         dataObj['user'] = firebase.auth().currentUser;
                         dataObj['data'] = firebase.auth();
                         Util.basicUtil.consoleLog("Google's login", true);
-                        Util.user.VerifyUser(firebase.firestore(), firebase.auth().currentUser, firebase.auth().currentUser.email);
                         callBack(dataObj);
                     }
                     else{
@@ -642,20 +673,20 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     let friends = JSON.parse(friendData);
-                    let bars = response['businesses'];
-                    if(friends.length > 0){
-                        var tempFriendArr = [];
-                        bars.forEach((bar) => {
+                    let bars = response.businesses;
+                    var friendArr = [];
+                    if(friends.length > 0) {
+                        bars.forEach((bar, index) => {
                             friends.forEach((friend) => {
-                                if((friend.lastVisited) && (friend.lastVisited.buinessUID == bar.id)){
-                                    tempFriendArr.push(friend);
+                                if((friend.lastVisited) && (friend.lastVisited.buisnessUID == bar.id)){
+                                    friendArr.push(friend);
                                 }
                             });
+                            response.businesses[index].lastVisitedBy = friendArr;
                         });
-                        response["businesses"]['lastVisitedBy'] = tempFriendArr;
                     }
                     Util.basicUtil.consoleLog("Yelp's placeData", true);
-                    returnData(response['businesses']);
+                    returnData(response.businesses);
                 })
                 .catch((err) => {
                     Util.basicUtil.consoleLog("Yelp's placeData", false);

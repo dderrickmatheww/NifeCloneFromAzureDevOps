@@ -56,33 +56,26 @@ class Navigator extends React.Component {
   }
 
   getNeededData = (db, currentUser) => {
-
     //if user exits get user data, get friend data set to async 
     console.log('wantedData App.js', currentUser)
     if (currentUser) {
-      console.log('Getting User from db, setting to Async... App.js');
       Util.user.GetUserData(db, currentUser.email, (data) => {
-        if(data){
-          let user = JSON.stringify(data);
-          Util.asyncStorage.SetAsyncStorageVar('User', user);
-          this.setState({userData:data});
-          this.setState({userChecked:true});
-          console.log('Getting friends from db, setting to Async... App.js')
-          Util.friends.GetFriends(db, currentUser.email, (data) => {
-            let friends = JSON.stringify(data);
-            Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-            this.setState({friendData: data})
-          });
-        }
-        else {
-          this.setState({userChecked:true});
-        }
-        
-        
-      });
-      
+          if(data) {
+            let user = JSON.stringify(data);
+            Util.asyncStorage.SetAsyncStorageVar('User', user);
+            this.setState({userData:data});
+            this.setState({userChecked:true});
+            Util.friends.GetFriends(db, currentUser.email, (data) => {
+              let friends = JSON.stringify(data);
+              Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+              this.setState({friendData: data})
+            });
+          }
+          else {
+            this.setState({userChecked:true});
+          }
+        });
     } else {
-
       console.log('no user!');
     }
   }
@@ -91,14 +84,13 @@ class Navigator extends React.Component {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
         if (user) {
-          
-          this.getLocationAsync((location) => {
-            console.log('Location App.js')
-            this.setWantedData(firebase.firestore(), user, location, () => {
-              console.log('wantedData App.js')
-              this.getNeededData(firebase.firestore(),  user);
-              this.setState({authLoaded: true});
-            });        
+          Util.user.VerifyUser(user, user.email, () => {
+            this.getLocationAsync((location) => {
+              this.setWantedData(firebase.firestore(), user, location, () => {
+                this.getNeededData(firebase.firestore(),  user);
+                this.setState({authLoaded: true});
+              });        
+            });
           });
         } else {
           this.setState({authLoaded: true});
@@ -141,7 +133,6 @@ class Navigator extends React.Component {
         : 
         <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
-
         <Loading></Loading>
     );
   }
