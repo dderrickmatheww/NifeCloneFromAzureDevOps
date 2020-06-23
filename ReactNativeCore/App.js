@@ -7,7 +7,6 @@ import themeUtil from './Styles/theme'
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 if (! global.btoa) {global.btoa = encode}
-
 if (! global.atob) {global.atob = decode}
 
 //Intialize Firebase Database
@@ -22,6 +21,11 @@ _loadResourcesAsync = async () => {
   ]);
 };
 
+console.disableYellowBox = true;
+console.ignoredYellowBox = [
+  'Setting a timer for a long period of time,'
+  ];
+
 const theme = {
   ...DefaultTheme,
   roundness: 2,
@@ -30,7 +34,6 @@ const theme = {
     primary: themeUtil.DARK,
     accent: themeUtil.LIGHT_PINK,
     background : themeUtil.DARK,
-    text: themeUtil.LIGHT_PINK,
     placeholder: themeUtil.LIGHT_PINK_OPAC
   },
 };

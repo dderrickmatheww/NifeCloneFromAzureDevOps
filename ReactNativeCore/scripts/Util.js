@@ -54,13 +54,6 @@ const Util = {
                             photoSource: user.photoURL,
                             providerData: providerObj
                         }
-                        db.collection('users').doc(email).set(buildUser)
-                        .then((data) => {
-                            callback(buildUser);
-                            Util.basicUtil.consoleLog('VerifyUser', true);
-                        });
-                    } else {
-                        Util.basicUtil.consoleLog('VerifyUser', false);
                     }
                 }
             })
@@ -179,21 +172,24 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        QueryPublicUsers: function(query, take, callback){
-            let db = firebase.firestore();
-            var path = new firebase.firestore.FieldPath('privacy', "public");
-            let usersRef = db.collection('users').limit(take);
-            usersRef.where(path, '==', true)
+        QueryPublicUsers: function(db, query, take, callback){
+            var path = new firebase.firestore.FieldPath('privacySettings', "public");
+            let usersRef = db.collection('users').where(path, '==', true);
+            usersRef.get()
             .then((data) => {
-              if(data.data()){
-                let queriedUsers = data.data();
+              if(data){
+                let queriedUsers = [];
                 let wantedUsers = [];
-                Util.basicUtil.consoleLog('QueryUsers', true);
+                data.forEach((user)=>{
+                    queriedUsers.push(user.data());
+                });
+                let newQuery=  query.toLowerCase();
                 queriedUsers.forEach((user)=>{
-                    if(user.indexOf(query) != -1){
+                    if(user.email.indexOf(newQuery) != -1){
                         wantedUsers.push(user);
                     }
                 });
+                Util.basicUtil.consoleLog('QueryUsers', true);
                 callback(wantedUsers);
               }
               else {
@@ -205,22 +201,26 @@ const Util = {
                 console.log("Firebase Error: " + error);
           });
         },
-        QueryPrivateUsers: function(query, take, callback){
-            let db = firebase.firestore();
-            var path = new firebase.firestore.FieldPath('privacy', "public");
-            let usersRef = db.collection('users').limit(take);
-            usersRef.where(path, '==', false).where('email', '==', query)
+        QueryPrivateUsers: function(db, query, take, callback){
+            var path = new firebase.firestore.FieldPath('privacySettings', "public");
+            let newQuery=  query.toLowerCase();
+            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery);
+            usersRef.get()
             .then((data) => {
-              if(data.data()){
-                Util.basicUtil.consoleLog('QueryUsers', true);
-                callback(data.data());
+              if(data){
+                let wantedUser = [];
+                data.forEach((user)=>{
+                    wantedUser.push(user.data());
+                });
+                Util.basicUtil.consoleLog('QueryPrivateUsers', true);
+                callback(wantedUser);
               }
               else {
-                Util.basicUtil.consoleLog('QueryUsers', false);
+                Util.basicUtil.consoleLog('QueryPrivateUsers', false);
               }
           })
           .catch((error) => {
-                Util.basicUtil.consoleLog('QueryUsers', false);
+                Util.basicUtil.consoleLog('QueryPrivateUsers', false);
                 console.log("Firebase Error: " + error);
           });
         },
@@ -246,9 +246,14 @@ const Util = {
         },
         GetUserLocation: (returnData) => {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
-                Util.location.SetUserLocationData(location.coords);
-                Util.basicUtil.consoleLog('GetUserLocation', true);
-                returnData(location.coords);
+                Location.reverseGeocodeAsync(location.coords).then((region)=>{
+                    let loc = location;
+                    loc['region'] = region;
+                    Util.location.SetUserLocationData(location.coords);
+                    Util.basicUtil.consoleLog('GetUserLocation', true);
+                    returnData(location.coords);
+                })
+                
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
