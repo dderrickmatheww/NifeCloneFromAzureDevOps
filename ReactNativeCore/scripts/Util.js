@@ -258,30 +258,41 @@ const Util = {
     },
     date: {
         TimeSince: (date) => {
-            var seconds = Math.floor((new Date() - date) / 1000);
-            
-            var interval = Math.floor(seconds / 31536000);
-            
-            if (interval > 1) {
-                return interval + " years";
+            console.log(date)
+            try {
+                var seconds = Math.floor((new Date() - date) / 1000);
+                var interval = Math.floor(seconds / 31536000);
+                if (interval > 1) {
+                    Util.basicUtil.consoleLog('TimeSince', true);
+                    return interval + " years";
+                }
+                interval = Math.floor(seconds / 2592000);
+                if (interval > 1) {
+                    Util.basicUtil.consoleLog('TimeSince', true);
+                    return interval + " months";
+                }
+                interval = Math.floor(seconds / 86400);
+                if (interval > 1) {
+                    Util.basicUtil.consoleLog('TimeSince', true);
+                    return interval + " days";
+                }
+                interval = Math.floor(seconds / 3600);
+                if (interval > 1) {
+                    Util.basicUtil.consoleLog('TimeSince', true);
+                    return interval + " hours";
+                }
+                interval = Math.floor(seconds / 60);
+                if (interval > 1) {
+                    Util.basicUtil.consoleLog('TimeSince', true);
+                    return interval + " minutes";
+                }
+                Util.basicUtil.consoleLog('TimeSince', true);
+                return Math.floor(seconds) + " seconds";
             }
-            interval = Math.floor(seconds / 2592000);
-            if (interval > 1) {
-                return interval + " months";
+            catch (error) {
+                Util.basicUtil.consoleLog('TimeSince', false);
+                console.log("TimeSince Error: " + error);
             }
-            interval = Math.floor(seconds / 86400);
-            if (interval > 1) {
-                return interval + " days";
-            }
-            interval = Math.floor(seconds / 3600);
-            if (interval > 1) {
-                return interval + " hours";
-            }
-            interval = Math.floor(seconds / 60);
-            if (interval > 1) {
-                return interval + " minutes";
-            }
-            return Math.floor(seconds) + " seconds";
         }
     },
     asyncStorage: {
@@ -668,12 +679,13 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     let friends = JSON.parse(friendData);
+                    console.log(friends)
                     let bars = response.businesses;
                     var friendArr = [];
                     if(friends.length > 0) {
                         bars.forEach((bar, index) => {
                             friends.forEach((friend) => {
-                                if((friend.lastVisited) && (friend.lastVisited.buisnessUID == bar.id)){
+                                if((friend.lastVisited) && (friend.lastVisited[bar.id])){
                                     friendArr.push(friend);
                                 }
                             });

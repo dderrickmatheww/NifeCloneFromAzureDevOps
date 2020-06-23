@@ -235,9 +235,7 @@ class MapScreen extends React.Component  {
   gatherLocalMarkers = (lat, long, friendData, userLocation) => {  
     let baseURL = 'https://api.yelp.com/v3/businesses/search?';
     let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
-    Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data, friendArr) => {
-      data['lastVisitedBy'] = friendArr;
-      console.log(data)
+    Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
       this.setState({
         markers: data,
         userLocation: userLocation
@@ -398,18 +396,59 @@ class MapScreen extends React.Component  {
                         <Text>{marker.name}</Text>
                         <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
                         { marker.lastVisitedBy && marker.lastVisitedBy.length > 0 ?
-                            marker.lastVisitedBy.map((friend, i) => (
-                              <View style={styles.friendVisitedBy}>
-                                <Avatar.Image
-                                  source={{uri: friend.providerData.photoURL}}
-                                  size={50}
-                                /> 
-                                <Text style={styles.friendText}>
-                                  Your friend {friend.displayName} was here {Util.date.TimeSince(new Date(friend.checkIn.checkInTime))} ago!
-                                </Text>
-                              </View>
-                            ))
-                          : null
+                            marker.lastVisitedBy.length < 2 ?
+                              marker.lastVisitedBy.map((friend, i) => (
+                                friend.lastVisited && friend.lastVisited[marker.id] ?
+                                  <View style={styles.friendVisitedBy}>
+                                    <Avatar.Image
+                                      source={{uri: friend.providerData.photoURL}}
+                                      size={50}
+                                    /> 
+                                    <Text style={styles.friendText}>
+                                      Your friend {friend.displayName} was here {Util.date.TimeSince(new Date(friend.checkIn.checkInTime))} ago!
+                                    </Text>
+                                  </View>
+                                :
+                                null
+                              )) 
+                            : 
+                            <View>
+                                <View style={styles.friendVisitedBy}>
+                                  <Text style={styles.friendText}>
+                                    {marker.lastVisitedBy.length} friends were here!
+                                  </Text>
+                                  {
+                                    marker.lastVisitedBy.map((friend, i) => (
+                                      friend.lastVisited && friend.lastVisited[marker.id] ?
+                                        <View>
+                                          {
+                                            i = 0 ? 
+                                              <Avatar.Image
+                                                source={{uri: friend.providerData.photoURL}}
+                                                size={50}
+                                                style={{ border: 1, borderColor: "black"}}
+                                              />
+                                            : <Avatar.Image
+                                                source={{uri: friend.providerData.photoURL}}
+                                                size={50}
+                                                style={{right: i * 0.2, border: 1, borderColor: "black"}}
+                                              />
+                                          }
+                                        </ View>
+                                      : null
+                                    ))
+                                  }
+                                </View>
+                              {
+                                marker.lastVisitedBy[marker.lastVisitedBy.length - 1].lastVisited[marker.id] ?
+                                  <Text style={styles.friendText}>
+                                    Including your friend {marker.lastVisitedBy[marker.lastVisitedBy.length - 1].displayName} about {Util.date.TimeSince(new Date(marker.lastVisitedBy[marker.lastVisitedBy.length - 1].lastVisited[marker.id].checkInTime))} ago!
+                                  </Text>
+                                : null
+                              }
+                            </View>
+                          :
+                          null
                         }
                       </View>
                     </Callout>
@@ -457,13 +496,17 @@ const localStyles = StyleSheet.create({
     backgroundColor: '#20232a'
   },
   callOutMarker: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 3,
-    padding: 10,
-    margin: 10,
+    padding: 30,
+    margin: 25,
     justifyContent: 'center',
     alignContent: 'center',
-    maxWidth: '60%'
+    maxWidth: '60%',
+    borderRadius: 20,
+    borderColor: theme.LIGHT_PINK,
+    borderWidth: 1
   },
   overlay: {
     position: 'absolute',

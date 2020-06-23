@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
   friendVisitedBy: {
     flexDirection: 'row',
     maxWidth: '60%',
-    top: 5
+    top: 5,
   },
   friendText: {
     margin: 10
