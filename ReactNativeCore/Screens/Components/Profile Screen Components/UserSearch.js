@@ -9,7 +9,6 @@ import {
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
-import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 
 var defPhoto = require('../../../Media/Images/logoicon.png')
@@ -52,8 +51,6 @@ export default class UserSearch extends Component {
 
    render () {
       return ( 
-        ////////////////////////////////////////
-
           <View style={localStyles.mainCont}>
             <Surface style={localStyles.navHeader}>
               {/* Drawer Button */}

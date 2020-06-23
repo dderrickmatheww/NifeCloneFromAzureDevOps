@@ -1,10 +1,12 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet, Image, FlatList, Text, ActivityIndicator } from 'react-native';
+import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
+import { Avatar } from 'react-native-paper';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import Util from '../scripts/Util';
 import theme from '../Styles/theme';
+import { styles } from '../Styles/style';
 
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
@@ -30,7 +32,8 @@ class MapScreen extends React.Component  {
       phone: "#",
       closed: "#",
       address: "#",
-      id: "#"
+      id: "#",
+      friendData: '#'
     },
     friendData:null,
     userData:null,
@@ -232,7 +235,9 @@ class MapScreen extends React.Component  {
   gatherLocalMarkers = (lat, long, friendData, userLocation) => {  
     let baseURL = 'https://api.yelp.com/v3/businesses/search?';
     let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
-    Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
+    Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data, friendArr) => {
+      data['lastVisitedBy'] = friendArr;
+      console.log(data)
       this.setState({
         markers: data,
         userLocation: userLocation
@@ -250,21 +255,26 @@ class MapScreen extends React.Component  {
     let LATITUDE_DELTA = 0.0922;
     let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
     var places = this.state.markers;
+    this.setWantedPlaceData(places, key);
+  }
+
+  setWantedPlaceData = (places, key) => {
+    var tempFriendArr = [];
     var wantedPlace;
-
-    this.setState({region: {
-      latitude: LATITUDE,
-      longitude: LONGITUDE,
-      latitudeDelta: LATITUDE_DELTA,
-      longitudeDelta: LONGITUDE_DELTA
-    }})
-
+    var friendState = this.state.friendData;
     places.forEach(function(place){
       if(place.id == key){
         wantedPlace = place;
+        let friends = JSON.parse(friendState);
+        if(friends.length > 0){
+          friends.forEach((friend) => {
+              if((friend.lastVisited) && (friend.lastVisited.buinessUID == places.id)){
+                  tempFriendArr.push(friend);
+              }
+          });
+        }
       }
     });
-
     this.setState({
       modalProps:{
         source:{uri: "" + wantedPlace.image_url},
@@ -275,12 +285,13 @@ class MapScreen extends React.Component  {
         phone: wantedPlace.display_phone,
         closed: wantedPlace.is_closed,
         address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1],
-        id: wantedPlace.id
+        id: wantedPlace.id,
+        friendsData: tempFriendArr
       }
     });
     this.setState({isModalVisible: true});
   }
-
+  
   closeModal = (e) => {
     this.setState({isModalVisible: false});
   }
@@ -370,6 +381,7 @@ class MapScreen extends React.Component  {
                 moveOnMarkerPress={false}
               >
               {this.state.markers.map(marker => (
+                
                   <Marker
                     coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
                     key={marker.id}
@@ -386,16 +398,16 @@ class MapScreen extends React.Component  {
                         <Text>{marker.name}</Text>
                         <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
                         { marker.lastVisitedBy && marker.lastVisitedBy.length > 0 ?
-
                             marker.lastVisitedBy.map((friend, i) => (
-                              <Image style={{position:"relative",
-                                width: 40,
-                                height: 40,
-                                borderRadius: 50,
-                                left: i+1}} 
-                                key={i}
-                                source={{uri:friend.photoSource}}
-                              />
+                              <View style={styles.friendVisitedBy}>
+                                <Avatar.Image
+                                  source={{uri: friend.providerData.photoURL}}
+                                  size={50}
+                                /> 
+                                <Text style={styles.friendText}>
+                                  Your friend {friend.displayName} was here {Util.date.TimeSince(new Date(friend.checkIn.checkInTime))} ago!
+                                </Text>
+                              </View>
                             ))
                           : null
                         }
@@ -447,10 +459,11 @@ const localStyles = StyleSheet.create({
   callOutMarker: {
     backgroundColor: 'white',
     borderRadius: 3,
-    padding: 5,
-    margin: 5,
+    padding: 10,
+    margin: 10,
     justifyContent: 'center',
-    alignContent: 'center'
+    alignContent: 'center',
+    maxWidth: '60%'
   },
   overlay: {
     position: 'absolute',
