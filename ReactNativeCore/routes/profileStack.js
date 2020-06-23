@@ -6,15 +6,16 @@ import EditProfile from '../Screens/Components/Profile Screen Components/EditPro
 import UserSearch from '../Screens/Components/Profile Screen Components/UserSearch';
 import ProfileScreen from '../Screens/Profile';
 
-function Friends({ navigation}){
+function Friends({route, navigation}){
+  const { user, friends} = route.params;
   return(
-    <FriendsList navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
+    <FriendsList friends={friends}  user={user}  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
 }
 function Profile({route, navigation}){
-  const { user, isUserProfile} = route.params;
+  const { user, isUserProfile,  friends} = route.params;
   return(
-    <ProfileScreen user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen friends={friends}  user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 

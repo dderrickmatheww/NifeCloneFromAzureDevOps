@@ -9,22 +9,9 @@ import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 if (! global.btoa) {global.btoa = encode}
 if (! global.atob) {global.atob = decode}
 
-//Intialize Firebase Database
-firebase.initializeApp(Util.dataCalls.Firebase.config);
 
-_loadResourcesAsync = async () => {
-  return Promise.all([
-    Font.loadAsync({
-      ...Icon.Ionicons.font,
-      ...Icon.MaterialCommunityIcons.font,
-    }),
-  ]);
-};
 
 console.disableYellowBox = true;
-console.ignoredYellowBox = [
-  'Setting a timer for a long period of time,'
-  ];
 
 const theme = {
   ...DefaultTheme,
