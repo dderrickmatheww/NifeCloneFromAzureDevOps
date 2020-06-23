@@ -87,6 +87,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#20232A'
   },
+  friendVisitedBy: {
+    flexDirection: 'row',
+    maxWidth: '60%',
+    top: 5
+  },
+  friendText: {
+    margin: 10
+  },
   facebookButtonContainer: {
     top: 80
   },

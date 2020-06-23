@@ -92,8 +92,8 @@ const Util = {
               }
           })
           .catch((error) => {
-                Util.basicUtil.consoleLog('GetUserData', false);
-                console.log("Firebase Error: " + error);
+            Util.basicUtil.consoleLog('GetUserData', false);
+            console.log("Firebase Error: " + error);
           });
         },
         UpdateUser: function(db, email, updateObject, callback){
@@ -162,7 +162,7 @@ const Util = {
             try {
                 Util.user.GetUserData(db, email, (userData) => {
                     let user = userData;
-                    if(user.checkIn.checkInTime == "") {
+                    if(!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
                         returnData("false");
                     }
                     else if (user.checkIn.buinessUID == buisnessUID) {
@@ -254,6 +254,34 @@ const Util = {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
                 console.log("Expo Location Error: " + error);
             });
+        }
+    },
+    date: {
+        TimeSince: (date) => {
+            var seconds = Math.floor((new Date() - date) / 1000);
+            
+            var interval = Math.floor(seconds / 31536000);
+            
+            if (interval > 1) {
+                return interval + " years";
+            }
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) {
+                return interval + " months";
+            }
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) {
+                return interval + " days";
+            }
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) {
+                return interval + " hours";
+            }
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) {
+                return interval + " minutes";
+            }
+            return Math.floor(seconds) + " seconds";
         }
     },
     asyncStorage: {
@@ -640,20 +668,20 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     let friends = JSON.parse(friendData);
-                    let bars = response['businesses'];
-                    if(friends.length > 0){
-                        var tempFriendArr = [];
-                        bars.forEach((bar) => {
+                    let bars = response.businesses;
+                    var friendArr = [];
+                    if(friends.length > 0) {
+                        bars.forEach((bar, index) => {
                             friends.forEach((friend) => {
-                                if((friend.lastVisited) && (friend.lastVisited.buinessUID == bar.id)){
-                                    tempFriendArr.push(friend);
+                                if((friend.lastVisited) && (friend.lastVisited.buisnessUID == bar.id)){
+                                    friendArr.push(friend);
                                 }
                             });
+                            response.businesses[index].lastVisitedBy = friendArr;
                         });
-                        response["businesses"]['lastVisitedBy'] = tempFriendArr;
                     }
                     Util.basicUtil.consoleLog("Yelp's placeData", true);
-                    returnData(response['businesses']);
+                    returnData(response.businesses);
                 })
                 .catch((err) => {
                     Util.basicUtil.consoleLog("Yelp's placeData", false);

@@ -24,7 +24,6 @@ class BarModal extends React.Component  {
 
     closeModal = () => {
         this.setState({isVisible: false});
-        console.log('test')
     }
 
     async componentDidMount() {
@@ -101,14 +100,13 @@ class BarModal extends React.Component  {
                         <View> 
                           <TouchableOpacity
                             onPress={() => { 
-                              Util.asyncStorage.GetAsyncStorageVar("User", (userData) => {
-                                let user = JSON.parse(userData);
-                                Util.user.CheckOut(user.email, (boolean) => {
-                                  this.setState({
-                                    checkedIn: boolean
-                                  });
+                              let email = this.state.userData.email;
+                              let buisnessUID = this.props.buisnessUID;
+                              Util.user.CheckOut(user.email, (boolean) => {
+                                this.setState({
+                                  checkedIn: boolean
                                 });
-                              })
+                              });
                             }}
                             style={localStyles.descCont}
                           >
