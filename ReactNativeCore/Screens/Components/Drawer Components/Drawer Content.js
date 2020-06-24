@@ -16,7 +16,9 @@ import {
 } from '@react-navigation/drawer';
 import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
+import Util from '../../../scripts/Util';
 
+const defPhoto = require('../../../Media/Images/logoicon.png');
 export function DrawerContent(props) {
 
     return(
@@ -26,9 +28,9 @@ export function DrawerContent(props) {
                     <View style={styles.userInfoSection}>
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             <Avatar.Image 
-                                source={{
-                                    uri: props.user.providerData.photoURL
-                                }}
+                                source={props.user.providerData ? {
+                                     uri:  props.user.photoSource  
+                                }: defPhoto}
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
@@ -82,7 +84,7 @@ export function DrawerContent(props) {
                             )}
                             label={()=> <Text style={styles.text}>Profile</Text>}
                             onPress={() => {
-                                props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, isUserProfile:true}})
+                                props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, isUserProfile:true, friends:props.friends}})
                                 props.navigation.closeDrawer()    
                             }}
                         />
@@ -95,7 +97,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Friends</Text>}
-                            onPress={() => {props.navigation.navigate('Profile', {screen:'Friends'})}}
+                            onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', params:{user: props.user, friends:props.friends}})}}
                         />
                         <DrawerItem 
                             icon={() => (
@@ -175,7 +177,7 @@ export function DrawerContent(props) {
                         />
                     )}
                     label={()=> <Text style={styles.text}>Sign Out</Text>}
-                    onPress={() => {signOut()}}
+                    onPress={() => {Util.dataCalls.Firebase.signOut()}}
                 />
             </Drawer.Section>
         </View>

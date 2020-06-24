@@ -10,7 +10,7 @@ import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
-
+import * as firebase from 'firebase';
 var defPhoto = require('../../../Media/Images/logoicon.png')
 
 export default class UserSearch extends Component {

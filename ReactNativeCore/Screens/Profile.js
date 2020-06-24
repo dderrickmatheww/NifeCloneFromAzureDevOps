@@ -15,14 +15,15 @@ import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 
 const defPhoto = require('../Media/Images/logoicon.png');
-
 export default class ProfileScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
-    userData: null,
+    userData: this.props.user,
     modalVisible: false,
     friendData:null,
-    isUsersProfile:this.props.isUserProfile,
+    isUsersProfile: this.props.user.email == firebase.auth().currentUser.email,
+    isAddingFriend:false,
+    areFriends: false,
   }
 
   
@@ -30,58 +31,8 @@ export default class ProfileScreen extends Component {
   setLoggedinStatus = async (dataObj) => {
     this.setState({ isLoggedin: dataObj.data ? true : false });
   }  
-  //Set user data
-  setUserData = async () => {
-    if(this.props.isUserProfile){
-      Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
-        this.setState({userData: JSON.parse(userData)});
-        console.log('User: ' + JSON.stringify(this.state.userData));
-      });
-    }
-    else {
-      Util.user.GetUserData(firebase.firestore(), this.props.user.email, (user)=>{
-        this.setState({userData: user});
-      });
-    }
-  }
 
-  setFriendData = async (dataObj) => {
-    if(this.props.isUserProfile){
-      Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
-        this.setState({friendData: JSON.parse(friends)});
-        // console.log('Friends: ' + this.state.friendData);
-      });
-    }
-    else{
-      Util.friends.GetFriends(firebase.firestore(), this.props.user.email, (friends)=>{
-        this.setState({friendData: friends});
-      });  
-    }
-    
-  }
-  logout = () => {
-    this.setState({ isLoggedin: false });
-    firebase.auth().signOut();
-   }
-   //gets user and friend data
-  getAsyncStorageData = (callback) => {
-    this.setState({userData:null})
-    this.setUserData();
-    this.setFriendData();
-  }
-
-  componentDidMount(){
-    this.getAsyncStorageData();
-    this.rerender = this.props.navigation.addListener('focus', () => {
-      this.componentDidMount();
-    });
-  }
-
-  componentWillUnmount() {
-    this.rerender();
-  }
-
-   calculateAge = (birthday) => { // birthday is a date
+  calculateAge = (birthday) => { // birthday is a date
     var bDay = new Date(birthday);
     var ageDifMs = Date.now() - bDay.getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -92,7 +43,85 @@ export default class ProfileScreen extends Component {
     return gender.charAt(0).toUpperCase() + gender.slice(1);
   }
 
+  //Set user data
+  setUserData = async () => {
+    if(this.state.isUsersProfile){
+      this.setState({userData:this.props.user});
+      // console.log(JSON.stringify(this.props.user));
+      
+    }
+    else {
+      
+      Util.user.GetUserData(firebase.firestore(), this.props.user.email, (user)=>{
+        this.setState({userData: user});
+        
+        // console.log(JSON.stringify(this.state.userData));
+      });
+    }
+  }
+
+  setFriendData = async (dataObj) => {
+    if(this.state.isUsersProfile){
+      this.setState({friendData: this.props.friends});
+    }
+    else{
+      Util.friends.GetFriends(firebase.firestore(), this.props.user.email, (friends)=>{
+        this.setState({friendData: friends});
+        let userEmail = firebase.auth().currentUser.email
+        friends.forEach((friend) => {
+          if(friend.email == userEmail){
+            console.log('friend: ' + friend);
+            this.setState({areFriends: friend['friends'][this.props.user.email] == true});
+            console.log('Are Friends : ' + this.state.areFriends)
+          }
+        });
+        // console.log(JSON.stringify(this.state.friendData));
+      });  
+    }
+    
+  }
   
+  addFriend = () => {
+    this.setState({isAddingFriend:true});
+    Util.friends.AddFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
+      this.setState({isAddingFriend:false}); 
+      this.setState({areFriends:true});
+    });
+  }
+  removeFriend = () => {
+    this.setState({isAddingFriend:true});
+    Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
+      this.setState({isAddingFriend:false}); 
+      this.setState({areFriends:false});     
+    });
+  }
+
+  logout = () => {
+    this.setState({ isLoggedin: false });
+    firebase.auth().signOut();
+   }
+
+   //gets user and friend data
+  getAsyncStorageData = (callback) => {
+    this.setState({isUsersProfile:this.props.user.email == firebase.auth().currentUser.email});
+    
+    this.setUserData();
+    this.setFriendData();
+  }
+
+  componentWillUnmount() {
+    this.rerender();
+  }
+
+  componentDidMount(){
+    this.getAsyncStorageData();
+    this.rerender = this.props.navigation.addListener('focus', () => {
+      this.componentDidMount();
+    });
+
+    console.log('User: ' + firebase.auth().currentUser.email); 
+    console.log('Profile Owner: ' + this.state.userData.email);
+  }
 
    render () {
       return ( 
@@ -104,11 +133,30 @@ export default class ProfileScreen extends Component {
               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
                   <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
               </TouchableOpacity> 
-              {!this.state.isUsersProfile ? 
-                <TouchableOpacity style={localStyles.AddFriendOverlay}>
-                  <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Add Friend</Text>
-                </TouchableOpacity> :null
+
+              {/* Add Friend */}
+              {!this.state.isUsersProfile ? !this.state.areFriends ? 
+                <TouchableOpacity 
+                onPress={() => this.addFriend()}
+                style={localStyles.AddFriendOverlay}>
+                  { 
+                  this.state.isAddingFriend ?
+                    <ActivityIndicator size="small" color={theme.LIGHT_PINK}></ActivityIndicator> :
+                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Add Friend</Text>
+                  }
+                </TouchableOpacity> :
+                <TouchableOpacity 
+                onPress={() => this.removeFriend()}
+                style={localStyles.AddFriendOverlay}>
+                  { 
+                  this.state.isAddingFriend ?
+                    <ActivityIndicator size="small" color={theme.LIGHT_PINK}></ActivityIndicator> :
+                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Remove Friend</Text>
+                  }
+                </TouchableOpacity> : null
               }
+
+              {/* Edit Button */}
               {this.state.isUsersProfile ? 
               <TouchableOpacity style={{
                 position:"relative",
@@ -136,15 +184,17 @@ export default class ProfileScreen extends Component {
                       {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender : "other")}, {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation: "other")}  - {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : "No Age"}
                     </Title>
                 </View>
-                <Image style={localStyles.profilePic}source={this.state.userData.providerData ? { uri: this.state.userData.photoSource} : defPhoto }/>
+                <Image style={localStyles.profilePic} source={this.state.userData.providerData ? { uri: this.state.userData.photoSource} : defPhoto }/>
                 <Caption  style={localStyles.FriendCount}>Casual Socialite | 420 Points</Caption>
                   
                   <View style={localStyles.LocAndFriends}>
                     <View style={{alignSelf:"flex-start", width:"50%"}}>
-                      <Caption  style={localStyles.FriendCount}>{this.state.userData.loginLocation? this.state.userData.loginLocation.region.city : "Margarittaville"}, {this.state.userData.loginLocation ? this.state.userData.loginLocation.region.region : "Somewhere"}</Caption>
+                      <Caption  style={localStyles.FriendCount}>{this.state.userData.loginLocation && this.state.userData.loginLocation.region? this.state.userData.loginLocation.region.city : "Margarittaville"}, {this.state.userData.loginLocation && this.state.userData.loginLocation.region ? this.state.userData.loginLocation.region.region : "Somewhere"}</Caption>
                     </View>
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
-                      <TouchableOpacity onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends'})}>
+                      <TouchableOpacity
+                       disabled={this.state.isUsersProfile ? false : true}
+                       onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{user: this.state.userData, friends:this.state.friendData}})}>
                         <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Friends</Caption>
                       </TouchableOpacity>
                     </View>

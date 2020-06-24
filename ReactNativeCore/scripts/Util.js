@@ -27,8 +27,25 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
-        AddFriend: function(db, email, callback){
-            Util.basicUtil.consoleLog('AddFriend', true);
+        AddFriend: function(db, userEmail, friendEmail, callback){
+            let updateObj = {
+                friends:{}
+            }
+            updateObj.friends[friendEmail] = true;
+            Util.user.UpdateUser(db, userEmail, updateObj,()=>{
+                Util.basicUtil.consoleLog("AddFriend ", true);
+                callback();
+            });
+        },
+        RemoveFriend: function(db, userEmail, friendEmail, callback){
+            let updateObj = {
+                friends:{}
+            }
+            updateObj.friends[friendEmail] = false;
+            Util.user.UpdateUser(db, userEmail, updateObj,()=>{
+                Util.basicUtil.consoleLog("RemoveFriend ", true);
+                callback();
+            });
         }
     },
     user: {
@@ -44,16 +61,8 @@ const Util = {
                 else {
                     if(user != undefined || user != null) {
                         let providerObj = Util.user.BuildProviderObj(user.providerData[0]);
-                        let buildUser = {
-                            createdAt: new Date().toUTCString(),
-                            displayName: user.displayName,
-                            email: user.email,
-                            emailVerified: user.emailVerified,
-                            lastLoginAt: new Date().toUTCString(),
-                            phoneNumber: (user.phoneNumber == undefined || user.phoneNumber == null ? "555-555-5555" : user.phoneNumber),
-                            photoSource: user.photoURL,
-                            providerData: providerObj
-                        }
+                        db.collection('users').doc(email).set(providerObj,{merge:true});
+                        callback(providerObj);
                     }
                 }
             })
@@ -67,9 +76,10 @@ const Util = {
             providerObj['displayName'] = obj.displayName;
             providerObj['email'] = obj.email;
             providerObj['phoneNumber'] = obj.phoneNumber;
-            providerObj['photoURL'] = obj.photoURL;
+            providerObj['photoSource'] = obj.photoURL;
             providerObj['providerId'] = obj.providerId;
             providerObj['uid'] = obj.uid;
+            providerObj['providerData'] = obj;
             return providerObj;
         },
         GetUserData: function(db, email, callback){
@@ -735,6 +745,9 @@ const Util = {
                 messagingSenderId: messagingSenderId,
                 appId: appId,
                 measurementId: measurementId
+            },
+            signOut: async()=>{
+                firebase.auth().signOut();
             }
         },
         OAuth: {

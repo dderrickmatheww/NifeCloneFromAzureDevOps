@@ -51,8 +51,8 @@ class FriendsList extends React.Component {
 
   //gets user and friend data
   getAsyncStorageData = (callback) => {
-    this.setUserData();
-    this.setFriendData();
+    this.setState({ friends: this.props.friends});
+    this.setState({ userData: this.props.user});
   }
 
   componentDidMount() {
@@ -73,7 +73,7 @@ class FriendsList extends React.Component {
               
             </View>
           <View style={localStyles.HeaderCont}>
-            <Image style={localStyles.profilePic} source={{ uri: this.state.userData ? this.state.userData.providerData.photoURL : null }} />
+            <Image style={localStyles.profilePic} source={ this.state.userData.photoSource  ? {uri:this.state.userDataphotoSource}  : defPhoto} />
             <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
             <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
             <View style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, marginBottom:2, width:"98%"}}>
@@ -92,7 +92,7 @@ class FriendsList extends React.Component {
             {this.state.friends.map((friend, i) => (
               <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user:friend, isUserProfile:false}})}>
               <View style={localStyles.friendCont}>
-                <Image style={localStyles.friendPic} source={ friend.providerData != null ? {uri:friend.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{friend.displayName}</Text>
+                <Image style={localStyles.friendPic} source={ friend.photoSource  ? {uri:friend.photoSource}  : defPhoto} /><Text style={localStyles.name}>{friend.displayName}</Text>
               </View>
             </TouchableOpacity>
             ))}
@@ -101,7 +101,7 @@ class FriendsList extends React.Component {
         :
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.HeaderCont}>
-            <Image style={localStyles.profilePic} source={{ uri: this.state.userData ? this.state.userData.providerData.photoURL : null }} />
+            <Image style={localStyles.profilePic} source={ this.state.userData.photoSource  ? {uri:this.state.userDataphotoSource}  : defPhoto} />
             <Text style={localStyles.Header}>Your Friends</Text>
             <Text style={localStyles.FriendCount}>Loading Friends...</Text>
           </View>
