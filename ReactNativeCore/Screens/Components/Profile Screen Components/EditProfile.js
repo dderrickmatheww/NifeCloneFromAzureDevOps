@@ -30,8 +30,8 @@ export default class EditProfile extends Component {
 
   setMaxDate = () => {
     var maxDateValue = new Date();
-    maxDateValue.setFullYear( maxDateValue.getFullYear() - 18 );
-    this.setState({maxDateValue:maxDateValue})
+    maxDateValue = maxDateValue.setFullYear( maxDateValue.getFullYear() - 18 );
+    return new Date(maxDateValue);
   }
 
   //Set user data
@@ -41,7 +41,7 @@ export default class EditProfile extends Component {
       this.setState({userData: user});
       console.log("User: " + JSON.stringify(user));
 
-      this.setState({dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.state.maxDateValue});
+      this.setState({dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.setMaxDate()});
       
 
       this.setState({gender: user.gender ? user.gender : "other"});
@@ -68,10 +68,16 @@ export default class EditProfile extends Component {
   }
 
   onDOBChange = (event, selectedDate) => {
-    var date = new Date(selectedDate);
-    this.setState({dateOfBirth: date});
-    console.log("New DOB: " + this.state.dateOfBirth)
-    this.setState({showDatePicker:false});
+    if(selectedDate){
+      var date = new Date(selectedDate);
+      this.setState({dateOfBirth: date});
+      console.log("New DOB: " + this.state.dateOfBirth)
+      this.setState({showDatePicker:false});
+    }
+    else {
+      this.setState({showDatePicker:false});
+    }
+    
   }
 
   
@@ -192,7 +198,7 @@ export default class EditProfile extends Component {
                         <DateTimePicker
                           mode={"date"}
                           value={this.state.dateOfBirth}
-                          maximumDate={this.state.maxDateValue}
+                          maximumDate={ this.setMaxDate()}
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
                         />

@@ -16,8 +16,7 @@ import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import Login from '../Screens/Login Screen';
 import {DrawerContent} from '../Screens/Components/Drawer Components/Drawer Content';
-//Intialize Firebase Database
-firebase.initializeApp(Util.dataCalls.Firebase.config);
+
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props, {navigation}){

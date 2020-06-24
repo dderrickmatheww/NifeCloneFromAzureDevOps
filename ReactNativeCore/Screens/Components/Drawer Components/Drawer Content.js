@@ -16,6 +16,7 @@ import {
 } from '@react-navigation/drawer';
 import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
+import Util from '../../../scripts/Util';
 
 const defPhoto = require('../../../Media/Images/logoicon.png');
 export function DrawerContent(props) {
@@ -176,7 +177,7 @@ export function DrawerContent(props) {
                         />
                     )}
                     label={()=> <Text style={styles.text}>Sign Out</Text>}
-                    onPress={() => {signOut()}}
+                    onPress={() => {Util.dataCalls.Firebase.signOut()}}
                 />
             </Drawer.Section>
         </View>
