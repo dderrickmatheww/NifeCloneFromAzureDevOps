@@ -679,17 +679,26 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     let friends = JSON.parse(friendData);
-                    console.log(friends)
                     let bars = response.businesses;
                     var friendArr = [];
+                    var currentlyCheckIn = [];
                     if(friends.length > 0) {
                         bars.forEach((bar, index) => {
                             friends.forEach((friend) => {
-                                if((friend.lastVisited) && (friend.lastVisited[bar.id])){
+                                if((friend.checkIn) &&
+                                (friend.checkIn.buisnessUID == bar.id) &&
+                                (friend.checkIn.privacy != "Private")) {
+                                    currentlyCheckIn.push(friend);
+                                }
+                                if((friend.lastVisited) && 
+                                (friend.lastVisited[bar.id]) && 
+                                (friend.lastVisited[bar.id].privacy != "Private") &&
+                                (!currentlyCheckIn.includes(friend))){
                                     friendArr.push(friend);
                                 }
                             });
                             response.businesses[index].lastVisitedBy = friendArr;
+                            response.businesses[index].currentlyCheckIn = currentlyCheckIn;
                         });
                     }
                     Util.basicUtil.consoleLog("Yelp's placeData", true);
