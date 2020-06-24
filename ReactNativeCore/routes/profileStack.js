@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import FriendsList from '../Screens/Components/Profile Screen Components/FriendsList';
 import EditProfile from '../Screens/Components/Profile Screen Components/EditProfile';
 import UserSearch from '../Screens/Components/Profile Screen Components/UserSearch';
+import QRCodeScreen from '../Screens/Components/Profile Screen Components/QR Code';
+import ScanQRCodeScreen from '../Screens/Components/Profile Screen Components/ScanQRCode';
 import ProfileScreen from '../Screens/Profile';
 
 function Friends({route, navigation}){
@@ -32,6 +34,17 @@ function Search({route, navigation}){
   );
 }
 
+function QRCode({ navigation}){
+  return(
+    <QRCodeScreen onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></QRCodeScreen>
+  );
+}
+function ScanQR({ navigation}){
+  return(
+    <ScanQRCodeScreen onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ScanQRCodeScreen>
+  );
+}
+
 const Stack = createStackNavigator();
 
 export default poppinStack = () => {
@@ -41,6 +54,8 @@ export default poppinStack = () => {
         <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}} />
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} />
         <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} />
+        <Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />
+        <Stack.Screen name="ScanQR" component={ScanQR} options={{title: 'ScanQR'}} />
       </Stack.Navigator>
   );
 };
