@@ -32,6 +32,7 @@ const Util = {
                 friends:{}
             }
             updateObj.friends[friendEmail] = true;
+            console.log('Attempting to add: ' +friendEmail+ " as a friend")
             Util.user.UpdateUser(db, userEmail, updateObj,()=>{
                 Util.basicUtil.consoleLog("AddFriend ", true);
                 callback();

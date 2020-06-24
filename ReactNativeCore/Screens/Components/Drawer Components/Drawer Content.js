@@ -161,6 +161,17 @@ export function DrawerContent(props) {
                             label={()=> <Text style={styles.text}>Settings</Text>}
                             onPress={() => {props.navigation.navigate('Settings')}}
                         />
+                        <DrawerItem 
+                            icon={() => (
+                                <Ionicons 
+                                name="md-qr-scanner" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Scan Friends QR Code</Text>}
+                            onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
+                        />
                         {/* <DrawerItem 
                             icon={() => (
                                 <MaterialCommunityIcons 
