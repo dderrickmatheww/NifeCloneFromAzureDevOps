@@ -1,12 +1,13 @@
 import React from 'react';
 import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
-import { Avatar } from 'react-native-paper';
+
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import Util from '../scripts/Util';
 import theme from '../Styles/theme';
 import { styles } from '../Styles/style';
+import VisitedByCallout from './Components/Map Screen Components/VisitedByCallout';
 
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
@@ -235,9 +236,7 @@ class MapScreen extends React.Component  {
   gatherLocalMarkers = (lat, long, friendData, userLocation) => {  
     let baseURL = 'https://api.yelp.com/v3/businesses/search?';
     let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
-    Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data, friendArr) => {
-      data['lastVisitedBy'] = friendArr;
-      console.log(data)
+    Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
       this.setState({
         markers: data,
         userLocation: userLocation
@@ -393,25 +392,9 @@ class MapScreen extends React.Component  {
                     <Callout 
                       tooltip={true}
                       onPress={(e) => {this.HandleMarkerPress(e, marker.id)}}
+                      style={{justifyContent: 'center', alignContent: 'center'}}
                     >
-                      <View style={localStyles.callOutMarker}>
-                        <Text>{marker.name}</Text>
-                        <Text>Rated {marker.rating}/5 stars in {marker.review_count} reviews.</Text>
-                        { marker.lastVisitedBy && marker.lastVisitedBy.length > 0 ?
-                            marker.lastVisitedBy.map((friend, i) => (
-                              <View style={styles.friendVisitedBy}>
-                                <Avatar.Image
-                                  source={{uri: friend.providerData.photoURL}}
-                                  size={50}
-                                /> 
-                                <Text style={styles.friendText}>
-                                  Your friend {friend.displayName} was here {Util.date.TimeSince(new Date(friend.checkIn.checkInTime))} ago!
-                                </Text>
-                              </View>
-                            ))
-                          : null
-                        }
-                      </View>
+                      <VisitedByCallout marker={marker}/>
                     </Callout>
                   </ Marker>
                 ))}
@@ -457,13 +440,17 @@ const localStyles = StyleSheet.create({
     backgroundColor: '#20232a'
   },
   callOutMarker: {
+    flex: 1,
     backgroundColor: 'white',
     borderRadius: 3,
-    padding: 10,
-    margin: 10,
+    padding: 30,
+    margin: 25,
     justifyContent: 'center',
     alignContent: 'center',
-    maxWidth: '60%'
+    maxWidth: '60%',
+    borderRadius: 20,
+    borderColor: theme.LIGHT_PINK,
+    borderWidth: 1
   },
   overlay: {
     position: 'absolute',
