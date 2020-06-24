@@ -234,6 +234,11 @@ const Util = {
                 console.log("Firebase Error: " + error);
           });
         },
+        GenerateQRCode: (userEmail) => {
+            let email = encodeURI(userEmail);
+            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=20232A&color=eca6c4"
+            return QRSource;
+        }
     },
     location: {
         SaveLocation: function(db, email, location, callback){
@@ -832,6 +837,5 @@ const Util = {
         }
     }
 }
-
 
 export default Util;
