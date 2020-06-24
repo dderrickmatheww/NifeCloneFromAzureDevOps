@@ -11,7 +11,7 @@ export default class VisitedByCallout extends React.Component  {
             <View style={styles.callOutMarker}>
                 <Text>{this.props.marker.name}</Text>
                 <Text>Rated {this.props.marker.rating}/5 stars in {this.props.marker.review_count} reviews.</Text>
-                    { 
+                { 
                     this.props.marker.lastVisitedBy && this.props.marker.lastVisitedBy.length > 0 ?
                         this.props.marker.lastVisitedBy.length < 2 ?
                             this.props.marker.lastVisitedBy.map((friend, i) => (
@@ -37,20 +37,21 @@ export default class VisitedByCallout extends React.Component  {
                                     this.props.marker.lastVisitedBy.map((friend, i) => (
                                         friend.lastVisited && friend.lastVisited[this.props.marker.id] ?
                                             <View style={styles.multiAvatar}>
-                                            {
-                                                i = 0 ? 
-                                                <Avatar.Image
-                                                    source={{uri: friend.providerData.photoURL}}
-                                                    size={30}
-                                                    style={{ borderWidth: 1.5, borderColor: theme.LIGHT_PINK}}
-                                                />
-                                                : <Avatar.Image
-                                                    source={{uri: friend.providerData.photoURL}}
-                                                    size={30}
-                                                    style={{right: i * 0.2, borderWidth: 1.5, borderColor: theme.LIGHT_PINK, marginLeft: -10}}
-                                                />
-                                            }
-                                            </ View>
+                                                {
+                                                    i = 0 ? 
+                                                        <Avatar.Image
+                                                            source={{uri: friend.providerData.photoURL}}
+                                                            size={30}
+                                                            style={{ borderWidth: 1.5, borderColor: theme.LIGHT_PINK}}
+                                                        />
+                                                    : 
+                                                        <Avatar.Image
+                                                            source={{uri: friend.providerData.photoURL}}
+                                                            size={30}
+                                                            style={{right: i * 0.2, borderWidth: 1.5, borderColor: theme.LIGHT_PINK, marginLeft: -10}}
+                                                        />
+                                                }
+                                            </View>
                                         : null
                                     ))
                                 : null
