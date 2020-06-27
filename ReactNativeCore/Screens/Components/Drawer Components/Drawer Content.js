@@ -63,17 +63,6 @@ export function DrawerContent(props) {
                     </View>
 
                     <Drawer.Section style={styles.drawerSection}>
-                        <DrawerItem style={styles.text}
-                            icon={() => (
-                                <MaterialCommunityIcons 
-                                name="home" 
-                                color={theme.LIGHT_PINK}
-                                size={20}
-                                />
-                            )}
-                            label={()=> <Text style={styles.text}>Home</Text>}
-                            onPress={() => {props.navigation.navigate('Home')}}
-                        />
                         <DrawerItem 
                             icon={() => (
                                 <MaterialCommunityIcons 
@@ -107,8 +96,8 @@ export function DrawerContent(props) {
                                 size={20}
                                 />
                             )}
-                            label={()=> <Text style={styles.text}>What's Poppin'?</Text>}
-                            onPress={() => {props.navigation.navigate("What's Poppin'?")}}
+                            label={()=> <Text style={styles.text}>My Feed</Text>}
+                            onPress={() => {props.navigation.navigate("My Feed", {screen:"Friend's Feed", params:{user: props.user, isUserProfile: true, friends: props.friends}})}}
                         />
                         <DrawerItem 
                             icon={() => (

@@ -1,11 +1,20 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
-export default function IconWithBadge({ name, badgeCount, color, size }) {
+export default function IconWithBadge({ name, badgeCount, color, size, type }) {
     return (
-      <View style={{ width: 24, height: 24, margin: 5 }}>
-        <Ionicons name={name} size={size} color={color} />
+      <View style={{ width: 30, height: 24, margin: 5 }}>
+        {
+          type == 'Ionicons' ?
+            <Ionicons name={name} size={size} color={color} />
+          : type == 'FontAwesome5' ?
+            <FontAwesome5 name={name} size={size} color={color} />
+          : 
+            <FontAwesome name={name} size={size} color={color} />
+        }
         {badgeCount > 0 && (
           <View
             style={{

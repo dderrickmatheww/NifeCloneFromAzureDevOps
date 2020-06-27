@@ -1,5 +1,6 @@
 import React from 'react';
 import {ImageBackground, StyleSheet, View} from 'react-native';
+import theme from '../Styles/theme';
 
 var image = require('../Media/Images/Splash.png')
 
@@ -19,7 +20,8 @@ class AppLoading extends React.Component  {
 const localStyles = StyleSheet.create({
   ImageBackground:{
     flex:1,
-    resizeMode:"contain"
+    resizeMode:"contain",
+    backgroundColor: theme.DARK
   },
 });
 
