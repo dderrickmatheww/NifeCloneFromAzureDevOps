@@ -34,6 +34,7 @@ class Navigator extends React.Component {
     friendData: [],
     authLoaded: false,
     userChecked: false,
+    friendRequests:null,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -59,16 +60,41 @@ class Navigator extends React.Component {
     //if user exits get user data, get friend data set to async 
     console.log('wantedData App.js', currentUser)
     if (currentUser) {
-      Util.user.GetUserData(db, currentUser.email, (data) => {
-          if(data) {
-            let user = JSON.stringify(data);
+      //load user
+      Util.user.GetUserData(db, currentUser.email, (userData) => {
+          if(userData) {
+            let user = JSON.stringify(userData);
             Util.asyncStorage.SetAsyncStorageVar('User', user);
-            this.setState({userData:data});
+            this.setState({userData:userData});
             this.setState({userChecked:true});
+            //load users who are friends or have requested the user
             Util.friends.GetFriends(db, currentUser.email, (data) => {
+              let userFriends = this.state.userData.friends;
+              let usersThatRequested = data;
+              let requests = [];
+              let acceptedFriends = [];
+              let keys = Object.keys(userFriends);
+              keys.forEach(function(key){
+                if(userFriends[key] == null){
+                  usersThatRequested.forEach((user)=>{
+                    if(key == user.email){
+                      requests.push(user);
+                    }
+                  });
+                }
+                if(userFriends[key] == true){
+                  usersThatRequested.forEach((user)=>{
+                    if(key == user.email){
+                      acceptedFriends.push(user);
+                    }
+                  });
+                }
+              });
               let friends = JSON.stringify(data);
               Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-              this.setState({friendData: data})
+              this.setState({friendData: acceptedFriends});
+              this.setState({friendRequests: requests});
+              console.log(JSON.stringify(data));
             });
           }
           else {
@@ -86,14 +112,15 @@ class Navigator extends React.Component {
         if (user) {
           Util.user.VerifyUser(user, user.email, () => {
             this.getLocationAsync((location) => {
-              this.setWantedData(firebase.firestore(), user, location, () => {
-                this.getNeededData(firebase.firestore(),  user);
+              this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
+                this.getNeededData(firebase.firestore(),  firebase.auth().currentUser);
                 this.setState({authLoaded: true});
               });        
             });
           });
         } else {
           this.setState({authLoaded: true});
+          this.setState({userData: null});
           console.log('No user');
         }
       });
@@ -118,7 +145,7 @@ class Navigator extends React.Component {
             }}
             initialRouteName='Home'
             overlayColor="#20232A"
-            drawerContent={props => <CustomDrawerContent {...props} friends={this.state.friendData} user={this.state.userData}/>}
+            drawerContent={props => <CustomDrawerContent {...props} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >

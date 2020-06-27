@@ -9,6 +9,7 @@ import {
   Searchbar
 } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons'; 
+import RequestModal from './Request Modal';
 
 var defPhoto = require('../../../Media/Images/logoicon.png')
 class FriendsList extends React.Component {
@@ -17,7 +18,8 @@ class FriendsList extends React.Component {
     userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
     modalVisible: false,
     friends: null,
-    searchQuery: null
+    searchQuery: null,
+    requests:null
   }
   //Set login status
   setLoggedinStatus = async (dataObj) => {
@@ -43,6 +45,7 @@ class FriendsList extends React.Component {
       this.setState({ friends: JSON.parse(friends) });
       // console.log('Friends: ' + this.state.friendData);
     });
+  
   }
 
   onChangeSearch = (query) => {
@@ -51,12 +54,63 @@ class FriendsList extends React.Component {
 
   //gets user and friend data
   getAsyncStorageData = (callback) => {
-    this.setState({ friends: this.props.friends});
     this.setState({ userData: this.props.user});
+    this.setState({friends:this.props.friends});
+    this.setState({requests:this.props.requests});
+  }
+
+  handleOpenModal = () => {
+    this.setState({modalVisible:true});
   }
 
   componentDidMount() {
     this.getAsyncStorageData();
+  }
+
+  handleRefresh = () => {
+    this.setState({modalVisible:false});
+    this.setState({friends:null});
+    Util.user.GetUserData(firebase.firestore(), firebase.auth().currentUser.email, (userData) => {
+      if(userData) {
+        let user = JSON.stringify(userData);
+        Util.asyncStorage.SetAsyncStorageVar('User', user);
+        this.setState({userData:userData});
+        //load users who are friends or have requested the user
+        Util.friends.GetFriends(firebase.firestore(), firebase.auth().currentUser.email, (data) => {
+          let userFriends = this.state.userData.friends;
+          let usersThatRequested = data;
+          let requests = [];
+          let acceptedFriends = [];
+          let keys = Object.keys(userFriends);
+          keys.forEach(function(key){
+            if(userFriends[key] == null){
+              usersThatRequested.forEach((user)=>{
+                if(key == user.email){
+                  requests.push(user);
+                }
+              });
+            }
+            if(userFriends[key] == true){
+              usersThatRequested.forEach((user)=>{
+                if(key == user.email){
+                  acceptedFriends.push(user);
+                }
+              });
+            }
+          });
+          let friends = JSON.stringify(data);
+          Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+          this.setState({friends: acceptedFriends});
+          this.setState({requests: requests});
+          // console.log(JSON.stringify(data));
+          Util.basicUtil.consoleLog('Handle Refresh', true);
+          
+        });
+      }
+      else {
+        Util.basicUtil.consoleLog('Handle Refresh', false);
+      }
+    });
   }
 
   render() {
@@ -68,9 +122,19 @@ class FriendsList extends React.Component {
               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
                   <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
               </TouchableOpacity> 
+              {/* Requests button */}
+              {
+                this.state.requests.length > 0 ?
+                <TouchableOpacity onPress={()=>this.handleOpenModal()} style={localStyles.RequestOverlay}>
+                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.LIGHT_PINK}/>
+                    
+                  <Text style={localStyles.Requests}>
+                    {this.state.requests.length} Requests
+                  </Text>
+                </TouchableOpacity> : null
+              }
+              
 
-              
-              
             </View>
           <View style={localStyles.HeaderCont}>
             <Image style={localStyles.profilePic} source={ this.state.userData.photoSource  ? {uri:this.state.userDataphotoSource}  : defPhoto} />
@@ -97,6 +161,7 @@ class FriendsList extends React.Component {
             </TouchableOpacity>
             ))}
           </ScrollView>
+          <RequestModal onDismiss={()=> this.handleRefresh()} isVisible={this.state.modalVisible} requests={this.state.requests}></RequestModal>
         </View>
         :
         <View style={localStyles.loggedInContainer}>
@@ -116,6 +181,21 @@ class FriendsList extends React.Component {
 }
 
 const localStyles = StyleSheet.create({
+  RequestOverlay: {
+    position:"relative",
+    left: 195,
+    alignSelf:"flex-end",
+    opacity: 0.75,
+    backgroundColor: theme.DARK,
+    borderRadius: 5,
+    marginBottom:7.5,
+    borderWidth:1,
+    borderColor: theme.LIGHT_PINK,
+    justifyContent:"center",
+    alignContent:"center",
+    padding:3,
+    flexDirection:"row"
+  },
   navHeader:{
     marginTop:25,
     flexDirection:"row",
@@ -178,11 +258,19 @@ const localStyles = StyleSheet.create({
   },
   FriendCount: {
     fontSize: 15,
+    marginVertical:5,
+    color: theme.LIGHT_PINK,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  Requests: {
+    fontSize: 15,
     marginTop: "2%",
     marginBottom: "1%",
     color: theme.LIGHT_PINK,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal:2
   },
   Header: {
     fontSize: 20,
