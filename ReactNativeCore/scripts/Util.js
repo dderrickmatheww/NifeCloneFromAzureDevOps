@@ -15,7 +15,7 @@ const Util = {
             let docRef = db.collection('users').where(path, '==', true);
             docRef.get().then((friends) => {
                 friends.forEach(function(friend) {
-                    if(friend.data().displayName) {
+                    if(friend.data()) {
                         friendsArr.push(friend.data());
                     }
                 });
@@ -28,14 +28,26 @@ const Util = {
             });
         },
         AddFriend: function(db, userEmail, friendEmail, callback){
-            let updateObj = {
+            let updateUserObj = {
                 friends:{}
             }
-            updateObj.friends[friendEmail] = true;
+            // User that requested the friend
+            updateUserObj.friends[friendEmail] = true;
+            
             console.log('Attempting to add: ' +friendEmail+ " as a friend")
-            Util.user.UpdateUser(db, userEmail, updateObj,()=>{
-                Util.basicUtil.consoleLog("AddFriend ", true);
-                callback();
+            Util.user.UpdateUser(db, userEmail, updateUserObj,()=>{
+                Util.basicUtil.consoleLog("AddFriend " + userEmail, true);
+
+                let updateFriendObj = {
+                    friends:{}
+                }
+                // User that will have a friend request
+                updateFriendObj.friends[userEmail] = null;
+                
+                Util.user.UpdateUser(db, friendEmail, updateFriendObj,()=>{
+                    Util.basicUtil.consoleLog("AddFriend " + friendEmail, true);
+                    callback();
+                });
             });
         },
         RemoveFriend: function(db, userEmail, friendEmail, callback){
@@ -43,11 +55,32 @@ const Util = {
                 friends:{}
             }
             updateObj.friends[friendEmail] = false;
+            
             Util.user.UpdateUser(db, userEmail, updateObj,()=>{
-                Util.basicUtil.consoleLog("RemoveFriend ", true);
+                Util.basicUtil.consoleLog("RemoveFriend " + userEmail, true);
+
+                let friendUpdateObj = {
+                    friends:{}
+                }
+                friendUpdateObj.friends[userEmail] = false;
+                Util.user.UpdateUser(db, friendEmail, friendUpdateObj,()=>{
+                    Util.basicUtil.consoleLog("RemoveFriend " + friendEmail, true);
+                    callback();
+                });
+            });
+        },
+        AcceptFriendRequest: function(db, userEmail, friendEmail, callback){
+            let updateUserObj = {
+                friends:{}
+            }
+            // User that will have a friend request
+            updateUserObj.friends[friendEmail] = true;
+            console.log('Attempting to accept: ' +friendEmail+ " as a friend")
+            Util.user.UpdateUser(db, userEmail, updateUserObj,()=>{
+                Util.basicUtil.consoleLog("AddFriend ", true);
                 callback();
             });
-        }
+        },
     },
     user: {
         VerifyUser: function(user, email, callback){

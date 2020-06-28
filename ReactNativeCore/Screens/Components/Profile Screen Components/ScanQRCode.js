@@ -74,7 +74,7 @@ export default class ScanQRCodeScreen extends Component {
                   },
                 }}
               >
-                You have added {this.state.scannedEmail} to your friends list!
+                You have requested to be friends with {this.state.scannedEmail}!
               </Snackbar>
             </View>
                 :
