@@ -285,7 +285,9 @@ class MapScreen extends React.Component  {
         closed: wantedPlace.is_closed,
         address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1],
         id: wantedPlace.id,
-        friendsData: tempFriendArr
+        friendsData: tempFriendArr,
+        longitude: wantedPlace.coordinates.longitude,
+        latitude: wantedPlace.coordinates.latitude
       }
     });
     this.setState({isModalVisible: true});
@@ -354,6 +356,8 @@ class MapScreen extends React.Component  {
                 address={this.state.modalProps.address}
                 onPress={() => this.closeModal()}
                 buisnessUID={this.state.modalProps.id}
+                latitude={this.state.modalProps.latitude}
+                longitude={this.state.modalProps.longitude}
               > 
             </BarModal>
             

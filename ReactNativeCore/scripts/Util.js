@@ -6,6 +6,7 @@ import * as Google from 'expo-google-app-auth';
 import jsSHA from "jssha";
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
+import { isPointWithinRadius } from 'geolib';
 
 const Util = {
     friends: {
@@ -153,19 +154,21 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
-        CheckIn: async (buisnessUID, email, privacy, returnData) => {
+        CheckIn: async (buisnessUID, email, privacy, latLong, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
             let lastVisited = {};
             lastVisited[buisnessUID] = {
-                checkInTime: new Date().toUTCString(),
-                privacy: privacy
+                checkInTime: new Date(),
+                privacy: privacy,
+                latAndLong: latLong
             }
             setLoc.set({
                 checkIn: {
                     buisnessUID: buisnessUID,
-                    checkInTime: new Date().toUTCString(),
-                    privacy: privacy
+                    checkInTime: new Date(),
+                    privacy: privacy,
+                    latAndLong: latLong
                 },
                 lastVisited
             },
@@ -308,7 +311,7 @@ const Util = {
                     loc['region'] = region;
                     Util.location.SetUserLocationData(location.coords);
                     Util.basicUtil.consoleLog('GetUserLocation', true);
-                    returnData(location.coords);
+                    returnData(loc);
                 })
                 
             })
@@ -316,6 +319,23 @@ const Util = {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
                 console.log("Expo Location Error: " + error);
             });
+        },
+        GrabWhatsPoppinFeed: async (query, email, returnData) => {
+            console.log(email);
+            var sevenDaysDelayed = new Date();
+            sevenDaysDelayed.setDate(sevenDaysDelayed.getDate()-7);
+            sevenDaysDelayed = sevenDaysDelayed.toUTCString();
+            let db = firebase.firestore();
+            let userRef = await db.collection('users').where('checkInTime').get();
+            if(userRef.empty){
+                console.log('No matching documents.');
+                return;
+            }
+            else {
+                userRef.forEach(doc => {
+                    console.log(doc.id, '=>', doc.data());
+                });
+            }
         }
     },
     date: {
