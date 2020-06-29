@@ -38,11 +38,13 @@ export function DrawerContent(props) {
                             
                             
                             <View style={{marginLeft:15, flexDirection:'column'}}>
+                                {/* display name */}
                                 <Title style={styles.title}>
                                   {props.user.displayName}
                                 </Title>
+                                {/* status */}
                                 <Caption style={styles.caption}>
-                                  { props.user.status ? props.user.status : "No Status"}
+                                  { props.user.status ? props.user.status : "No Status"} 
                                 </Caption>
                                 {/* TODO Badge */}
                                 <Caption style={styles.caption}>
@@ -93,8 +95,13 @@ export function DrawerContent(props) {
                         />
                             <List.Accordion
                                 titleStyle={{color:theme.LIGHT_PINK}}
-                                title="You"
-                                left={() => <List.Icon style={{marginLeft:-1, marginRight:10}} color={theme.LIGHT_PINK} icon="account"/>}
+                                title="      You"
+                                left={() => <MaterialCommunityIcons 
+                                    name="account" 
+                                    color={theme.LIGHT_PINK}
+                                    size={20}
+                                    style={{paddingLeft:10}}
+                                    />}
                             >
                                <DrawerItem 
                                     icon={() => (
