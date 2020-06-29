@@ -25,6 +25,12 @@ function CustomDrawerContent(props, {navigation}){
   ) 
 }
 
+function WhatsPoppin ({route}) {
+  const { user,  friends} = route.params;
+  return (
+    <PoppinStack friends={friends}  user={user}/>
+  )
+}
 
 
 class Navigator extends React.Component {
@@ -143,7 +149,7 @@ class Navigator extends React.Component {
             drawerStyle={{
               backgroundColor: theme.DARK
             }}
-            initialRouteName='Home'
+            initialRouteName='My Feed'
             overlayColor="#20232A"
             drawerContent={props => <CustomDrawerContent {...props} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
@@ -151,7 +157,7 @@ class Navigator extends React.Component {
           >
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={profileStack} />
-            <Drawer.Screen name="My Feed" component={PoppinStack} />
+            <Drawer.Screen name="My Feed" component={WhatsPoppin} initialParams={{user:this.state.userData, friends:this.state.friendData ? this.state.friendData : []}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>

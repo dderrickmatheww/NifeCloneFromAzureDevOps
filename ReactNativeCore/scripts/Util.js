@@ -304,10 +304,10 @@ const Util = {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Location.reverseGeocodeAsync(location.coords).then((region)=>{
                     let loc = location;
-                    loc['region'] = region;
+                    loc['region'] = region[0];
                     Util.location.SetUserLocationData(location.coords);
                     Util.basicUtil.consoleLog('GetUserLocation', true);
-                    returnData(location.coords);
+                    returnData(location);
                 })
                 
             })

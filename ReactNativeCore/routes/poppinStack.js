@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import WhatsPoppin from '../Screens/WhatsPoppinTab';
 import HomeScreen from '../Screens/HomeScreen';
-import Profile from '../Screens/Profile';
+import FriendsFeed from '../Screens/Components/Whats Poppin Components/FriendsFeed';
 import IconWithBadge from '../Screens/Universal Components/IconWithBadge';
 import theme from '../Styles/theme';
 
@@ -14,10 +14,10 @@ function HomeScreenTab ({navigation}) {
   )
 }
 
-function profileScreenTab ({route, navigation}) {
+function Friends ({route, navigation}) {
   const { user, isUserProfile,  friends} = route.params;
   return (
-    <Profile friends={friends}  user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <FriendsFeed friends={friends}  user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
@@ -55,9 +55,10 @@ export default poppinStack = () => {
         backgroundColor: theme.DARK
       }
     }}
+    initialRouteName="Friend's Feed"
     >
     <Tab.Screen name="My Feed" component={HomeScreenTab}/>
-    <Tab.Screen name="Friend's Feed" component={profileScreenTab}/>
+    <Tab.Screen name="Friend's Feed" component={Friends}/>
     <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab}/>
   </Tab.Navigator>
   );
