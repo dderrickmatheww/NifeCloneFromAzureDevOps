@@ -89,11 +89,41 @@ export const styles = StyleSheet.create({
   },
   friendVisitedBy: {
     flexDirection: 'row',
-    maxWidth: '60%',
-    top: 5
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  friendVisitedByMulti: {
+    top: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  callOutMarker: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 3,
+    padding: 30,
+    margin: 25,
+    justifyContent: 'center',
+    alignContent: 'center',
+    maxWidth: '65%',
+    borderRadius: 20,
+    borderColor: theme.LIGHT_PINK,
+    borderWidth: 2
+  },
+  multiAvatar: {
+    top: '5%',
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  singleAvatar: {
+    top: '11%',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   friendText: {
-    margin: 10
+    margin: 10,
+    marginTop: 30
   },
   facebookButtonContainer: {
     top: 80
