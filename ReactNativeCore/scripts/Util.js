@@ -113,7 +113,14 @@ const Util = {
             providerObj['photoSource'] = obj.photoURL;
             providerObj['providerId'] = obj.providerId;
             providerObj['uid'] = obj.uid;
-            providerObj['providerData'] = obj;
+            providerObj['providerData'] = {
+                displayName : obj.displayName,
+                email : obj.email,
+                phoneNumber : obj.phoneNumber,
+                photoSource : obj.photoURL,
+                providerId : obj.providerId,
+                uid : obj.uid,
+            }
             return providerObj;
         },
         GetUserData: function(db, email, callback){
@@ -463,6 +470,8 @@ const Util = {
                     Util.asyncStorage.GetAsyncVar('userLocationData', (result) => {
                         lat = result.split(',')[0];
                         long = result.split(',')[1];
+                        console.log('lat: ' + lat);
+                        console.log('long: ' + long);
                     });
                 }
                 try {
@@ -486,10 +495,17 @@ const Util = {
                         fetch('https://graph.facebook.com/search?type=place&q=bar&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
                         .then(response => response.json())
                         .then(async data => {
-                            dataObj['data'] = data.data;
-                            Util.basicUtil.consoleLog("Facbook's placeData", true);
-                            //Grabs post from FB based for default
-                            returnData(dataObj);
+                            if(data.error){
+                                Util.basicUtil.consoleLog("Facbook's placeData", false);
+                                console.log('FaceBookError - Code: '+data.error.code + " Message: " + data.error.message);
+                                returnData({});
+                            }
+                            else {
+                                //Grabs post from FB based for default
+                                dataObj['data'] = data.data;
+                                Util.basicUtil.consoleLog("Facbook's placeData", true);
+                                returnData(dataObj);
+                            }
                         })
                         .catch((e) => {
                             Util.basicUtil.consoleLog("Facbook's placeData", false);
