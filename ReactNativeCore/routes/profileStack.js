@@ -9,9 +9,9 @@ import ScanQRCodeScreen from '../Screens/Components/Profile Screen Components/Sc
 import ProfileScreen from '../Screens/Profile';
 
 function Friends({route, navigation}){
-  const { user, friends} = route.params;
+  const { user, friends, requests, refresh} = route.params;
   return(
-    <FriendsList friends={friends}  user={user}  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
+    <FriendsList refresh={refresh} requests={requests} friends={friends}  user={user}  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
 }
 function Profile({route, navigation}){
