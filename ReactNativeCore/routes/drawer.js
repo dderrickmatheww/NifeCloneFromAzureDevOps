@@ -151,8 +151,7 @@ class Navigator extends React.Component {
           >
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={profileStack} />
-            <Drawer.Screen name="Home" component={HomeStack} />
-            <Drawer.Screen name="What's Poppin'?" component={PoppinStack} />
+            <Drawer.Screen name="My Feed" component={PoppinStack} />
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
