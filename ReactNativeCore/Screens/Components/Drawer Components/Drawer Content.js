@@ -157,8 +157,8 @@ export function DrawerContent(props) {
                                 size={20}
                                 />
                             )}
-                            label={()=> <Text style={styles.text}>What's Poppin'?</Text>}
-                            onPress={() => {props.navigation.navigate("What's Poppin'?")}}
+                            label={()=> <Text style={styles.text}>My Feed</Text>}
+                            onPress={() => {props.navigation.navigate("My Feed", {screen:"Friend's Feed", params:{user: props.user, isUserProfile: true, friends: props.friends}})}}
                         />
                         <DrawerItem 
                             icon={() => (
