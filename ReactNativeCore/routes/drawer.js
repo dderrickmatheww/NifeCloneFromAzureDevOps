@@ -22,9 +22,10 @@ const Drawer = createDrawerNavigator();
 function CustomDrawerContent(props, {navigation}){
   return(
       <DrawerContent {...props} navigate={navigation}/>
-  )
-  
+  ) 
 }
+
+
 
 class Navigator extends React.Component {
 
@@ -119,7 +120,7 @@ class Navigator extends React.Component {
             overlayColor="#20232A"
             drawerContent={props => <CustomDrawerContent {...props} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
-            overlayColor={"rgba(32, 35, 42, 0.85)"}
+            overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={profileStack} />

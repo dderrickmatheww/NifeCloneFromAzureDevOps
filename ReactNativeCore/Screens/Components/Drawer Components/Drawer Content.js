@@ -17,8 +17,10 @@ import {
 import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
 import Util from '../../../scripts/Util';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const defPhoto = require('../../../Media/Images/logoicon.png');
+
 export function DrawerContent(props) {
 
     return(
@@ -27,12 +29,15 @@ export function DrawerContent(props) {
                 <View style={styles.drawerContent}>
                     <View style={styles.userInfoSection}>
                         <View style={{flexDirection:'row',marginTop: 15}}>
+                            
                             <Avatar.Image 
                                 source={props.user.providerData ? {
                                      uri:  props.user.photoSource  
                                 }: defPhoto}
-                                size={50}
+                                size={100}
                             />
+                            
+                            
                             <View style={{marginLeft:15, flexDirection:'column'}}>
                                 <Title style={styles.title}>
                                   {props.user.displayName}
@@ -45,6 +50,7 @@ export function DrawerContent(props) {
                                   { props.user.title ? props.user.title : "Casual Socialite"}
                                 </Caption>
                             </View>
+                            
                         </View>
 
                         <View style={styles.row}>
@@ -58,6 +64,18 @@ export function DrawerContent(props) {
                               
                                 <Paragraph style={[styles.paragraph, styles.caption]}>420</Paragraph>
                                 <Caption style={styles.caption}>Points</Caption>
+                            </View>
+                            <View style={styles.section}>
+                                <TouchableOpacity 
+                                    onPress={ () =>  props.navigation.navigate('Profile', {screen:'QRCode'})  }
+                                    style={{zIndex:10, position:"relative", width:"auto", height:"auto"}}
+                                >
+                                    <Avatar.Icon 
+                                    size={30}
+                                    icon="qrcode-scan"
+                                    color={theme.LIGHT_PINK}
+                                    style={{position: "relative",backgroundColor:theme.DARK, color:theme.LIGHT_PINK}}/>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>
@@ -134,6 +152,17 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem 
                             icon={() => (
+                                <Ionicons 
+                                name="md-qr-scanner" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Scan Friends QR Code</Text>}
+                            onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
+                        />
+                        {/* <DrawerItem 
+                            icon={() => (
                                 <MaterialCommunityIcons 
                                 name="settings" 
                                 color={theme.LIGHT_PINK}
@@ -142,7 +171,7 @@ export function DrawerContent(props) {
                             )}
                             label={()=> <Text style={styles.text}>Test</Text>}
                             onPress={() => {props.navigation.navigate('Test')}}
-                        />
+                        /> */}
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>
