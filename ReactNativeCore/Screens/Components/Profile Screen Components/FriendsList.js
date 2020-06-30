@@ -124,7 +124,7 @@ class FriendsList extends React.Component {
               </TouchableOpacity> 
               {/* Requests button */}
               {
-                this.state.requests ?
+                this.state.requests && this.state.requests.length > 0 ?
                 <TouchableOpacity onPress={()=>this.handleOpenModal()} style={localStyles.RequestOverlay}>
                   <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.LIGHT_PINK}/>
                     

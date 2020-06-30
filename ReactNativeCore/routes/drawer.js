@@ -25,10 +25,10 @@ function CustomDrawerContent(props, {navigation}){
   ) 
 }
 
-function WhatsPoppin ({route}) {
-  const { user,  friends} = route.params;
-  return (
-    <PoppinStack friends={friends}  user={user}/>
+function Poppin ({route, navigation}){
+  const {user, friends} = route.params;
+  return(
+    <PoppinStack user={user} friends={friends} navigate={navigation}/>
   )
 }
 
@@ -41,6 +41,7 @@ class Navigator extends React.Component {
     authLoaded: false,
     userChecked: false,
     friendRequests:null,
+    dataLoaded:false,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -71,11 +72,10 @@ class Navigator extends React.Component {
           if(userData) {
             let user = JSON.stringify(userData);
             Util.asyncStorage.SetAsyncStorageVar('User', user);
-            this.setState({userData:userData});
-            this.setState({userChecked:true});
+            
             //load users who are friends or have requested the user
             Util.friends.GetFriends(db, currentUser.email, (data) => {
-              let userFriends = this.state.userData.friends;
+              let userFriends = userData.friends;
               let usersThatRequested = data;
               let requests = [];
               let acceptedFriends = [];
@@ -98,9 +98,12 @@ class Navigator extends React.Component {
               });
               let friends = JSON.stringify(data);
               Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+              
               this.setState({friendData: acceptedFriends});
               this.setState({friendRequests: requests});
-              console.log(JSON.stringify(data));
+              this.setState({userData:userData});
+              this.setState({userChecked:true});
+              // console.log(JSON.stringify(data));
             });
           }
           else {
@@ -116,11 +119,12 @@ class Navigator extends React.Component {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
         if (user) {
+          this.setState({authLoaded: true});
           Util.user.VerifyUser(user, user.email, () => {
             this.getLocationAsync((location) => {
               this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
                 this.getNeededData(firebase.firestore(),  firebase.auth().currentUser);
-                this.setState({authLoaded: true});
+                this.setState({dataLoaded:true})
               });        
             });
           });
@@ -139,7 +143,8 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-      this.state.userData ?    
+      this.state.dataLoaded ? 
+      this.state.userData ? 
         <NavigationContainer>
           <Drawer.Navigator 
             drawerContentOptions={{
@@ -157,13 +162,17 @@ class Navigator extends React.Component {
           >
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={profileStack} />
-            <Drawer.Screen name="My Feed" component={WhatsPoppin} initialParams={{user:this.state.userData, friends:this.state.friendData ? this.state.friendData : []}}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
         </NavigationContainer>
         : 
-        <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> 
+        this.state.userData ? <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> : <View style={styles.viewDark}><ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator></View> 
+        :
+        <View style={styles.viewDark}>
+          <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+        </View> 
         :
         <Loading></Loading>
     );

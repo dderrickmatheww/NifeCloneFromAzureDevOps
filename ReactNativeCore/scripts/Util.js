@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
@@ -152,18 +152,20 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
-        CheckIn: async (buisnessUID, email, privacy, returnData) => {
+        CheckIn: async (buisnessUID, barName, email, privacy, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
             let lastVisited = {};
             lastVisited[buisnessUID] = {
                 checkInTime: new Date().toUTCString(),
-                privacy: privacy
+                privacy: privacy,
+                name:barName,
             }
             setLoc.set({
                 checkIn: {
                     buisnessUID: buisnessUID,
                     checkInTime: new Date().toUTCString(),
+                    name:barName,
                     privacy: privacy
                 },
                 lastVisited
@@ -307,7 +309,7 @@ const Util = {
                     loc['region'] = region[0];
                     Util.location.SetUserLocationData(location.coords);
                     Util.basicUtil.consoleLog('GetUserLocation', true);
-                    returnData(location);
+                    returnData(loc);
                 })
                 
             })
