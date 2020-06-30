@@ -118,7 +118,8 @@ class BarModal extends React.Component  {
                             onPress={() => { 
                               let email = this.state.userData.email;
                               let buisnessUID = this.props.buisnessUID;
-                              Util.user.CheckIn(buisnessUID, email, "Public", (boolean) => {
+                              let barName = this.props.barName;
+                              Util.user.CheckIn(buisnessUID, barName, email, "Public", (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });
@@ -132,7 +133,8 @@ class BarModal extends React.Component  {
                             onPress={() => {
                               let email = this.state.userData.email;
                               let buisnessUID = this.props.buisnessUID;
-                              Util.user.CheckIn(buisnessUID, email, "Friends Only", (boolean) => {
+                              let barName = this.props.barName;
+                              Util.user.CheckIn(buisnessUID, barName, email, "Friends Only", (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });
@@ -146,7 +148,8 @@ class BarModal extends React.Component  {
                             onPress={() => {
                               let email = this.state.userData.email;
                               let buisnessUID = this.props.buisnessUID;
-                              Util.user.CheckIn(buisnessUID, email, "Private", (boolean) => {
+                              let barName = this.props.barName;
+                              Util.user.CheckIn(buisnessUID, barName, email, "Private", (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });

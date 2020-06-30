@@ -206,7 +206,7 @@ export default class ProfileScreen extends Component {
                     <Title style={localStyles.descTitle}>
                       Status: 
                     </Title>
-                    <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status : "Lookin for what's poppin!"}</Caption>
+                    <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
                   </View>
                   {/* bio */}
                   <View style={localStyles.profRow}> 

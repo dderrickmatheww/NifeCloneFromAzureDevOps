@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'rea
 import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
 import Util from '../scripts/Util';
+import Random from '../scripts/random/Random';
 import theme from '../Styles/theme'
 import ExpandableArea from '../Screens/Universal Components/ExpandableArea';
 import 'firebase/firestore'
@@ -44,20 +45,96 @@ class TestingScreen extends React.Component  {
     }
 
     testFunc = () => {
-        for(i=1; i <100; i++){
-            Util.user.UpdateUser(firebase.firestore(), i+'@'+i+'.com', {privacySettings: {public:true}},() =>{
-                console.log(i+'@'+i+'.com updated')
+        var i;
+        for(i=1; i<25; i++){
+            let email = "" + Random.first_names() + "@" +Random.places() + ".com";
+            let name = "" + Random.first_names() + " " +Random.last_names();
+            let friends = {};
+            let index = i;
+            friends["mattdpalumbo@gmail.com"] = true;
+            friends["dderrickmatheww@gmail.com"] = true;
+            friends["torriedunn3@gmail.com"] = true;
+            let obj = {
+                displayName : name,
+                email : email,
+                phoneNumber : "555-555-5555",
+                photoSource : Random.avatar,
+                providerId : 1234583,
+                providerData : {
+                    displayName : name,
+                    email : email,
+                    phoneNumber : "555-555-5555",
+                    photoSource : Random.avatar,
+                    providerId : 1234583,
+                },
+                loginLocation:{
+                    accuracy:76.86499786376953,
+                    altitude:-27.299999237060547,
+                    heading:0,
+                    latitude:32.9893621,
+                    longitude:-80.0059047,
+                    speed:0,
+                    region:{
+                        city: index%2 ? "Goose Creek" : "Charleston",
+                        country: "United States",
+                        isoCountryCode:"US",
+                        name:"1",
+                        postalCode:index%2 ? "29445" : "29407",
+                        region:"South Carolina",
+                        street:"Burnt Mills Road"
+                    }
+                },
+                privacySettings:{
+                    public:true,
+                },
+                sexualOrientation:index%2 ? index%3 ? "male":"female":"other",
+                gender:index%2 ? index%3 ? index%7 ? "straight":"homosexual":"bi-sexual":"other",
+                bio:Random.ipsum,
+                status:{
+                    text: Random.getRandom(Random.status),
+                    timestamp: Random.randomWeekDate()
+                },
+                favoriteDrinks:[
+                    ""+Random.places()+" Whiskey",
+                    ""+Random.places()+" Rum",
+                    ""+Random.places()+" Ale",
+                ],
+                friends: friends,
+                dateOfBirth:Random.randomDOB(),
+            }
+            Util.user.UpdateUser(firebase.firestore(), email, obj, ()=>{
+                console.log('adding user to db');
             });
+            Util.friends.AcceptFriendRequest(firebase.firestore(), "mattdpalumbo@gmail.com", email,()=>{
+                console.log(" added back");
+            });
+            Util.friends.AcceptFriendRequest(firebase.firestore(), "dderrickmatheww@gmail.com", email),()=>{
+                console.log(" added back");
+            };
+            Util.friends.AcceptFriendRequest(firebase.firestore(), "torriedunn3@gmail.com", email),()=>{
+                console.log(" added back");
+            };
         }
-        
     }
 
+    // deleteUsers = () => {
+    //     var i;
+    //     for(i=0;i<100;i++){
+    //         let email = '' + i + '@'+ i+'.com';
+    //         firebase.firestore().collection('users').doc(email).delete().then(function() {
+    //             console.log("Document successfully deleted!");
+    //         }).catch(function(error) {
+    //             console.error("Error removing document: ", error);
+    //         });
+    //     }
+    // }
+    // console.log("do nothing...")
     render() {
         return (
             this.state.user ? 
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => this.testFunc()}>
-                        <Text>Get Friends</Text>
+                <TouchableOpacity style={localStyles.btn} onPress={() => console.log("do nothing...")}>
+                        <Text>Test</Text>
                 </TouchableOpacity>
             </View>
             
