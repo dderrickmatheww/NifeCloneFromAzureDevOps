@@ -10,22 +10,24 @@ import theme from '../Styles/theme';
 
 const Tab = createBottomTabNavigator();
 
-function HomeScreenTab ({navigation}) {
+function HomeScreenTab ({route, navigation}) {
+  const {user, friends, refresh} = route.params;
   return (
-    <HomeScreen onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <HomeScreen refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
 function Friends ({route, navigation}) {
-  const {user, friends} = route.params;
+  const {user, friends, refresh} = route.params;
   return (
-    <FriendsFeed user={user} friends={friends} navigation={navigation}  onDrawerPress={() => navigation.openDrawer()}/>
+    <FriendsFeed refresh={refresh} user={user} friends={friends} navigation={navigation}  onDrawerPress={() => navigation.openDrawer()}/>
   )
 }
 
-function whatsPoppinScreenTab ({navigation}) {
+function whatsPoppinScreenTab ({route, navigation}) {
+  const {user, friends, refresh} = route.params;
   return (
-    <WhatsPoppin onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <WhatsPoppin refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
@@ -72,11 +74,11 @@ class PoppinStack extends React.Component {
               backgroundColor: theme.DARK
             }
           }}
-          initialRouteName="Friend's Feed"
+          initialRouteName="My Feed"
           >
-          <Tab.Screen name="My Feed" component={HomeScreenTab}/>
-          <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends}}/>
-          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab}/>
+          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+          <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         </Tab.Navigator> 
         :
         <View style={styles.viewDark}>

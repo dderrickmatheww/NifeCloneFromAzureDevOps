@@ -15,16 +15,16 @@ function Friends({route, navigation}){
   );
 }
 function Profile({route, navigation}){
-  const { user, isUserProfile,  friends} = route.params;
+  const { user, isUserProfile,  friends, requests, refresh} = route.params;
   return(
-    <ProfileScreen friends={friends}  user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen refresh={refresh} requests={requests} friends={friends}  user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 
 function Edit({route, navigation}){
-  const { user } = route.params;
+  const { user, friends, requests, refresh} = route.params;
   return(
-    <EditProfile user={user} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></EditProfile>
+    <EditProfile refresh={refresh} requests={requests} friends={friends}  user={user} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></EditProfile>
   );
 }
 
@@ -47,15 +47,22 @@ function ScanQR({ navigation}){
 
 const Stack = createStackNavigator();
 
-export default poppinStack = () => {
-  return (
+export default class ProfileStack extends React.Component  {
+
+
+
+  
+  render(){
+    return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} />
-        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}} />
-        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} />
+        <Stack.Screen name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} />
         <Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />
         <Stack.Screen name="ScanQR" component={ScanQR} options={{title: 'ScanQR'}} />
       </Stack.Navigator>
-  );
+  )
+  }
+  
 };

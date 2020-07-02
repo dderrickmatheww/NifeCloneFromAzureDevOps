@@ -27,19 +27,37 @@ class RequestModal extends React.Component  {
     }
 
     handleAccept = (friendEmail) => {
+      this.props.filter(friendEmail, true);
       this.setState({requestLoading:true});
       Util.friends.AcceptFriendRequest(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () =>{
         this.updateRequestList(friendEmail, ()=>{
           this.setState({requestLoading:false});
+          Util.asyncStorage.GetAsyncStorageVar('User', (user)=>{
+            let userData = JSON.parse(user);
+            userData.friends[friendEmail] = "true";
+            var userAsync = JSON.stringify(userData);
+            Util.asyncStorage.SetAsyncStorageVar('User', userAsync).then(()=>{
+              this.setState({requestLoading:false});
+            });
+          });
+
         });
       });
     }
 
     handleDeny = (friendEmail) => {
       this.setState({requestLoading:true});
+      this.props.filter(friendEmail, false);
       Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () =>{
         this.updateRequestList(friendEmail, ()=>{
-          this.setState({requestLoading:false});
+          Util.asyncStorage.GetAsyncStorageVar('User', (user)=>{
+            let userData = JSON.parse(user);
+            userData.friends[friendEmail] = "false";
+            var userAsync = JSON.stringify(userData);
+            Util.asyncStorage.SetAsyncStorageVar('User', userAsync).then(()=>{
+              this.setState({requestLoading:false});
+            });
+          });
         });
       });
     }

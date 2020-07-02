@@ -5,12 +5,14 @@ import {
     Headline,
     Avatar,
     Caption,
-    Paragraph
+    Paragraph,
+    Snackbar
 } from 'react-native-paper';
 import { styles } from '../../../Styles/style';
 import  theme  from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import Util from '../../../scripts/Util';
+import StatusModal from '../Profile Screen Components/Status Modal';
 
 var defPhoto = require('../../../Media/Images/logoicon.png')
 export default class FriendsFeed extends React.Component  {
@@ -19,13 +21,14 @@ export default class FriendsFeed extends React.Component  {
         userData:null,
         friendData:null,
         feedData: null,
+        snackBarVisable:false,
     }
     
     componentDidMount(){
         this.setState({userData:this.props.user});
         this.setState({friendData:this.props.friends});
         this.setFriendDataArrays();
-        console.log("friendData: " + JSON.stringify(this.props.friends));
+        // console.log("friendData: " + JSON.stringify(this.props.friends));
     }
 
     setFriendDataArrays = () => {
@@ -33,7 +36,7 @@ export default class FriendsFeed extends React.Component  {
         let friendFeedData = [];
         friends.forEach((friend) =>{
             if(friend.status){
-                console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
+                // console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
                 let obj = {
                     name: friend.displayName,
                     text: friend.status.text,
@@ -47,7 +50,7 @@ export default class FriendsFeed extends React.Component  {
             }
             if(friend.checkIn){
                 if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime){
-                    console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
+                    // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                     let obj = {
                         name: friend.displayName,
                         text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
@@ -65,7 +68,7 @@ export default class FriendsFeed extends React.Component  {
                 keys.forEach((key)=>{
                     let visited = friend.lastVisited[key];
                     if(visited.privacy == "Public" || visited.privacy == "Friends"){
-                        console.log(" \n visited.checkInTime. :" + visited.checkInTime);
+                        // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
                         let obj = {
                             name: friend.displayName,
                             text: "Visited " + (visited.name ? visited.name : "somewhere"),
@@ -85,6 +88,18 @@ export default class FriendsFeed extends React.Component  {
         this.setState({feedData:friendFeedData});
     }
 
+    onSave = () => {
+        this.setState({modalVisable:false});
+        this.setState({snackBarVisable: true});
+        
+    }
+    onDismiss = ()=> {
+        this.setState({modalVisable:false});
+    }
+    onDismissSnackBar = () => {
+        this.setState({snackBarVisable: false});
+    }
+
     render() {
         return (
             this.state.feedData ?
@@ -97,7 +112,11 @@ export default class FriendsFeed extends React.Component  {
                     <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
                         <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Friend's Feed</Headline>
                     </View>
+                    <TouchableOpacity onPress={()=>this.setState({modalVisable:true})} style={localStyles.StatusOverlay}>
+                        <Text style={localStyles.statusButton}>Update Status</Text>
+                    </TouchableOpacity> 
                 </View>
+                
                <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%"}}>
                     {
                         this.state.feedData ?
@@ -115,7 +134,33 @@ export default class FriendsFeed extends React.Component  {
                                 <Text style={{color:theme.LIGHT_PINK}}>No data from any of your friends...</Text>
                             </View>
                     }
+                    
                </ScrollView>
+               {
+                   this.state.modalVisable ?
+                  <StatusModal
+                    isVisible={this.state.modalVisable}
+                    user={this.state.userData}
+                    onDismiss={()=>this.onDismiss()}
+                    onSave={()=>this.onSave()}
+                    refresh={this.props.refresh}
+                  >
+                  </StatusModal> 
+                  :
+                  null
+               }
+               <Snackbar
+                    visible={this.state.snackBarVisable}
+                    onDismiss={() => this.onDismissSnackBar()}
+                    action={{
+                        label: 'Close',
+                        onPress: () => {
+                          this.onDismissSnackBar()
+                        },
+                      }}
+                >
+                    Updated your status!
+                </Snackbar>
            </View> 
            :
            <View style={styles.viewDark}>
@@ -125,9 +170,26 @@ export default class FriendsFeed extends React.Component  {
     }
 }
 const localStyles = StyleSheet.create({
+    StatusOverlay: {
+        position:"relative",
+        top:2.5,
+        right:125,
+        backgroundColor: theme.DARK,
+        borderRadius: 10,
+        paddingVertical:0,
+        borderWidth:1,
+        borderColor:theme.LIGHT_PINK,
+        borderRadius:5,
+        paddingVertical:2,
+        paddingHorizontal:5
+      },
     Caption: {
         color:theme.LIGHT_PINK,
         opacity: 0.60
+    },
+    statusButton: {
+        color:theme.LIGHT_PINK,
+        fontSize:10,
     },
     Paragraph:{
         color:theme.LIGHT_PINK,
@@ -157,8 +219,9 @@ const localStyles = StyleSheet.create({
         borderRadius:10,
         borderWidth:1,
         marginVertical:2,
-        paddingVertical:2,
+        paddingVertical:5,
         paddingHorizontal:5,
+        marginVertical:2,
         width:"100%",
     },
     navHeader:{
@@ -183,7 +246,8 @@ const localStyles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingHorizontal: "5%",
-        paddingBottom: "1%"
+        paddingBottom: "1%",
+        paddingTop: 10
       }
   });
   

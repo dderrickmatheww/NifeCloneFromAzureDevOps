@@ -6,13 +6,10 @@ const Random = {
    
     first_names: function(){
         return this.getRandom(firstNames);
-    }
-        
-    ,
+    },
     last_names: function(){
         return this.getRandom(lastNames);
-    }
-    ,
+    },
     places: function(){
         return this.getRandom(places);
     },
