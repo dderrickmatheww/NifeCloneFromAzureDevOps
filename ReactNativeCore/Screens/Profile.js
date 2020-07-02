@@ -13,6 +13,7 @@ import { styles } from '../Styles/style';
 import theme from '../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
+import StatusModal from './Components/Profile Screen Components/Status Modal';
 
 const defPhoto = require('../Media/Images/logoicon.png');
 export default class ProfileScreen extends Component {
@@ -24,6 +25,7 @@ export default class ProfileScreen extends Component {
     isUsersProfile: this.props.user.email == firebase.auth().currentUser.email,
     isAddingFriend:false,
     areFriends: false,
+    statusModalVisible:false,
   }
 
   
@@ -108,16 +110,13 @@ export default class ProfileScreen extends Component {
     this.setUserData();
     this.setFriendData();
   }
-
-  componentWillUnmount() {
-    this.rerender();
-  }
+  onDismissStatus = ()=> {
+    this.setState({statusModalVisible:false});
+}
 
   componentDidMount(){
     this.getAsyncStorageData();
-    this.rerender = this.props.navigation.addListener('focus', () => {
-      this.componentDidMount();
-    });
+    
 
     console.log('User: ' + firebase.auth().currentUser.email); 
     console.log('Profile Owner: ' + this.state.userData.email);
@@ -177,6 +176,7 @@ export default class ProfileScreen extends Component {
               
             </View>
             <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
+              
               <View style={localStyles.HeaderCont}>
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
@@ -185,7 +185,7 @@ export default class ProfileScreen extends Component {
                     </Title>
                 </View>
                 <Image style={localStyles.profilePic} source={this.state.userData.providerData ? { uri: this.state.userData.photoSource} : defPhoto }/>
-                <Caption  style={localStyles.FriendCount}>Casual Socialite | 420 Points</Caption>
+                {/* <Caption  style={localStyles.FriendCount}>Casual Socialite | 420 Points</Caption> */}
                   
                   <View style={localStyles.LocAndFriends}>
                     <View style={{alignSelf:"flex-start", width:"50%"}}>
@@ -203,9 +203,17 @@ export default class ProfileScreen extends Component {
               <View style={localStyles.mainCont}> 
               {/* status */}
                   <View style={localStyles.profRow}> 
-                    <Title style={localStyles.descTitle}>
-                      Status: 
-                    </Title>
+                    <View style={{flexDirection:"row"}}>
+                      <Title style={localStyles.descTitle}>
+                          Status: 
+                          
+                        </Title>
+                        <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
+                                onPress={() => this.setState({statusModalVisible:true})}
+                              >
+                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                          </TouchableOpacity>
+                    </View>
                     <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
                   </View>
                   {/* bio */}
@@ -274,7 +282,18 @@ export default class ProfileScreen extends Component {
                   </View>
                 
               </View>
-              
+              {
+                this.state.statusModalVisible ?
+                <StatusModal
+                    isVisible={this.state.statusModalVisible}
+                    user={this.state.userData}
+                    onDismiss={()=>this.onDismissStatus()}
+                    refresh={this.props.refresh}
+                    onSave={()=> this.onDismissStatus()}
+                  >
+                  </StatusModal> :null
+              }
+
             </ScrollView>
             </Surface>
             :

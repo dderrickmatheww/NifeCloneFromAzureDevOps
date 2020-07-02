@@ -321,35 +321,35 @@ const Util = {
     },
     date: {
         TimeSince: (date) => {
-            console.log(date)
+            // console.log(date)
             try {
                 var seconds = Math.floor((new Date() - date) / 1000);
                 var interval = Math.floor(seconds / 31536000);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " years";
                 }
                 interval = Math.floor(seconds / 2592000);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " months";
                 }
                 interval = Math.floor(seconds / 86400);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " days";
                 }
                 interval = Math.floor(seconds / 3600);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " hours";
                 }
                 interval = Math.floor(seconds / 60);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " minutes";
                 }
-                Util.basicUtil.consoleLog('TimeSince', true);
+                // Util.basicUtil.consoleLog('TimeSince', true);
                 return Math.floor(seconds) + " seconds";
             }
             catch (error) {

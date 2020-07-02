@@ -46,7 +46,7 @@ class TestingScreen extends React.Component  {
 
     testFunc = () => {
         var i;
-        for(i=1; i<25; i++){
+        for(i=1; i<12; i++){
             let email = "" + Random.first_names() + "@" +Random.places() + ".com";
             let name = "" + Random.first_names() + " " +Random.last_names();
             let friends = {};
@@ -105,15 +105,9 @@ class TestingScreen extends React.Component  {
             Util.user.UpdateUser(firebase.firestore(), email, obj, ()=>{
                 console.log('adding user to db');
             });
-            Util.friends.AcceptFriendRequest(firebase.firestore(), "mattdpalumbo@gmail.com", email,()=>{
-                console.log(" added back");
+            Util.friends.AddFriend(firebase.firestore(), email, "mattdpalumbo@gmail.com",()=>{
+                console.log("friend requestsd");
             });
-            Util.friends.AcceptFriendRequest(firebase.firestore(), "dderrickmatheww@gmail.com", email),()=>{
-                console.log(" added back");
-            };
-            Util.friends.AcceptFriendRequest(firebase.firestore(), "torriedunn3@gmail.com", email),()=>{
-                console.log(" added back");
-            };
         }
     }
 
@@ -133,7 +127,7 @@ class TestingScreen extends React.Component  {
         return (
             this.state.user ? 
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => console.log("do nothing...")}>
+                <TouchableOpacity style={localStyles.btn} onPress={() => this.testFunc()}>
                         <Text>Test</Text>
                 </TouchableOpacity>
             </View>
