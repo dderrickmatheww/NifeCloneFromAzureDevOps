@@ -12,13 +12,6 @@ export default function InputWithIcon({ name, color, size, placeHolderText, retu
             returnKeyType={returnKey}
             secureTextEntry={secureText}
             keyboardType={keyboardType}
-            inlineImageLeft={
-                <Ionicons
-                    name={name}
-                    size={size}
-                    color={color}
-                />
-            }
             value={value}
             onChangeText={(text) => onChangeText(text, type)}
             onSubmitEditing={(text, eventCount, target) => onSubmit(text, eventCount, target)}

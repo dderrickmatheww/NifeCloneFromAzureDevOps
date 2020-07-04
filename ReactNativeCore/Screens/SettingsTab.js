@@ -34,6 +34,11 @@ export default class SettingsTab extends Component {
                   source={{ uri: this.state.userData ? this.state.userData.providerData[0].photoURL : null }} />
                 <Text style={{ fontSize: 18, height: 40, color: 'white', bottom: 90, marginHorizontal: 50 }}>Welcome, {this.state.userData.name ? this.state.userData.name : this.state.userData.displayName}!</Text>
               </View>
+              <TouchableOpacity style={styles.clearCacheBtn} onPress={() => Util.asyncStorage.DeleteAllAsyncStorage(() => {
+                this.logout();
+              })}>
+                <Text style={{ color: "#fff" }}>Clear cache</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.logoutBtn} onPress={() => this.logout()}>
                 <Text style={{ color: "#fff" }}>Logout</Text>
               </TouchableOpacity>

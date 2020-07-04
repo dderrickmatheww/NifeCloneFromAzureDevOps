@@ -1,11 +1,12 @@
 import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
-import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
+import { FACEBOOK_APP_ID, GOOGLE_API_KEY, FB_CLIENT_ID, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
 import jsSHA from "jssha";
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
+import { isPointWithinRadius } from 'geolib';
 
 const Util = {
     friends: {
@@ -15,7 +16,7 @@ const Util = {
             let docRef = db.collection('users').where(path, '==', true);
             docRef.get().then((friends) => {
                 friends.forEach(function(friend) {
-                    if(friend.data()) {
+                    if(friend && friend.data()) {
                         friendsArr.push(friend.data());
                     }
                 });
@@ -95,7 +96,7 @@ const Util = {
                 else {
                     if(user != undefined || user != null) {
                         let providerObj = Util.user.BuildProviderObj(user.providerData[0]);
-                        db.collection('users').doc(email).set(providerObj,{merge:true});
+                        db.collection('users').doc(email).set(providerObj, { merge:true });
                         callback(providerObj);
                     }
                 }
@@ -152,21 +153,29 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
-        CheckIn: async (buisnessUID, barName, email, privacy, returnData) => {
+        CheckIn: async (checkInObj, returnData) => {
             let db = firebase.firestore();
-            let setLoc = await db.collection('users').doc(email);
+            let setLoc = await db.collection('users').doc(checkInObj.email);
             let lastVisited = {};
-            lastVisited[buisnessUID] = {
-                checkInTime: new Date().toUTCString(),
-                privacy: privacy,
-                name:barName,
+            lastVisited[checkInObj.buisnessUID] = {
+                checkInTime: new Date(),
+                latAndLong: checkInObj.latAndLong,
+                privacy: checkInObj.privacy,
+                name: checkInObj.barName,
+                phone: checkInObj.phone,
+                address: checkInObj.address,
+                barPhoto: checkInObj.image,
             }
             setLoc.set({
                 checkIn: {
-                    buisnessUID: buisnessUID,
-                    checkInTime: new Date().toUTCString(),
-                    name:barName,
-                    privacy: privacy
+                    checkInTime: new Date(),
+                    latAndLong: checkInObj.latAndLong,
+                    buisnessUID: checkInObj.buisnessUID,
+                    privacy: checkInObj.privacy,
+                    name: checkInObj.barName,
+                    phone: checkInObj.phone,
+                    address: checkInObj.address,
+                    barPhoto: checkInObj.image,
                 },
                 lastVisited
             },
@@ -317,6 +326,97 @@ const Util = {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
                 console.log("Expo Location Error: " + error);
             });
+        },
+        GrabWhatsPoppinFeed: async (query, email, returnData) => {
+            let db = firebase.firestore();
+            let dataObj = {};
+            if(!query) {
+                let userArr = [];
+                let businessesArr = [];
+                let checkInCount = {};
+                let checkInArray = [];
+                let withinRadius;
+                let userRef = await db.collection('users').get();
+                if(userRef.empty){
+                    console.log('No matching documents.');
+                    return;
+                }
+                else {
+                    Util.location.GetUserLocation((userLocation) => {
+                        userRef.forEach(doc => {
+                            if(doc.data().checkIn) {
+                                withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
+                                if(withinRadius) {
+                                    userArr.push(doc.data().checkIn.buisnessUID =  {
+                                        checkIn: doc.data().checkIn,
+                                        user: {
+                                            email: doc.data().email,
+                                            checkInTime: doc.data().checkIn.checkInTime
+                                        }
+                                    });
+                                    if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {
+                                        businessesArr.push(doc.data().checkIn.buisnessUID);
+                                    }
+                                }
+                            }
+                        });
+                        businessesArr.forEach((element) => {
+                            checkInCount =  {
+                                checkedIn: 0,
+                                buisnessUID: element,
+                                users: [],
+                                buisnessData: null
+                            }
+                            userArr.forEach((element2) => {
+                                Util.location.checkInCount(element2, element, checkInCount);
+                            });
+                            checkInArray.push(checkInCount);
+                        });
+                        checkInArray.sort(Util.basicUtil.compareValues('checkedIn', 'desc'));
+                        dataObj['countData'] = checkInArray;
+                        returnData(dataObj);
+                    });
+                }
+            }
+        },
+        checkInCount: (userData, buisnessData, checkInCount) => {
+            if(userData.checkIn.buisnessUID == buisnessData) {
+                checkInCount['checkedIn']++;
+                checkInCount['users'].push(userData.user);
+                checkInCount['buisnessData'] = userData.checkIn;
+            }
+        },
+        IsWithinRadius: (checkIn, userLocation, boolean) => {
+            let checkInLat = parseInt(checkIn.latAndLong.split(',')[0]);
+            let checkInLong = parseInt(checkIn.latAndLong.split(',')[1]);
+            let userLat = parseInt(userLocation.coords.latitude);
+            let userLong = parseInt(userLocation.coords.longitude);
+            if(boolean) {
+                return withinRadius = isPointWithinRadius(
+                    {
+                        latitude: checkInLat,
+                        longitude: checkInLong
+                    }, 
+                    {
+                        latitude: userLat,
+                        longitude: userLong
+                    }, 
+                    100
+                ); 
+            }
+            else {
+                return withinRadius = isPointWithinRadius(
+                    {
+                        latitude: checkInLat,
+                        longitude: checkInLong
+                    }, 
+                    {
+                        latitude: userLat,
+                        longitude: userLong
+                    }, 
+                    32000
+                ); 
+            }
         }
     },
     date: {
@@ -452,6 +552,11 @@ const Util = {
                 Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", true);
                 callback(returnArray[0]);
             }
+        },
+        DeleteAllAsyncStorage: async (returnData) => {
+            await AsyncStorage.clear();
+            Util.basicUtil.consoleLog("DeleteAllAsyncStorage", true);
+            returnData();
         }
     },
     dataCalls: {
@@ -468,8 +573,8 @@ const Util = {
                     });
                 } 
                 else {
-                    token = FACEBOOK_APP_ID;
-                    Util.asyncStorage.GetAsyncVar('userLocationData', (result) => {
+                    token = FB_CLIENT_ID;
+                    Util.asyncStorage.GetAsyncStorageVar('userLocationData', (result) => {
                         lat = result.split(',')[0];
                         long = result.split(',')[1];
                         console.log('lat: ' + lat);
@@ -907,6 +1012,29 @@ const Util = {
                 console.log('\n');
                 console.log("" + fucnName + " failed.");
             }
+        },
+        compareValues: (key, order = 'asc') => {
+            return function innerSort(a, b) {
+                if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+                // property doesn't exist on either object
+                return 0;
+                }
+            
+                const varA = (typeof a[key] === 'string')
+                ? a[key].toUpperCase() : a[key];
+                const varB = (typeof b[key] === 'string')
+                ? b[key].toUpperCase() : b[key];
+            
+                let comparison = 0;
+                if (varA > varB) {
+                comparison = 1;
+                } else if (varA < varB) {
+                comparison = -1;
+                }
+                return (
+                (order === 'desc') ? (comparison * -1) : comparison
+                );
+            };
         }
     }
 }
