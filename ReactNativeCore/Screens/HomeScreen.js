@@ -246,7 +246,7 @@ const localStyles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingHorizontal: "5%",
-        paddingBottom: "1%",
+        paddingBottom: 10,
         paddingTop: 10
       }
   });

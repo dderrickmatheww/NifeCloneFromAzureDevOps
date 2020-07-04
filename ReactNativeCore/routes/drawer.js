@@ -80,36 +80,9 @@ class Navigator extends React.Component {
             Util.asyncStorage.SetAsyncStorageVar('User', user);
             
             //load users who are friends or have requested the user
-            Util.friends.GetFriends(db, currentUser.email, (data) => {
-              let userFriends = userData.friends;
-              let usersThatRequested = data;
-              let requests = [];
-              let acceptedFriends = [];
-              if(userFriends) {
-                let keys = Object.keys(userFriends);
-                keys.forEach(function(key){
-                  if(userFriends[key] == null){
-                    usersThatRequested.forEach((user)=>{
-                      if(key == user.email){
-                        requests.push(user);
-                      }
-                    });
-                  }
-                  if(userFriends[key] == true){
-                    usersThatRequested.forEach((user)=>{
-                      if(key == user.email){
-                        acceptedFriends.push(user);
-                      }
-                    });
-                  }
-                });
-              }
-              let friends = JSON.stringify(data);
-              Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-              this.setState({friendData: acceptedFriends});
-              this.setState({friendRequests: requests});
-              this.setState({userData:userData});
-              this.setState({userChecked:true});
+            Util.friends.GetFriends(db, currentUser.email, (friendsData) => {
+              this.filterFriends(friendsData, userData)
+             
               callback();
               // console.log(JSON.stringify(data));
             });
@@ -123,32 +96,38 @@ class Navigator extends React.Component {
     }
   }
 
-  filterFriends = (friendsData, userObj)=> {
-    let friendsDataObj = JSON.parse(friendsData);
-    let userFriends = userObj.friends;
+  filterFriends = (friendsData, userData)=> {
+    let userFriends = userData.friends;
+    let usersThatRequested = friendsData;
     let requests = [];
     let acceptedFriends = [];
-    if(userFriends) {
-      let keys = Object.keys(userFriends);
+    let keys = Object.keys(userFriends);
+    if(userFriends){
       keys.forEach(function(key){
         if(userFriends[key] == null){
-          friendsDataObj.forEach((user)=>{
+          usersThatRequested.forEach((user)=>{
             if(key == user.email){
               requests.push(user);
             }
           });
         }
         if(userFriends[key] == true){
-          friendsDataObj.forEach((user)=>{
+          usersThatRequested.forEach((user)=>{
             if(key == user.email){
               acceptedFriends.push(user);
             }
           });
         }
       });
+      let friends = JSON.stringify(friendsData);
+      Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+      
+      this.setState({friendData: acceptedFriends});
+      this.setState({friendRequests: requests});
     }
-    this.setState({friendData: acceptedFriends});
-    this.setState({friendRequests: requests});
+    
+    this.setState({userData:userData});
+    this.setState({userChecked:true});
   }
 
   refreshFromAsync = (userData, friendData, requests) => {
