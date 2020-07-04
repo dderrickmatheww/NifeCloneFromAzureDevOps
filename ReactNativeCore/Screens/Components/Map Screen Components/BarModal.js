@@ -119,7 +119,8 @@ class BarModal extends React.Component  {
                               let email = this.state.userData.email;
                               let buisnessUID = this.props.buisnessUID;
                               let latAndLong = this.props.latitude + ',' + this.props.longitude;
-                              Util.user.CheckIn(buisnessUID, email, "Public", latAndLong, (boolean) => {
+                              let barName = this.props.barName;
+                              Util.user.CheckIn(buisnessUID, barName, email, "Public", latAndLong, (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });
@@ -134,7 +135,8 @@ class BarModal extends React.Component  {
                               let email = this.state.userData.email;
                               let buisnessUID = this.props.buisnessUID;
                               let latAndLong = this.props.latitude + ',' + this.props.longitude;
-                              Util.user.CheckIn(buisnessUID, email, "Friends Only", latAndLong, (boolean) => {
+                              let barName = this.props.barName;
+                              Util.user.CheckIn(buisnessUID, barName, email, "Friends Only", latAndLong, (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });
@@ -149,7 +151,8 @@ class BarModal extends React.Component  {
                               let email = this.state.userData.email;
                               let buisnessUID = this.props.buisnessUID;
                               let latAndLong = this.props.latitude + ',' + this.props.longitude;
-                              Util.user.CheckIn(buisnessUID, email, "Private", latAndLong, (boolean) => {
+                              let barName = this.props.barName;
+                              Util.user.CheckIn(buisnessUID, barName, email, "Private", latAndLong, (boolean) => {
                                 this.setState({
                                   checkedIn: boolean
                                 });

@@ -8,13 +8,13 @@ import {
     Paragraph,
     Snackbar
 } from 'react-native-paper';
-import { styles } from '../Styles/style';
-import  theme  from '../Styles/theme';
+import { styles } from '../../../Styles/style';
+import  theme  from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
-import Util from '../scripts/Util';
-import StatusModal from '../Screens/Components/Profile Screen Components/Status Modal';
+import Util from '../../../scripts/Util';
+import StatusModal from '../Profile Screen Components/Status Modal';
 
-var defPhoto = require('../Media/Images/logoicon.png')
+var defPhoto = require('../../../Media/Images/logoicon.png')
 export default class FriendsFeed extends React.Component  {
     state = {
         modalVisable: false,
@@ -110,7 +110,7 @@ export default class FriendsFeed extends React.Component  {
                         <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
                     </TouchableOpacity> 
                     <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                        <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Your Feed</Headline>
+                        <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Friend's Feed</Headline>
                     </View>
                     <TouchableOpacity onPress={()=>this.setState({modalVisable:true})} style={localStyles.StatusOverlay}>
                         <Text style={localStyles.statusButton}>Update Status</Text>

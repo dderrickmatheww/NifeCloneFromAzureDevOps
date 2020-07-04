@@ -38,16 +38,18 @@ export function DrawerContent(props) {
                             
                             
                             <View style={{marginLeft:15, flexDirection:'column'}}>
+                                {/* display name */}
                                 <Title style={styles.title}>
                                   {props.user.displayName}
                                 </Title>
+                                {/* status */}
                                 <Caption style={styles.caption}>
-                                  { props.user.status ? props.user.status : "No Status"}
+                                  Status: { props.user.status.text ? props.user.status.text : "No Status"} 
                                 </Caption>
                                 {/* TODO Badge */}
-                                <Caption style={styles.caption}>
+                                {/* <Caption style={styles.caption}>
                                   { props.user.title ? props.user.title : "Casual Socialite"}
-                                </Caption>
+                                </Caption> */}
                             </View>
                             
                         </View>
@@ -61,13 +63,13 @@ export function DrawerContent(props) {
                             </View>
                             <View style={styles.section}>
                               
-                                <Paragraph style={[styles.paragraph, styles.caption]}>420</Paragraph>
-                                <Caption style={styles.caption}>Points</Caption>
+                                {/* <Paragraph style={[styles.paragraph, styles.caption]}>420</Paragraph>
+                                <Caption style={styles.caption}>Points</Caption> */}
                             </View>
                             <View style={styles.section}>
                                 <TouchableOpacity 
                                     onPress={ () =>  props.navigation.navigate('Profile', {screen:'QRCode'})  }
-                                    style={{zIndex:10, position:"relative", width:"auto", height:"auto"}}
+                                    style={{zIndex:10, alignSelf:"flex-end",position:"relative", width:"auto", height:"auto"}}
                                 >
                                     <Avatar.Icon 
                                     size={30}
@@ -89,12 +91,41 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Home</Text>}
-                            onPress={() => {props.navigation.navigate('Home')}}
+                            onPress={() => props.navigation.navigate('My Feed', {screen:"My Feed", params:{user: props.user, isUserProfile:true, friends:props.friends}})}
                         />
-                            <List.Accordion
+                            
+                        
+                        <DrawerItem 
+                            icon={() => (
+                                <MaterialCommunityIcons 
+                                name="glass-mug" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>My Feed</Text>}
+                            onPress={() => {props.navigation.navigate("My Feed", {screen:"Friend's Feed", params:{user: props.user, friends: props.friends, refresh: props.refresh}})}}
+                        />
+                        <DrawerItem 
+                            icon={() => (
+                                <MaterialCommunityIcons 
+                                name="map-outline" 
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Map</Text>}
+                            onPress={() => {props.navigation.navigate('Map')}}
+                        />
+                        <List.Accordion
                                 titleStyle={{color:theme.LIGHT_PINK}}
-                                title="You"
-                                left={() => <List.Icon style={{marginLeft:-1, marginRight:10}} color={theme.LIGHT_PINK} icon="account"/>}
+                                title="      You"
+                                left={() => <MaterialCommunityIcons 
+                                    name="account" 
+                                    color={theme.LIGHT_PINK}
+                                    size={20}
+                                    style={{paddingLeft:10}}
+                                    />}
                             >
                                <DrawerItem 
                                     icon={() => (
@@ -120,7 +151,7 @@ export function DrawerContent(props) {
                                     )}
                                     label={()=> <Text style={styles.text}>Friends</Text>}
                                     onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
-                                                    params:{user: props.user, friends:props.friends, requests:props.requests}
+                                                    params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
                                                 })
                                             }
                                         }
@@ -152,29 +183,6 @@ export function DrawerContent(props) {
                         <DrawerItem 
                             icon={() => (
                                 <MaterialCommunityIcons 
-                                name="glass-mug" 
-                                color={theme.LIGHT_PINK}
-                                size={20}
-                                />
-                            )}
-                            label={()=> <Text style={styles.text}>My Feed</Text>}
-                            onPress={() => {props.navigation.navigate("My Feed", {screen:"Friend's Feed", params:{user: props.user, isUserProfile: true, friends: props.friends}})}}
-                        />
-                        <DrawerItem 
-                            icon={() => (
-                                <MaterialCommunityIcons 
-                                name="map-outline" 
-                                color={theme.LIGHT_PINK}
-                                size={20}
-                                />
-                            )}
-                            label={()=> <Text style={styles.text}>Map</Text>}
-                            onPress={() => {props.navigation.navigate('Map')}}
-                        />
-                        
-                        <DrawerItem 
-                            icon={() => (
-                                <MaterialCommunityIcons 
                                 name="settings" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
@@ -184,7 +192,7 @@ export function DrawerContent(props) {
                             onPress={() => {props.navigation.navigate('Settings')}}
                         />
                         
-                        {/* <DrawerItem 
+                         {/* <DrawerItem 
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="settings" 
@@ -194,7 +202,7 @@ export function DrawerContent(props) {
                             )}
                             label={()=> <Text style={styles.text}>Test</Text>}
                             onPress={() => {props.navigation.navigate('Test')}}
-                        /> */}
+                        />  */}
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>

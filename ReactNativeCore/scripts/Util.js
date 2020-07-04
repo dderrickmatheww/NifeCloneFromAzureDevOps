@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, FB_CLIENT_ID, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
@@ -114,7 +114,6 @@ const Util = {
             providerObj['photoSource'] = obj.photoURL;
             providerObj['providerId'] = obj.providerId;
             providerObj['uid'] = obj.uid;
-            providerObj['providerData'] = obj;
             providerObj['providerData'] = {
                 displayName : obj.displayName,
                 email : obj.email,
@@ -154,21 +153,23 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
-        CheckIn: async (buisnessUID, email, privacy, latLong, returnData) => {
+        CheckIn: async (buisnessUID, barName, email, privacy, latLong, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
             let lastVisited = {};
             lastVisited[buisnessUID] = {
                 checkInTime: new Date(),
+                latAndLong: latLong,
                 privacy: privacy,
-                latAndLong: latLong
+                name: barName,
             }
             setLoc.set({
                 checkIn: {
                     buisnessUID: buisnessUID,
                     checkInTime: new Date(),
                     privacy: privacy,
-                    latAndLong: latLong
+                    latAndLong: latLong,
+                    name: barName
                 },
                 lastVisited
             },
@@ -308,7 +309,7 @@ const Util = {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Location.reverseGeocodeAsync(location.coords).then((region)=>{
                     let loc = location;
-                    loc['region'] = region;
+                    loc['region'] = region[0];
                     Util.location.SetUserLocationData(location.coords);
                     Util.basicUtil.consoleLog('GetUserLocation', true);
                     returnData(loc);
@@ -389,35 +390,35 @@ const Util = {
     },
     date: {
         TimeSince: (date) => {
-            console.log(date)
+            // console.log(date)
             try {
                 var seconds = Math.floor((new Date() - date) / 1000);
                 var interval = Math.floor(seconds / 31536000);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " years";
                 }
                 interval = Math.floor(seconds / 2592000);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " months";
                 }
                 interval = Math.floor(seconds / 86400);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " days";
                 }
                 interval = Math.floor(seconds / 3600);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " hours";
                 }
                 interval = Math.floor(seconds / 60);
                 if (interval > 1) {
-                    Util.basicUtil.consoleLog('TimeSince', true);
+                    // Util.basicUtil.consoleLog('TimeSince', true);
                     return interval + " minutes";
                 }
-                Util.basicUtil.consoleLog('TimeSince', true);
+                // Util.basicUtil.consoleLog('TimeSince', true);
                 return Math.floor(seconds) + " seconds";
             }
             catch (error) {
@@ -545,6 +546,8 @@ const Util = {
                     Util.asyncStorage.GetAsyncStorageVar('userLocationData', (result) => {
                         lat = result.split(',')[0];
                         long = result.split(',')[1];
+                        console.log('lat: ' + lat);
+                        console.log('long: ' + long);
                     });
                 }
                 try {
@@ -568,10 +571,17 @@ const Util = {
                         fetch('https://graph.facebook.com/search?type=place&q=bar&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
                         .then(response => response.json())
                         .then(async data => {
-                            dataObj['data'] = data.data;
-                            Util.basicUtil.consoleLog("Facbook's placeData", true);
-                            //Grabs post from FB based for default
-                            returnData(dataObj);
+                            if(data.error){
+                                Util.basicUtil.consoleLog("Facbook's placeData", false);
+                                console.log('FaceBookError - Code: '+data.error.code + " Message: " + data.error.message);
+                                returnData({});
+                            }
+                            else {
+                                //Grabs post from FB based for default
+                                dataObj['data'] = data.data;
+                                Util.basicUtil.consoleLog("Facbook's placeData", true);
+                                returnData(dataObj);
+                            }
                         })
                         .catch((e) => {
                             Util.basicUtil.consoleLog("Facbook's placeData", false);

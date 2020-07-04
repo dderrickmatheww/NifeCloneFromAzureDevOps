@@ -19,7 +19,7 @@ class FriendsList extends React.Component {
     modalVisible: false,
     friends: null,
     searchQuery: null,
-    requests:null
+    requests:null,
   }
   //Set login status
   setLoggedinStatus = async (dataObj) => {
@@ -54,9 +54,9 @@ class FriendsList extends React.Component {
 
   //gets user and friend data
   getAsyncStorageData = (callback) => {
-    this.setState({ userData: this.props.user});
     this.setState({friends:this.props.friends});
     this.setState({requests:this.props.requests});
+    this.setState({userData:this.props.user});
   }
 
   handleOpenModal = () => {
@@ -67,50 +67,34 @@ class FriendsList extends React.Component {
     this.getAsyncStorageData();
   }
 
+  filterRequests = (email, didAccept) => {
+    let friends = this.state.friends;
+    let requests = this.state.requests;
+    let newRequests = [];
+
+    if(didAccept){
+      requests.forEach((req)=>{
+        if(req.email == email){
+          friends.push(req);
+        }else {
+          newRequests.push(req)
+        }
+      });
+    } else {
+      requests.forEach((req)=>{
+        if(req.email != email){
+          newRequests.push(req)
+        }
+      });
+    }
+    this.setState({friends:friends});
+    this.setState({requests:newRequests});
+  }
+
   handleRefresh = () => {
+    
     this.setState({modalVisible:false});
-    this.setState({friends:null});
-    Util.user.GetUserData(firebase.firestore(), firebase.auth().currentUser.email, (userData) => {
-      if(userData) {
-        let user = JSON.stringify(userData);
-        Util.asyncStorage.SetAsyncStorageVar('User', user);
-        this.setState({userData:userData});
-        //load users who are friends or have requested the user
-        Util.friends.GetFriends(firebase.firestore(), firebase.auth().currentUser.email, (data) => {
-          let userFriends = this.state.userData.friends;
-          let usersThatRequested = data;
-          let requests = [];
-          let acceptedFriends = [];
-          let keys = Object.keys(userFriends);
-          keys.forEach(function(key){
-            if(userFriends[key] == null){
-              usersThatRequested.forEach((user)=>{
-                if(key == user.email){
-                  requests.push(user);
-                }
-              });
-            }
-            if(userFriends[key] == true){
-              usersThatRequested.forEach((user)=>{
-                if(key == user.email){
-                  acceptedFriends.push(user);
-                }
-              });
-            }
-          });
-          let friends = JSON.stringify(data);
-          Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-          this.setState({friends: acceptedFriends});
-          this.setState({requests: requests});
-          // console.log(JSON.stringify(data));
-          Util.basicUtil.consoleLog('Handle Refresh', true);
-          
-        });
-      }
-      else {
-        Util.basicUtil.consoleLog('Handle Refresh', false);
-      }
-    });
+    this.props.refresh(null, this.state.friends, this.state.requests);
   }
 
   render() {
@@ -124,7 +108,7 @@ class FriendsList extends React.Component {
               </TouchableOpacity> 
               {/* Requests button */}
               {
-                this.state.requests.length > 0 ?
+                this.state.requests && this.state.requests.length > 0 ?
                 <TouchableOpacity onPress={()=>this.handleOpenModal()} style={localStyles.RequestOverlay}>
                   <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.LIGHT_PINK}/>
                     
@@ -161,7 +145,7 @@ class FriendsList extends React.Component {
             </TouchableOpacity>
             ))}
           </ScrollView>
-          <RequestModal onDismiss={()=> this.handleRefresh()} isVisible={this.state.modalVisible} requests={this.state.requests}></RequestModal>
+          <RequestModal filter={this.filterRequests} onDismiss={()=> this.handleRefresh()} isVisible={this.state.modalVisible} requests={this.state.requests}></RequestModal>
         </View>
         :
         <View style={localStyles.loggedInContainer}>

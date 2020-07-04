@@ -9,7 +9,7 @@ import theme from '../Styles/theme';
 import {styles} from '../Styles/style';
 import PoppinStack from './poppinStack';
 import TestingStack from './testingStack';
-import profileStack from './profileStack';
+import ProfileStack from './profileStack';
 import Util from '../scripts/Util';
 import * as firebase from 'firebase';
 import Loading from '../Screens/AppLoading';
@@ -25,7 +25,19 @@ function CustomDrawerContent(props, {navigation}){
   ) 
 }
 
+function Poppin ({route, navigation}){
+  const {user, friends, refresh} = route.params;
+  return(
+    <PoppinStack refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+  )
+}
 
+function Profile ({route, navigation}){
+  const {user, friends, refresh} = route.params;
+  return(
+    <ProfileStack refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+  )
+}
 
 class Navigator extends React.Component {
 
@@ -35,6 +47,7 @@ class Navigator extends React.Component {
     authLoaded: false,
     userChecked: false,
     friendRequests:null,
+    dataLoaded:false,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -56,7 +69,7 @@ class Navigator extends React.Component {
     });
   }
 
-  getNeededData = (db, currentUser) => {
+  getNeededData = (db, currentUser, callback) => {
     //if user exits get user data, get friend data set to async 
     console.log('wantedData App.js', currentUser)
     if (currentUser) {
@@ -65,11 +78,10 @@ class Navigator extends React.Component {
           if(userData) {
             let user = JSON.stringify(userData);
             Util.asyncStorage.SetAsyncStorageVar('User', user);
-            this.setState({userData:userData});
-            this.setState({userChecked:true});
+            
             //load users who are friends or have requested the user
             Util.friends.GetFriends(db, currentUser.email, (data) => {
-              let userFriends = this.state.userData.friends;
+              let userFriends = userData.friends;
               let usersThatRequested = data;
               let requests = [];
               let acceptedFriends = [];
@@ -92,9 +104,13 @@ class Navigator extends React.Component {
               });
               let friends = JSON.stringify(data);
               Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+              
               this.setState({friendData: acceptedFriends});
               this.setState({friendRequests: requests});
-              console.log(JSON.stringify(data));
+              this.setState({userData:userData});
+              this.setState({userChecked:true});
+              callback();
+              // console.log(JSON.stringify(data));
             });
           }
           else {
@@ -106,15 +122,56 @@ class Navigator extends React.Component {
     }
   }
 
+  filterFriends = (friendsData, userObj)=> {
+    let friendsDataObj = JSON.parse(friendsData);
+      let userFriends = userObj.friends;
+      let requests = [];
+      let acceptedFriends = [];
+      let keys = Object.keys(userFriends);
+      keys.forEach(function(key){
+        if(userFriends[key] == null){
+          friendsDataObj.forEach((user)=>{
+            if(key == user.email){
+              requests.push(user);
+            }
+          });
+        }
+        if(userFriends[key] == true){
+          friendsDataObj.forEach((user)=>{
+            if(key == user.email){
+              acceptedFriends.push(user);
+            }
+          });
+        }
+      });
+  
+        this.setState({friendData: acceptedFriends});
+        this.setState({friendRequests: requests});
+  }
+
+  refreshFromAsync = (userData, friendData, requests) => {
+    if(userData){
+      this.setState({userData: userData});
+    }
+    if(friendData){
+      this.setState({friendData: friendData});
+    }
+    if(requests){
+     
+      this.setState({friendRequests: requests});
+    }
+  }
+
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
         if (user) {
+          this.setState({authLoaded: true});
           Util.user.VerifyUser(user, user.email, () => {
             this.getLocationAsync((location) => {
               this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-                this.getNeededData(firebase.firestore(),  firebase.auth().currentUser);
-                this.setState({authLoaded: true});
+                this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
+                this.setState({dataLoaded:true})
               });        
             });
           });
@@ -133,7 +190,8 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-      this.state.userData ?    
+      this.state.dataLoaded ? 
+      this.state.userData ? 
         <NavigationContainer>
           <Drawer.Navigator 
             drawerContentOptions={{
@@ -143,21 +201,25 @@ class Navigator extends React.Component {
             drawerStyle={{
               backgroundColor: theme.DARK
             }}
-            initialRouteName='Home'
+            initialRouteName='My Feed'
             overlayColor="#20232A"
-            drawerContent={props => <CustomDrawerContent {...props} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
+            drawerContent={props => <CustomDrawerContent {...props} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={profileStack} />
-            <Drawer.Screen name="My Feed" component={PoppinStack} />
+            <Drawer.Screen name="Profile" component={Profile} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
         </NavigationContainer>
         : 
-        <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> 
+        this.state.userData ? <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> : <View style={styles.viewDark}><ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator></View> 
+        :
+        <View style={styles.viewDark}>
+          <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+        </View> 
         :
         <Loading></Loading>
     );

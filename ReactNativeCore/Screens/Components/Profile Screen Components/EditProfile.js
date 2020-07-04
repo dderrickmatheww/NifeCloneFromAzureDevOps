@@ -120,11 +120,8 @@ export default class EditProfile extends Component {
       bio: this.state.bio,
       favoriteDrinks: this.state.favoriteDrinks
     }
-      console.log("sexualOrientation:" + this.state.sexualOrientation);
-      console.log("dateOfBirth: " + this.state.dateOfBirth.toLocaleDateString('en-US'));
-      console.log("gender: " + this.state.gender);
-      console.log("bio: " + this.state.bio);
-      console.log("favoriteDrinks: " + this.state.favoriteDrinks);
+    
+    
 
     Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
     , (data)=>{
@@ -134,9 +131,9 @@ export default class EditProfile extends Component {
     var user = this.state.userData;
 
     var updatedUser = extend(user, profileInfo);
-    updatedUser = JSON.stringify(updatedUser);
-    Util.asyncStorage.SetAsyncStorageVar('User', updatedUser);
-    this.setUserData();
+    var updatedUserString = JSON.stringify(updatedUser);
+    Util.asyncStorage.SetAsyncStorageVar('User', updatedUserString);
+    this.props.refresh(updatedUser, null, null);
 
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
 

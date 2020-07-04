@@ -215,8 +215,10 @@ class MapScreen extends React.Component  {
   ];
 
   clientLocationFunction = () => { 
-    Util.location.GetUserLocation(async (userLocation) => {
+    Util.location.GetUserLocation(async (loc) => {
+      let userLocation = loc.coords;
       let { width, height } = Dimensions.get('window');
+
       ASPECT_RATIO = width / height;
       LATITUDE = userLocation.latitude;
       LONGITUDE = userLocation.longitude;
