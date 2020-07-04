@@ -351,7 +351,8 @@ const Util = {
                                         checkIn: doc.data().checkIn,
                                         user: {
                                             email: doc.data().email,
-                                            checkInTime: doc.data().checkIn.checkInTime
+                                            checkInTime: doc.data().checkIn.checkInTime,
+                                            privacy: doc.data().checkIn.privacy
                                         }
                                     });
                                     if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {

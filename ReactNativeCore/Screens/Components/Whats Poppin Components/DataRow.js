@@ -1,37 +1,44 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, Modal, Linking, ScrollView } from 'react-native';
+import { View, Text, Image, ScrollView, } from 'react-native';
 import { styles } from '../../../Styles/style';
+import Favorite from '../../Universal Components/Favorite';
 
 export default class DataRow extends React.Component  {
     state = {
-        modalVisable: false
+        modalVisable: false,
+        refresh: false
     }
 
     render() {
         return (
             <View style={styles.dataRowContainer}>
                 <ScrollView 
-                    contentContainerStyle={{alignItems: 'center', justifyContent: 'center', width: 375}} 
+                    contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}} 
                     style={styles.dataRowScroll}
                     showsHorizontalScrollIndicator={false}
                 >
+                    <View style={styles.whatsPoppinData}>
                         <Image
                             style={styles.LogoData}
                             source={{uri: this.props.barImage }}
                         />
                         <Text style={styles.facebookDataText}>
                             {this.props.name} {"\n"} 
-                            {this.props.address} {"\n"}
+                            {this.props.address[0]} {"\n"}
+                            {this.props.address[1] + ', ' + this.props.address[2]} {"\n"}
                             Phone #: {this.props.phone} {"\n"}
                         </Text>
+                        <Favorite />
+                    </View>
                         { 
                             this.props.usersCheckedIn > 1 ? 
-                                <Text style={styles.facebookDataText}>
+                                <Text style={styles.checkedInDataText}>
                                     {"\n"}
-                                    There are {this.props.usersCheckedIn} people currently here! 
+                                    There are {this.props.usersCheckedIn} people currently here!
                                 </Text>
                             : 
-                                <Text style={styles.facebookDataText}>
+                                <Text style={styles.checkedInDataText}>
+                                    {"\n"}
                                     There is {this.props.usersCheckedIn} person currently here! 
                                 </Text>
                         }
