@@ -9,8 +9,8 @@ export default async function getFeedData (query, email, returnData) {
         });
     }
     else {
-        Util.location.GrabWhatsPoppinFeed(null, email, (dataObj) => {
-            returnData(dataObj);
+        Util.location.GrabWhatsPoppinFeed(null, email, (checkInArr) => {
+            returnData(checkInArr);
         });
     }
 } 

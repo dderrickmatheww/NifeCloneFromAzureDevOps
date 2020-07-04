@@ -321,21 +321,70 @@ const Util = {
             });
         },
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
-            console.log(email);
-            var sevenDaysDelayed = new Date();
-            sevenDaysDelayed.setDate(sevenDaysDelayed.getDate()-7);
-            sevenDaysDelayed = sevenDaysDelayed.toUTCString();
             let db = firebase.firestore();
-            let userRef = await db.collection('users').where('checkInTime').get();
+            let dataObj = {};
+            let userArr = [];
+            let businessesArr = [];
+            let checkInCount = {};
+            let withinRadius;
+            let userRef = await db.collection('users').get();
             if(userRef.empty){
                 console.log('No matching documents.');
                 return;
             }
             else {
-                userRef.forEach(doc => {
-                    console.log(doc.id, '=>', doc.data());
-                });
+                Util.location.GetUserLocation((userLocation) => {
+                    userRef.forEach(doc => {
+                        let checkIn = doc.data().checkIn;
+                        if(checkIn) {
+                            Util.location.createRadiusArray(checkIn, userLocation, (radiusArray) => {
+                                withinRadius = isPointWithinRadius(radiusArray[0], radiusArray[1], radiusArray[3]);
+                                console.log(withinRadius);
+                            });
+                            if(withinRadius) {
+                                userArr.push(checkIn.buisnessUID =  {
+                                    checkIn: checkIn,
+                                    user: doc.data().email
+                                });
+                                if(!businessesArr.includes(checkIn.buisnessUID)) {
+                                    businessesArr.push(checkIn.buisnessUID);
+                                }
+                            }
+                        }
+                    });
+                    businessesArr.forEach((element) => {
+                        checkInCount[element] = 0;
+                        userArr.forEach((element2) => {
+                            Util.location.checkInCount(element2, element, checkInCount);
+                        });
+                    });
+                    dataObj['checkInData'] = userArr;
+                    dataObj['countData'] = checkInCount;
+                    console.log(dataObj);
+                    returnData(dataObj);
+                })
             }
+        },
+        checkInCount: (userData, buisnessData, checkInCount) => {
+            if(userData.checkIn.buisnessUID == buisnessData) {
+                checkInCount[buisnessData]++;
+            }
+        },
+        createRadiusArray: (checkIn, userLocation, returnData) => {
+            let checkInLat = checkIn.latAndLong.split(',')[0];
+            let checkInLong = checkIn.latAndLong.split(',')[1];
+            let userLat = userLocation.latitude;
+            let userLong = userLocation.longitude;
+            let radiusArray = [{
+                latitude: checkInLat,
+                longitude: checkInLong
+            },
+            {
+                latitude: userLat,
+                longitude: userLong
+            },
+            32.1869]
+            returnData(radiusArray);
         }
     },
     date: {
