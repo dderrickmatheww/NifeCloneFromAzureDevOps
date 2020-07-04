@@ -1,5 +1,5 @@
 import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
-import { FACEBOOK_APP_ID, GOOGLE_API_KEY, FB_CLIENT_ID, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
+import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
