@@ -44,7 +44,7 @@ export function DrawerContent(props) {
                                 </Title>
                                 {/* status */}
                                 <Caption style={styles.caption}>
-                                  Status: { props.user.status.text ? props.user.status.text : "No Status"} 
+                                  Status: { props.user.status ? props.user.status.text ? props.user.status.text : "No Status" : "No Status"} 
                                 </Caption>
                                 {/* TODO Badge */}
                                 {/* <Caption style={styles.caption}>

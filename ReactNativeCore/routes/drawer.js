@@ -85,26 +85,27 @@ class Navigator extends React.Component {
               let usersThatRequested = data;
               let requests = [];
               let acceptedFriends = [];
-              let keys = Object.keys(userFriends);
-              keys.forEach(function(key){
-                if(userFriends[key] == null){
-                  usersThatRequested.forEach((user)=>{
-                    if(key == user.email){
-                      requests.push(user);
-                    }
-                  });
-                }
-                if(userFriends[key] == true){
-                  usersThatRequested.forEach((user)=>{
-                    if(key == user.email){
-                      acceptedFriends.push(user);
-                    }
-                  });
-                }
-              });
+              if(userFriends) {
+                let keys = Object.keys(userFriends);
+                keys.forEach(function(key){
+                  if(userFriends[key] == null){
+                    usersThatRequested.forEach((user)=>{
+                      if(key == user.email){
+                        requests.push(user);
+                      }
+                    });
+                  }
+                  if(userFriends[key] == true){
+                    usersThatRequested.forEach((user)=>{
+                      if(key == user.email){
+                        acceptedFriends.push(user);
+                      }
+                    });
+                  }
+                });
+              }
               let friends = JSON.stringify(data);
               Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-              
               this.setState({friendData: acceptedFriends});
               this.setState({friendRequests: requests});
               this.setState({userData:userData});
@@ -124,9 +125,10 @@ class Navigator extends React.Component {
 
   filterFriends = (friendsData, userObj)=> {
     let friendsDataObj = JSON.parse(friendsData);
-      let userFriends = userObj.friends;
-      let requests = [];
-      let acceptedFriends = [];
+    let userFriends = userObj.friends;
+    let requests = [];
+    let acceptedFriends = [];
+    if(userFriends) {
       let keys = Object.keys(userFriends);
       keys.forEach(function(key){
         if(userFriends[key] == null){
@@ -144,9 +146,9 @@ class Navigator extends React.Component {
           });
         }
       });
-  
-        this.setState({friendData: acceptedFriends});
-        this.setState({friendRequests: requests});
+    }
+    this.setState({friendData: acceptedFriends});
+    this.setState({friendRequests: requests});
   }
 
   refreshFromAsync = (userData, friendData, requests) => {
