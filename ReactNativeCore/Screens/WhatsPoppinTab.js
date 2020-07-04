@@ -71,7 +71,7 @@ class WhatsPoppin extends React.Component  {
                                         key={ data.buisnessUID }
                                         phone={ data.buisnessData.phone }
                                         name={ data.buisnessData.name }
-                                        barImage={ data.buisnessData.image }
+                                        barImage={ data.buisnessData.barPhoto }
                                         address={ data.buisnessData.address }
                                         lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
                                         long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }

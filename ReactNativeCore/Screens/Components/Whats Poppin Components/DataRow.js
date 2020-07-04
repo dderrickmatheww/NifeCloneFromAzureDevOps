@@ -17,7 +17,7 @@ export default class DataRow extends React.Component  {
                 >
                         <Image
                             style={styles.LogoData}
-                            source={this.props.barImage}
+                            source={{uri: this.props.barImage }}
                         />
                         <Text style={styles.facebookDataText}>
                             {this.props.name} {"\n"} 

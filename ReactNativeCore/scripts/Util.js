@@ -170,6 +170,7 @@ const Util = {
                 checkIn: {
                     checkInTime: new Date(),
                     latAndLong: checkInObj.latAndLong,
+                    buisnessUID: checkInObj.buisnessUID,
                     privacy: checkInObj.privacy,
                     name: checkInObj.barName,
                     phone: checkInObj.phone,
@@ -400,7 +401,7 @@ const Util = {
                         latitude: userLat,
                         longitude: userLong
                     }, 
-                    1600
+                    100
                 ); 
             }
             else {

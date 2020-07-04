@@ -125,7 +125,7 @@ class BarModal extends React.Component  {
                                   barName: this.props.barName,
                                   address: this.props.address,
                                   phone: this.props.phone,
-                                  image: this.props.source,
+                                  image: this.props.source.uri,
                                   closed: this.props.closed == true ? "Yes" : "No",
                                   privacy: "Public"
                                 }
