@@ -16,7 +16,7 @@ const Util = {
             let docRef = db.collection('users').where(path, '==', true);
             docRef.get().then((friends) => {
                 friends.forEach(function(friend) {
-                    if(friend.data()) {
+                    if(friend && friend.data()) {
                         friendsArr.push(friend.data());
                     }
                 });
@@ -153,23 +153,28 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
-        CheckIn: async (buisnessUID, barName, email, privacy, latLong, returnData) => {
+        CheckIn: async (checkInObj, returnData) => {
             let db = firebase.firestore();
-            let setLoc = await db.collection('users').doc(email);
+            let setLoc = await db.collection('users').doc(checkInObj.email);
             let lastVisited = {};
-            lastVisited[buisnessUID] = {
+            lastVisited[checkInObj.buisnessUID] = {
                 checkInTime: new Date(),
-                latAndLong: latLong,
-                privacy: privacy,
-                name: barName,
+                latAndLong: checkInObj.latAndLong,
+                privacy: checkInObj.privacy,
+                name: checkInObj.barName,
+                phone: checkInObj.phone,
+                address: checkInObj.address,
+                barPhoto: checkInObj.image,
             }
             setLoc.set({
                 checkIn: {
-                    buisnessUID: buisnessUID,
                     checkInTime: new Date(),
-                    privacy: privacy,
-                    latAndLong: latLong,
-                    name: barName
+                    latAndLong: checkInObj.latAndLong,
+                    privacy: checkInObj.privacy,
+                    name: checkInObj.barName,
+                    phone: checkInObj.phone,
+                    address: checkInObj.address,
+                    barPhoto: checkInObj.image,
                 },
                 lastVisited
             },
@@ -324,68 +329,93 @@ const Util = {
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
             let db = firebase.firestore();
             let dataObj = {};
-            let userArr = [];
-            let businessesArr = [];
-            let checkInCount = {};
-            let withinRadius;
-            let userRef = await db.collection('users').get();
-            if(userRef.empty){
-                console.log('No matching documents.');
-                return;
-            }
-            else {
-                Util.location.GetUserLocation((userLocation) => {
-                    userRef.forEach(doc => {
-                        let checkIn = doc.data().checkIn;
-                        if(checkIn) {
-                            Util.location.createRadiusArray(checkIn, userLocation, (radiusArray) => {
-                                withinRadius = isPointWithinRadius(radiusArray[0], radiusArray[1], radiusArray[3]);
-                                console.log(withinRadius);
-                            });
-                            if(withinRadius) {
-                                userArr.push(checkIn.buisnessUID =  {
-                                    checkIn: checkIn,
-                                    user: doc.data().email
-                                });
-                                if(!businessesArr.includes(checkIn.buisnessUID)) {
-                                    businessesArr.push(checkIn.buisnessUID);
+            if(!query) {
+                let userArr = [];
+                let businessesArr = [];
+                let checkInCount = {};
+                let checkInArray = [];
+                let withinRadius;
+                let userRef = await db.collection('users').get();
+                if(userRef.empty){
+                    console.log('No matching documents.');
+                    return;
+                }
+                else {
+                    Util.location.GetUserLocation((userLocation) => {
+                        userRef.forEach(doc => {
+                            if(doc.data().checkIn) {
+                                withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
+                                if(withinRadius) {
+                                    userArr.push(doc.data().checkIn.buisnessUID =  {
+                                        checkIn: doc.data().checkIn,
+                                        user: {
+                                            email: doc.data().email,
+                                            checkInTime: doc.data().checkIn.checkInTime
+                                        }
+                                    });
+                                    if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {
+                                        businessesArr.push(doc.data().checkIn.buisnessUID);
+                                    }
                                 }
                             }
-                        }
-                    });
-                    businessesArr.forEach((element) => {
-                        checkInCount[element] = 0;
-                        userArr.forEach((element2) => {
-                            Util.location.checkInCount(element2, element, checkInCount);
                         });
+                        businessesArr.forEach((element) => {
+                            checkInCount =  {
+                                checkedIn: 0,
+                                buisnessUID: element,
+                                users: [],
+                                buisnessData: null
+                            }
+                            userArr.forEach((element2) => {
+                                Util.location.checkInCount(element2, element, checkInCount);
+                            });
+                            checkInArray.push(checkInCount);
+                        });
+                        checkInArray.sort(Util.basicUtil.compareValues('checkedIn', 'desc'));
+                        dataObj['countData'] = checkInArray;
+                        returnData(dataObj);
                     });
-                    dataObj['checkInData'] = userArr;
-                    dataObj['countData'] = checkInCount;
-                    console.log(dataObj);
-                    returnData(dataObj);
-                })
+                }
             }
         },
         checkInCount: (userData, buisnessData, checkInCount) => {
             if(userData.checkIn.buisnessUID == buisnessData) {
-                checkInCount[buisnessData]++;
+                checkInCount['checkedIn']++;
+                checkInCount['users'].push(userData.user);
+                checkInCount['buisnessData'] = userData.checkIn;
             }
         },
-        createRadiusArray: (checkIn, userLocation, returnData) => {
-            let checkInLat = checkIn.latAndLong.split(',')[0];
-            let checkInLong = checkIn.latAndLong.split(',')[1];
-            let userLat = userLocation.latitude;
-            let userLong = userLocation.longitude;
-            let radiusArray = [{
-                latitude: checkInLat,
-                longitude: checkInLong
-            },
-            {
-                latitude: userLat,
-                longitude: userLong
-            },
-            32.1869]
-            returnData(radiusArray);
+        IsWithinRadius: (checkIn, userLocation, boolean) => {
+            let checkInLat = parseInt(checkIn.latAndLong.split(',')[0]);
+            let checkInLong = parseInt(checkIn.latAndLong.split(',')[1]);
+            let userLat = parseInt(userLocation.coords.latitude);
+            let userLong = parseInt(userLocation.coords.longitude);
+            if(boolean) {
+                return withinRadius = isPointWithinRadius(
+                    {
+                        latitude: checkInLat,
+                        longitude: checkInLong
+                    }, 
+                    {
+                        latitude: userLat,
+                        longitude: userLong
+                    }, 
+                    1600
+                ); 
+            }
+            else {
+                return withinRadius = isPointWithinRadius(
+                    {
+                        latitude: checkInLat,
+                        longitude: checkInLong
+                    }, 
+                    {
+                        latitude: userLat,
+                        longitude: userLong
+                    }, 
+                    32000
+                ); 
+            }
         }
     },
     date: {
@@ -981,6 +1011,29 @@ const Util = {
                 console.log('\n');
                 console.log("" + fucnName + " failed.");
             }
+        },
+        compareValues: (key, order = 'asc') => {
+            return function innerSort(a, b) {
+                if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+                // property doesn't exist on either object
+                return 0;
+                }
+            
+                const varA = (typeof a[key] === 'string')
+                ? a[key].toUpperCase() : a[key];
+                const varB = (typeof b[key] === 'string')
+                ? b[key].toUpperCase() : b[key];
+            
+                let comparison = 0;
+                if (varA > varB) {
+                comparison = 1;
+                } else if (varA < varB) {
+                comparison = -1;
+                }
+                return (
+                (order === 'desc') ? (comparison * -1) : comparison
+                );
+            };
         }
     }
 }

@@ -52,7 +52,7 @@ class WhatsPoppin extends React.Component  {
             let email = this.state.user.email;
             getFeedData(query, email, (dataObj) => {
                 this.setState({ 
-                    feedData: dataObj.data
+                    feedData: dataObj
                 });
             });
         }
@@ -66,24 +66,18 @@ class WhatsPoppin extends React.Component  {
                         <ScrollView style={styles.dataRowScrollView}>
                             <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
                             {
-                                this.state.feedData.map(data => (
+                                this.state.feedData.countData.map(data => (
                                     <DataRow 
-                                        key={ this.state.DataRoWKey++ }
-                                        phone={ data.phone }
-                                        specialties={ data.restaurant_specialties }
-                                        name={ data.name }
-                                        link={ data.link }
-                                        city={ data.location ? data.location.city : null }
-                                        street={ data.location ? data.location.street : null }
-                                        state={ data.location ? data.location.state : null }
-                                        zip={ data.location ? data.location.zip : null }
-                                        lat={ data.location ? data.location.latitude :  null }
-                                        long={ data.location ? data.location.longitude : null }
-                                        about={ data.about }
-                                        description={ data.description }
-                                        website={ data.website }
+                                        key={ data.buisnessUID }
+                                        phone={ data.buisnessData.phone }
+                                        name={ data.buisnessData.name }
+                                        barImage={ data.buisnessData.image }
+                                        address={ data.buisnessData.address }
+                                        lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
+                                        long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
                                         modalVisability={ this.state.modalVisable }
-                                        tweetData={ data.TwitterData ? data.TwitterData : null }
+                                        userData={ data.users }
+                                        usersCheckedIn={ data.checkedIn }
                                     />
                                 ))
                             }

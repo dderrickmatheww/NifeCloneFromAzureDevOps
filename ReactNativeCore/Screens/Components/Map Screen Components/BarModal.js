@@ -116,14 +116,33 @@ class BarModal extends React.Component  {
                         <View>
                           <TouchableOpacity
                             onPress={() => { 
-                              let email = this.state.userData.email;
-                              let buisnessUID = this.props.buisnessUID;
-                              let latAndLong = this.props.latitude + ',' + this.props.longitude;
-                              let barName = this.props.barName;
-                              Util.user.CheckIn(buisnessUID, barName, email, "Public", latAndLong, (boolean) => {
-                                this.setState({
-                                  checkedIn: boolean
-                                });
+                              Util.location.GetUserLocation((userLocation) => {
+                                let withinRadius;
+                                let checkInObj = {
+                                  email: this.state.userData.email,
+                                  buisnessUID: this.props.buisnessUID,
+                                  latAndLong: this.props.latitude + ',' + this.props.longitude,
+                                  barName: this.props.barName,
+                                  address: this.props.address,
+                                  phone: this.props.phone,
+                                  image: this.props.source,
+                                  closed: this.props.closed == true ? "Yes" : "No",
+                                  privacy: "Public"
+                                }
+                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
+                                if(checkInObj.closed == "No" && withinRadius) {
+                                  Util.user.CheckIn(checkInObj, (boolean) => {
+                                    this.setState({
+                                      checkedIn: boolean
+                                    });
+                                  });
+                                }
+                                else if (checkInObj.closed == "Yes") {
+                                  alert('This bar seems to be closed!');
+                                }
+                                else {
+                                  alert('You must be within 1 mile to check in!');
+                                }
                               });
                             }}
                             style={localStyles.descCont}
@@ -132,14 +151,32 @@ class BarModal extends React.Component  {
                           </TouchableOpacity>
                           <TouchableOpacity
                             onPress={() => {
-                              let email = this.state.userData.email;
-                              let buisnessUID = this.props.buisnessUID;
-                              let latAndLong = this.props.latitude + ',' + this.props.longitude;
-                              let barName = this.props.barName;
-                              Util.user.CheckIn(buisnessUID, barName, email, "Friends Only", latAndLong, (boolean) => {
-                                this.setState({
-                                  checkedIn: boolean
-                                });
+                              Util.location.GetUserLocation((userLocation) => {
+                                let checkInObj = {
+                                  email: this.state.userData.email,
+                                  buisnessUID: this.props.buisnessUID,
+                                  latAndLong: this.props.latitude + ',' + this.props.longitude,
+                                  barName: this.props.barName,
+                                  address: this.props.address,
+                                  phone: this.props.phone,
+                                  image: this.props.source,
+                                  closed: this.props.closed == true ? "Yes" : "No",
+                                  privacy: "Friends Only"
+                                }
+                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
+                                if(checkInObj.closed == "No" && withinRadius) {
+                                  Util.user.CheckIn(checkInObj, (boolean) => {
+                                    this.setState({
+                                      checkedIn: boolean
+                                    });
+                                  });
+                                }
+                                else if (checkInObj.closed == "Yes") {
+                                  alert('This bar seems to be closed!');
+                                }
+                                else {
+                                  alert('You must be within 1 mile to check in!');
+                                }
                               });
                             }}
                             style={localStyles.descCont}
@@ -148,14 +185,32 @@ class BarModal extends React.Component  {
                           </TouchableOpacity>
                           <TouchableOpacity
                             onPress={() => {
-                              let email = this.state.userData.email;
-                              let buisnessUID = this.props.buisnessUID;
-                              let latAndLong = this.props.latitude + ',' + this.props.longitude;
-                              let barName = this.props.barName;
-                              Util.user.CheckIn(buisnessUID, barName, email, "Private", latAndLong, (boolean) => {
-                                this.setState({
-                                  checkedIn: boolean
-                                });
+                              Util.location.GetUserLocation((userLocation) => {
+                                let checkInObj = {
+                                  email: this.state.userData.email,
+                                  buisnessUID: this.props.buisnessUID,
+                                  latAndLong: this.props.latitude + ',' + this.props.longitude,
+                                  barName: this.props.barName,
+                                  address: this.props.address,
+                                  phone: this.props.phone,
+                                  image: this.props.source,
+                                  closed: this.props.closed == true ? "Yes" : "No",
+                                  privacy: "Private"
+                                }
+                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
+                                if(checkInObj.closed == "No" && withinRadius) {
+                                  Util.user.CheckIn(checkInObj, (boolean) => {
+                                    this.setState({
+                                      checkedIn: boolean
+                                    });
+                                  });
+                                }
+                                else if (checkInObj.closed == "Yes") {
+                                  alert('This bar seems to be closed!');
+                                }
+                                else {
+                                  alert('You must be within 1 mile to check in!');
+                                }
                               });
                             }}
                             style={localStyles.descCont}
