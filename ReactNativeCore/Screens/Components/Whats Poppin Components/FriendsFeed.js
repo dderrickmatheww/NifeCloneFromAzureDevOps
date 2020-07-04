@@ -218,10 +218,9 @@ const localStyles = StyleSheet.create({
         borderColor:theme.LIGHT_PINK,
         borderRadius:10,
         borderWidth:1,
-        marginVertical:2,
         paddingVertical:5,
         paddingHorizontal:5,
-        marginVertical:2,
+        marginVertical:5,
         width:"100%",
     },
     navHeader:{
@@ -246,7 +245,7 @@ const localStyles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingHorizontal: "5%",
-        paddingBottom: "1%",
+        paddingBottom: 30,
         paddingTop: 10
       }
   });
