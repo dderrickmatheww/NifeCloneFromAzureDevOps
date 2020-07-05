@@ -12,6 +12,7 @@ import {
     Text, 
     Headline
 } from 'react-native-paper';
+import Util from '../scripts/Util';
 
 
 class WhatsPoppin extends React.Component  {
@@ -66,6 +67,11 @@ class WhatsPoppin extends React.Component  {
         }
     }
 
+    favoriteABar = (buisnessUID, boolean) => {
+        let email = this.state.user.email;
+        Util.user.setFavorite(email, buisnessUID, boolean);
+    }
+
     onRefresh = () => {
         this.setState({ refresh: true });
         this.grabFeedData();
@@ -97,6 +103,7 @@ class WhatsPoppin extends React.Component  {
                                 this.state.feedData.countData.map(data => (
                                     <DataRow 
                                         key={ data.buisnessUID }
+                                        buisnessUID={ data.buisnessUID }
                                         phone={ data.buisnessData.phone }
                                         name={ data.buisnessData.name }
                                         barImage={ data.buisnessData.barPhoto }
@@ -106,6 +113,7 @@ class WhatsPoppin extends React.Component  {
                                         modalVisability={ this.state.modalVisable }
                                         userData={ data.users }
                                         usersCheckedIn={ data.checkedIn }
+                                        favorite={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
                                     />
                                 ))
                             }

@@ -28,7 +28,7 @@ export default class DataRow extends React.Component  {
                             {this.props.address[1] + ', ' + this.props.address[2]} {"\n"}
                             Phone #: {this.props.phone} {"\n"}
                         </Text>
-                        <Favorite />
+                        <Favorite favorite={(buisnessUID, boolean) => {this.props.favorite(buisnessUID, boolean)}} buisnessUID={this.props.buisnessUID} />
                     </View>
                         { 
                             this.props.usersCheckedIn > 1 ? 
@@ -42,7 +42,6 @@ export default class DataRow extends React.Component  {
                                     There is {this.props.usersCheckedIn} person currently here! 
                                 </Text>
                         }
-                        
                 </ScrollView>
             </View>
         )

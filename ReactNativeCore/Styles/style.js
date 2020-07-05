@@ -276,7 +276,7 @@ export const styles = StyleSheet.create({
   },
   facebookDataText: {
     color: theme.LIGHT_PINK,
-    fontSize: 13,
+    fontSize: 11,
     fontFamily: theme.fontFamily,
     padding: 5
   },

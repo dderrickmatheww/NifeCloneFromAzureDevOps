@@ -234,6 +234,64 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
+        setFavorite: (email, buisnessUID, boolean) => {
+            let db = firebase.firestore();
+            let setLoc = db.collection('users').doc(email);
+            if (boolean) {
+                let favoritePlaces = {};
+                favoritePlaces[buisnessUID] = {
+                    timeFavorited: new Date()
+                }
+                setLoc.set({
+                    favoritePlaces
+                },
+                {
+                    merge: true
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
+            else {
+                let FieldValue = admin.firestore.FieldValue;
+                // Remove the 'capital' field from the document
+                setLoc.update({
+                    favoritePlaces: {
+                        [buisnessUID]: FieldValue.delete()
+                    }
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
+        },
+        isFavorited: async (buisnessUID, email, returnData) => {
+            let db = firebase.firestore();
+            let setLoc = await db.collection('users').doc(email).get();
+            let boolean;
+            setLoc.forEach(function(doc) {
+                if (doc.data()) {
+                    if(doc.data().favoritePlaces && doc.data().favoritePlaces[buisnessUID]) {
+                        boolean = true;
+                    }
+                    else {
+                        boolean = false;
+                    }
+                } else {
+                    boolean = false
+                }
+            });
+            Util.basicUtil.consoleLog('isFavorited', true);
+            returnData(boolean);
+        },
         QueryPublicUsers: function(db, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
             let usersRef = db.collection('users').where(path, '==', true);
