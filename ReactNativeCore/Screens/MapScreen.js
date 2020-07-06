@@ -348,7 +348,7 @@ class MapScreen extends React.Component  {
           </MapView>
           <BarModal 
                 isVisible={this.state.isModalVisible}
-                source={this.state.modalProps.source}
+                source={this.state.modalProps.source.uri}
                 barName={this.state.modalProps.barName}
                 rating={this.state.modalProps.rating}
                 reviewCount={this.state.modalProps.reviewCount}
@@ -362,7 +362,6 @@ class MapScreen extends React.Component  {
                 longitude={this.state.modalProps.longitude}
               > 
             </BarModal>
-            
             <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
         </View> 
         ) 

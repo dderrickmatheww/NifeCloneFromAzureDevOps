@@ -7,7 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 export default function IconWithBadge({ name, badgeCount, color, size, type }) {
     return (
-      <View style={{ width: 30, height: 24, margin: 5 }}>
+      <View style={{ width: 30, height: size, margin: 5 }}>
         {
           type == 'Ionicons' ?
             <Ionicons name={name} size={size} color={color} />

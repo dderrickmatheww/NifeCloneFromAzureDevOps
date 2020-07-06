@@ -8,8 +8,7 @@ import DataRow from './Components/Whats Poppin Components/DataRow';
 import * as firebase from 'firebase';
 import InputWithIcon from './Universal Components/InputWithIcon';
 import PleaseLogin from './Universal Components/PleaseLogin';
-import { 
-    Text, 
+import {
     Headline
 } from 'react-native-paper';
 import Util from '../scripts/Util';
@@ -113,7 +112,8 @@ class WhatsPoppin extends React.Component  {
                                         modalVisability={ this.state.modalVisable }
                                         userData={ data.users }
                                         usersCheckedIn={ data.checkedIn }
-                                        favorite={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
+                                        email={this.state.user.email}
+                                        favoriteABar={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
                                     />
                                 ))
                             }
@@ -124,7 +124,7 @@ class WhatsPoppin extends React.Component  {
                     <View style={styles.viewDark}>
                         <ActivityIndicator 
                             size={'large'}
-                            color={'#ff1493'}
+                            color={theme.LIGHT_PINK}
                         />
                     </View>
                 : 

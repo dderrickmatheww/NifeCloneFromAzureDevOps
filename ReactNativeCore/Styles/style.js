@@ -160,7 +160,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 15,
     width: 370,
-    borderColor: '#ff1493',
+    borderColor: theme.LIGHT_PINK,
     borderWidth: 2
   },
   navigateLoginBtn: {
@@ -234,12 +234,17 @@ export const styles = StyleSheet.create({
   },
   dataRowContainer: {
     flex: 1,
-    top: 20,
-    height: 200,
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a',
-    marginBottom: 20
+    marginBottom: 20,
+    marginTop: 20,
+    backgroundColor: theme.DARK,
+    padding: 15,
+    borderRadius: 15,
+    width: '100%',
+    borderColor: theme.LIGHT_PINK,
+    borderWidth: 1
   },
   dataRowScrollView: {
     flex: 1,
@@ -278,13 +283,12 @@ export const styles = StyleSheet.create({
     color: theme.LIGHT_PINK,
     fontSize: 11,
     fontFamily: theme.fontFamily,
-    padding: 5
+    padding: 10
   },
   checkedInDataText: {
     color: theme.LIGHT_PINK,
     fontSize: 17,
     fontFamily: theme.fontFamily,
-    padding: 5
   },
   facebookScrollText: {
     color: "black",
