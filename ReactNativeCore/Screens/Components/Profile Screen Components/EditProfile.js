@@ -8,7 +8,8 @@ import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
-  TextInput
+  TextInput,
+  Surface
 } from 'react-native-paper';
 
 
@@ -170,7 +171,7 @@ export default class EditProfile extends Component {
                   </View>
               </View>
 
-              <ScrollView contentContainerStyle={{justifyContent:"flex-start", width:"90%"}} style={localStyles.mainCont}> 
+              <ScrollView contentContainerStyle={{justifyContent:"flex-start",  width:"90%"}} style={localStyles.mainCont}> 
               {/* Input Area */}
                   <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:15}}>
                     All information is optional and can be hidden via privacy settings! 
@@ -207,44 +208,51 @@ export default class EditProfile extends Component {
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
                       Gender: 
                     </Text>
-                    <Picker 
-                      style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 50,}}
-                      selectedValue={this.state.gender ? this.state.gender : "other"}
-                      onValueChange={(value) => this.onGenderChange(value)}
-                    >
-                      <Picker.Item label="Male" value="male"/>
-                      <Picker.Item label="Female" value="female"/>
-                      <Picker.Item label="Other" value="other"/>
-                    </Picker>
+                    <Surface style={localStyles.surface}>
+                      <Picker 
+                        mode={"dropdown"}
+                        style={{backgroundColor:theme.DARK,width:"100%", alignSelf:"center"}}
+                        selectedValue={this.state.gender ? this.state.gender : "other"}
+                        onValueChange={(value) => this.onGenderChange(value)}
+                      >
+                        <Picker.Item color={theme.LIGHT_PINK} label="Male" value="male"/>
+                        <Picker.Item color={theme.LIGHT_PINK} label="Female" value="female"/>
+                        <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
+                      </Picker>
+                    </Surface>
+                      
                   </View>
 
                   <View style={localStyles.fieldCont}> 
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
                       Sexual Orientation: 
                     </Text>
-                    <Picker
-                    selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
-                      style={{backgroundColor:theme.LIGHT,width:"90%", alignSelf:"center", borderRadius: 50,}}
-                      onValueChange={(value) => this.onSexualOrientationChange(value)}
-                    >
-                      <Picker.Item label="Straight" value="straight"/>
-                      <Picker.Item label="Homosexual/Gay/Lesbian" value="homosexual"/>
-                      <Picker.Item label="Bi-sexual/Fluid" value="bi-sexual"/>
-                      <Picker.Item label="Other" value="other"/>
-                    </Picker>
+                    <Surface style={localStyles.surface}>
+                      <Picker
+                      selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
+                        style={{backgroundColor:theme.DARK,width:"100%", alignSelf:"center", borderRadius: 50,}}
+                        onValueChange={(value) => this.onSexualOrientationChange(value)}
+                      >
+                        <Picker.Item color={theme.LIGHT_PINK} label="Straight" value="straight"/>
+                        <Picker.Item color={theme.LIGHT_PINK} label="Homosexual/Gay/Lesbian" value="homosexual"/>
+                        <Picker.Item color={theme.LIGHT_PINK} label="Bi-sexual/Fluid" value="bi-sexual"/>
+                        <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
+                      </Picker>
+                    </Surface>
+                    
                   </View>
 
                   <View style={localStyles.fieldCont}> 
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
                       Bio: 
                     </Text>
-                    <TextInput numberOfLines={2}
+                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
                     mode={"flat"}
                     label=""
                     placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
                     value={this.state.bio}
-                    style={{backgroundColor:theme.LIGHT, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5,}}>
+                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
                     
                     </TextInput>
                   </View>
@@ -254,12 +262,12 @@ export default class EditProfile extends Component {
                       Favorite Drinks (comma seperated): 
                     </Text>
                     {/* index one to on change */}
-                    <TextInput
+                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}} 
                     mode={"flat"}
                     label=""
                     placeholder={"What're you drinkin'?"}
                     onChangeText={text => this.onFavoriteDrinkChange(text)}
-                    style={{backgroundColor:theme.LIGHT,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5,}}
+                    style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
                     value={this.state.favoriteDrinks.toString()}
                     >
                       
@@ -293,6 +301,10 @@ export default class EditProfile extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  surface: {
+    width:"auto",
+    elevation: 10,
+  },
   fieldCont:{
     marginVertical:5
   },

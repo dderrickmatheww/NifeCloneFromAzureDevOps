@@ -76,7 +76,7 @@ export default class UserSearch extends Component {
                     this.state.queriedUsers ? 
 
                     this.state.queriedUsers.map((user, i) => (
-                      <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user:user, isUserProfile:false}})}>
+                      <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user}})}>
                         <View style={localStyles.friendCont}>
                           <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
                         </View>
@@ -106,6 +106,7 @@ const localStyles = StyleSheet.create({
     flexDirection: "row",
     borderBottomColor: theme.LIGHT_PINK,
     borderBottomWidth: 1,
+    alignSelf:"center"
   },
   name: {
     fontSize: 18,

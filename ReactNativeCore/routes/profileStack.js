@@ -14,10 +14,17 @@ function Friends({route, navigation}){
     <FriendsList refresh={refresh} requests={requests} friends={friends}  user={user}  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
 }
-function Profile({route, navigation}){
+function UserProfile({route, navigation}){
   const { user, isUserProfile,  friends, requests, refresh, uploadImage} = route.params;
   return(
-    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends}  user={user} isUserProfile={isUserProfile} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends}  user={user} isUserProfile={true} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+  );
+}
+
+function OtherProfile({route, navigation}){
+  const { user, isUserProfile,  friends, requests, refresh, uploadImage} = route.params;
+  return(
+    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends}  user={user} isUserProfile={false} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 
@@ -55,7 +62,8 @@ export default class ProfileStack extends React.Component  {
   render(){
     return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh}}/>
+        <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh}}/>
+        <Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh}}/>
         <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} />

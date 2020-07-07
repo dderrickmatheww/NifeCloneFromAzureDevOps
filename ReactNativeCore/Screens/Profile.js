@@ -54,7 +54,6 @@ export default class ProfileScreen extends Component {
       
     }
     else {
-      
       Util.user.GetUserData(firebase.firestore(), this.props.user.email, (user)=>{
         this.setState({userData: user});
         
@@ -106,7 +105,7 @@ export default class ProfileScreen extends Component {
 
    //gets user and friend data
   getAsyncStorageData = (callback) => {
-    this.setState({isUsersProfile:this.props.user.email == firebase.auth().currentUser.email});
+    this.setState({isUsersProfile:this.props.isUserProfile});
     
     this.setUserData();
     this.setFriendData();
@@ -117,10 +116,20 @@ export default class ProfileScreen extends Component {
 
   componentDidMount(){
     this.getAsyncStorageData();
-    
+    this.props.navigation.addListener('blur', () => {
+      this.setState({userData:null});
+      this.setState({friendData:null});
+    });
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getAsyncStorageData();
+    });
 
     console.log('User: ' + firebase.auth().currentUser.email); 
     console.log('Profile Owner: ' + this.state.userData.email);
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   UploadPic = () => {
@@ -249,11 +258,14 @@ export default class ProfileScreen extends Component {
                           Status: 
                           
                         </Title>
+                      {
+                        this.state.isUsersProfile ?
                         <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
-                                onPress={() => this.setState({statusModalVisible:true})}
-                              >
-                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
-                          </TouchableOpacity>
+                          onPress={() => this.setState({statusModalVisible:true})}
+                        >
+                            <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                        </TouchableOpacity> : null
+                        }
                     </View>
                     <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
                   </View>
