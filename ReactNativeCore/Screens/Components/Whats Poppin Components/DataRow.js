@@ -28,11 +28,16 @@ export default class DataRow extends React.Component  {
                             <Favorite favoriteTrigg={(buisnessUID, boolean) => {this.props.favoriteABar(buisnessUID, boolean)}} buisnessUID={this.props.buisnessUID} />
                         </View>
                 </View>
-                <Text style={styles.facebookDataText}>
-                    {this.props.address[0]} {"\n"}
-                    {this.props.address[1] + ', ' + this.props.address[2]} {"\n"}
-                    Phone #: {this.props.phone} {"\n"}
-                </Text>
+                {
+                     this.props.address ?
+                        <Text style={styles.facebookDataText}>
+                            {this.props.address[0]} {"\n"}
+                            {this.props.address[1] + ', ' + this.props.address[2]} {"\n"}
+                            Phone #: {this.props.phone} {"\n"}
+                        </Text>
+                    :
+                        null
+                }
                 { 
                     this.props.usersCheckedIn > 1 ? 
                         <Text style={styles.checkedInDataText}>
@@ -77,7 +82,6 @@ const localStyles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 5,
         margin: '2%',
-        textAlign:"center",
         alignItems:"center",
       },
 })

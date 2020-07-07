@@ -445,7 +445,7 @@ const Util = {
                 }
                 else {
                     userRef.forEach(doc => {
-                        if(doc.data().checkIn) {
+                        if(doc.data().checkIn && !doc.data().checkIn.address == "") {
                             withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
                             if(withinRadius) {
                                 userArr.push(doc.data().checkIn.buisnessUID = {

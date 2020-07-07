@@ -106,7 +106,7 @@ class WhatsPoppin extends React.Component  {
                                         phone={ data.buisnessData.phone }
                                         name={ data.buisnessData.name }
                                         barImage={ data.buisnessData.barPhoto }
-                                        address={ data.buisnessData.address.split(',') }
+                                        address={ data.buisnessData.address ? data.buisnessData.address.split(',') : null }
                                         lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
                                         long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
                                         modalVisability={ this.state.modalVisable }
