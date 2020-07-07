@@ -49,6 +49,7 @@ class Navigator extends React.Component {
     friendRequests:null,
     dataLoaded:false,
     userExists:false,
+    displayName: null,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -143,22 +144,46 @@ class Navigator extends React.Component {
     }
   }
 
+  initializeParams = (user) => {
+    Util.user.VerifyUser(user, user.email, () => { 
+      this.getLocationAsync((location) => {
+        this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
+          this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
+        });        
+      });
+    });
+  }
+
+  firstTimeSignUp = (user) => {
+    console.log('setting display name first time')
+    if(this.state.displayName){
+      user.updateProfile({displayName:this.state.displayName}).then(()=>{
+        this.initializeParams(user);
+      });
+    }
+  }
+
+  onSignUpStates = (obj) => {
+    if(obj.displayName){
+      console.log('setting display name first time')
+      this.setState({displayName:obj.displayName});
+    }
+  }
+
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
+        
         this.setState({authLoaded: true});
-        if (user) {  
+        if (user) {
           this.setState({dataLoaded:true});
-          this.setState({userExists:true})
-          Util.user.VerifyUser(user, user.email, () => {
-            
-            this.getLocationAsync((location) => {
-              this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-                this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-                
-              });        
-            });
-          });
+          this.setState({userExists:true}); 
+          if(user.displayName){
+            this.initializeParams(user);
+          }
+          else {
+            this.firstTimeSignUp(user);
+          }
         } else {
           this.setState({authLoaded: true});
           this.setState({dataLoaded:true});
@@ -172,6 +197,8 @@ class Navigator extends React.Component {
         console.error(error);
     }  
   }
+
+  
 
   render() {
     return (
@@ -189,7 +216,7 @@ class Navigator extends React.Component {
             }}
             initialRouteName='My Feed'
             overlayColor="#20232A"
-            drawerContent={props => <CustomDrawerContent {...props} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
+            drawerContent={props => <CustomDrawerContent {...props}  refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
@@ -206,7 +233,7 @@ class Navigator extends React.Component {
             <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
           </View> 
           :
-          <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> 
+          <Login onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
         <View style={styles.viewDark}>
           <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
