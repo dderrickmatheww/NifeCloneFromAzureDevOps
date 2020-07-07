@@ -97,7 +97,7 @@ const Util = {
                     if(user != undefined || user != null) {
                         let userObj = Util.user.BuildUserSchema(user.providerData[0]);
                         db.collection('users').doc(email).set(userObj, { merge:true });
-                        callback(providerObj);
+                        callback(userObj);
                     }
                 }
             })
@@ -124,7 +124,7 @@ const Util = {
             }
             userObj['privacySettings'] = {public:true};
             
-            return providerObj;
+            return userObj;
         },
         GetUserData: function(db, email, callback){
             db.collection('users').doc(email).get()
@@ -236,7 +236,7 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        QueryPublicUsers: function(db, query, take, callback){
+        QueryPublicUsers: function(db, userEmail, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
             let usersRef = db.collection('users').where(path, '==', true);
             usersRef.get()
@@ -249,7 +249,10 @@ const Util = {
                 });
                 let newQuery=  query.toLowerCase();
                 queriedUsers.forEach((user)=>{
-                    if(user.email.indexOf(newQuery) != -1){
+                    let qUserEmail = user.email.toLowerCase();
+                    let qUserEmailRefined = qUserEmail.split('@')[0];
+                    let qUserName = user.displayName.toLowerCase();
+                    if((qUserEmail == newQuery || qUserName.includes(newQuery) || qUserEmailRefined.includes(newQuery) ) && user.email != userEmail){
                         wantedUsers.push(user);
                     }
                 });

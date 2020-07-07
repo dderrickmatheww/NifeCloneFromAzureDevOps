@@ -59,15 +59,21 @@ export default class NifeLoginModal extends Component {
             }
         } 
         else {
-            Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
-                if(error) {
-                    alert(error);
-                    this.resetPasswordField();
-                } 
-                else {
-                    this.props.callback(dataObj);
-                }
-            });
+            if(!this.state.email || !this.state.password1) {
+                alert('Please enter correct sign-up information')
+            }
+            else {
+                Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
+                    if(error) {
+                        alert(error);
+                        this.resetPasswordField();
+                    } 
+                    else {
+                        this.props.callback(dataObj);
+                    }
+                });
+            }
+            
         }
     }
 
@@ -83,6 +89,7 @@ export default class NifeLoginModal extends Component {
     render () {
         return (
             
+            this.state.signUp ?
                 <Modal
                     visible={this.props.modalVisible}
                     dismissable={true}
@@ -113,6 +120,36 @@ export default class NifeLoginModal extends Component {
                         </TouchableOpacity>
                     </View>
                 </Modal>
+                :
+                <Modal
+                    visible={this.props.modalVisible}
+                    dismissable={true}
+                    onDismiss={this.props.onDismiss}
+                    contentContainerStyle={localStyles.Modal}
+                >
+                    <Subheading style={localStyles.Subheading}>Please enter your credentials to sign in... </Subheading>
+                    <View style={localStyles.Container}>
+                        <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                        <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                        
+                        <TouchableOpacity
+                            onPress={() => this.authenticateUser('login')}
+                            style={localStyles.signUpBtn}
+                        > 
+                        
+                            <Caption style={localStyles.Caption}>Log In</Caption>
+                        </TouchableOpacity>
+
+                        <Text style={localStyles.loginSwitchText}>Need to make an account?</Text>
+                        <TouchableOpacity
+                            onPress={() => this.setState({signUp: true})}
+                            style={localStyles.loginSwitch}
+                        > 
+                            <Caption style={localStyles.Caption}>Sign Up</Caption>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+
         );
     }
 }
@@ -168,7 +205,8 @@ const localStyles = StyleSheet.create({
         textAlign:'center',
         alignSelf:"flex-start",
         marginBottom:50,
-        marginTop:30
+        marginTop:30,
+        width:"90%"
     },
     Container:{
         flexDirection:'column',
