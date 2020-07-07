@@ -48,6 +48,7 @@ class Navigator extends React.Component {
     userChecked: false,
     friendRequests:null,
     dataLoaded:false,
+    userExists:false,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -145,18 +146,23 @@ class Navigator extends React.Component {
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
-        if (user) {
-          this.setState({authLoaded: true});
+        this.setState({authLoaded: true});
+        if (user) {  
+          this.setState({dataLoaded:true});
+          this.setState({userExists:true})
           Util.user.VerifyUser(user, user.email, () => {
+            
             this.getLocationAsync((location) => {
               this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
                 this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-                this.setState({dataLoaded:true})
+                
               });        
             });
           });
         } else {
           this.setState({authLoaded: true});
+          this.setState({dataLoaded:true});
+          this.setState({userExists:false});
           this.setState({userData: null});
           console.log('No user');
         }
@@ -195,7 +201,12 @@ class Navigator extends React.Component {
           </Drawer.Navigator>
         </NavigationContainer>
         : 
-        this.state.userData ? <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> : <View style={styles.viewDark}><ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator></View> 
+         this.state.userExists ? 
+          <View style={styles.viewDark}>
+            <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+          </View> 
+          :
+          <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
         <View style={styles.viewDark}>
           <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
