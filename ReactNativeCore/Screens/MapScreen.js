@@ -218,20 +218,21 @@ class MapScreen extends React.Component  {
     Util.location.GetUserLocation(async (loc) => {
       let userLocation = loc.coords;
       let { width, height } = Dimensions.get('window');
-
       ASPECT_RATIO = width / height;
       LATITUDE = userLocation.latitude;
       LONGITUDE = userLocation.longitude;
       LATITUDE_DELTA = 0.0922;
       LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-      this.setState({region: {
-        latitude: LATITUDE,
-        longitude: LONGITUDE,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }});
       await this.gatherLocalMarkers(LATITUDE, LONGITUDE, this.state.friendData, userLocation);
-      this.setState({ isLoaded: true });
+      this.setState({ 
+        isLoaded: true,
+        region: {
+          latitude: LATITUDE,
+          longitude: LONGITUDE,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
+        }
+      });
     });
   }
 
@@ -290,13 +291,13 @@ class MapScreen extends React.Component  {
         friendsData: tempFriendArr,
         longitude: wantedPlace.coordinates.longitude,
         latitude: wantedPlace.coordinates.latitude
-      }
+      },
+      isModalVisible: true
     });
-    this.setState({isModalVisible: true});
   }
   
-  closeModal = (e) => {
-    this.setState({isModalVisible: false});
+  toggleModal = (boolean) => {
+    this.setState({isModalVisible: boolean});
   }
 
   getAsyncStorageData = () => {
@@ -348,7 +349,8 @@ class MapScreen extends React.Component  {
           </MapView>
           <BarModal 
                 isVisible={this.state.isModalVisible}
-                source={this.state.modalProps.source.uri}
+                source={this.state.modalProps.source}
+                userLocation={this.state.region}
                 barName={this.state.modalProps.barName}
                 rating={this.state.modalProps.rating}
                 reviewCount={this.state.modalProps.reviewCount}
@@ -356,7 +358,7 @@ class MapScreen extends React.Component  {
                 phone={this.state.modalProps.phone}
                 closed={this.state.modalProps.closed}
                 address={this.state.modalProps.address}
-                onPress={() => this.closeModal()}
+                toggleModal={(boolean) => this.toggleModal(boolean)}
                 buisnessUID={this.state.modalProps.id}
                 latitude={this.state.modalProps.latitude}
                 longitude={this.state.modalProps.longitude}
@@ -413,7 +415,7 @@ class MapScreen extends React.Component  {
       <View style={localStyles.activityIndicator}>
             <ActivityIndicator 
                 size={'large'}
-                color={'#ff1493'}
+                color={theme.LIGHT_PINK}
             />
             <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress}/>
       </View>

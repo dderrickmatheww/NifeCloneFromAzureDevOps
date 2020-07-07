@@ -31,7 +31,7 @@ state = {
   };
 
   renderContent = () => (
-    this.props.isVisible ? 
+    this.state.isVisible ? 
       <View style={localStyles.textCont}>
         <View style={localStyles.descCont}>
           <Rating 
@@ -82,7 +82,7 @@ state = {
   )
 
   renderHeader = () => (
-    this.props.isVisible ? 
+    this.state.isVisible ? 
       <View style={localStyles.navHeader}>
           <Image
               style={localStyles.LogoData}

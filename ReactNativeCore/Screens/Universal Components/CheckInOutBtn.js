@@ -15,15 +15,12 @@ export default class CheckInOutButtons extends React.Component  {
         loading:  false
     }
 
-    closeModal = () => {
-        this.setState({isVisible: false});
-    }
-
     async componentDidMount() {
       await this.IsUserCheckedInLocal();
     }
     
     IsUserCheckedInLocal = async () => {
+        this.setState({loading: true});
         Util.user.IsUserCheckedIn(this.props.email, this.props.buisnessUID, (boolean) => {
           this.setState({ 
             checkedIn: boolean,
@@ -36,7 +33,7 @@ export default class CheckInOutButtons extends React.Component  {
         return(
             !this.state.checkedIn == "" && !this.state.loading ?
                 this.state.checkedIn == 'true' ?
-                    <View> 
+                    <View style={localStyles.checkOutContainer}> 
                         <TouchableOpacity
                         onPress={async () => { 
                             this.setState({loading: true});
@@ -56,7 +53,7 @@ export default class CheckInOutButtons extends React.Component  {
                         <TouchableOpacity
                         onPress={() => {
                             this.setState({loading: true});
-                            Util.location.GetUserLocation((userLocation) => {
+                            Util.location.GetUserLocation(async (userLocation) => {
                                 let withinRadius;
                                 let checkInObj = {
                                     email: this.props.email,
@@ -87,12 +84,13 @@ export default class CheckInOutButtons extends React.Component  {
                         }}
                         style={localStyles.descCont}
                         >
-                        <Text style={localStyles.modalText}>Check in publicly</Text>
+                        <Text style={localStyles.modalText}>Public Check In</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                         onPress={() => {
                             this.setState({loading: true});
                             Util.location.GetUserLocation((userLocation) => {
+                                let withinRadius;
                                 let checkInObj = {
                                     email: this.props.email,
                                     buisnessUID: this.props.buisnessUID,
@@ -121,12 +119,13 @@ export default class CheckInOutButtons extends React.Component  {
                         }}
                         style={localStyles.descCont}
                         >
-                        <Text style={localStyles.modalText}>Check in w/friends</Text>
+                        <Text style={localStyles.modalText}>Friend Check In</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                         onPress={() => {
+                            this.setState({loading: true});
                             Util.location.GetUserLocation((userLocation) => {
-                                this.setState({loading: true});
+                                let withinRadius;
                                 let checkInObj = {
                                     email: this.props.email,
                                     buisnessUID: this.props.buisnessUID,
@@ -155,7 +154,7 @@ export default class CheckInOutButtons extends React.Component  {
                         }}
                         style={localStyles.descCont}
                         >
-                        <Text style={localStyles.modalText}>Check in privatly</Text>
+                        <Text style={localStyles.modalText}>Private Check In</Text>
                         </TouchableOpacity>
                     </View> 
             :
@@ -204,5 +203,11 @@ const localStyles = StyleSheet.create({
         width:"90%",
         textAlign:"center",
         alignItems:"center"
+    },
+    checkOutContainer: {
+        width:"90%",
+        textAlign:"center",
+        alignItems:"center",
+        padding: 20
     }
   });

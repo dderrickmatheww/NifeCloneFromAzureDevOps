@@ -217,7 +217,7 @@ class Navigator extends React.Component {
           </Drawer.Navigator>
         </NavigationContainer>
         : 
-        this.state.userData ? <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> : <View style={styles.viewDark}><ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator></View> 
+        this.state.userData ? <Login text={"Please login to continue!"}></Login> : <View style={styles.viewDark}><ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator></View> 
         :
         <View style={styles.viewDark}>
           <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
