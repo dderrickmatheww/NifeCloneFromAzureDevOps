@@ -39,7 +39,7 @@ export function DrawerContent(props) {
                                     />
                                     :
                                     <TouchableOpacity style={styles.NoAvatarButton}
-                                        onPress={()=> props.uploadImage()}
+                                        onPress={()=> props.uploadImage(()=>null)}
                                     >
                                         {
                                             props.uploading ?

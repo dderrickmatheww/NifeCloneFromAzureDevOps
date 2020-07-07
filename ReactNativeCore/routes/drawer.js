@@ -172,7 +172,7 @@ class Navigator extends React.Component {
     }
   }
 
-  handleUploadImage = () => {
+  handleUploadImage = (callback) => {
     let userEmail = firebase.auth().currentUser.email;
     ImagePicker.getCameraRollPermissionsAsync()
     .then((result)=>{
@@ -189,6 +189,7 @@ class Navigator extends React.Component {
               this.setState({userData:userData});
               this.setState({uploading:false});
             });
+            callback(resUri);
           });
         });
       }
@@ -266,7 +267,7 @@ class Navigator extends React.Component {
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
+            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />

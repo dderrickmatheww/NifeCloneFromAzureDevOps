@@ -55,7 +55,7 @@ export default class ProfileStack extends React.Component  {
   render(){
     return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage,user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+        <Stack.Screen name="ProfileScreen" component={Profile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh}}/>
         <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} />

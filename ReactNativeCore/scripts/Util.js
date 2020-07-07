@@ -95,8 +95,8 @@ const Util = {
                 }
                 else {
                     if(user != undefined || user != null) {
-                        let providerObj = Util.user.BuildProviderObj(user.providerData[0]);
-                        db.collection('users').doc(email).set(providerObj, { merge:true });
+                        let userObj = Util.user.BuildUserSchema(user.providerData[0]);
+                        db.collection('users').doc(email).set(userObj, { merge:true });
                         callback(providerObj);
                     }
                 }
@@ -106,15 +106,15 @@ const Util = {
                 console.log('Firebase Error: ' +  err);
             })
         },
-        BuildProviderObj: (obj) => {
-            providerObj = {};
-            providerObj['displayName'] = obj.displayName;
-            providerObj['email'] = obj.email;
-            providerObj['phoneNumber'] = obj.phoneNumber;
-            providerObj['photoSource'] = obj.photoURL;
-            providerObj['providerId'] = obj.providerId;
-            providerObj['uid'] = obj.uid;
-            providerObj['providerData'] = {
+        BuildUserSchema: (obj) => {
+            userObj = {};
+            userObj['displayName'] = obj.displayName;
+            userObj['email'] = obj.email;
+            userObj['phoneNumber'] = obj.phoneNumber;
+            userObj['photoSource'] = obj.photoURL;
+            userObj['providerId'] = obj.providerId;
+            userObj['uid'] = obj.uid;
+            userObj['providerData'] = {
                 displayName : obj.displayName,
                 email : obj.email,
                 phoneNumber : obj.phoneNumber,
@@ -122,6 +122,8 @@ const Util = {
                 providerId : obj.providerId,
                 uid : obj.uid,
             }
+            userObj['privacySettings'] = {public:true};
+            
             return providerObj;
         },
         GetUserData: function(db, email, callback){
