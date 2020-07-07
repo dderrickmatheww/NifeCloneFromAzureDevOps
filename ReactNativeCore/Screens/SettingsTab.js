@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, TouchableOpacity, Text, Image } from 'react-native';
 import Util from '../scripts/Util';
-import NifeLoginModal from './Components/Home Screen Components/LoginScreen'
+import NifeLoginModal from './Components/Home Screen Components/LoginModal'
 import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
 

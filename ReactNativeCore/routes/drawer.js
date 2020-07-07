@@ -16,6 +16,7 @@ import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import Login from '../Screens/Login Screen';
 import {DrawerContent} from '../Screens/Components/Drawer Components/Drawer Content';
+import * as ImagePicker from 'expo-image-picker';
 
 const Drawer = createDrawerNavigator();
 
@@ -33,9 +34,9 @@ function Poppin ({route, navigation}){
 }
 
 function Profile ({route, navigation}){
-  const {user, friends, refresh} = route.params;
+  const {user, friends, refresh, uploadImage} = route.params;
   return(
-    <ProfileStack refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation}/>
   )
 }
 
@@ -48,6 +49,9 @@ class Navigator extends React.Component {
     userChecked: false,
     friendRequests:null,
     dataLoaded:false,
+    userExists:false,
+    displayName: null,
+    uploading:false,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -80,9 +84,8 @@ class Navigator extends React.Component {
             Util.asyncStorage.SetAsyncStorageVar('User', user);
             
             //load users who are friends or have requested the user
-            Util.friends.GetFriends(db, currentUser.email, (friendsData) => {
-              this.filterFriends(friendsData, userData)
-             
+            Util.friends.GetFriends(db, currentUser.email, (data) => {
+              this.filterFriends(data, userData);
               callback();
               // console.log(JSON.stringify(data));
             });
@@ -101,8 +104,8 @@ class Navigator extends React.Component {
     let usersThatRequested = friendsData;
     let requests = [];
     let acceptedFriends = [];
-    let keys = Object.keys(userFriends);
     if(userFriends){
+      let keys = Object.keys(userFriends);
       keys.forEach(function(key){
         if(userFriends[key] == null){
           usersThatRequested.forEach((user)=>{
@@ -119,13 +122,13 @@ class Navigator extends React.Component {
           });
         }
       });
-      let friends = JSON.stringify(friendsData);
-      Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-      
-      this.setState({friendData: acceptedFriends});
-      this.setState({friendRequests: requests});
     }
     
+    let friends = JSON.stringify(friendsData);
+    Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+    
+    this.setState({friendData: acceptedFriends});
+    this.setState({friendRequests: requests});
     this.setState({userData:userData});
     this.setState({userChecked:true});
   }
@@ -143,21 +146,94 @@ class Navigator extends React.Component {
     }
   }
 
+  initializeParams = (user) => {
+    Util.user.VerifyUser(user, user.email, () => { 
+      this.getLocationAsync((location) => {
+        this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
+          this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
+        });        
+      });
+    });
+  }
+
+  firstTimeSignUp = (user) => {
+    console.log('setting display name first time')
+    if(this.state.displayName){
+      user.updateProfile({displayName:this.state.displayName}).then(()=>{
+        this.initializeParams(user);
+      });
+    }
+  }
+
+  onSignUpStates = (obj) => {
+    if(obj.displayName){
+      console.log('setting display name first time')
+      this.setState({displayName:obj.displayName});
+    }
+  }
+
+  handleUploadImage = (callback) => {
+    let userEmail = firebase.auth().currentUser.email;
+    ImagePicker.getCameraRollPermissionsAsync()
+    .then((result)=>{
+      if(result.status == "granted"){
+        this.setState({uploading:true});
+        ImagePicker.launchImageLibraryAsync()
+        .then((image)=>{
+          let uri = image.uri;
+          Util.user.UploadImage(uri, userEmail, (resUri) =>{
+            
+            let userData = this.state.userData;
+            userData['photoSource'] = resUri;
+            Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
+              this.setState({userData:userData});
+              this.setState({uploading:false});
+            });
+            callback(resUri);
+          });
+        });
+      }
+      else {
+        ImagePicker.requestCameraRollPermissionsAsync()
+        .then((result)=>{
+          if(result.status == "granted"){
+            ImagePicker.launchImageLibraryAsync()
+            .then((image)=>{
+              let uri = image.uri;
+              Util.user.UploadImage(uri, userEmail, (resUri) =>{
+                this.setState({uploading:true});
+                let userData = this.state.userData;
+                userData['photoSource'] = resUri;
+                Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
+                  this.setState({userData:userData});
+                  this.setState({uploading:false});
+                });
+              });
+            });
+          }
+        });
+      }
+    });
+  }
+
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
+        
+        this.setState({authLoaded: true});
         if (user) {
-          this.setState({authLoaded: true});
-          Util.user.VerifyUser(user, user.email, () => {
-            this.getLocationAsync((location) => {
-              this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-                this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-                this.setState({dataLoaded:true})
-              });        
-            });
-          });
+          this.setState({dataLoaded:true});
+          this.setState({userExists:true}); 
+          if(user.displayName){
+            this.initializeParams(user);
+          }
+          else {
+            this.firstTimeSignUp(user);
+          }
         } else {
           this.setState({authLoaded: true});
+          this.setState({dataLoaded:true});
+          this.setState({userExists:false});
           this.setState({userData: null});
           console.log('No user');
         }
@@ -167,6 +243,8 @@ class Navigator extends React.Component {
         console.error(error);
     }  
   }
+
+  
 
   render() {
     return (
@@ -184,19 +262,24 @@ class Navigator extends React.Component {
             }}
             initialRouteName='My Feed'
             overlayColor="#20232A"
-            drawerContent={props => <CustomDrawerContent {...props} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
+            drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={Profile} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
+            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
         </NavigationContainer>
         : 
-        this.state.userData ? <Login text={"Please login so we can show you where you should have a night to remember..."}></Login> : <View style={styles.viewDark}><ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator></View> 
+         this.state.userExists ? 
+          <View style={styles.viewDark}>
+            <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+          </View> 
+          :
+          <Login onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
         <View style={styles.viewDark}>
           <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
