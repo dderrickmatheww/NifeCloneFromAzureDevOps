@@ -290,6 +290,32 @@ const Util = {
             let email = encodeURI(userEmail);
             let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=20232A&color=eca6c4"
             return QRSource;
+        },
+        UploadImage: async (uri, email, callback) => {
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                  resolve(xhr.response);
+                };
+                xhr.onerror = function(e) {
+                  console.log(e);
+                  reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', uri, true);
+                xhr.send(null);
+              });
+            
+              const ref = firebase
+                .storage()
+                .ref()
+                .child(email);
+              const snapshot = await ref.put(blob);
+            
+              // We're done with the blob, close and release it
+              blob.close();
+              let image = await snapshot.ref.getDownloadURL();
+              callback(image)
         }
     },
     location: {

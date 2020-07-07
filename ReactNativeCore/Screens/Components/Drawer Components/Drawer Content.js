@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import {
     Avatar,
     Title,
@@ -29,12 +29,30 @@ export function DrawerContent(props) {
                     <View style={styles.userInfoSection}>
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             
-                            <Avatar.Image 
-                                source={props.user.providerData ? {
-                                     uri:  props.user.photoSource  
-                                }: defPhoto}
-                                size={100}
-                            />
+                            {
+                                props.user.photoSource  ?
+                                    <Avatar.Image 
+                                        source={props.user.providerData ? {
+                                            uri:  props.user.photoSource  
+                                        }: defPhoto}
+                                        size={100}
+                                    />
+                                    :
+                                    <TouchableOpacity style={styles.NoAvatarButton}
+                                        onPress={()=> props.uploadImage()}
+                                    >
+                                        {
+                                            props.uploading ?
+                                            <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                                            :
+                                            <View style={{alignItems:"center"}}>
+                                                <Ionicons size={50} color={theme.LIGHT_PINK} name="ios-person"></Ionicons>
+                                                <Caption style={styles.caption}>Add Picture!</Caption>
+                                            </View>
+                                        }
+                                    </TouchableOpacity>
+                            }
+                            
                             
                             
                             <View style={{marginLeft:15, flexDirection:'column'}}>
@@ -234,6 +252,14 @@ export function DrawerContent(props) {
 }
 
 const styles = StyleSheet.create({
+    NoAvatarButton:{
+        padding:10,
+        borderRadius:10,
+        borderWidth:1,
+        borderColor:theme.LIGHT_PINK,
+        justifyContent:'center',
+        alignItems:"center"
+    },
     drawerContent: {
       flex: 1,
     },
