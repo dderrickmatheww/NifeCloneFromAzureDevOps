@@ -80,9 +80,8 @@ class Navigator extends React.Component {
             Util.asyncStorage.SetAsyncStorageVar('User', user);
             
             //load users who are friends or have requested the user
-            Util.friends.GetFriends(db, currentUser.email, (friendsData) => {
-              this.filterFriends(friendsData, userData)
-             
+            Util.friends.GetFriends(db, currentUser.email, (data) => {
+              this.filterFriends(data, userData);
               callback();
               // console.log(JSON.stringify(data));
             });
@@ -101,8 +100,8 @@ class Navigator extends React.Component {
     let usersThatRequested = friendsData;
     let requests = [];
     let acceptedFriends = [];
-    let keys = Object.keys(userFriends);
     if(userFriends){
+      let keys = Object.keys(userFriends);
       keys.forEach(function(key){
         if(userFriends[key] == null){
           usersThatRequested.forEach((user)=>{
@@ -119,13 +118,13 @@ class Navigator extends React.Component {
           });
         }
       });
-      let friends = JSON.stringify(friendsData);
-      Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-      
-      this.setState({friendData: acceptedFriends});
-      this.setState({friendRequests: requests});
     }
     
+    let friends = JSON.stringify(friendsData);
+    Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
+    
+    this.setState({friendData: acceptedFriends});
+    this.setState({friendRequests: requests});
     this.setState({userData:userData});
     this.setState({userChecked:true});
   }
