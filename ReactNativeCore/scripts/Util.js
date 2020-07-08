@@ -926,7 +926,22 @@ const Util = {
                 //type
                 paramString +="categories=bars"
                 return paramString;
-            } 
+            } ,
+            businessVerification: (name, address, city, state, zip, country, callback) =>{
+                fetch("https://api.yelp.com/v3/businesses/matches?name="+name+"&address1=" + address + "&city="+ city + "&state=" + state + "&zip=" + zip + "&country="+ country, 
+                    {headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY})
+                })
+                .then((data) => data.json())
+                .then((response) => {
+                    
+                    Util.basicUtil.consoleLog("businessPhoneVerification", true);
+                    callback(response);
+                })
+                .catch((err) => {
+                    Util.basicUtil.consoleLog("businessPhoneVerification", false);
+                    console.log("businessPhoneVerification" + err);
+                });
+            }
         },
         Firebase: {
             config: {
