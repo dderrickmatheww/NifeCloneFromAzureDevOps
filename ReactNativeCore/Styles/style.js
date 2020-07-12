@@ -338,7 +338,8 @@ export const styles = StyleSheet.create({
     top: 200
   },
   headerText: {
-    fontSize: 18,
+    textAlign:"center",
+    fontSize: 16,
     color:theme.LIGHT_PINK
   },
   headerContainer: {

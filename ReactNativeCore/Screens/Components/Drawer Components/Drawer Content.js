@@ -77,7 +77,7 @@ export function DrawerContent(props) {
                                 <Paragraph style={[styles.paragraph, styles.caption]}>
                                   {props.friends ? props.friends.length : 0}
                                 </Paragraph>
-                                <Caption style={styles.caption}>Drinking Buddies</Caption>
+                                <Caption style={styles.caption}>{props.user.isBusiness ? "Followers" : "Drinking Buddies"}</Caption>
                             </View>
                             <View style={styles.section}>
                               
