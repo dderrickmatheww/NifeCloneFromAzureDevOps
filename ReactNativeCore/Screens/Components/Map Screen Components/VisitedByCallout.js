@@ -16,7 +16,7 @@ export default class VisitedByCallout extends React.Component  {
                         this.props.marker.lastVisitedBy.length < 2 ?
                             this.props.marker.lastVisitedBy.map((friend, i) => (
                                 friend.lastVisited && friend.lastVisited[this.props.marker.id] ?
-                                <View style={styles.friendVisitedBy}>
+                                <View key={i} style={styles.friendVisitedBy}>
                                     <Avatar.Image
                                     source={{uri: friend.providerData.photoURL}}
                                     size={30}
@@ -36,7 +36,7 @@ export default class VisitedByCallout extends React.Component  {
                                 this.props.marker.lastVisitedBy.length < 5 ?
                                     this.props.marker.lastVisitedBy.map((friend, i) => (
                                         friend.lastVisited && friend.lastVisited[this.props.marker.id] ?
-                                            <View style={styles.multiAvatar}>
+                                            <View  key={i} style={styles.multiAvatar}>
                                                 {
                                                     i = 0 ? 
                                                         <Avatar.Image

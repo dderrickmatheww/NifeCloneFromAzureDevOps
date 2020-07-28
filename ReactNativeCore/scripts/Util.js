@@ -323,6 +323,126 @@ const Util = {
               callback(image)
         }
     },
+    business:{
+        UploadAddressProof: async (uri, name, email, callback) => {
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                  resolve(xhr.response);
+                };
+                xhr.onerror = function(e) {
+                  console.log(e);
+                  reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', uri, true);
+                xhr.send(null);
+              });
+            
+              const ref = firebase
+                .storage()
+                .ref()
+                .child("businessProof/"+email);
+              const snapshot = await ref.put(blob);
+            
+              // We're done with the blob, close and release it
+              blob.close();
+              let image = await snapshot.ref.getDownloadURL();
+              callback(image)
+        },
+        VerifyUser: function(user, email, signUpState, callback){
+            console.log(email)
+            let db = firebase.firestore();
+            db.collection('users').doc(email).get()
+            .then((data) => {
+                if(data.data()){
+                    let dbUser = data.data();
+                    Util.basicUtil.consoleLog('businessesVerifyUser', true);
+                    callback(dbUser);
+                }
+                else {
+                    if(user != undefined || user != null) {
+                        let userObj = Util.business.BuildBusinessSchema(user.providerData[0], signUpState, false);
+                        db.collection('users').doc(email).set(userObj, { merge:true });
+                        let businessObj = Util.business.BuildBusinessSchema(user.providerData[0], signUpState, true);
+                        db.collection('businesses').doc(email).set(businessObj, { merge:true });
+                        callback(userObj);
+                    }
+                }
+            })
+            .catch((err) => {
+                Util.basicUtil.consoleLog('businessesVerifyUser', false);
+                console.log('Firebase Error: ' +  err);
+            })
+        },
+        BuildBusinessSchema: (obj, signUpState, isBusinessTable) => {
+            userObj = {};
+            userObj['displayName'] = signUpState.businessName;
+            userObj['email'] = obj.email;
+            userObj['phoneNumber'] = signUpState.businessPhone;
+            userObj['photoSource'] = obj.photoURL;
+            userObj['providerId'] = obj.providerId;
+            userObj['uid'] = obj.uid; //firebase uid
+            userObj['businessId'] = signUpState.businessId;
+            userObj['isBusiness'] = true;
+            userObj['isVerified'] = false;
+            userObj['providerData'] = {
+                displayName : obj.displayName,
+                email : obj.email,
+                phoneNumber : obj.phoneNumber,
+                photoSource : obj.photoURL,
+                providerId : obj.providerId,
+                uid : obj.uid,
+            }
+            if(isBusinessTable){
+                
+                userObj['state'] = signUpState.State; 
+                userObj['zip'] = signUpState.zip; 
+                userObj['city'] = signUpState.City;
+                userObj['address'] = signUpState.Address;
+                userObj['hours'] = {
+                    open: "12:00PM",
+                    close: "2:00AM",
+                }
+                userObj['events'] = {};
+                userObj['specials'] = [];
+                userObj['coordinates'] = signUpState.coordinates;
+            }
+            
+            userObj['privacySettings'] = {public:true};
+
+            return userObj;
+        },
+        GetBusinessData: function(db, email, callback){
+            db.collection('businesses').doc(email).get()
+            .then((data) => {
+              if(data.data()){
+                db.collection('businesses').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
+                Util.basicUtil.consoleLog('GetBusinessData', true);
+                callback(data.data());
+              }
+              else {
+                Util.basicUtil.consoleLog('GetBusinessData', false);
+              }
+          })
+          .catch((error) => {
+            Util.basicUtil.consoleLog('GetBusinessData', false);
+            console.log("Firebase Error: " + error);
+          });
+        },
+        UpdateUser: function(db, email, updateObject, callback){
+            let userRef = db.collection('businesses').doc(email);
+            userRef.set(updateObject, {merge:true})
+            .then(() => {
+                Util.basicUtil.consoleLog('Updatebusinesses', true);
+                callback()
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('Updatebusinesses', false);
+                console.log("Firebase Error: " + error);
+            });
+        },
+    },
     location: {
         SaveLocation: function(db, email, location, callback){
             let setLoc = db.collection('users').doc(email);
@@ -840,22 +960,43 @@ const Util = {
                 let dataObj = {};
                 // Listen for authentication state to change.
                 if(signUpInfo) {
-                    try {
-                        let email = signUpInfo.email;
-                        let password = signUpInfo.password1
-                        firebase.auth().createUserWithEmailAndPassword(email, password)
-                        .catch(function(error) {
+                    if(!signUpInfo.businessEmail){
+                       try {
+                            let email = signUpInfo.email;
+                            let password = signUpInfo.password1
+                            firebase.auth().createUserWithEmailAndPassword(email, password)
+                            .catch(function(error) {
+                                Util.basicUtil.consoleLog("Nife's sign-up", false);
+                                console.log("Nife sign-up Error: " + error);
+                            });
+                            dataObj['data'] = firebase.auth().currentUser;
+                            dataObj['token'] = null;
+                            dataObj['user'] = firebase.auth().currentUser;
+                            Util.basicUtil.consoleLog("Nife's sign-up", true);
+                            callBack(dataObj);
+                        } catch ({ message }) {
                             Util.basicUtil.consoleLog("Nife's sign-up", false);
-                            console.log("Nife sign-up Error: " + error);
-                        });
-                        dataObj['data'] = firebase.auth().currentUser;
-                        dataObj['token'] = null;
-                        dataObj['user'] = firebase.auth().currentUser;
-                        Util.basicUtil.consoleLog("Nife's sign-up", true);
-                        callBack(dataObj);
-                    } catch ({ message }) {
-                        Util.basicUtil.consoleLog("Nife's sign-up", false);
-                        alert(`Nife sign-up Error: ${message}`);
+                            alert(`Nife sign-up Error: ${message}`);
+                        } 
+                    }
+                    else {
+                        try {
+                            let email = signUpInfo.businessEmail;
+                            let password = signUpInfo.password1
+                            firebase.auth().createUserWithEmailAndPassword(email, password)
+                            .catch(function(error) {
+                                Util.basicUtil.consoleLog("Nife's sign-up", false);
+                                console.log("Nife sign-up Error: " + error);
+                            });
+                            dataObj['data'] = firebase.auth().currentUser;
+                            dataObj['token'] = null;
+                            dataObj['user'] = firebase.auth().currentUser;
+                            Util.basicUtil.consoleLog("Nife's sign-up", true);
+                            callBack(dataObj);
+                        } catch ({ message }) {
+                            Util.basicUtil.consoleLog("Nife's sign-up", false);
+                            alert(`Nife sign-up Error: ${message}`);
+                        } 
                     }
                 }
                 else {
@@ -926,7 +1067,22 @@ const Util = {
                 //type
                 paramString +="categories=bars"
                 return paramString;
-            } 
+            } ,
+            businessVerification: (name, address, city, state, zip, country, callback) =>{
+                fetch("https://api.yelp.com/v3/businesses/matches?match_threshold=default&name="+name+"&address1=" + address + "&city="+ city + "&state=" + state + "&zip=" + zip + "&country="+ country, 
+                    {headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY})
+                })
+                .then((data) => data.json())
+                .then((response) => {
+                    
+                    Util.basicUtil.consoleLog("businessPhoneVerification", true);
+                    callback(response);
+                })
+                .catch((err) => {
+                    Util.basicUtil.consoleLog("businessPhoneVerification", false);
+                    console.log("businessPhoneVerification" + err);
+                });
+            }
         },
         Firebase: {
             config: {

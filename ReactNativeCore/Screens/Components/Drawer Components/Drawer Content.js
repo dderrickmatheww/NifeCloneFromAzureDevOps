@@ -77,7 +77,7 @@ export function DrawerContent(props) {
                                 <Paragraph style={[styles.paragraph, styles.caption]}>
                                   {props.friends ? props.friends.length : 0}
                                 </Paragraph>
-                                <Caption style={styles.caption}>Drinking Buddies</Caption>
+                                <Caption style={styles.caption}>{props.user.isBusiness ? "Followers" : "Drinking Buddies"}</Caption>
                             </View>
                             <View style={styles.section}>
                               
@@ -137,6 +137,7 @@ export function DrawerContent(props) {
                         />
                         <List.Accordion
                                 titleStyle={{color:theme.LIGHT_PINK}}
+                                
                                 title="      You"
                                 left={() => <MaterialCommunityIcons 
                                     name="account" 
@@ -144,6 +145,7 @@ export function DrawerContent(props) {
                                     size={20}
                                     style={{paddingLeft:10}}
                                     />}
+                                theme={{colors:{text : theme.LIGHT_PINK}}}
                             >
                                <DrawerItem 
                                     icon={() => (

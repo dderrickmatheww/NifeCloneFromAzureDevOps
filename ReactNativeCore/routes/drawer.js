@@ -52,6 +52,9 @@ class Navigator extends React.Component {
     userExists:false,
     displayName: null,
     uploading:false,
+    
+    isBusiness:false, //only set at business sign up for first time
+    businessState:null,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -77,13 +80,15 @@ class Navigator extends React.Component {
     //if user exits get user data, get friend data set to async 
     console.log('wantedData App.js', currentUser)
     if (currentUser) {
-      //load user
-      Util.user.GetUserData(db, currentUser.email, (userData) => {
+
+        //load user
+        Util.user.GetUserData(db, currentUser.email, (userData) => {
           if(userData) {
             let user = JSON.stringify(userData);
             Util.asyncStorage.SetAsyncStorageVar('User', user);
             
             //load users who are friends or have requested the user
+            //user data set in filterfriends
             Util.friends.GetFriends(db, currentUser.email, (data) => {
               this.filterFriends(data, userData);
               callback();
@@ -94,6 +99,9 @@ class Navigator extends React.Component {
             this.setState({userChecked:true});
           }
         });
+      
+      
+     
     } else {
       console.log('no user!');
     }
@@ -146,15 +154,6 @@ class Navigator extends React.Component {
     }
   }
 
-  initializeParams = (user) => {
-    Util.user.VerifyUser(user, user.email, () => { 
-      this.getLocationAsync((location) => {
-        this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-          this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-        });        
-      });
-    });
-  }
 
   firstTimeSignUp = (user) => {
     console.log('setting display name first time')
@@ -163,12 +162,17 @@ class Navigator extends React.Component {
         this.initializeParams(user);
       });
     }
+
   }
 
   onSignUpStates = (obj) => {
-    if(obj.displayName){
+    if(!this.state.isBusiness){
       console.log('setting display name first time')
       this.setState({displayName:obj.displayName});
+    }
+    else {
+      console.log('setting business name');
+      this.setState({displayName: obj.businessName});
     }
   }
 
@@ -178,48 +182,88 @@ class Navigator extends React.Component {
     .then((result)=>{
       if(result.status == "granted"){
         this.setState({uploading:true});
-        ImagePicker.launchImageLibraryAsync()
-        .then((image)=>{
-          let uri = image.uri;
-          Util.user.UploadImage(uri, userEmail, (resUri) =>{
-            
-            let userData = this.state.userData;
-            userData['photoSource'] = resUri;
+      ImagePicker.launchImageLibraryAsync()
+      .then((image)=>{
+        let uri = image.uri;
+        Util.user.UploadImage(uri, userEmail, (resUri) =>{
+          let userData = this.state.userData;
+          userData['photoSource'] = resUri;
             Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
               this.setState({userData:userData});
               this.setState({uploading:false});
             });
-            callback(resUri);
-          });
+            if(this.state.userData.isBusiness){
+              Util.business.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
+                
+              });
+            }
+          callback(resUri);
         });
+      });
       }
       else {
         ImagePicker.requestCameraRollPermissionsAsync()
         .then((result)=>{
           if(result.status == "granted"){
-            ImagePicker.launchImageLibraryAsync()
-            .then((image)=>{
-              let uri = image.uri;
-              Util.user.UploadImage(uri, userEmail, (resUri) =>{
-                this.setState({uploading:true});
-                let userData = this.state.userData;
-                userData['photoSource'] = resUri;
-                Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
-                  this.setState({userData:userData});
-                  this.setState({uploading:false});
-                });
-              });
+            this.setState({uploading:true});
+      ImagePicker.launchImageLibraryAsync()
+      .then((image)=>{
+        let uri = image.uri;
+        Util.user.UploadImage(uri, userEmail, (resUri) =>{
+          let userData = this.state.userData;
+          userData['photoSource'] = resUri;
+          Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
+            this.setState({userData:userData});
+            this.setState({uploading:false});
+          });
+          if(this.state.userData.isBusiness){
+            Util.business.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
+              
             });
+          }
+          callback(resUri);
+        });
+      });
           }
         });
       }
     });
+
+    
   }
 
+  setIsBusiness = (bool, signUpState) => {
+    this.setState({isBusiness:bool});
+    if(signUpState){
+      console.log(JSON.stringify(signUpState));
+      this.setState({businessState:signUpState});
+    }
+  }
+
+
+  initializeParams = (user) => {
+    if(!this.state.isBusiness){
+      Util.user.VerifyUser(user, user.email, () => { 
+        this.getLocationAsync((location) => {
+          this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
+            this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
+          });        
+        });
+      });
+    } else {
+      Util.business.VerifyUser(user, firebase.auth().currentUser.email, this.state.businessState, ()=>{
+        this.getLocationAsync((location) => {
+          this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
+            this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
+          });        
+        });
+      });
+    }
+      
+  }
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
-        
         this.setState({authLoaded: true});
         if (user) {
           this.setState({dataLoaded:true});
@@ -279,7 +323,7 @@ class Navigator extends React.Component {
             <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
           </View> 
           :
-          <Login onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
+          <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
         <View style={styles.viewDark}>
           <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>

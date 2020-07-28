@@ -28,6 +28,7 @@ export default class LoginScreen extends Component {
       return ( 
        
         <View style={styles.loginContainer}>
+          
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>{this.props.text}</Text>
           </View>
@@ -64,10 +65,15 @@ export default class LoginScreen extends Component {
               />
             </TouchableOpacity>
           </View>
-          <NifeLoginModal onDismiss={()=>this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} modalVisible={this.state.modalVisible} callback={() => {
+          <Text style={{color:"#FFCC00", fontWeight:"bold", top: 200}}>
+            If you are a business, please sign in with Nife!
+          </Text>
+          <NifeLoginModal  setBusiness={this.props.setBusiness} onDismiss={()=>this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} modalVisible={this.state.modalVisible} callback={() => {
               console.log('callback nifeloginmodal')
             }}
           />
+
+          
         </View>
       );
     }
