@@ -36,7 +36,7 @@ export default class UserSearch extends Component {
     let queryText = query.nativeEvent.text;
     let wantedUsers = []
     this.setState({isSearching:true});
-    Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) =>{
+    Util.user.QueryPublicUsers(firebase.firestore(),firebase.auth().currentUser.email, queryText, this.state.take, (users) =>{
       console.log("Public Users: \n" + JSON.stringify(users));
       users.forEach((user)=>{wantedUsers.push(user)});
       this.setState({queriedUsers:wantedUsers});
@@ -62,7 +62,7 @@ export default class UserSearch extends Component {
                 <View  style={localStyles.mainCont}>
                   <View style={localStyles.searchBarCont}>
                     <Searchbar
-                      placeholder="Search for drinking buddies..."
+                      placeholder="Search by name or email..."
                       onChangeText={(query) => this.onChangeSearch(query)}
                       onEndEditing={(query) => this.onUserQuery(query)}
                       value={this.state.searchText}
@@ -71,12 +71,12 @@ export default class UserSearch extends Component {
                       iconColor={theme.LIGHT_PINK}
                     /> 
                   </View>
-                  <ScrollView contentContainerStyle={{justifyContent:"flex-start", alignItems:"center", paddingVertical:4, paddingHorizontal:4}} style={localStyles.searchResultCont}>
+                  <ScrollView contentContainerStyle={{justifyContent:"flex-start", alignItems:"center", paddingTop:4, paddingHorizontal:4, paddingBottom:75}} style={localStyles.searchResultCont}>
                   {
                     this.state.queriedUsers ? 
 
                     this.state.queriedUsers.map((user, i) => (
-                      <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user:user, isUserProfile:false}})}>
+                      <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user}})}>
                         <View style={localStyles.friendCont}>
                           <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
                         </View>
@@ -84,7 +84,7 @@ export default class UserSearch extends Component {
                       
                     ))
                     : this.state.isSearching ?
-                    <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> : <Paragraph style={localStyles.paragraph}>No Users...</Paragraph> 
+                    <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> : <Paragraph style={localStyles.paragraph}>No Results...</Paragraph> 
                   }
                   </ScrollView>
                 </View>
@@ -106,6 +106,7 @@ const localStyles = StyleSheet.create({
     flexDirection: "row",
     borderBottomColor: theme.LIGHT_PINK,
     borderBottomWidth: 1,
+    alignSelf:"center"
   },
   name: {
     fontSize: 18,

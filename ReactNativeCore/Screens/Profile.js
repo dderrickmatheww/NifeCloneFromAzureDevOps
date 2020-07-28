@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
 import {
   Title,
   Caption,
@@ -26,6 +26,7 @@ export default class ProfileScreen extends Component {
     isAddingFriend:false,
     areFriends: false,
     statusModalVisible:false,
+    uploading:false,
   }
 
   
@@ -53,7 +54,6 @@ export default class ProfileScreen extends Component {
       
     }
     else {
-      
       Util.user.GetUserData(firebase.firestore(), this.props.user.email, (user)=>{
         this.setState({userData: user});
         
@@ -105,7 +105,7 @@ export default class ProfileScreen extends Component {
 
    //gets user and friend data
   getAsyncStorageData = (callback) => {
-    this.setState({isUsersProfile:this.props.user.email == firebase.auth().currentUser.email});
+    this.setState({isUsersProfile:this.props.isUserProfile});
     
     this.setUserData();
     this.setFriendData();
@@ -116,10 +116,29 @@ export default class ProfileScreen extends Component {
 
   componentDidMount(){
     this.getAsyncStorageData();
-    
+    this.props.navigation.addListener('blur', () => {
+      this.setState({userData:null});
+      this.setState({friendData:null});
+    });
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getAsyncStorageData();
+    });
 
     console.log('User: ' + firebase.auth().currentUser.email); 
     console.log('Profile Owner: ' + this.state.userData.email);
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  UploadPic = () => {
+    this.setState({uploading:true});
+    this.props.uploadImage((uri)=>{
+      let user = this.state.userData;
+      user['photoSource'] = uri;
+      this.setState({userData: user});
+    });
   }
 
    render () {
@@ -170,11 +189,9 @@ export default class ProfileScreen extends Component {
               >
                 <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
               </TouchableOpacity> : null
-              }  
-                
-              
-              
+              }   
             </View>
+
             <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
               
               <View style={localStyles.HeaderCont}>
@@ -184,7 +201,40 @@ export default class ProfileScreen extends Component {
                       {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender : "other")}, {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation: "other")}  - {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : "No Age"}
                     </Title>
                 </View>
-                <Image style={localStyles.profilePic} source={this.state.userData.providerData ? { uri: this.state.userData.photoSource} : defPhoto }/>
+                {
+                  this.state.userData.photoSource ? 
+                    <View>
+                      <ImageBackground style={localStyles.profilePic} source={{ uri: this.state.userData.photoSource}}>
+                        {
+                          this.props.isUserProfile ? 
+                          <TouchableOpacity style={{position:"relative", bottom:-125, right:-125}}
+                            onPress={()=> {
+                              this.UploadPic();
+                            }}
+                          >
+                            <Ionicons size={25} color={theme.LIGHT_PINK} name="ios-add-circle"></Ionicons>
+                          </TouchableOpacity> : null
+                        }
+                      </ImageBackground>
+                    </View>
+                    :
+                    <TouchableOpacity style={localStyles.NoAvatarButton}
+                        onPress={()=> {
+                          this.UploadPic();
+                        }}
+                    >
+                        {
+                            this.state.uploading ?
+                            <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                            :
+                            <View style={{alignItems:"center"}}>
+                                <Ionicons size={50} color={theme.LIGHT_PINK} name="ios-person"></Ionicons>
+                                <Caption style={{color:theme.LIGHT_PINK, textAlign:"center"}}>Click Me To Add Picture!</Caption>
+                            </View>
+                        }
+                    </TouchableOpacity>
+                }
+
                 {/* <Caption  style={localStyles.FriendCount}>Casual Socialite | 420 Points</Caption> */}
                   
                   <View style={localStyles.LocAndFriends}>
@@ -208,11 +258,14 @@ export default class ProfileScreen extends Component {
                           Status: 
                           
                         </Title>
+                      {
+                        this.state.isUsersProfile ?
                         <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
-                                onPress={() => this.setState({statusModalVisible:true})}
-                              >
-                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
-                          </TouchableOpacity>
+                          onPress={() => this.setState({statusModalVisible:true})}
+                        >
+                            <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                        </TouchableOpacity> : null
+                        }
                     </View>
                     <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
                   </View>
@@ -307,6 +360,16 @@ export default class ProfileScreen extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  NoAvatarButton:{
+    width: 150, 
+    height: 150, 
+    padding:10,
+    borderRadius:10,
+    borderWidth:1,
+    borderColor:theme.LIGHT_PINK,
+    justifyContent:'center',
+    alignItems:"center"
+},
   drinksChipCont:{
     flex:1,
     flexDirection:"row",
@@ -395,7 +458,7 @@ const localStyles = StyleSheet.create({
     alignItems:"center",
     borderBottomColor: theme.LIGHT_PINK,
     borderBottomWidth: 2,
-    marginTop:120
+    marginTop:90
 
   },
   profilePic: {

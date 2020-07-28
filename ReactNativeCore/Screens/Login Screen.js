@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, TouchableOpacity, Text, Image } from 'react-native';
 import Util from '../scripts/Util';
-import NifeLoginModal from './Components/Home Screen Components/LoginScreen'
+import NifeLoginModal from './Components/Home Screen Components/LoginModal'
 import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
 
@@ -23,10 +23,12 @@ export default class LoginScreen extends Component {
     this.setState({ isLoggedin: false });
     firebase.auth().signOut();
    }
+
    render () {
       return ( 
        
         <View style={styles.loginContainer}>
+          
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>{this.props.text}</Text>
           </View>
@@ -63,16 +65,15 @@ export default class LoginScreen extends Component {
               />
             </TouchableOpacity>
           </View>
-          <NifeLoginModal modalVisible={this.state.modalVisible} callback={(dataObj) => {
-              if(dataObj) {
-                this.setUserData(dataObj);
-                this.setLoggedinStatus(dataObj);
-              }
-              else {
-                this.setState({modalVisible: false});
-              }
+          <Text style={{color:"#FFCC00", fontWeight:"bold", top: 200}}>
+            If you are a business, please sign in with Nife!
+          </Text>
+          <NifeLoginModal  setBusiness={this.props.setBusiness} onDismiss={()=>this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} modalVisible={this.state.modalVisible} callback={() => {
+              console.log('callback nifeloginmodal')
             }}
           />
+
+          
         </View>
       );
     }
