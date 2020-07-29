@@ -15,18 +15,20 @@ import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 import BusinessProfile from './BusinessProfile'
+
 const defPhoto = require('../Media/Images/logoicon.png');
 export default class ProfileScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: this.props.user,
     modalVisible: false,
-    friendData:this.props.friends,
+    friendData:null,
     isUsersProfile: this.props.user.email == firebase.auth().currentUser.email,
     isAddingFriend:false,
     areFriends: false,
     statusModalVisible:false,
     uploading:false,
+    businessData: null,
   }
 
   
@@ -83,19 +85,19 @@ export default class ProfileScreen extends Component {
     
   }
   
-  addFriend = () => {
-    this.setState({isAddingFriend:true});
-    Util.friends.AddFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-      this.setState({isAddingFriend:false}); 
-      this.setState({areFriends:true});
-    });
+  favoriteBar = () => {
+    // this.setState({isAddingFriend:true});
+    // Util.friends.AddFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
+    //   this.setState({isAddingFriend:false}); 
+    //   this.setState({areFriends:true});
+    // });
   }
-  removeFriend = () => {
-    this.setState({isAddingFriend:true});
-    Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-      this.setState({isAddingFriend:false}); 
-      this.setState({areFriends:false});     
-    });
+  unFavoriteBar = () => {
+    // this.setState({isAddingFriend:true});
+    // Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
+    //   this.setState({isAddingFriend:false}); 
+    //   this.setState({areFriends:false});     
+    // });
   }
 
   logout = () => {
@@ -112,13 +114,6 @@ export default class ProfileScreen extends Component {
   }
   onDismissStatus = ()=> {
     this.setState({statusModalVisible:false});
-}
-
-  componentDidMount(){
-    this.getAsyncStorageData();
-    this.getBusinessData();
-    console.log('User: ' + firebase.auth().currentUser.email); 
-    console.log('Profile Owner: ' + this.state.userData.email);
   }
 
   getBusinessData = () => {
@@ -129,6 +124,14 @@ export default class ProfileScreen extends Component {
       })
     }
   }
+
+  componentDidMount(){
+    this.getAsyncStorageData();
+    this.getBusinessData();
+    console.log('User: ' + firebase.auth().currentUser.email); 
+    console.log('Profile Owner: ' + this.state.userData.email);
+  }
+
 
   UploadPic = () => {
     this.setState({uploading:true});
@@ -142,7 +145,7 @@ export default class ProfileScreen extends Component {
    render () {
       return ( 
         ////////////////////////////////////////
-          this.state.userData ? !this.state.userData.isBusiness ?
+          this.state.businessData ?
           <Surface style={styles.loggedInContainer}>
             <View style={localStyles.navHeader}>
               {/* Drawer Button */}
@@ -151,39 +154,28 @@ export default class ProfileScreen extends Component {
               </TouchableOpacity> 
 
               {/* Add Friend */}
-              {!this.state.isUsersProfile ? !this.state.areFriends ? 
+              
                 <TouchableOpacity 
-                onPress={() => this.addFriend()}
+                onPress={() => this.unFavoriteBar()}
                 style={localStyles.AddFriendOverlay}>
-                  { 
-                  this.state.isAddingFriend ?
-                    <ActivityIndicator size="small" color={theme.LIGHT_PINK}></ActivityIndicator> :
-                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Add Friend</Text>
-                  }
-                </TouchableOpacity> :
-                <TouchableOpacity 
-                onPress={() => this.removeFriend()}
-                style={localStyles.AddFriendOverlay}>
-                  { 
-                  this.state.isAddingFriend ?
-                    <ActivityIndicator size="small" color={theme.LIGHT_PINK}></ActivityIndicator> :
-                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Remove Friend</Text>
-                  }
-                </TouchableOpacity> : null
-              }
+                  
+                  <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Favorite</Text>
+                  
+                </TouchableOpacity>
+              
 
               {/* Edit Button */}
               {this.state.isUsersProfile ? 
               <TouchableOpacity style={{
                 position:"relative",
-                left: 285,
+                left: 220,
                 alignSelf:"flex-end",
                 opacity: 0.75,
                 backgroundColor: theme.DARK,
                 borderRadius: 10,
                 marginBottom:5,
               }}
-                onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
+                onPress={() => this.props.navigation.navigate('Profile', {screen:'EditBusiness', params:{user: this.state.userData, business:this.state.businessData}})}
               >
                 <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
               </TouchableOpacity> : null
@@ -196,7 +188,7 @@ export default class ProfileScreen extends Component {
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
-                      {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender : "other")}, {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation: "other")}  - {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : "No Age"}
+                      {"" + this.state.businessData.hours.open + " - " + this.state.businessData.hours.close}
                     </Title>
                 </View>
                 {
@@ -237,13 +229,16 @@ export default class ProfileScreen extends Component {
                   
                   <View style={localStyles.LocAndFriends}>
                     <View style={{alignSelf:"flex-start", width:"50%"}}>
-                      <Caption  style={localStyles.FriendCount}>{this.state.userData.loginLocation && this.state.userData.loginLocation.region? this.state.userData.loginLocation.region.city : "Margarittaville"}, {this.state.userData.loginLocation && this.state.userData.loginLocation.region ? this.state.userData.loginLocation.region.region : "Somewhere"}</Caption>
+                      <Caption  style={localStyles.FriendCount}>{this.state.businessData ? this.state.businessData.address + ", " + this.state.businessData.city + ", " +  this.state.businessData.state  : null}</Caption>
                     </View>
+                    
+                      <Caption  style={localStyles.FriendCount}></Caption>
+                    
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
                       <TouchableOpacity
                        disabled={this.state.isUsersProfile ? false : true}
                        onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{user: this.state.userData, friends:this.state.friendData}})}>
-                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Friends</Caption>
+                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} People's Favorite</Caption>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -267,23 +262,17 @@ export default class ProfileScreen extends Component {
                     </View>
                     <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
                   </View>
-                  {/* bio */}
-                  <View style={localStyles.profRow}> 
-                    <Title style={localStyles.descTitle}>
-                      Bio: 
-                    </Title>
-                    <Caption  style={localStyles.caption}>{this.state.userData.bio ?  this.state.userData.bio : "None"}</Caption>
-                  </View>
+                  
                   {/* fave drinks */}
                   <View style={localStyles.profRow}>
                     <Title style={localStyles.descTitle}>
-                          Favorite Drinks: 
+                          Specials: 
                     </Title>
                     
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
                     {
-                        this.state.userData.favoriteDrinks ? 
-                        this.state.userData.favoriteDrinks.map((drink, i)=>(
+                        this.state.businessData.specials? 
+                        this.state.businessData.specials.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
                             style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
@@ -308,7 +297,7 @@ export default class ProfileScreen extends Component {
                   {/* favorite bars */}
                   <View style={localStyles.profRow}>
                     <Title style={localStyles.descTitle}>
-                      Favorite Bars: 
+                      Events: 
                     </Title>
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
                       <Chip mode={"outlined"}  
@@ -347,8 +336,7 @@ export default class ProfileScreen extends Component {
 
             </ScrollView>
             </Surface>
-            : <BusinessProfile refresh={this.props.refresh} user={this.state.userData} friends={this.state.friendData} isUserProfile={this.state.isUsersProfile} navigation={this.props.navigation}></BusinessProfile> :
-           
+            :
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
@@ -499,7 +487,8 @@ const localStyles = StyleSheet.create({
     color: theme.LIGHT_PINK,
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign:"center"
+    textAlign:"center",
+    marginTop:15
   },
   headerAgeGender: {
     fontSize: 14,

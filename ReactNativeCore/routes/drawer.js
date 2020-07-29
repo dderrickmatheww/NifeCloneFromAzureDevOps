@@ -52,7 +52,7 @@ class Navigator extends React.Component {
     userExists:false,
     displayName: null,
     uploading:false,
-    
+    businessData:null,
     isBusiness:false, //only set at business sign up for first time
     businessState:null,
   }
@@ -89,11 +89,20 @@ class Navigator extends React.Component {
             
             //load users who are friends or have requested the user
             //user data set in filterfriends
-            Util.friends.GetFriends(db, currentUser.email, (data) => {
-              this.filterFriends(data, userData);
-              callback();
-              // console.log(JSON.stringify(data));
-            });
+            if(userData.isBusiness){
+              Util.friends.GetFriends(db, currentUser.email, (data) => {
+                this.filterFriends(data, userData);
+                callback();
+                // console.log(JSON.stringify(data));
+              });
+            }else {
+              Util.friends.GetFriends(db, currentUser.email, (data) => {
+                this.filterFriends(data, userData);
+                callback();
+                // console.log(JSON.stringify(data));
+              });
+            }
+            
           }
           else {
             this.setState({userChecked:true});

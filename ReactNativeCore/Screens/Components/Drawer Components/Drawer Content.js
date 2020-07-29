@@ -161,43 +161,52 @@ export function DrawerContent(props) {
                                         props.navigation.closeDrawer();    
                                     }}
                                 />
+                               {!props.user.isBusiness ?
                                 <DrawerItem 
-                                    icon={() => (
-                                        <Ionicons 
-                                        name="ios-people" 
-                                        color={theme.LIGHT_PINK}
-                                        size={20}
-                                        />
-                                    )}
-                                    label={()=> <Text style={styles.text}>Friends</Text>}
-                                    onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
-                                                    params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
-                                                })
+                                        icon={() => (
+                                            <Ionicons 
+                                            name="ios-people" 
+                                            color={theme.LIGHT_PINK}
+                                            size={20}
+                                            />
+                                        )}
+                                        label={()=> <Text style={styles.text}>Friends</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
+                                                        params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
+                                                    })
+                                                }
                                             }
-                                        }
-                                />
+                                    /> : null
+                               } 
+                               {!props.user.isBusiness ?
                                 <DrawerItem 
-                                    icon={() => (
-                                        <Ionicons 
-                                        name="md-search" 
-                                        color={theme.LIGHT_PINK}
-                                        size={20}
-                                        />
-                                    )}
-                                    label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
-                                    onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
-                                />
+                                        icon={() => (
+                                            <Ionicons 
+                                            name="md-search" 
+                                            color={theme.LIGHT_PINK}
+                                            size={20}
+                                            />
+                                        )}
+                                        label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
+                                    />
+                                :null
+                                }
+                                {!props.user.isBusiness ?
                                 <DrawerItem 
-                                    icon={() => (
-                                        <Ionicons 
-                                        name="md-qr-scanner" 
-                                        color={theme.LIGHT_PINK}
-                                        size={20}
-                                        />
-                                    )}
-                                    label={()=> <Text style={styles.text}>Scan Friends QR Code</Text>}
-                                    onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
-                                />
+                                        icon={() => (
+                                            <Ionicons 
+                                            name="md-qr-scanner" 
+                                            color={theme.LIGHT_PINK}
+                                            size={20}
+                                            />
+                                        )}
+                                        label={()=> <Text style={styles.text}>Scan Friends QR Code</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
+                                    /> :null
+                                }
+                                
+                                
                             </List.Accordion>
                         
                         <DrawerItem 

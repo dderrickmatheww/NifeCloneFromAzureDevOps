@@ -77,7 +77,7 @@ class PoppinStack extends React.Component {
           initialRouteName="My Feed"
           >
           <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
-          <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+          {!this.props.user.isBusiness ? <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/> : null}
           <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
         </Tab.Navigator> 
         :
