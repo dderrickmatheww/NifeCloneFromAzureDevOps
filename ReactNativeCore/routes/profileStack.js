@@ -70,11 +70,11 @@ export default class ProfileStack extends React.Component  {
   render(){
     return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh}}/>
-        <Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh}}/>
-        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
-        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
-        <Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+        <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh, business:this.props.business}}/>
+        <Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh, business:this.props.business}}/>
+        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
+        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
+        <Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
         <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} />
         <Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />
         <Stack.Screen name="ScanQR" component={ScanQR} options={{title: 'ScanQR'}} />

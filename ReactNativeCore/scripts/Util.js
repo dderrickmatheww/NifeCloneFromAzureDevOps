@@ -601,7 +601,7 @@ const Util = {
                     return interval + " minutes";
                 }
                 // Util.basicUtil.consoleLog('TimeSince', true);
-                return Math.floor(seconds) + " seconds";
+                return "A few seconds";
             }
             catch (error) {
                 Util.basicUtil.consoleLog('TimeSince', false);

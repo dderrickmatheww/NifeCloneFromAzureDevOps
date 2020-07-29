@@ -347,7 +347,7 @@ export default class ProfileScreen extends Component {
 
             </ScrollView>
             </Surface>
-            : <BusinessProfile refresh={this.props.refresh} user={this.state.userData} friends={this.state.friendData} isUserProfile={this.state.isUsersProfile} navigation={this.props.navigation}></BusinessProfile> :
+            : <BusinessProfile refresh={this.props.refresh} user={this.state.userData} friends={this.state.friendData} isUserProfile={this.state.isUsersProfile} navigation={this.props.navigation} onDrawerPress={this.props.onDrawerPress}></BusinessProfile> :
            
         ///////////////////////////////////////////
             <View style={styles.viewDark}>

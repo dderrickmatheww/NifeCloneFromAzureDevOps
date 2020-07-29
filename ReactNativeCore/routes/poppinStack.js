@@ -11,9 +11,9 @@ import theme from '../Styles/theme';
 const Tab = createBottomTabNavigator();
 
 function HomeScreenTab ({route, navigation}) {
-  const {user, friends, refresh} = route.params;
+  const {user, friends, business ,refresh} = route.params;
   return (
-    <HomeScreen refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <HomeScreen business={business} refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
@@ -25,9 +25,9 @@ function Friends ({route, navigation}) {
 }
 
 function whatsPoppinScreenTab ({route, navigation}) {
-  const {user, friends, refresh} = route.params;
+  const {user, friends, business, refresh} = route.params;
   return (
-    <WhatsPoppin refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <WhatsPoppin business={business} refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
@@ -76,9 +76,9 @@ class PoppinStack extends React.Component {
           }}
           initialRouteName="My Feed"
           >
-          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
           {!this.props.user.isBusiness ? <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/> : null}
-          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
+          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
         </Tab.Navigator> 
         :
         <View style={styles.viewDark}>

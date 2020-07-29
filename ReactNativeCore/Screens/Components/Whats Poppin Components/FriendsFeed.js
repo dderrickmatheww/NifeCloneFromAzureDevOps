@@ -86,54 +86,7 @@ export default class FriendsFeed extends React.Component  {
             
         });
         
-        if(user.status){
-            let obj = {
-                name: user.displayName,
-                text: user.status.text,
-                time: new Date(user.status.timestamp.seconds * 1000),
-                image: user.photoSource ? {uri:user.photoSource} : defPhoto,
-                status: true,
-                visited:false,
-                checkedIn:false,
-            }
-            friendFeedData.push(obj);
-        }
-        if(!user.isBusiness){
-            if(user.checkIn){
-                if((user.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && user.checkIn.checkInTime){
-                    // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
-                    let obj = {
-                        name: user.displayName,
-                        text: "Checked in " + (user.checkIn.name ? " at " +  user.checkIn.name : "somewhere"),
-                        time: new Date(user.checkIn.checkInTime.seconds * 1000),
-                        image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
-                        status: false,
-                        visited:false,
-                        checkedIn:true,
-                    }
-                    friendFeedData.push(obj);
-                }
-            }
-            if(user.lastVisited){
-                let keys = Object.keys(friend.lastVisited);
-                keys.forEach((key)=>{
-                let visited = friend.lastVisited[key];
-                if(visited.privacy == "Public" || visited.privacy == "Friends"){
-                    // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
-                    let obj = {
-                        name: friend.displayName,
-                        text: "Visited " + (visited.name ? visited.name : "somewhere"),
-                        time: new Date(visited.checkInTime.seconds * 1000),
-                        image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
-                        status: false,
-                        visited:true,
-                        checkedIn:false,
-                    }
-                    friendFeedData.push(obj);
-                }
-                })
-            }
-        }
+        
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
         this.setState({feedData:friendFeedData});
     }

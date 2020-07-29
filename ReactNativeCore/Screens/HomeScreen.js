@@ -18,15 +18,19 @@ var defPhoto = require('../Media/Images/logoicon.png')
 export default class FriendsFeed extends React.Component  {
     state = {
         modalVisable: false,
-        userData:null,
-        friendData:null,
+        userData:this.props.user,
+        friendData:this.props.friends,
         feedData: null,
+        businessData:this.props.business,
         snackBarVisable:false,
     }
     
     componentDidMount(){
-        this.setState({userData:this.props.user});
-        this.setState({friendData:this.props.friends});
+        this.setState({
+            userData:this.props.user,
+            friendData:this.props.friends,
+            businessData:this.props.business
+        });
         this.setFriendDataArrays();
         // console.log("friendData: " + JSON.stringify(this.props.friends));
     }
@@ -34,57 +38,60 @@ export default class FriendsFeed extends React.Component  {
     setFriendDataArrays = () => {
         let friends = this.props.friends;
         let user = this.props.user;
+        let business = this.props.business
         let friendFeedData = [];
-        friends.forEach((friend) =>{
-            if(friend.status){
-                console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
-                let obj = {
-                    name: friend.displayName,
-                    text: friend.status.text,
-                    time: new Date(friend.status.timestamp.seconds * 1000),
-                    image: friend.photoSource ? {uri:friend.photoSource} : defPhoto,
-                    status: true,
-                    visited:false,
-                    checkedIn:false,
-                }
-                friendFeedData.push(obj);
-            }
-            if(friend.checkIn){
-                if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime){
-                    // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
+        if(!user.isBusiness){
+            friends.forEach((friend) =>{
+                if(friend.status){
+                    console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
                     let obj = {
                         name: friend.displayName,
-                        text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
-                        time: new Date(friend.checkIn.checkInTime.seconds * 1000),
-                        image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
-                        status: false,
+                        text: friend.status.text,
+                        time: new Date(friend.status.timestamp.seconds * 1000),
+                        image: friend.photoSource ? {uri:friend.photoSource} : defPhoto,
+                        status: true,
                         visited:false,
-                        checkedIn:true,
+                        checkedIn:false,
                     }
                     friendFeedData.push(obj);
                 }
-            }
-            if(friend.lastVisited){
-                let keys = Object.keys(friend.lastVisited);
-                keys.forEach((key)=>{
-                    let visited = friend.lastVisited[key];
-                    if(visited.privacy == "Public" || visited.privacy == "Friends"){
-                        // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
+                if(friend.checkIn){
+                    if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime){
+                        // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                         let obj = {
                             name: friend.displayName,
-                            text: "Visited " + (visited.name ? visited.name : "somewhere"),
-                            time: new Date(visited.checkInTime.seconds * 1000),
+                            text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
+                            time: new Date(friend.checkIn.checkInTime.seconds * 1000),
                             image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
                             status: false,
-                            visited:true,
-                            checkedIn:false,
+                            visited:false,
+                            checkedIn:true,
                         }
                         friendFeedData.push(obj);
                     }
-                })
-            }
-            
-        });
+                }
+                if(friend.lastVisited){
+                    let keys = Object.keys(friend.lastVisited);
+                    keys.forEach((key)=>{
+                        let visited = friend.lastVisited[key];
+                        if(visited.privacy == "Public" || visited.privacy == "Friends"){
+                            // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
+                            let obj = {
+                                name: friend.displayName,
+                                text: "Visited " + (visited.name ? visited.name : "somewhere"),
+                                time: new Date(visited.checkInTime.seconds * 1000),
+                                image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
+                                status: false,
+                                visited:true,
+                                checkedIn:false,
+                            }
+                            friendFeedData.push(obj);
+                        }
+                    })
+                }
+                
+            });
+        }
         
         if(user.status){
             let obj = {
@@ -134,6 +141,44 @@ export default class FriendsFeed extends React.Component  {
                 })
             }
         }
+        if(business){
+           if(business.events.length > 0){
+               let events = business.events;
+               events.forEach((event)=>{
+
+                let obj = {
+                    name: business.displayName,
+                    text: "Event: " + event.event,
+                    time: new Date(event.uploaded.seconds * 1000),
+                    image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
+                    status: false,
+                    visited:false,
+                    checkedIn:false,
+                    event: true,
+                }
+                friendFeedData.push(obj);
+               })
+           }
+           if(business.events.length > 0){
+                let specials = business.specials;
+                specials.forEach((special)=>{
+
+                let obj = {
+                    name: business.displayName,
+                    text: "Special: " + special,
+                    time: new Date(),
+                    image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
+                    status: false,
+                    visited:false,
+                    checkedIn:false,
+                    event: false,
+                    specials:true,
+                }
+                friendFeedData.push(obj);
+                })
+            }
+        }
+
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
         this.setState({feedData:friendFeedData});
     }
@@ -179,7 +224,7 @@ export default class FriendsFeed extends React.Component  {
                                 <View key={i} style={localStyles.feedDataRow}>
                                     <Avatar.Image source={data.image} size={50}/>
                                     <Text style={localStyles.displayName}>{data.name}</Text>
-                                    <Caption style={localStyles.feedType}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
+                                    <Caption style={localStyles.feedType}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : data.event ? "booked an event" : data.specials ? "has a new special" : "status update"}</Caption>
                                     <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
                                     <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
                                 </View> 

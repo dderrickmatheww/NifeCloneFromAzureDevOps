@@ -27,16 +27,16 @@ function CustomDrawerContent(props, {navigation}){
 }
 
 function Poppin ({route, navigation}){
-  const {user, friends, refresh} = route.params;
+  const {user, friends, business, refresh} = route.params;
   return(
-    <PoppinStack refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+    <PoppinStack refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
   )
 }
 
 function Profile ({route, navigation}){
-  const {user, friends, refresh, uploadImage} = route.params;
+  const {user, friends, refresh, business, uploadImage} = route.params;
   return(
-    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
   )
 }
 
@@ -90,11 +90,14 @@ class Navigator extends React.Component {
             //load users who are friends or have requested the user
             //user data set in filterfriends
             if(userData.isBusiness){
-              Util.friends.GetFriends(db, currentUser.email, (data) => {
-                this.filterFriends(data, userData);
-                callback();
-                // console.log(JSON.stringify(data));
+              Util.business.GetBusinessData(db, currentUser.email, (businessData) => {
+                console.log(JSON.stringify(businessData))
+                this.setState({businessData: businessData,
+                  userData:userData
+                });
+                callback()
               });
+              
             }else {
               Util.friends.GetFriends(db, currentUser.email, (data) => {
                 this.filterFriends(data, userData);
@@ -102,15 +105,12 @@ class Navigator extends React.Component {
                 // console.log(JSON.stringify(data));
               });
             }
-            
           }
           else {
             this.setState({userChecked:true});
           }
         });
-      
-      
-     
+
     } else {
       console.log('no user!');
     }
@@ -251,7 +251,6 @@ class Navigator extends React.Component {
 
 
   initializeParams = (user) => {
-    if(!this.state.isBusiness){
       Util.user.VerifyUser(user, user.email, () => { 
         this.getLocationAsync((location) => {
           this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
@@ -259,16 +258,6 @@ class Navigator extends React.Component {
           });        
         });
       });
-    } else {
-      Util.business.VerifyUser(user, firebase.auth().currentUser.email, this.state.businessState, ()=>{
-        this.getLocationAsync((location) => {
-          this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-            this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-          });        
-        });
-      });
-    }
-      
   }
   componentDidMount() {
     try{
@@ -320,8 +309,8 @@ class Navigator extends React.Component {
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync}}/>
-            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
+            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
