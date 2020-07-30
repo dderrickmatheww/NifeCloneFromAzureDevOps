@@ -27,9 +27,9 @@ function CustomDrawerContent(props, {navigation}){
 }
 
 function Poppin ({route, navigation}){
-  const {user, friends, business, refresh} = route.params;
+  const {user, friends, business, favorites, refresh} = route.params;
   return(
-    <PoppinStack refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
+    <PoppinStack favorites={favorites} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
   )
 }
 
@@ -55,6 +55,7 @@ class Navigator extends React.Component {
     businessData:null,
     isBusiness:false, //only set at business sign up for first time
     businessState:null,
+    favoritePlaceData:null,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -100,17 +101,22 @@ class Navigator extends React.Component {
               
             }else {
               Util.friends.GetFriends(db, currentUser.email, (data) => {
-                this.filterFriends(data, userData);
-                callback();
+                let favoritePlaces = Object.keys(userData.favoritePlaces) 
+                Util.business.GetBusinessesByUserFavorites(favoritePlaces, (places)=>{
+                  this.filterFriends(data, userData);
+                  this.setState({favoritePlaceData:places})
+                  callback();
+                })
                 // console.log(JSON.stringify(data));
               });
-            }
+              
+            }  
           }
           else {
             this.setState({userChecked:true});
           }
         });
-
+        
     } else {
       console.log('no user!');
     }
@@ -310,7 +316,7 @@ class Navigator extends React.Component {
           >
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
-            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null}}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
             <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>

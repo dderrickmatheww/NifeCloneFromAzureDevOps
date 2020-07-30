@@ -44,72 +44,72 @@ class TestingScreen extends React.Component  {
         
     }
 
-    testFunc = () => {
-        var i;
-        for(i=1; i<12; i++){
-            let email = "" + Random.first_names() + "@" +Random.places() + ".com";
-            let name = "" + Random.first_names() + " " +Random.last_names();
-            let friends = {};
-            let index = i;
-            friends["mattdpalumbo@gmail.com"] = true;
-            friends["dderrickmatheww@gmail.com"] = true;
-            friends["torriedunn3@gmail.com"] = true;
-            let obj = {
-                displayName : name,
-                email : email,
-                phoneNumber : "555-555-5555",
-                photoSource : Random.avatar,
-                providerId : 1234583,
-                providerData : {
-                    displayName : name,
-                    email : email,
-                    phoneNumber : "555-555-5555",
-                    photoSource : Random.avatar,
-                    providerId : 1234583,
-                },
-                loginLocation:{
-                    accuracy:76.86499786376953,
-                    altitude:-27.299999237060547,
-                    heading:0,
-                    latitude:32.9893621,
-                    longitude:-80.0059047,
-                    speed:0,
-                    region:{
-                        city: index%2 ? "Goose Creek" : "Charleston",
-                        country: "United States",
-                        isoCountryCode:"US",
-                        name:"1",
-                        postalCode:index%2 ? "29445" : "29407",
-                        region:"South Carolina",
-                        street:"Burnt Mills Road"
-                    }
-                },
-                privacySettings:{
-                    public:true,
-                },
-                sexualOrientation:index%2 ? index%3 ? "male":"female":"other",
-                gender:index%2 ? index%3 ? index%7 ? "straight":"homosexual":"bi-sexual":"other",
-                bio:Random.ipsum,
-                status:{
-                    text: Random.getRandom(Random.status),
-                    timestamp: Random.randomWeekDate()
-                },
-                favoriteDrinks:[
-                    ""+Random.places()+" Whiskey",
-                    ""+Random.places()+" Rum",
-                    ""+Random.places()+" Ale",
-                ],
-                friends: friends,
-                dateOfBirth:Random.randomDOB(),
-            }
-            Util.user.UpdateUser(firebase.firestore(), email, obj, ()=>{
-                console.log('adding user to db');
-            });
-            Util.friends.AddFriend(firebase.firestore(), email, "mattdpalumbo@gmail.com",()=>{
-                console.log("friend requestsd");
-            });
-        }
-    }
+    // testFunc = () => {
+    //     var i;
+    //     for(i=1; i<12; i++){
+    //         let email = "" + Random.first_names() + "@" +Random.places() + ".com";
+    //         let name = "" + Random.first_names() + " " +Random.last_names();
+    //         let friends = {};
+    //         let index = i;
+    //         friends["mattdpalumbo@gmail.com"] = true;
+    //         friends["dderrickmatheww@gmail.com"] = true;
+    //         friends["torriedunn3@gmail.com"] = true;
+    //         let obj = {
+    //             displayName : name,
+    //             email : email,
+    //             phoneNumber : "555-555-5555",
+    //             photoSource : Random.avatar,
+    //             providerId : 1234583,
+    //             providerData : {
+    //                 displayName : name,
+    //                 email : email,
+    //                 phoneNumber : "555-555-5555",
+    //                 photoSource : Random.avatar,
+    //                 providerId : 1234583,
+    //             },
+    //             loginLocation:{
+    //                 accuracy:76.86499786376953,
+    //                 altitude:-27.299999237060547,
+    //                 heading:0,
+    //                 latitude:32.9893621,
+    //                 longitude:-80.0059047,
+    //                 speed:0,
+    //                 region:{
+    //                     city: index%2 ? "Goose Creek" : "Charleston",
+    //                     country: "United States",
+    //                     isoCountryCode:"US",
+    //                     name:"1",
+    //                     postalCode:index%2 ? "29445" : "29407",
+    //                     region:"South Carolina",
+    //                     street:"Burnt Mills Road"
+    //                 }
+    //             },
+    //             privacySettings:{
+    //                 public:true,
+    //             },
+    //             sexualOrientation:index%2 ? index%3 ? "male":"female":"other",
+    //             gender:index%2 ? index%3 ? index%7 ? "straight":"homosexual":"bi-sexual":"other",
+    //             bio:Random.ipsum,
+    //             status:{
+    //                 text: Random.getRandom(Random.status),
+    //                 timestamp: Random.randomWeekDate()
+    //             },
+    //             favoriteDrinks:[
+    //                 ""+Random.places()+" Whiskey",
+    //                 ""+Random.places()+" Rum",
+    //                 ""+Random.places()+" Ale",
+    //             ],
+    //             friends: friends,
+    //             dateOfBirth:Random.randomDOB(),
+    //         }
+    //         Util.user.UpdateUser(firebase.firestore(), email, obj, ()=>{
+    //             console.log('adding user to db');
+    //         });
+    //         Util.friends.AddFriend(firebase.firestore(), email, "mattdpalumbo@gmail.com",()=>{
+    //             console.log("friend requestsd");
+    //         });
+    //     }
+    // }
 
     // deleteUsers = () => {
     //     var i;
@@ -123,6 +123,11 @@ class TestingScreen extends React.Component  {
     //     }
     // }
     // console.log("do nothing...")
+    
+    // testFunc = () => {
+        
+    // }
+
     render() {
         return (
             this.state.user ? 

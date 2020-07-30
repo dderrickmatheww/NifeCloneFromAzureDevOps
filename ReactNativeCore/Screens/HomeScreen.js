@@ -38,12 +38,14 @@ export default class FriendsFeed extends React.Component  {
     setFriendDataArrays = () => {
         let friends = this.props.friends;
         let user = this.props.user;
-        let business = this.props.business
+        let business = this.props.business;
+        let favorites = this.props.favorites;
         let friendFeedData = [];
+        //get friend data if not a business
         if(!user.isBusiness){
             friends.forEach((friend) =>{
                 if(friend.status){
-                    console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
+                    //console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
                     let obj = {
                         name: friend.displayName,
                         text: friend.status.text,
@@ -93,19 +95,59 @@ export default class FriendsFeed extends React.Component  {
             });
         }
         
-        if(user.status){
-            let obj = {
-                name: user.displayName,
-                text: user.status.text,
-                time: new Date(user.status.timestamp.seconds * 1000),
-                image: user.photoSource ? {uri:user.photoSource} : defPhoto,
-                status: true,
-                visited:false,
-                checkedIn:false,
-            }
-            friendFeedData.push(obj);
-        }
+        //get user data
         if(!user.isBusiness){
+            if(favorites){
+                console.log('Fav length: ' + favorites.length)
+                favorites.forEach((place)=>{
+                    if(place.events){
+                        let events = place.events;
+                        events.forEach((event)=>{
+                            let obj = {
+                                name: place.displayName,
+                                text: "Event: " + event.event,
+                                time: new Date(event.uploaded.seconds * 1000),
+                                image: place.photoSource ? {uri:place.photoSource} : {defPhoto},
+                                status: false,
+                                visited:false,
+                                checkedIn:false,
+                                event: true,
+                            }
+                            friendFeedData.push(obj);
+                        })
+                    }
+                    if(place.specials){
+                            let specials = place.specials;
+                            specials.forEach((special)=>{
+            
+                            let obj = {
+                                name: place.displayName,
+                                text: "Special: " + special,
+                                time: new Date(),
+                                image: place.photoSource ? {uri:place.photoSource} : {defPhoto},
+                                status: false,
+                                visited:false,
+                                checkedIn:false,
+                                event: false,
+                                specials:true,
+                            }
+                            friendFeedData.push(obj);
+                            })
+                        }
+                })
+            }
+            if(user.status){
+                let obj = {
+                    name: user.displayName,
+                    text: user.status.text,
+                    time: new Date(user.status.timestamp.seconds * 1000),
+                    image: user.photoSource ? {uri:user.photoSource} : defPhoto,
+                    status: true,
+                    visited:false,
+                    checkedIn:false,
+                }
+                friendFeedData.push(obj);
+            }
             if(user.checkIn){
                 if((user.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && user.checkIn.checkInTime){
                     // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
@@ -122,16 +164,16 @@ export default class FriendsFeed extends React.Component  {
                 }
             }
             if(user.lastVisited){
-                let keys = Object.keys(friend.lastVisited);
+                let keys = Object.keys(user.lastVisited);
                 keys.forEach((key)=>{
-                let visited = friend.lastVisited[key];
+                let visited = user.lastVisited[key];
                 if(visited.privacy == "Public" || visited.privacy == "Friends"){
                     // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
                     let obj = {
-                        name: friend.displayName,
+                        name: user.displayName,
                         text: "Visited " + (visited.name ? visited.name : "somewhere"),
                         time: new Date(visited.checkInTime.seconds * 1000),
-                        image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
+                        image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
                         status: false,
                         visited:true,
                         checkedIn:false,
@@ -140,7 +182,9 @@ export default class FriendsFeed extends React.Component  {
                 }
                 })
             }
+            
         }
+        //if its a business
         if(business){
            if(business.events.length > 0){
                let events = business.events;
@@ -159,7 +203,7 @@ export default class FriendsFeed extends React.Component  {
                 friendFeedData.push(obj);
                })
            }
-           if(business.events.length > 0){
+           if(business.specials.length > 0){
                 let specials = business.specials;
                 specials.forEach((special)=>{
 
