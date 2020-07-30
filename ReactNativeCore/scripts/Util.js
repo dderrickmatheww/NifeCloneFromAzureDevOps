@@ -6,7 +6,7 @@ import * as Google from 'expo-google-app-auth';
 import jsSHA from "jssha";
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
-import { isPointWithinRadius } from 'geolib';
+import { isPointWithinRadius, getDistance  } from 'geolib';
 
 const Util = {
     friends: {
@@ -200,7 +200,12 @@ const Util = {
             checkIn: {
                 buisnessUID: "",
                 checkInTime: "",
-                privacy: ""
+                privacy: "",
+                latAndLong: "",
+                name: "",
+                phone: "",
+                address: "",
+                barPhoto: "",
             }},
             {
                 merge: true
@@ -222,7 +227,7 @@ const Util = {
                     if(!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
                         returnData("false");
                     }
-                    else if (user.checkIn.buinessUID == buisnessUID) {
+                    else if (user.checkIn.buisnessUID && user.checkIn.buisnessUID == buisnessUID) {
                         returnData("true");
                     }
                     else {
@@ -236,7 +241,74 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        QueryPublicUsers: function(db, userEmail, query, take, callback){
+        setFavorite: (email, buisnessUID, boolean) => {
+            let db = firebase.firestore();
+            let setLoc = db.collection('users').doc(email);
+            if (boolean) {
+                 let favoritePlaces = {
+                    [buisnessUID]: true
+                }
+                setLoc.set({
+                    favoritePlaces
+                },
+                {
+                    merge: true
+                })
+                .then(() => {
+                    Util.asyncStorage.GetAsyncStorageVar('User', (userStringify) => {
+                        if(userStringify) {
+                            userStringify = JSON.parse(userStringify);
+                            userStringify = userStringify.favoritePlaces[buisnessUID] = true;
+                            userStringify = userStringify.toString();
+                            Util.asyncStorage.SetAsyncStorageVar('User', userStringify);
+                        }
+                        else {
+                            console.log('User could not be found in AsyncStorage');
+                            Util.basicUtil.consoleLog('setFavorite', false);
+                        }
+                    });
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
+            else {
+                // Remove the 'capital' field from the document
+                setLoc.update({
+                    favoritePlaces: {
+                        [buisnessUID]: false
+                    }
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
+        },
+        isFavorited: async (buisnessUID, returnData) => {
+            Util.asyncStorage.GetAsyncStorageVar('User', (userStringify) => {
+                let boolean;
+                userStringify = JSON.parse(userStringify);
+                if(userStringify.favoritePlaces && userStringify.favoritePlaces[buisnessUID] == true) {
+                    boolean = true;
+                }
+                else {
+                    boolean = false;
+                }
+                Util.basicUtil.consoleLog('isFavorited', true);
+                returnData(boolean);
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('isFavorited', false);
+                console.log("Firebase Error: " + error);
+            });
+        },
+        QueryPublicUsers: function(db, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
             let usersRef = db.collection('users').where(path, '==', true);
             usersRef.get()
@@ -505,54 +577,83 @@ const Util = {
             });
         },
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
+            if(!query) {
+                Util.location.GetUserLocation((userLocation) => {
+                    Util.location.checkUserCheckInCount(null, userLocation, (dataObj) => {
+                        returnData(dataObj)
+                    })
+                });
+            }
+        },
+        checkUserCheckInCount: async (buisnessUID, userLocation, returnData) => {
             let db = firebase.firestore();
             let dataObj = {};
-            if(!query) {
-                let userArr = [];
-                let businessesArr = [];
-                let checkInCount = {};
-                let checkInArray = [];
-                let withinRadius;
-                let userRef = await db.collection('users').get();
+            let userArr = [];
+            let businessesArr = [];
+            let checkInCount = {};
+            let checkInArray = [];
+            let withinRadius;
+            let userRef = await db.collection('users').get();
+            if(buisnessUID) {
+                userLocation = {
+                    latitude: userLocation.latitude,
+                    longitude: userLocation.longitude
+                }
+                userRef.forEach(doc => {
+                    if(doc.data().checkIn) {
+                        if(doc.data().checkIn.buisnessUID == buisnessUID) {
+                            userArr.push(doc.data().checkIn.buisnessUID = {
+                                checkIn: doc.data().checkIn,
+                                user: {
+                                    email: doc.data().email,
+                                    checkInTime: doc.data().checkIn.checkInTime,
+                                    privacy: doc.data().checkIn.privacy
+                                }
+                            });
+                        }
+                    }
+                });
+                returnData(userArr);
+            }
+            else {
                 if(userRef.empty){
                     console.log('No matching documents.');
                     return;
                 }
                 else {
-                    Util.location.GetUserLocation((userLocation) => {
-                        userRef.forEach(doc => {
-                            if(doc.data().checkIn) {
-                                withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
-                                if(withinRadius) {
-                                    userArr.push(doc.data().checkIn.buisnessUID =  {
-                                        checkIn: doc.data().checkIn,
-                                        user: {
-                                            email: doc.data().email,
-                                            checkInTime: doc.data().checkIn.checkInTime
-                                        }
-                                    });
-                                    if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {
-                                        businessesArr.push(doc.data().checkIn.buisnessUID);
+                    userRef.forEach(doc => {
+                        if(doc.data().checkIn && !doc.data().checkIn.address == "") {
+                            withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
+                            if(withinRadius) {
+                                userArr.push(doc.data().checkIn.buisnessUID = {
+                                    checkIn: doc.data().checkIn,
+                                    user: {
+                                        email: doc.data().email,
+                                        checkInTime: doc.data().checkIn.checkInTime,
+                                        privacy: doc.data().checkIn.privacy
                                     }
+                                });
+                                if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {
+                                    businessesArr.push(doc.data().checkIn.buisnessUID);
                                 }
                             }
-                        });
-                        businessesArr.forEach((element) => {
-                            checkInCount =  {
-                                checkedIn: 0,
-                                buisnessUID: element,
-                                users: [],
-                                buisnessData: null
-                            }
-                            userArr.forEach((element2) => {
-                                Util.location.checkInCount(element2, element, checkInCount);
-                            });
-                            checkInArray.push(checkInCount);
-                        });
-                        checkInArray.sort(Util.basicUtil.compareValues('checkedIn', 'desc'));
-                        dataObj['countData'] = checkInArray;
-                        returnData(dataObj);
+                        }
                     });
+                    businessesArr.forEach((element) => {
+                        checkInCount =  {
+                            checkedIn: 0,
+                            buisnessUID: element,
+                            users: [],
+                            buisnessData: null
+                        }
+                        userArr.forEach((element2) => {
+                            Util.location.checkInCount(element2, element, checkInCount);
+                        });
+                        checkInArray.push(checkInCount);
+                    });
+                    checkInArray.sort(Util.basicUtil.compareValues('checkedIn', 'desc'));
+                    dataObj['countData'] = checkInArray;
+                    returnData(dataObj);
                 }
             }
         },
@@ -564,6 +665,7 @@ const Util = {
             }
         },
         IsWithinRadius: (checkIn, userLocation, boolean) => {
+            let withinRadius;
             let checkInLat = parseInt(checkIn.latAndLong.split(',')[0]);
             let checkInLong = parseInt(checkIn.latAndLong.split(',')[1]);
             let userLat = parseInt(userLocation.coords.latitude);
@@ -594,6 +696,21 @@ const Util = {
                     32000
                 ); 
             }
+        },
+        DistanceBetween: (lat, long, userLocation, returnData) => {
+            returnData(
+                getDistance(
+                    {
+                        latitude: userLocation.latitude,
+                        longitude: userLocation.longitude
+                    },
+                    {
+                        latitude: lat,
+                        longitude: long
+                    },
+                    1
+                ) * 0.00062137119223733
+            );
         }
     },
     date: {

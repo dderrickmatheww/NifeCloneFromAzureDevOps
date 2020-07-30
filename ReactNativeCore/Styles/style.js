@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native'
 import theme from './theme';
+import Constants from 'expo-constants';
 
 export const styles = StyleSheet.create({
   center: {
@@ -159,7 +160,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 15,
     width: 370,
-    borderColor: '#ff1493',
+    borderColor: theme.LIGHT_PINK,
     borderWidth: 2
   },
   navigateLoginBtn: {
@@ -214,6 +215,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  safeAreaContainer: {
+    flex: 1,
+    backgroundColor: '#20232a',
+  },
   clearCacheBtn: {
     backgroundColor: 'grey',
     paddingVertical: 10,
@@ -229,17 +234,21 @@ export const styles = StyleSheet.create({
   },
   dataRowContainer: {
     flex: 1,
-    top: 70,
-    height: 330,
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a',
-    marginBottom: 20
+    marginBottom: 20,
+    marginTop: 20,
+    backgroundColor: theme.DARK,
+    padding: 15,
+    borderRadius: 15,
+    width: '100%',
+    borderColor: theme.LIGHT_PINK,
+    borderWidth: 1
   },
   dataRowScrollView: {
     flex: 1,
-    backgroundColor: '#20232a',
-    height: 'auto'
+    backgroundColor: '#20232a'
   },
   Logo: {
     width: 25, 
@@ -250,14 +259,20 @@ export const styles = StyleSheet.create({
     borderRadius: 5
   },
   LogoData: {
-    width: 50, 
-    height: 50,
-    top: 10,
-    position: 'absolute',
-    left: 5,
+    width: 90,
+    height: 90,
     borderColor: "#fff",
     borderWidth: 1,
-    borderRadius: 5
+    borderRadius: 5,
+    marginRight: 10,
+    marginLeft: 0,
+    marginTop: 15
+  },
+  whatsPoppinData: {
+    flexDirection:"row",
+    width:"100%",
+    textAlign:"center",
+    alignItems:"center",
   },
   loggedOutText: {
     color: "#fff",
@@ -265,12 +280,15 @@ export const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   facebookDataText: {
-    color: "black",
-    top: 0,
-    top: 10,
-    position: 'absolute',
-    fontSize: 13,
-    fontFamily: theme.fontFamily
+    color: theme.LIGHT_PINK,
+    fontSize: 11,
+    fontFamily: theme.fontFamily,
+    padding: 10
+  },
+  checkedInDataText: {
+    color: theme.LIGHT_PINK,
+    fontSize: 17,
+    fontFamily: theme.fontFamily,
   },
   facebookScrollText: {
     color: "black",
@@ -346,7 +364,7 @@ export const styles = StyleSheet.create({
     top: 60
   },
   searchBar: {
-    top: 60,
+    top: 10,
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     width: 350,

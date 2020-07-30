@@ -1,355 +1,248 @@
 import React  from "react";
 import {
-  TouchableHighlight,
-    Modal,
-    StyleSheet,
-    Text,
-    View,
-    ImageBackground,
-    TouchableOpacity,
-    ActivityIndicator
-} from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-import { Rating } from 'react-native-ratings';
-import Util from '../../../scripts/Util';
+  Image,
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  ActivityIndicator
+} from 'react-native';
+import BottomSheet from 'reanimated-bottom-sheet';
+import { AirbnbRating } from 'react-native-ratings';
+import CheckInOutButtons from '../../Universal Components/CheckInOutBtn';
 import * as firebase from 'firebase';
+import theme from "../../../Styles/theme";
+import Util from "../../../scripts/Util";
 
 class BarModal extends React.Component  {
-    state = {
-      isVisible: false,
-      isLoggedin: firebase.auth().currentUser ? true : false,
-      userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
-      checkedIn: ""
-    };
 
-    closeModal = () => {
-        this.setState({isVisible: false});
-    }
+  state = {
+    userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
+    isVisible: this.props.isVisible ? true : false,
+    distance: null,
+    checkedIn: ""
+  }
 
-    async componentDidMount() {
-      await this.IsUserCheckedInLocal();
-    }
-    
-    IsUserCheckedInLocal = async () => {
-      if(this.state.userData) {
-        Util.user.IsUserCheckedIn(this.state.userData.email, this.props.buisnessUID, (boolean) => {
-          this.setState({ 
-            checkedIn: boolean
-          });
-        });
+  toggleModal = (boolean) => {
+    this.props.toggleModal(boolean);
+  }
+
+  componentDidMount() {
+    Util.location.DistanceBetween(this.props.latitude, this.props.longitude, this.props.userLocation, (distance) => {
+      distance = distance.toFixed(1);
+      this.setState({
+        distanceBetween: distance
+      })
+    });
+    Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
+      this.setState({
+        checkedIn: dataObj.length
+      })
+    })
+  }
+
+  renderInner = () => (
+    <View style={styles.panel}>
+      <Text style={styles.panelTitle}>{this.props.barName}</Text>
+      <Text style={styles.panelText}>
+        {this.state.distanceBetween} miles away
+      </Text>
+      <Text style={styles.panelText}>
+        {this.props.address}
+      </Text>
+      <Image
+        style={styles.photo}
+        source={{uri: this.props.source.uri}}
+      />
+      <AirbnbRating 
+        starContainerStyle={styles.ratingSystem}
+        defaultRating={this.props.rating}
+        showRating={false}
+        isDisabled={true}
+        reviewSize={20}
+        selectedColor={theme.LIGHT_PINK}
+      />
+      <Text style={styles.ratingText}> in {this.props.reviewCount} reviews.</Text>
+      { 
+      !this.state.checkedIn == "" || this.state.checkedIn == 0 ?
+          this.state.checkedIn >= 1 ?
+            <Text style={styles.ratingText}>
+              There is {this.state.checkedIn} person here!
+            </Text>
+          : 
+            <Text style={styles.ratingText}>
+              There are {this.state.checkedIn} people here!
+            </Text>
+        :
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator 
+              size={'large'}
+              color={theme.LIGHT_PINK}
+          />
+        </View>
       }
-      else {
-        return;
-      }
-    }
+      <View style={styles.panelButton}>
+        <CheckInOutButtons 
+          email={this.state.userData.email}
+          barName={this.props.barName}
+          buisnessUID={this.props.buisnessUID}
+          latitude={this.props.latitude}
+          longitude={this.props.longitude}
+          address={this.props.address}
+          phone={this.props.phone}
+          source={this.props.source}
+          closed={this.props.closed}
+        />
+      </View>
+    </View>
+  )
 
-    render(){     
-        return(         
-            <Modal 
-              animationType="slide"
-              visible={this.props.isVisible}
-              transparent={true}
-            >
-            <View style={localStyles.centeredView}>
-              <View style={localStyles.modalView}>
-                <TouchableHighlight  style={localStyles.closeButton}
-                    onPress={this.props.onPress}
-                  >
-                  <Ionicons name="ios-close" size={32} color="#E2E4E3"/>
-                </TouchableHighlight>
-                <View style={localStyles.titleCont}>
-                    <Text style={localStyles.modalTitle}>{this.props.barName}</Text>
-                  </View>
-                <View style={localStyles.imgCont}>
-                      <ImageBackground source={this.props.source} style={localStyles.modalImage}/>
-                </View>
-                <View  style={localStyles.textCont}>
-                  <View  style={localStyles.descCont}>
-                    <Rating 
-                      ratingBackgroundColor="#BEB2C8"
-                      startingValue={this.props.rating}
-                      showRating={false}
-                      readonly={true}
-                      imageSize={20}
-                      type="custom"
-                      style={localStyles.rating}
-                    />
-                    <Text style={localStyles.ratingText}> in {this.props.reviewCount} reviews.</Text> 
-                  </View>
-                  <View  style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>Price: {this.props.price}</Text>
-                  </View>
-                  <View style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>Number: {this.props.phone} </Text>
-                  </View>
-                  <View style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>Closed: {this.props.closed == true ? "Yes" : "No"}</Text>
-                  </View>
-                  <View style={localStyles.descCont}>
-                    <Text style={localStyles.modalText}>{this.props.address} </Text>
-                  </View>
-                  {/* <View style={localStyles.descCont}>
-                    <TouchableOpacity></TouchableOpacity>
-                  </View> */}
-                </View>
-                {
-                this.state.isLoggedin ? 
-                  this.state.userData ? 
-                    !this.state.checkedIn == "" ?
-                      this.state.checkedIn == 'true' ?
-                        <View> 
-                          <TouchableOpacity
-                            onPress={() => { 
-                              let email = this.state.userData.email;
-                              Util.user.CheckOut(email, (boolean) => {
-                                this.setState({
-                                  checkedIn: boolean
-                                });
-                              });
-                            }}
-                            style={localStyles.descCont}
-                          >
-                            <Text style={localStyles.modalText}>Check out</Text>
-                          </TouchableOpacity>
-                        </View>
-                        :
-                        <View>
-                          <TouchableOpacity
-                            onPress={() => { 
-                              Util.location.GetUserLocation((userLocation) => {
-                                let withinRadius;
-                                let checkInObj = {
-                                  email: this.state.userData.email,
-                                  buisnessUID: this.props.buisnessUID,
-                                  latAndLong: this.props.latitude + ',' + this.props.longitude,
-                                  barName: this.props.barName,
-                                  address: this.props.address,
-                                  phone: this.props.phone,
-                                  image: this.props.source.uri,
-                                  closed: this.props.closed == true ? "Yes" : "No",
-                                  privacy: "Public"
-                                }
-                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
-                                if(checkInObj.closed == "No" && withinRadius) {
-                                  Util.user.CheckIn(checkInObj, (boolean) => {
-                                    this.setState({
-                                      checkedIn: boolean
-                                    });
-                                  });
-                                }
-                                else if (checkInObj.closed == "Yes") {
-                                  alert('This bar seems to be closed!');
-                                }
-                                else {
-                                  alert('You must be within 1 mile to check in!');
-                                }
-                              });
-                            }}
-                            style={localStyles.descCont}
-                          >
-                            <Text style={localStyles.modalText}>Check in publicly</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => {
-                              Util.location.GetUserLocation((userLocation) => {
-                                let checkInObj = {
-                                  email: this.state.userData.email,
-                                  buisnessUID: this.props.buisnessUID,
-                                  latAndLong: this.props.latitude + ',' + this.props.longitude,
-                                  barName: this.props.barName,
-                                  address: this.props.address,
-                                  phone: this.props.phone,
-                                  image: this.props.source,
-                                  closed: this.props.closed == true ? "Yes" : "No",
-                                  privacy: "Friends Only"
-                                }
-                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
-                                if(checkInObj.closed == "No" && withinRadius) {
-                                  Util.user.CheckIn(checkInObj, (boolean) => {
-                                    this.setState({
-                                      checkedIn: boolean
-                                    });
-                                  });
-                                }
-                                else if (checkInObj.closed == "Yes") {
-                                  alert('This bar seems to be closed!');
-                                }
-                                else {
-                                  alert('You must be within 1 mile to check in!');
-                                }
-                              });
-                            }}
-                            style={localStyles.descCont}
-                          >
-                            <Text style={localStyles.modalText}>Check in with just friends</Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => {
-                              Util.location.GetUserLocation((userLocation) => {
-                                let checkInObj = {
-                                  email: this.state.userData.email,
-                                  buisnessUID: this.props.buisnessUID,
-                                  latAndLong: this.props.latitude + ',' + this.props.longitude,
-                                  barName: this.props.barName,
-                                  address: this.props.address,
-                                  phone: this.props.phone,
-                                  image: this.props.source,
-                                  closed: this.props.closed == true ? "Yes" : "No",
-                                  privacy: "Private"
-                                }
-                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
-                                if(checkInObj.closed == "No" && withinRadius) {
-                                  Util.user.CheckIn(checkInObj, (boolean) => {
-                                    this.setState({
-                                      checkedIn: boolean
-                                    });
-                                  });
-                                }
-                                else if (checkInObj.closed == "Yes") {
-                                  alert('This bar seems to be closed!');
-                                }
-                                else {
-                                  alert('You must be within 1 mile to check in!');
-                                }
-                              });
-                            }}
-                            style={localStyles.descCont}
-                          >
-                            <Text style={localStyles.modalText}>Check in privatly</Text>
-                          </TouchableOpacity>
-                        </View> 
-                        :
-                        <View style={localStyles.activityIndicator}>
-                            <ActivityIndicator 
-                                size={'large'}
-                                color={'#ff1493'}
-                            />
-                      </View>
-                    :
-                    <View>
+  renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  )
 
-                    </View>
-                  : null
-                }
-              </View>
-            </View>
-        </Modal>
-            
-        )
-    }
+  bs = React.createRef()
+
+  render() {
+    return (
+      this.state.isVisible ? 
+        <View style={styles.container}>
+          <BottomSheet
+            ref={this.bs}
+            snapPoints={['75%', '50%', '0%']}
+            renderContent={this.renderInner}
+            renderHeader={this.renderHeader}
+            enabledBottomInitialAnimation={true}
+            onCloseEnd={()=>{this.toggleModal(false)}}
+          />
+          <TouchableWithoutFeedback onPress={() => {
+            this.bs.current.snapTo(0);
+          }}>
+            <Image style={styles.map} source={{uri: this.props.source.uri}} />
+          </TouchableWithoutFeedback>
+        </View>
+      :
+      null
+    )
+  }
 }
 
-const localStyles = StyleSheet.create({
-  
-  closeButton:{
-    left: "55%",
-    top: "-7.5%",
-  }, 
-  activityIndicator: {
-    top: '15%',
+const IMAGE_SIZE = 200
+
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
+    backgroundColor: theme.DARK,
+    textAlign:"center",
+    alignItems:"center",
+  },
+  box: {
+    width: IMAGE_SIZE,
+    height: IMAGE_SIZE,
+  },
+  panelContainer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    
+  },
+  activityIndicator: {
+    marginTop: 10,
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a'
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  rating:{
+    marginTop:"2%",
+    marginBottom:"1%",
+    backgroundColor: theme.DARK
   },
-  modalView: {
-    width:"90%",
-    height:"80%",
-    marginBottom:"15%",
-    marginTop:"20%",
-    marginHorizontal: "2.5%",
-    backgroundColor: "#20232a",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#ff1493",
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    zIndex:1,
-  },
-
-
-  imgCont: {
-    flex: 1,
-    backgroundColor: '#5D5E60',
-    alignItems: 'center',
-    justifyContent: 'center',
-    
-    borderColor:"#5D5E60",
-    borderWidth: 10,
-    borderRadius: 20,
-    width:'100%',
-  },
-  modalImage:{
-    width: '100%',
-    height: '100%',
-    borderColor:"#BEB2C8",
-    borderWidth: 10,
-    borderRadius: 20,
-  },
-  textCont:{
-    margin:"10%",
-    width:"100%",
-    backgroundColor: "#5D5E60",
-    borderRadius:20,
-  },
-  descCont: {
-    borderRadius: 20,
-    borderColor: "black",
-    borderWidth: 1,
-    backgroundColor:"#BEB2C8",
-    margin:"1%",
-  },
-  modalText:{
-    color: "#20232a",
-    padding: 5,
-    marginLeft:"1%",
-    fontWeight:"bold",
-  },
-
-  titleCont: {
-    backgroundColor:"#5D5E60",
-    width: '100%',
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    top: "-7.5%"
-  },
-  modalTitle:{
-    color: "#20232a",
-    padding: 5,
-    fontSize:24,
-    borderRadius: 20,
-    textAlign:"center",
-    fontWeight:'bold',
-    backgroundColor:"#BEB2C8",
-    marginVertical:"2%",
-    width:"90%",
-
-  },
-  ratingText:{
-    color: "#20232a",
+  ratingText: {
+    color: 'grey',
     padding: 5,
     fontWeight:"bold",
     textAlign:"center"
   },
-  rating:{
-    marginTop:"2%",
-    marginBottom:"1%",
-  }
+  panel: {
+    padding: 20,
+    backgroundColor: theme.DARK,
+    height: '100%',
+    borderRightWidth: 2,
+    borderLeftWidth: 2,
+    borderRightColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.LIGHT_PINK,
+  },
+  header: {
+    backgroundColor: theme.DARK,
+    paddingTop: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderTopWidth: 2,
+    borderRightWidth: 2,
+    borderLeftWidth: 2,
+    borderRightColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.LIGHT_PINK,
+    borderTopColor: theme.LIGHT_PINK
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 8,
+    borderRadius: 4,
+    marginBottom: 10,
+    backgroundColor: theme.LIGHT_PINK
+  },
+  panelTitle: {
+    fontSize: 20,
+    height: 35,
+    color: theme.LIGHT_PINK,
+    textAlign:"center"
+  },
+  panelSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    height: 30,
+    marginBottom: 10
+  },
+  panelText: {
+    fontSize: 12,
+    color: 'gray',
+    textAlign:"center",
+    alignItems:"center",
+  },
+  panelButton: {
+    padding: 20,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  photo: {
+    width: '100%',
+    height: 225,
+    marginTop: 30,
+    marginBottom: 30,
+    borderWidth: 1,
+    borderColor: theme.LIGHT_PINK,
+    borderRadius: 20
+  },
+  map: {
+    height: '100%',
+    width: '100%',
+  },
+  ratingSystem: {
+    borderColor: theme.LIGHT_PINK,
+    backgroundColor: theme.DARK,
+  },
 
-});
+})
+    
   
   export default BarModal;

@@ -3,17 +3,20 @@ import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons'; 
 
 export default function IconWithBadge({ name, badgeCount, color, size, type }) {
     return (
-      <View style={{ width: 30, height: 24, margin: 5 }}>
+      <View style={{ width: 30, height: size, margin: 5 }}>
         {
           type == 'Ionicons' ?
             <Ionicons name={name} size={size} color={color} />
           : type == 'FontAwesome5' ?
             <FontAwesome5 name={name} size={size} color={color} />
-          : 
+          : type == 'FontAwesome' ?
             <FontAwesome name={name} size={size} color={color} />
+          :
+            <AntDesign name={name} size={size} color={color}/>
         }
         {badgeCount > 0 && (
           <View
