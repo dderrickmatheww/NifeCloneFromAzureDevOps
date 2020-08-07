@@ -77,7 +77,6 @@ export default class ProfileScreen extends Component {
             console.log('Are Friends : ' + this.state.areFriends)
           }
         });
-        // console.log(JSON.stringify(this.state.friendData));
       });  
     }
     
@@ -101,12 +100,11 @@ export default class ProfileScreen extends Component {
   logout = () => {
     this.setState({ isLoggedin: false });
     firebase.auth().signOut();
-   }
+  }
 
    //gets user and friend data
   getAsyncStorageData = (callback) => {
     this.setState({isUsersProfile:this.props.isUserProfile});
-    
     this.setUserData();
     this.setFriendData();
   }
@@ -123,7 +121,6 @@ export default class ProfileScreen extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getAsyncStorageData();
     });
-
     console.log('User: ' + firebase.auth().currentUser.email); 
     console.log('Profile Owner: ' + this.state.userData.email);
   }

@@ -13,12 +13,16 @@ import CheckInOutButtons from '../../Universal Components/CheckInOutBtn';
 import * as firebase from 'firebase';
 import theme from "../../../Styles/theme";
 import Util from "../../../scripts/Util";
+import Favorite from "../../Universal Components/Favorite";
+import PopUpModal from "../../Universal Components/PopUpModal";
 
 class BarModal extends React.Component  {
 
   state = {
-    userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
+    user: firebase.auth().currentUser ? firebase.auth().currentUser : null,
+    userData: this.props.user,
     isVisible: this.props.isVisible ? true : false,
+    popUpVisible: false,
     distance: null,
     checkedIn: ""
   }
@@ -27,18 +31,36 @@ class BarModal extends React.Component  {
     this.props.toggleModal(boolean);
   }
 
-  componentDidMount() {
-    Util.location.DistanceBetween(this.props.latitude, this.props.longitude, this.props.userLocation, (distance) => {
-      distance = distance.toFixed(1);
-      this.setState({
-        distanceBetween: distance
-      })
+  favoriteABar = async (buisnessUID, boolean) => {
+    let updatedUserData = this.state.userData;
+    let popUpVisible = this.state.popUpVisible;
+    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, (user, boolean) => {
+      if(boolean) {
+        popUpVisible = false;
+        updatedUserData = user;
+      }
+      else {
+        popUpVisible = true;
+        updatedUserData = user;
+      }
     });
-    Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
-      this.setState({
-        checkedIn: dataObj.length
-      })
-    })
+    this.setState({
+      userData: updatedUserData,
+      popUpVisible: popUpVisible
+    });
+    this.props.refresh(updatedUserData, null, null);
+  }
+
+  componentDidMount() {
+    Util.location.DistanceBetween(this.props.latitude, this.props.longitude, this.props.userLocation, async (distance) => {
+      Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
+        distance = distance.toFixed(1);
+        this.setState({
+          distanceBetween: distance,
+          checkedIn: dataObj.length
+        });
+      });
+    });
   }
 
   renderInner = () => (
@@ -83,7 +105,7 @@ class BarModal extends React.Component  {
       }
       <View style={styles.panelButton}>
         <CheckInOutButtons 
-          email={this.state.userData.email}
+          email={this.state.user.email}
           barName={this.props.barName}
           buisnessUID={this.props.buisnessUID}
           latitude={this.props.latitude}
@@ -102,6 +124,9 @@ class BarModal extends React.Component  {
       <View style={styles.panelHeader}>
         <View style={styles.panelHandle} />
       </View>
+      <View style={styles.DrawerOverlay}>
+        <Favorite favoriteTrigg={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}} user={this.state.userData} buisnessUID={this.props.buisnessUID} />
+      </View>
     </View>
   )
 
@@ -116,7 +141,6 @@ class BarModal extends React.Component  {
             snapPoints={['75%', '50%', '0%']}
             renderContent={this.renderInner}
             renderHeader={this.renderHeader}
-            enabledBottomInitialAnimation={true}
             onCloseEnd={()=>{this.toggleModal(false)}}
           />
           <TouchableWithoutFeedback onPress={() => {
@@ -124,6 +148,7 @@ class BarModal extends React.Component  {
           }}>
             <Image style={styles.map} source={{uri: this.props.source.uri}} />
           </TouchableWithoutFeedback>
+          <PopUpModal isVisible={this.state.popUpVisible} navigation={ this.props.navigation } route={'Profile'}/>
         </View>
       :
       null
@@ -169,6 +194,15 @@ const styles = StyleSheet.create({
     fontWeight:"bold",
     textAlign:"center"
   },
+  DrawerOverlay: {
+    alignSelf:"flex-end",
+    backgroundColor: theme.DARK,
+    borderRadius: 10,
+    marginRight: '6%',
+    marginTop: '-7%',
+    textAlign:"center",
+    alignItems:"center",
+  },
   panel: {
     padding: 20,
     backgroundColor: theme.DARK,
@@ -188,7 +222,7 @@ const styles = StyleSheet.create({
     borderLeftWidth: 2,
     borderRightColor: theme.LIGHT_PINK,
     borderLeftColor: theme.LIGHT_PINK,
-    borderTopColor: theme.LIGHT_PINK
+    borderTopColor: theme.LIGHT_PINK,
   },
   panelHeader: {
     alignItems: 'center',

@@ -32,22 +32,8 @@ function whatsPoppinScreenTab ({route, navigation}) {
 }
 
 class PoppinStack extends React.Component {
-
-  state = {
-    userData:null,
-    friendData:null
-  }
-  componentDidMount(){
-    // console.log("User: " + JSON.stringify(this.props.user));
-    // console.log("Friends: " + JSON.stringify(this.props.friends));
-
-    this.setState({userData:this.props.user});
-    this.setState({friendData:this.props.friends});
-  }
-
   render() {
     return(
-      this.state.userData ? 
       <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -76,14 +62,10 @@ class PoppinStack extends React.Component {
           }}
           initialRouteName="My Feed"
           >
-          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
-          <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
-          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/>
-        </Tab.Navigator> 
-        :
-        <View style={styles.viewDark}>
-          <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-        </View> 
+          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{user: this.props.user, friends: this.props.friends, refresh: this.props.refresh}}/>
+          <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user: this.props.user, friends: this.props.friends, refresh: this.props.refresh}}/>
+          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user: this.props.user, friends: this.props.friends, refresh: this.props.refresh}}/>
+        </Tab.Navigator>
     )
     
   

@@ -36,8 +36,8 @@ class MapScreen extends React.Component  {
       id: "#",
       friendData: '#'
     },
-    friendData:null,
-    userData:null,
+    friendData: null,
+    userData: null,
     buisnessUID: null
   };
   
@@ -267,7 +267,7 @@ class MapScreen extends React.Component  {
     places.forEach(function(place){
       if(place.id == key){
         wantedPlace = place;
-        let friends = JSON.parse(friendState);
+        let friends = friendState;
         if(friends.length > 0){
           friends.forEach((friend) => {
               if((friend.lastVisited) && (friend.lastVisited.buinessUID == places.id)){
@@ -300,18 +300,16 @@ class MapScreen extends React.Component  {
     this.setState({isModalVisible: boolean});
   }
 
-  getAsyncStorageData = () => {
-    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
-      this.setState({friendData: friends});
-    });
-    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
-      this.setState({userData: userData});
+  getUpdatedUserData = () => {
+    this.setState({
+      userData: this.props.user,
+      friendData: this.props.friends
     });
     this.clientLocationFunction();
   }
 
   componentDidMount() {
-    this.getAsyncStorageData();
+    this.getUpdatedUserData();
   }
   
   generateFriendBubbles = (friend) => {
@@ -360,8 +358,11 @@ class MapScreen extends React.Component  {
                 address={this.state.modalProps.address}
                 toggleModal={(boolean) => this.toggleModal(boolean)}
                 buisnessUID={this.state.modalProps.id}
+                user={this.props.user}
+                refresh={this.props.refresh}
                 latitude={this.state.modalProps.latitude}
                 longitude={this.state.modalProps.longitude}
+                navigation={ this.props.navigation }
               > 
             </BarModal>
             <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
