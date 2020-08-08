@@ -125,7 +125,7 @@ export default class FriendsFeed extends React.Component  {
                     </TouchableOpacity> 
                 </View>
                 
-               <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%"}}>
+               <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
                     {
                         this.state.feedData ?
                             this.state.feedData.map((data, i)=>(

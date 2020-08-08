@@ -17,8 +17,12 @@ import * as Permissions from 'expo-permissions';
 import Login from '../Screens/Login Screen';
 import {DrawerContent} from '../Screens/Components/Drawer Components/Drawer Content';
 import * as ImagePicker from 'expo-image-picker';
+import "firebase/firebase-functions"
+
+
 
 const Drawer = createDrawerNavigator();
+
 
 function CustomDrawerContent(props, {navigation}){
   return(
@@ -156,7 +160,7 @@ class Navigator extends React.Component {
     this.setState({userChecked:true});
   }
 
-  refreshFromAsync = (userData, friendData, requests) => {
+  refreshFromAsync = (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({userData: userData});
     }
@@ -164,8 +168,10 @@ class Navigator extends React.Component {
       this.setState({friendData: friendData});
     }
     if(requests){
-     
       this.setState({friendRequests: requests});
+    }
+    if(businessData){
+      this.setState({businessData: businessData});
     }
   }
 

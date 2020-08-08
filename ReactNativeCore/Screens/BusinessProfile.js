@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 import BusinessProfile from './BusinessProfile'
 
+
 const defPhoto = require('../Media/Images/logoicon.png');
 export default class ProfileScreen extends Component {
   state = {
@@ -155,20 +156,20 @@ export default class ProfileScreen extends Component {
 
               {/* Add Friend */}
               
-                <TouchableOpacity 
+                {this.state.businessData.email == firebase.auth().currentUser.email ? null: <TouchableOpacity 
                 onPress={() => this.unFavoriteBar()}
                 style={localStyles.AddFriendOverlay}>
                   
                   <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Favorite</Text>
                   
-                </TouchableOpacity>
+                </TouchableOpacity>}
               
 
               {/* Edit Button */}
               {this.state.isUsersProfile ? 
               <TouchableOpacity style={{
                 position:"relative",
-                left: 220,
+                left: this.state.businessData.email != firebase.auth().currentUser.email ? 220 : 275,
                 alignSelf:"flex-end",
                 opacity: 0.75,
                 backgroundColor: theme.DARK,
@@ -238,7 +239,7 @@ export default class ProfileScreen extends Component {
                       <TouchableOpacity
                        disabled={this.state.isUsersProfile ? false : true}
                        onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{user: this.state.userData, friends:this.state.friendData}})}>
-                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} People's Favorite</Caption>
+                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Followers</Caption>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -278,7 +279,7 @@ export default class ProfileScreen extends Component {
                             style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
                             }} 
                             textStyle={{color:theme.LIGHT_PINK}}>
-                              {drink}
+                              {drink.special}
                             </Chip>
                           
                         ))
@@ -300,24 +301,26 @@ export default class ProfileScreen extends Component {
                       Events: 
                     </Title>
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
-                      <Chip mode={"outlined"}  
-                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                        }} 
-                        textStyle={{color:theme.LIGHT_PINK}}>
-                        Cutty's
-                      </Chip>
-                      <Chip mode={"outlined"}  
-                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                        }} 
-                        textStyle={{color:theme.LIGHT_PINK}}>
-                        Big Gun
-                      </Chip>
-                      <Chip mode={"outlined"}  
-                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                        }} 
-                        textStyle={{color:theme.LIGHT_PINK}}>
-                        Ghost Monkey
-                      </Chip>
+                    {
+                        this.state.businessData.events? 
+                        this.state.businessData.events.map((drink, i)=>(
+                          
+                            <Chip mode={"outlined"}  key={i}
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                              {drink.event}
+                            </Chip>
+                          
+                        ))
+                        :
+                        <Chip mode={"outlined"}  
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                          None
+                        </Chip>
+                      }
                     </ScrollView>
                   </View>
                 

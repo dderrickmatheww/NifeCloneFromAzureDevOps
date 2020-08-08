@@ -29,6 +29,8 @@ export default class EditProfile extends Component {
     doneLoading: false,
     specials:[],
     events:[],
+    specialsText: '',
+    eventsText:"",
     open:"12:00AM",
     close:"12:00PM"
   }
@@ -44,13 +46,27 @@ export default class EditProfile extends Component {
     
       var user = this.props.user;
       this.setState({userData: user});
-      console.log("User: " + JSON.stringify(user));
+      //console.log("User: " + JSON.stringify(user));
+      let specials = this.props.business.specials;
+      let events =  this.props.business.events;
+      let specialsValue = ""
+      let eventsValue = ""
+      specials.forEach((special, i) =>{
+        i != specials.length -1 ? specialsValue += special.special + "," : specialsValue += special.special
+      })
+      events.forEach((event, i) =>{
+        i != events.length -1 ? eventsValue += event.event + "&" : eventsValue += event.event
+      })
 
-     this.setState({specials:this.props.business.specials.toString()})
-     this.setState({events:this.props.business.events.toString()})
-     this.setState({open:this.props.business.hours.open})
-     this.setState({close:this.props.business.hours.close})
-     this.setState({doneLoading:true})
+     this.setState({
+       close:this.props.business.hours.close,
+       open:this.props.business.hours.open,
+       doneLoading:true,
+       specials: this.props.business.specials,
+       events:  this.props.business.events,
+       specialsText: specialsValue,
+       eventsText: eventsValue
+      });
 
   }
 
@@ -78,34 +94,47 @@ export default class EditProfile extends Component {
     var fieldText = specials;
     fieldText = fieldText.toString();
     var drinkArr = [];
-    if(fieldText.indexOf(',') == -1){
-
-      drinkArr.push(fieldText);
-    } else {
-      drinkArr = fieldText.split(',');
+    let specialsValue =""
+    if(fieldText){
+      let specials = fieldText.split(',')
+      specials.forEach((special, i)=>{
+        let obj = {
+          special: special,
+          uploaded:new Date()
+        }
+        drinkArr.push(obj)
+        i != specials.length -1 ? specialsValue += special + "," : specialsValue += special
+        
+      })
     }
 
-    console.log("result text: " + drinkArr);
-    this.setState({specials:drinkArr});
+    //console.log("result text: " + drinkArr);
+    this.setState({specials:drinkArr, specialsText:specialsValue});
   }
 
   onEventsChange = (drinks) => {
     var fieldText = drinks;
     fieldText = fieldText.toString();
     var drinkArr = [];
-    if(fieldText.indexOf('&') == -1){
-
-      drinkArr.push(fieldText);
-    } else {
-      drinkArr = fieldText.split(',');
+    let eventsValue =""
+    if(fieldText){
+      let events = fieldText.split('&')
+      events.forEach((event,i)=>{
+        let obj = {
+          event: event,
+          uploaded:new Date()
+        }
+        drinkArr.push(obj)
+        i != events.length -1 ? eventsValue += event + "&" : eventsValue += event
+      })
     }
 
-    console.log("result text: " + drinkArr);
-    this.setState({events:drinkArr});
+    //console.log("result text: " + drinkArr);
+    this.setState({events:drinkArr, eventsText:eventsValue});
   }
 
   onSave = () => {
-    console.log('Saving attempted');
+    //console.log('Saving attempted');
     var profileInfo = {
       events:this.state.events,
       specials:this.state.specials,
@@ -117,15 +146,13 @@ export default class EditProfile extends Component {
 
     Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
     , (data)=>{
-        console.log('saving attempted');
+        //console.log('saving attempted');
     });
 
-    var user = this.state.userData;
+    var user = this.props.business;
 
     var updatedUser = extend(user, profileInfo);
-    var updatedUserString = JSON.stringify(updatedUser);
-    Util.asyncStorage.SetAsyncStorageVar('User', updatedUserString);
-    this.props.refresh(updatedUser, null, null);
+    this.props.refresh(null, null, null, updatedUser);
 
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
 
@@ -147,7 +174,7 @@ export default class EditProfile extends Component {
   }
 
   onCancel = () => {
-    console.log('Canceling Edit')
+    //console.log('Canceling Edit')
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
   }
 
@@ -204,7 +231,7 @@ export default class EditProfile extends Component {
                     label=""
                     placeholder={"What specials are you offering?"}
                     onChangeText={text => this.onSpecialsChange(text)}
-                    value={this.state.specials.toString()}
+                    value={this.state.specialsText}
                     style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
                     
                     </TextInput>
@@ -221,7 +248,7 @@ export default class EditProfile extends Component {
                     placeholder={"Anything going on soon?"}
                     onChangeText={text => this.onEventsChange(text)}
                     style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
-                    value={this.state.events.toString()}
+                    value={this.state.eventsText}
                     >
                       
                     </TextInput>

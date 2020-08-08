@@ -563,6 +563,7 @@ const Util = {
         GetUserLocation: (returnData) => {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Location.reverseGeocodeAsync(location.coords).then((region)=>{
+                    console.log(region)
                     let loc = location;
                     loc['region'] = region[0];
                     Util.location.SetUserLocationData(location.coords);
