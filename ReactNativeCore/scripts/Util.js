@@ -539,6 +539,20 @@ const Util = {
             //     businesses.push(doc.data);
             // })
             // console.log(JSON.stringify(businesses[0]))
+        },
+        GetBusinessByUID: async (uid, callback) => {
+            firebase.firestore().collection('businesses').where('businessId', "==", uid).get()
+            .then((data)=>{
+                if(data){
+                    Util.basicUtil.consoleLog("GetBusinessByUID", true)
+                }
+            })
+            .catch((error)=>{
+                if(error){
+                    Util.basicUtil.consoleLog("GetBusinessByUID", false)
+                    console.log(error)
+                }
+            })
         }
     },
     location: {
@@ -1171,7 +1185,7 @@ const Util = {
                 })
                 .then((data) => data.json())
                 .then((response) => {
-                    let friends = JSON.parse(friendData);
+                    let friends = friendData;
                     let bars = response.businesses;
                     var friendArr = [];
                     var currentlyCheckIn = [];
