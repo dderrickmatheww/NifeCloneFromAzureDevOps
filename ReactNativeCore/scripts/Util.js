@@ -1187,7 +1187,7 @@ const Util = {
                 })
                 .then((data) => data.json())
                 .then((response) => {
-                    let friends = JSON.parse(friendData);
+                    let friends = friendData;
                     let bars = response.businesses;
                     var friendArr = [];
                     var currentlyCheckIn = [];

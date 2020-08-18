@@ -261,7 +261,7 @@ class MapScreen extends React.Component  {
     places.forEach(function(place){
       if(place.id == key){
         wantedPlace = place;
-        let friends = JSON.parse(friendState);
+        let friends = friendState;
         if(friends.length > 0){
           friends.forEach((friend) => {
               if((friend.lastVisited) && (friend.lastVisited.buinessUID == places.id)){
