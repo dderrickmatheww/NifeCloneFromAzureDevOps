@@ -26,7 +26,8 @@ class BarModal extends React.Component  {
     DetailsTab: true,
     EventsTab: false,
     SpecialsTab: false,
-    buisnessData:null
+    businessData:null,
+    loadingBusiness:false
   }
 
   toggleModal = (boolean) => {
@@ -40,14 +41,17 @@ class BarModal extends React.Component  {
         distanceBetween: distance
       })
     });
+    //TODO put into cloud func save to business data
     Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
       this.setState({
         checkedIn: dataObj.length
       })
     })
+    this.setState({loadingBusiness:true})
     Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-      console.log("business - " + JSON.stringify(data.email))
-      this.setState({buisnessData:data})
+      // console.log("business - " + JSON.stringify(data))
+      this.setState({businessData:data})
+      this.setState({loadingBusiness:false})
     })
   }
 
@@ -90,9 +94,15 @@ class BarModal extends React.Component  {
     }
   }
   renderInner = () => (
-    <View style={{flex: 1, height:"100%"}}>
+    <View style={{flex: 1, height:2000}}>
       <View style={styles.panel}>
         <Text style={styles.panelTitle}>{this.props.barName}</Text>
+        <Text style={styles.panelText}>
+          {this.state.distanceBetween} miles away
+        </Text>
+        <Text style={styles.panelText}>
+          {this.props.address}
+        </Text>
         <View style={styles.tabCont}>
           <TouchableOpacity style={[styles.tab]} onPress={ () => this.toggleTab({details:true}) }>
             <Text style={this.state.DetailsTab ? styles.tabOff : styles.tabOn}>
@@ -109,39 +119,70 @@ class BarModal extends React.Component  {
               Specials
             </Text>
           </TouchableOpacity>
-        </View>       
-            <Text style={styles.panelText}>
-              {this.state.distanceBetween} miles away
-            </Text>
-            <Text style={styles.panelText}>
-              {this.props.address}
-            </Text>
-            
-            <Image
-              style={styles.photo}
-              source={{uri: this.props.source.uri}}
-            />
+        </View>    
             {
-              this.state.EventsTab ?
-              <ScrollView style={{flexGrow:1,flex:1, height:"100%",}} contentContainerStyle={{justifyContent:'center',alignSelf:'stretch',alignItems:'center'}}>
-                <Text>
-                  Events
-                </Text>
-              </ScrollView>
+              this.state.EventsTab?
+              <View style={{flex:1}}>
+              <ScrollView style={{flex:1}} contentContainerStyle={{flex:1,justifyContent:"flex-start",alignItems:'center'}}>
+                {
+                  this.state.businessData ? 
+                      this.state.businessData.events.length > 0 ?
+                        this.state.businessData.events.map((event, i)=>(
+                          <View style={styles.eventCont}>
+                            <Text  style={styles.eventText}>
+                              {event.event}
+                            </Text>
+                          </View>
+                        ))
+                        :
+                        <View style={styles.noEventsCont}>
+                          <Text style={styles.noEventsText}>No events planned yet!</Text>
+                        </View>
+                  :
+                  this.state.loadingBusiness ?
+                  <ActivityIndicator color={theme.LIGHT_PINK} size="large"></ActivityIndicator> : 
+                  <View style={styles.noEventsCont}>
+                    <Text style={styles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
+                  </View>
+                }
+              </ScrollView></View>
               :null
             }
             {
               this.state.SpecialsTab ?
-              <View style={{flex:1,height:"100%"}}>
-                <Text>
-                  Specials
-                </Text>
-              </View>
+              <ScrollView style={{flex:1}} contentContainerStyle={{flex:1,justifyContent:"flex-start",alignItems:'center',}}>
+                {
+                  this.state.businessData ? 
+                      this.state.businessData.specials.length > 0 ?
+                        this.state.businessData.specials.map((special, i)=>(
+                          <View style={styles.eventCont}>
+                            <Text  style={styles.eventText}>
+                              {special.special}
+                            </Text>
+                          </View>
+                        ))
+                        :
+                        <View style={styles.noEventsCont}>
+                          <Text style={styles.noEventsText}>No specials out yet!</Text>
+                        </View>
+                  :
+                  this.state.loadingBusiness ?
+                  <ActivityIndicator color={theme.LIGHT_PINK} size="large"></ActivityIndicator> : 
+                  <View style={styles.noEventsCont}>
+                    <Text style={styles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
+                  </View>
+                }
+              </ScrollView>
               :null
             }
             {
             this.state.DetailsTab ?
             <View>
+              <Image
+                style={styles.photo}
+                source={{uri: this.props.source.uri}}
+              />
+              
                 <AirbnbRating 
                 starContainerStyle={styles.ratingSystem}
                 defaultRating={this.props.rating}
@@ -204,11 +245,11 @@ class BarModal extends React.Component  {
       this.state.isVisible ? 
           <BottomSheet
             ref={this.bs}
-            snapPoints={['70%', '50%','90%', '0%']}
+            snapPoints={['70%', '50%','88%', '0%']}
             renderContent={this.renderInner}
             renderHeader={this.renderHeader}
-            enabledBottomInitialAnimation={false}
             enabledInnerScrolling={false}
+            enabledBottomClamp={true}
             onCloseEnd={()=>{this.toggleModal(false)}}
           />
           
@@ -221,6 +262,32 @@ class BarModal extends React.Component  {
 const IMAGE_SIZE = 200
 
 const styles = StyleSheet.create({
+  eventText:{
+    color:theme.LIGHT_PINK,
+    paddingVertical:10,
+    paddingHorizontal:10,
+    width:"90%",
+    textAlign:"left"
+  },
+  noEventsText:{
+    color:theme.LIGHT_PINK,
+  },
+  eventCont:{
+    justifyContent:"center",
+    borderRadius:5,
+    borderWidth:1,
+    borderColor:theme.LIGHT_PINK,
+    marginVertical:5,
+    paddingHorizontal:10,
+    width:"95%",
+  },
+  noEventsCont:{
+    height:"100%",
+    marginVertical:5,
+    marginHorizontal:5,
+    paddingBottom:150,
+    paddingHorizontal:5
+  },
   tab:{
     width:"100%",
     borderColor:theme.LIGHT_PINK,
@@ -282,7 +349,6 @@ const styles = StyleSheet.create({
   },
   panel: {
     flex:1,
-    flexGrow:1,
     padding: 20,
     backgroundColor: theme.DARK,
     height: '100%',
@@ -290,7 +356,6 @@ const styles = StyleSheet.create({
     borderLeftWidth: 2,
     borderRightColor: theme.LIGHT_PINK,
     borderLeftColor: theme.LIGHT_PINK,
-    alignSelf:"stretch"
   },
   header: {
     backgroundColor: theme.DARK,
@@ -344,7 +409,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 225,
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 15,
     borderWidth: 1,
     borderColor: theme.LIGHT_PINK,
     borderRadius: 20

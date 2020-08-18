@@ -541,18 +541,20 @@ const Util = {
             // console.log(JSON.stringify(businesses[0]))
         },
         GetBusinessByUID: async (uid, callback) => {
-            firebase.firestore().collection('businesses').where('businessId', "==", uid).get()
-            .then((data)=>{
-                if(data){
-                    Util.basicUtil.consoleLog("GetBusinessByUID", true)
-                }
-            })
-            .catch((error)=>{
-                if(error){
-                    Util.basicUtil.consoleLog("GetBusinessByUID", false)
-                    console.log(error)
-                }
-            })
+            let busRef = firebase.firestore().collection('businesses')
+            const snapshot = await busRef.where('businessId', "==", uid).get()
+            if(!snapshot.empty){
+                Util.basicUtil.consoleLog("GetBusinessByUID", true)
+                let tempArr = []
+                snapshot.forEach((doc) =>{
+                    tempArr.push(doc.data())
+                })
+                callback(tempArr[0])
+            } else {
+                Util.basicUtil.consoleLog("GetBusinessByUID", false)
+                callback(false)
+            }
+            
         }
     },
     location: {
