@@ -32,22 +32,9 @@ function whatsPoppinScreenTab ({route, navigation}) {
 }
 
 class PoppinStack extends React.Component {
-
-  state = {
-    userData:null,
-    friendData:null
-  }
-  componentDidMount(){
-    // console.log("User: " + JSON.stringify(this.props.user));
-    // console.log("Friends: " + JSON.stringify(this.props.friends));
-
-    this.setState({userData:this.props.user});
-    this.setState({friendData:this.props.friends});
-  }
-
   render() {
     return(
-      this.state.userData ? 
+       this.state.userData ? 
       <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
