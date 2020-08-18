@@ -1,6 +1,6 @@
 import React from 'react';
 import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout, Heatmap } from 'react-native-maps';
 
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
@@ -36,8 +36,8 @@ class MapScreen extends React.Component  {
       id: "#",
       friendData: '#'
     },
-    friendData: null,
-    userData: null,
+    friendData:null,
+    userData:null,
     buisnessUID: null
   };
   
@@ -250,12 +250,6 @@ class MapScreen extends React.Component  {
   //gets the data from the modal, matches with markers saved in state
   //puts matching data on modal. 
   HandleMarkerPress = (e, key) => {
-    let { width, height } = Dimensions.get('window');
-    let ASPECT_RATIO = width / height;
-     LATITUDE = this.state.userLocation.latitude;
-     LONGITUDE = this.state.userLocation.longitude;
-    let LATITUDE_DELTA = 0.0922;
-    let LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
     var places = this.state.markers;
     this.setWantedPlaceData(places, key);
   }
@@ -300,16 +294,17 @@ class MapScreen extends React.Component  {
     this.setState({isModalVisible: boolean});
   }
 
-  getUpdatedUserData = () => {
+  getAsyncStorageData = () => {
     this.setState({
-      userData: this.props.user,
-      friendData: this.props.friends
-    });
+      userData:this.props.user,
+      friendData:this.props.friends
+    })
+
     this.clientLocationFunction();
   }
 
   componentDidMount() {
-    this.getUpdatedUserData();
+    this.getAsyncStorageData();
   }
   
   generateFriendBubbles = (friend) => {
@@ -326,49 +321,6 @@ class MapScreen extends React.Component  {
         && 
         this.state.markers != undefined ? 
 
-          this.state.isModalVisible ? (
-          //if Modal is visible
-          <View  style={localStyles.container}> 
-            <MapView
-              style={localStyles.map}
-              provider={PROVIDER_GOOGLE}
-              showsMyLocationButton={true}
-              showsUserLocation={true}
-              showsPointsOfInterest={false}
-              userLocationUpdateInterval={1000}
-              region={this.state.region}
-              onUserLocationChange={(e) => {null}}
-              showsScale={true}
-              customMapStyle={this.mapStyle}
-              minZoomLevel={15}
-              maxZoomLevel={20}
-              moveOnMarkerPress={false}
-            >     
-          </MapView>
-          <BarModal 
-                isVisible={this.state.isModalVisible}
-                source={this.state.modalProps.source}
-                userLocation={this.state.region}
-                barName={this.state.modalProps.barName}
-                rating={this.state.modalProps.rating}
-                reviewCount={this.state.modalProps.reviewCount}
-                price={this.state.modalProps.price}
-                phone={this.state.modalProps.phone}
-                closed={this.state.modalProps.closed}
-                address={this.state.modalProps.address}
-                toggleModal={(boolean) => this.toggleModal(boolean)}
-                buisnessUID={this.state.modalProps.id}
-                user={this.props.user}
-                refresh={this.props.refresh}
-                latitude={this.state.modalProps.latitude}
-                longitude={this.state.modalProps.longitude}
-                navigation={ this.props.navigation }
-              > 
-            </BarModal>
-            <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
-        </View> 
-        ) 
-          :
         //if modal is not visible, show markers
         (
           <View style={localStyles.container}>  
@@ -405,8 +357,27 @@ class MapScreen extends React.Component  {
                       <VisitedByCallout marker={marker}/>
                     </Callout>
                   </ Marker>
-                ))}
-            </MapView>       
+                ))} 
+            </MapView>
+            { this.state.isModalVisible ?
+                <BarModal 
+                isVisible={this.state.isModalVisible}
+                source={this.state.modalProps.source}
+                userLocation={this.state.region}
+                barName={this.state.modalProps.barName}
+                rating={this.state.modalProps.rating}
+                reviewCount={this.state.modalProps.reviewCount}
+                price={this.state.modalProps.price}
+                phone={this.state.modalProps.phone}
+                closed={this.state.modalProps.closed}
+                address={this.state.modalProps.address}
+                toggleModal={(boolean) => this.toggleModal(boolean)}
+                buisnessUID={this.state.modalProps.id}
+                latitude={this.state.modalProps.latitude}
+                longitude={this.state.modalProps.longitude}
+              > 
+              </BarModal> : null
+            }       
             <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
           </View>
         ) 

@@ -61,7 +61,7 @@ export function DrawerContent(props) {
                                   {props.user.displayName}
                                 </Title>
                                 {/* status */}
-                                <Caption style={styles.caption}>
+                                <Caption style={styles.statuscaption}>
                                   Status: { props.user.status ? props.user.status.text ? props.user.status.text : "No Status" : "No Status"} 
                                 </Caption>
                                 {/* TODO Badge */}
@@ -135,7 +135,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Map</Text>}
-                            onPress={() => {props.navigation.navigate('Map')}}
+                            onPress={() => {props.navigation.navigate('Map', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}
                         />
                        { !props.user.isBusiness ? 
                             <List.Accordion
@@ -299,6 +299,13 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       color: theme.LIGHT_PINK
     },
+    statuscaption: {
+        fontSize: 12,
+        lineHeight: 14,
+        color:theme.LIGHT_PINK,
+        flexWrap:"wrap",
+        overflow:"hidden"
+      },
     caption: {
       fontSize: 12,
       lineHeight: 14,

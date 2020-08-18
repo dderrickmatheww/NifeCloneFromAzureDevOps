@@ -44,10 +44,11 @@ function Profile ({route, navigation}){
   )
 }
 
-function Map ({route, navigation}) {
-  const {user, refresh, friends} = route.params;
+
+function MapMain ({route, navigation}){
+  const {user, friends, refresh} = route.params;
   return(
-    <MapStack refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+    <MapStack  refresh={refresh} user={user} friends={friends} navigate={navigation} />
   )
 }
 
@@ -63,7 +64,6 @@ class Navigator extends React.Component {
     userExists:false,
     displayName: null,
     uploading:false,
-
     businessData:null,
     isBusiness:false, //only set at business sign up for first time
     businessState:null,
@@ -90,19 +90,21 @@ class Navigator extends React.Component {
   }
 
   getNeededData = (db, currentUser, callback) => {
-    //if user exits get user data, get friend data set to async 
+    //if user exits get user data, get friend data set to async     //console.log('wantedData App.js', currentUser)
+
     if (currentUser) {
+
         //load user
         Util.user.GetUserData(db, currentUser.email, (userData) => {
           if(userData) {
             let user = JSON.stringify(userData);
             Util.asyncStorage.SetAsyncStorageVar('User', user);
+            
             //load users who are friends or have requested the user
             //user data set in filterfriends
-
             if(userData.isBusiness){
               Util.business.GetBusinessData(db, currentUser.email, (businessData) => {
-                console.log(JSON.stringify(businessData))
+                //console.log(JSON.stringify(businessData))
                 this.setState({businessData: businessData,
                   userData:userData
                 });
@@ -117,21 +119,19 @@ class Navigator extends React.Component {
                   this.setState({favoritePlaceData:places})
                   callback();
                 })
-                // console.log(JSON.stringify(data));
+                // //console.log(JSON.stringify(data));
               });
               
             }  
-
           }
           else {
             this.setState({userChecked:true});
           }
         });
-
         
-
     } else {
-      console.log('No user found!');
+      //console.log('no user!');
+
     }
   }
 
@@ -186,7 +186,7 @@ class Navigator extends React.Component {
 
 
   firstTimeSignUp = (user) => {
-    console.log('setting display name first time')
+    //console.log('setting display name first time')
     if(this.state.displayName){
       user.updateProfile({displayName:this.state.displayName}).then(()=>{
         this.initializeParams(user);
@@ -197,11 +197,11 @@ class Navigator extends React.Component {
 
   onSignUpStates = (obj) => {
     if(!this.state.isBusiness){
-      console.log('setting display name first time')
+      //console.log('setting display name first time')
       this.setState({displayName:obj.displayName});
     }
     else {
-      console.log('setting business name');
+      //console.log('setting business name');
       this.setState({displayName: obj.businessName});
     }
   }
@@ -265,7 +265,7 @@ class Navigator extends React.Component {
   setIsBusiness = (bool, signUpState) => {
     this.setState({isBusiness:bool});
     if(signUpState){
-      console.log(JSON.stringify(signUpState));
+      //console.log(JSON.stringify(signUpState));
       this.setState({businessState:signUpState});
     }
   }
@@ -285,11 +285,8 @@ class Navigator extends React.Component {
       firebase.auth().onAuthStateChanged((user) =>{
         this.setState({authLoaded: true});
         if (user) {
-          this.setState({
-            dataLoaded: true,
-            userExists: true
-          });
-          Util.dataCalls.Firebase.setTrigger(user.email);
+          this.setState({dataLoaded:true});
+          this.setState({userExists:true}); 
           if(user.displayName){
             this.initializeParams(user);
           }
@@ -297,21 +294,22 @@ class Navigator extends React.Component {
             this.firstTimeSignUp(user);
           }
         } else {
-          this.setState({
-            authLoaded: true,
-            dataLoaded: true,
-            userExists: false,
-            userData: null
-          });
-          console.log('No user found');
+          this.setState({authLoaded: true});
+          this.setState({dataLoaded:true});
+          this.setState({userExists:false});
+          this.setState({userData: null});
+
+          //console.log('No user');
+
         }
       });
-      
     }
     catch (error){
-        console.log(error);
+        console.error(error);
     }  
   }
+
+  
 
   render() {
     return (
@@ -327,17 +325,17 @@ class Navigator extends React.Component {
             drawerStyle={{
               backgroundColor: theme.DARK
             }}
-            initialRouteName='Feed'
+            initialRouteName='Map'
+
             overlayColor="#20232A"
             drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-
             <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
             <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
-            <Drawer.Screen name="Map" component={MapStack} />
+            <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
         </NavigationContainer>
@@ -347,7 +345,7 @@ class Navigator extends React.Component {
             <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
           </View> 
           :
-          <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login!"}></Login> 
+          <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
         :
         <View style={styles.viewDark}>
           <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>

@@ -38,6 +38,8 @@ export default class StatusModal extends React.Component  {
       let user = this.state.userData;
       Util.user.UpdateUser(firebase.firestore(), user.email, obj, ()=>{
         console.log('Updating Status');
+        
+       
         this.updateUserAsync(user, obj);
         this.setState({saving:false});
         this.props.onSave();
