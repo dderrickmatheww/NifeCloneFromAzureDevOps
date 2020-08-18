@@ -7,13 +7,22 @@ import Util from '../../scripts/Util';
 
 export default class Favorite extends React.Component  { 
 
-    state= {
+    state={
         isFavorited: false,
-        loading: true
+        loading: true,
+        userData: null,
+        shouldUpdate: false
     }
 
     componentDidMount() {
-        Util.user.isFavorited(this.props.buisnessUID, (boolean) => {
+        this.setState({
+            userData: this.props.user
+        })
+        this.checkFavorite();
+    }
+
+    checkFavorite = () => {
+        Util.user.isFavorited(this.props.buisnessUID, this.props.user, (boolean) => {
             this.setState({
                 isFavorited: boolean,
                 loading: false
@@ -29,7 +38,9 @@ export default class Favorite extends React.Component  {
                         this.state.isFavorited ?
                             <TouchableOpacity
                                 onPress={() => {
-                                    this.setState({isFavorited: false});
+                                    this.setState({
+                                        isFavorited: false
+                                    });
                                     this.props.favoriteTrigg(this.props.buisnessUID, false);
                                 }}
                             >
@@ -38,7 +49,10 @@ export default class Favorite extends React.Component  {
                         :
                         <TouchableOpacity
                             onPress={async () => {
-                                this.setState({isFavorited: true});
+                                this.setState({
+                                    isFavorited: true,
+                                    shouldUpdate: true
+                                });
                                 this.props.favoriteTrigg(this.props.buisnessUID, true);
                             }}
                         >
