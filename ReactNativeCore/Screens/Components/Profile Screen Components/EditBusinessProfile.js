@@ -11,7 +11,7 @@ import {
   TextInput,
   Surface
 } from 'react-native-paper';
-import EditBusinessProfile from './EditBusinessProfile'
+
 
 
 export default class EditProfile extends Component {
@@ -27,6 +27,12 @@ export default class EditProfile extends Component {
     favoriteDrinks: [],
     showDatePicker: false,
     doneLoading: false,
+    specials:[],
+    events:[],
+    specialsText: '',
+    eventsText:"",
+    open:"12:00AM",
+    close:"12:00PM"
   }
 
   setMaxDate = () => {
@@ -40,24 +46,27 @@ export default class EditProfile extends Component {
     
       var user = this.props.user;
       this.setState({userData: user});
-      console.log("User: " + JSON.stringify(user));
+      //console.log("User: " + JSON.stringify(user));
+      let specials = this.props.business.specials;
+      let events =  this.props.business.events;
+      let specialsValue = ""
+      let eventsValue = ""
+      specials.forEach((special, i) =>{
+        i != specials.length -1 ? specialsValue += special.special + "," : specialsValue += special.special
+      })
+      events.forEach((event, i) =>{
+        i != events.length -1 ? eventsValue += event.event + "&" : eventsValue += event.event
+      })
 
-      this.setState({dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.setMaxDate()});
-      
-
-      this.setState({gender: user.gender ? user.gender : "other"});
-     
-
-      this.setState({sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other'});
-      
-
-      this.setState({bio: user.bio ? user.bio : ""});
-      
-      
-      this.setState({favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks: []});
-      
-      
-      this.setState({doneLoading: true});
+     this.setState({
+       close:this.props.business.hours.close,
+       open:this.props.business.hours.open,
+       doneLoading:true,
+       specials: this.props.business.specials,
+       events:  this.props.business.events,
+       specialsText: specialsValue,
+       eventsText: eventsValue
+      });
 
   }
 
@@ -68,73 +77,82 @@ export default class EditProfile extends Component {
     this.setUserData();    
   }
 
-  onDOBChange = (event, selectedDate) => {
-    if(selectedDate){
-      var date = new Date(selectedDate);
-      this.setState({dateOfBirth: date});
-      console.log("New DOB: " + this.state.dateOfBirth)
-      this.setState({showDatePicker:false});
-    }
-    else {
-      this.setState({showDatePicker:false});
-    }
-    
-  }
-
+  onOpenChange = (time) => {
+    var fieldText = time;
   
-  onGenderChange = (gender) => {
-    console.log(gender);
-    this.setState({gender:gender})
+    this.setState({open:fieldText});
   }
 
-  onSexualOrientationChange = (orientation) => {
-    console.log(orientation);
-    this.setState({sexualOrientation:orientation})
+  onCloseChange = (time) => {
+    var fieldText = time;
+  
+    this.setState({close:fieldText});
   }
 
-  onBioChange = (bio) => {
-    console.log(bio);
-    this.setState({bio:bio})
+
+  onSpecialsChange = (specials) => {
+    var fieldText = specials;
+    fieldText = fieldText.toString();
+    var drinkArr = [];
+    let specialsValue =""
+    if(fieldText){
+      let specials = fieldText.split(',')
+      specials.forEach((special, i)=>{
+        let obj = {
+          special: special,
+          uploaded:new Date()
+        }
+        drinkArr.push(obj)
+        i != specials.length -1 ? specialsValue += special + "," : specialsValue += special
+        
+      })
+    }
+
+    //console.log("result text: " + drinkArr);
+    this.setState({specials:drinkArr, specialsText:specialsValue});
   }
 
-  onFavoriteDrinkChange = (drinks) => {
+  onEventsChange = (drinks) => {
     var fieldText = drinks;
     fieldText = fieldText.toString();
     var drinkArr = [];
-    if(fieldText.indexOf(',') == -1){
-
-      drinkArr.push(fieldText);
-    } else {
-      drinkArr = fieldText.split(',');
+    let eventsValue =""
+    if(fieldText){
+      let events = fieldText.split('&')
+      events.forEach((event,i)=>{
+        let obj = {
+          event: event,
+          uploaded:new Date()
+        }
+        drinkArr.push(obj)
+        i != events.length -1 ? eventsValue += event + "&" : eventsValue += event
+      })
     }
 
-    console.log("result text: " + drinkArr);
-    this.setState({favoriteDrinks:drinkArr});
+    //console.log("result text: " + drinkArr);
+    this.setState({events:drinkArr, eventsText:eventsValue});
   }
 
   onSave = () => {
-    console.log('Saving attempted');
+    //console.log('Saving attempted');
     var profileInfo = {
-      dateOfBirth: new Date(this.state.dateOfBirth),
-      gender: this.state.gender,
-      sexualOrientation: this.state.sexualOrientation,
-      bio: this.state.bio,
-      favoriteDrinks: this.state.favoriteDrinks
+      events:this.state.events,
+      specials:this.state.specials,
+      hours:{
+        open:this.state.open,
+        close:this.state.close
+      }
     }
-    
-    
 
-    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
+    Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
     , (data)=>{
-        console.log('saving attempted');
+        //console.log('saving attempted');
     });
 
-    var user = this.state.userData;
+    var user = this.props.business;
 
     var updatedUser = extend(user, profileInfo);
-    var updatedUserString = JSON.stringify(updatedUser);
-    Util.asyncStorage.SetAsyncStorageVar('User', updatedUserString);
-    this.props.refresh(updatedUser, null, null);
+    this.props.refresh(null, null, null, updatedUser);
 
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
 
@@ -156,7 +174,7 @@ export default class EditProfile extends Component {
   }
 
   onCancel = () => {
-    console.log('Canceling Edit')
+    //console.log('Canceling Edit')
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
   }
 
@@ -173,85 +191,47 @@ export default class EditProfile extends Component {
 
               <ScrollView contentContainerStyle={{justifyContent:"flex-start",  width:"90%"}} style={localStyles.mainCont}> 
               {/* Input Area */}
-                  <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:15}}>
-                    All information is optional and can be hidden via privacy settings! 
-                  </Text>
-                    
-                    {/* DOB */}
-                  <View style={localStyles.fieldCont}> 
-                    <View style={{flexDirection:"row", width:"90%"}}>
-                      <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                        Date of Birth:  {this.state.dateOfBirth ? this.state.dateOfBirth.toLocaleDateString('en-US'): "None given."}
-                        
-                      </Text>
-                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft:50, paddingBottom:5}}
-                        onPress={() => this.setState({showDatePicker:true})}
-                      >
-                          <Ionicons name="md-calendar" size={24} color={theme.LIGHT_PINK} />
-                      </TouchableOpacity>
-                    </View>
-                    
-                    {
-                      this.state.showDatePicker && (
-                        <DateTimePicker
-                          mode={"date"}
-                          value={this.state.dateOfBirth}
-                          maximumDate={ this.setMaxDate()}
-                          display={"spinner"}
-                          onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
-                        />
-                      )
-                    }
-                  </View>
 
                   <View style={localStyles.fieldCont}> 
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                      Gender: 
-                    </Text>
-                    <Surface style={localStyles.surface}>
-                      <Picker 
-                        mode={"dropdown"}
-                        style={{backgroundColor:theme.DARK,width:"100%", alignSelf:"center"}}
-                        selectedValue={this.state.gender ? this.state.gender : "other"}
-                        onValueChange={(value) => this.onGenderChange(value)}
-                      >
-                        <Picker.Item color={theme.LIGHT_PINK} label="Male" value="male"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Female" value="female"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
-                      </Picker>
-                    </Surface>
-                      
-                  </View>
-
-                  <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                      Sexual Orientation: 
-                    </Text>
-                    <Surface style={localStyles.surface}>
-                      <Picker
-                      selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
-                        style={{backgroundColor:theme.DARK,width:"100%", alignSelf:"center", borderRadius: 50,}}
-                        onValueChange={(value) => this.onSexualOrientationChange(value)}
-                      >
-                        <Picker.Item color={theme.LIGHT_PINK} label="Straight" value="straight"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Homosexual/Gay/Lesbian" value="homosexual"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Bi-sexual/Fluid" value="bi-sexual"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
-                      </Picker>
-                    </Surface>
-                    
-                  </View>
-
-                  <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                      Bio: 
+                      Open (ex: 12:00PM): 
                     </Text>
                     <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
                     mode={"flat"}
                     label=""
-                    placeholder={"Tell us about yourself"}
-                    onChangeText={text => this.onBioChange(text)}
-                    value={this.state.bio}
+                    placeholder={"12:00PM"}
+                    onChangeText={text => this.onOpenChange(text)}
+                    value={this.state.open}
+                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
+                    
+                    </TextInput>
+                  </View>
+
+                  <View style={localStyles.fieldCont}> 
+                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    Open (ex: 2:00AM): 
+                    </Text>
+                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    mode={"flat"}
+                    label=""
+                    placeholder={"12:00AM"}
+                    onChangeText={text => this.onCloseChange(text)}
+                    value={this.state.close}
+                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
+                    
+                    </TextInput>
+                  </View>
+
+                  <View style={localStyles.fieldCont}> 
+                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                      Specials (comma seperated): 
+                    </Text>
+                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    mode={"flat"}
+                    label=""
+                    placeholder={"What specials are you offering?"}
+                    onChangeText={text => this.onSpecialsChange(text)}
+                    value={this.state.specialsText}
                     style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
                     
                     </TextInput>
@@ -259,16 +239,16 @@ export default class EditProfile extends Component {
 
                   <View style={localStyles.fieldCont}>
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                      Favorite Drinks (comma seperated): 
+                      Events (seperate with '&'): 
                     </Text>
                     {/* index one to on change */}
                     <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}} 
                     mode={"flat"}
                     label=""
-                    placeholder={"What're you drinkin'?"}
-                    onChangeText={text => this.onFavoriteDrinkChange(text)}
+                    placeholder={"Anything going on soon?"}
+                    onChangeText={text => this.onEventsChange(text)}
                     style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
-                    value={this.state.favoriteDrinks.toString()}
+                    value={this.state.eventsText}
                     >
                       
                     </TextInput>

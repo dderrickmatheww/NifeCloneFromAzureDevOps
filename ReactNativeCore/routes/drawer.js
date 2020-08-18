@@ -17,8 +17,12 @@ import * as Permissions from 'expo-permissions';
 import Login from '../Screens/Login Screen';
 import {DrawerContent} from '../Screens/Components/Drawer Components/Drawer Content';
 import * as ImagePicker from 'expo-image-picker';
+import "firebase/firebase-functions"
+
+
 
 const Drawer = createDrawerNavigator();
+
 
 function CustomDrawerContent(props, {navigation}){
   return(
@@ -27,16 +31,16 @@ function CustomDrawerContent(props, {navigation}){
 }
 
 function Poppin ({route, navigation}){
-  const {user, friends, refresh} = route.params;
+  const {user, friends, business, favorites, refresh} = route.params;
   return(
-    <PoppinStack refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+    <PoppinStack favorites={favorites} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
   )
 }
 
 function Profile ({route, navigation}){
-  const {user, friends, refresh, uploadImage} = route.params;
+  const {user, friends, refresh, business, uploadImage} = route.params;
   return(
-    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation}/>
+    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
   )
 }
 
@@ -59,8 +63,11 @@ class Navigator extends React.Component {
     userExists:false,
     displayName: null,
     uploading:false,
-    isBusiness: false, //only set at business sign up for first time
-    businessState: null,
+
+    businessData:null,
+    isBusiness:false, //only set at business sign up for first time
+    businessState:null,
+    favoritePlaceData:null,
   }
   //sends user login location to db
   setWantedData = (db, currentUser, location, callback) => {
@@ -92,15 +99,37 @@ class Navigator extends React.Component {
             Util.asyncStorage.SetAsyncStorageVar('User', user);
             //load users who are friends or have requested the user
             //user data set in filterfriends
-            Util.friends.GetFriends(db, currentUser.email, (data) => {
-              this.filterFriends(data, userData);
-              callback();
-            });
+
+            if(userData.isBusiness){
+              Util.business.GetBusinessData(db, currentUser.email, (businessData) => {
+                console.log(JSON.stringify(businessData))
+                this.setState({businessData: businessData,
+                  userData:userData
+                });
+                callback()
+              });
+              
+            }else {
+              Util.friends.GetFriends(db, currentUser.email, (data) => {
+                let favoritePlaces = Object.keys(userData.favoritePlaces) 
+                Util.business.GetBusinessesByUserFavorites(favoritePlaces, (places)=>{
+                  this.filterFriends(data, userData);
+                  this.setState({favoritePlaceData:places})
+                  callback();
+                })
+                // console.log(JSON.stringify(data));
+              });
+              
+            }  
+
           }
           else {
             this.setState({userChecked:true});
           }
         });
+
+        
+
     } else {
       console.log('No user found!');
     }
@@ -140,7 +169,7 @@ class Navigator extends React.Component {
     this.setState({userChecked:true});
   }
 
-  refreshFromAsync = (userData, friendData, requests) => {
+  refreshFromAsync = (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({userData: userData});
     }
@@ -149,6 +178,9 @@ class Navigator extends React.Component {
     }
     if(requests){
       this.setState({friendRequests: requests});
+    }
+    if(businessData){
+      this.setState({businessData: businessData});
     }
   }
 
@@ -240,7 +272,6 @@ class Navigator extends React.Component {
 
 
   initializeParams = (user) => {
-    if(!this.state.isBusiness){
       Util.user.VerifyUser(user, user.email, () => { 
         this.getLocationAsync((location) => {
           this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
@@ -248,16 +279,6 @@ class Navigator extends React.Component {
           });        
         });
       });
-    } else {
-      Util.business.VerifyUser(user, firebase.auth().currentUser.email, this.state.businessState, ()=>{
-        this.getLocationAsync((location) => {
-          this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-            this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-          });        
-        });
-      });
-    }
-      
   }
   componentDidMount() {
     try{
@@ -313,9 +334,10 @@ class Navigator extends React.Component {
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage: this.handleUploadImage, refresh: this.refreshFromAsync}}/>
-            <Drawer.Screen name="Feed" component={Poppin} initialParams={{ user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync}}/>
-            <Drawer.Screen name="Map" component={Map} initialParams={{ user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync }} />
+
+            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
+            <Drawer.Screen name="Map" component={MapStack} />
             <Drawer.Screen name="Settings" component={SettingsTab} />
           </Drawer.Navigator>
         </NavigationContainer>

@@ -537,6 +537,32 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
+        GetBusinessesByUserFavorites: function(favArr, callback){
+            const businessRef = firebase.firestore().collection('businesses')
+            var businesses = []
+            var favorites =  businessRef.where('businessId', 'in', favArr).get()
+            .then((data)=>{
+                data.forEach((business)=>{
+                    if(business && business.data()){
+                        businesses.push(business.data())
+                    }
+                })
+                callback(businesses)
+                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
+                console.log("Firebase Error: " + error);
+            });
+            // if(favorites.empty){
+            //     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
+            //     return;
+            // }
+            // favorites.forEach(doc=>{
+            //     businesses.push(doc.data);
+            // })
+            // console.log(JSON.stringify(businesses[0]))
+        }
     },
     location: {
         SaveLocation: function(db, email, location, callback){
@@ -560,6 +586,7 @@ const Util = {
         GetUserLocation: (returnData) => {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Location.reverseGeocodeAsync(location.coords).then((region)=>{
+                    console.log(region)
                     let loc = location;
                     loc['region'] = region[0];
                     Util.location.SetUserLocationData(location.coords);
@@ -744,7 +771,7 @@ const Util = {
                     return interval + " minutes";
                 }
                 // Util.basicUtil.consoleLog('TimeSince', true);
-                return Math.floor(seconds) + " seconds";
+                return "A few seconds";
             }
             catch (error) {
                 Util.basicUtil.consoleLog('TimeSince', false);
