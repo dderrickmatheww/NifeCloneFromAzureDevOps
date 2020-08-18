@@ -44,6 +44,7 @@ function Profile ({route, navigation}){
   )
 }
 
+
 function MapMain ({route, navigation}){
   const {user, friends, refresh} = route.params;
   return(
@@ -89,8 +90,8 @@ class Navigator extends React.Component {
   }
 
   getNeededData = (db, currentUser, callback) => {
-    //if user exits get user data, get friend data set to async 
-    //console.log('wantedData App.js', currentUser)
+    //if user exits get user data, get friend data set to async     //console.log('wantedData App.js', currentUser)
+
     if (currentUser) {
 
         //load user
@@ -130,6 +131,7 @@ class Navigator extends React.Component {
         
     } else {
       //console.log('no user!');
+
     }
   }
 
@@ -296,7 +298,9 @@ class Navigator extends React.Component {
           this.setState({dataLoaded:true});
           this.setState({userExists:false});
           this.setState({userData: null});
+
           //console.log('No user');
+
         }
       });
     }
@@ -322,6 +326,7 @@ class Navigator extends React.Component {
               backgroundColor: theme.DARK
             }}
             initialRouteName='Map'
+
             overlayColor="#20232A"
             drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
             drawerType={"front"}

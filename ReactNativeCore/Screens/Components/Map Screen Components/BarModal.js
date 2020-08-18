@@ -41,7 +41,8 @@ class BarModal extends React.Component  {
         distanceBetween: distance
       })
     });
-    //TODO put into cloud func save to business data
+
+
     Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
       this.setState({
         checkedIn: dataObj.length
@@ -53,6 +54,8 @@ class BarModal extends React.Component  {
       this.setState({businessData:data})
       this.setState({loadingBusiness:false})
     })
+
+
   }
 
   toggleTab = (tabstate) => {
@@ -113,6 +116,7 @@ class BarModal extends React.Component  {
             <Text style={this.state.EventsTab ? styles.tabOff : styles.tabOn}>
               Events
             </Text>
+
           </TouchableOpacity>
           <TouchableOpacity onPress={ () => this.toggleTab({specials:true}) } style={[styles.tab]}>
             <Text style={this.state.SpecialsTab ? styles.tabOff : styles.tabOn}>
@@ -226,6 +230,7 @@ class BarModal extends React.Component  {
             </View>
           : null
         }
+
       </View>
     </View>
   )
@@ -252,7 +257,6 @@ class BarModal extends React.Component  {
             enabledBottomClamp={true}
             onCloseEnd={()=>{this.toggleModal(false)}}
           />
-          
       :
       null
     )

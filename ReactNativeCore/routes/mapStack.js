@@ -2,10 +2,12 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapScreen from '../Screens/MapScreen';
 
+
 function MapComp({route, navigation}){
   const {user, friends, refresh} = route.params;
   return(
     <MapScreen refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} ></MapScreen>
+
   );
 }
 
@@ -23,3 +25,4 @@ class MapStack extends React.Component {
 };
 
 export default MapStack;
+

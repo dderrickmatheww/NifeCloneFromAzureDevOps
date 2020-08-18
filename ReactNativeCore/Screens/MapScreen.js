@@ -261,7 +261,7 @@ class MapScreen extends React.Component  {
     places.forEach(function(place){
       if(place.id == key){
         wantedPlace = place;
-        let friends = friendState;
+        let friends = JSON.parse(friendState);
         if(friends.length > 0){
           friends.forEach((friend) => {
               if((friend.lastVisited) && (friend.lastVisited.buinessUID == places.id)){
@@ -299,6 +299,7 @@ class MapScreen extends React.Component  {
       userData:this.props.user,
       friendData:this.props.friends
     })
+
     this.clientLocationFunction();
   }
 
@@ -320,7 +321,6 @@ class MapScreen extends React.Component  {
         && 
         this.state.markers != undefined ? 
 
-         
         //if modal is not visible, show markers
         (
           <View style={localStyles.container}>  
