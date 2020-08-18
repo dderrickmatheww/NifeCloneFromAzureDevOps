@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
-import Util from '../../../scripts/Util';
 import {
     Headline
 } from 'react-native-paper';
@@ -11,19 +10,7 @@ import Favorite from '../../Universal Components/Favorite';
 export default class DataRow extends React.Component  {
     state = {
         modalVisable: false,
-        refresh: false,
-        userData: this.props.user
-    }
-
-    favoriteABar = async (buisnessUID, boolean) => {
-        let updatedUserData = this.state.userData;
-        await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, (user) => {
-            updatedUserData = user;
-        });
-        this.setState({
-            userData: updatedUserData
-        });
-        this.props.refresh(updatedUserData, null, null);
+        refresh: false
     }
 
     render() {
@@ -38,7 +25,7 @@ export default class DataRow extends React.Component  {
                             <Headline style={{color:theme.LIGHT_PINK, fontSize: 14, lineHeight: 0 }}>{this.props.name}</Headline>
                         </View>
                         <View style={localStyles.DrawerOverlay}>
-                            <Favorite favoriteTrigg={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}} user={this.state.userData} buisnessUID={this.props.buisnessUID} />
+                            <Favorite favoriteTrigg={(buisnessUID, boolean) => {this.props.favoriteABar(buisnessUID, boolean)}} buisnessUID={this.props.buisnessUID} />
                         </View>
                 </View>
                 {

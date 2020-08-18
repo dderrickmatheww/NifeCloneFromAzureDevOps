@@ -1,7 +1,6 @@
 import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
-import * as functions from 'firebase-functions';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
 import jsSHA from "jssha";
@@ -242,69 +241,59 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: async (user, buisnessUID, boolean, returnData) => {
+        setFavorite: (email, buisnessUID, boolean) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(user.email);
-            let doc = await setLoc.get();
-            console.log(Object.keys(doc.data().favoritePlaces).length);
-            console.log(boolean)
-            if(Object.keys(doc.data().favoritePlaces).length >= 10 && boolean) {
-                console.log('Here')
-                returnData(user, false);
-            }
-            else {
-                if (boolean) {
-                    let favoritePlaces = {
-                        [buisnessUID]: true
-                    }
-                    setLoc.set({
-                        favoritePlaces
-                    },
-                    {
-                        merge: true
-                    })
-                    .then(() => {
-                        if(user) {
-                            user.favoritePlaces[buisnessUID] = true;
-                            Util.basicUtil.consoleLog('setFavorite', true);
-                            returnData(user, true);
-                        }
-                        else {
-                            Util.basicUtil.consoleLog('setFavorite', false);
-                        }
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog('setFavorite', false);
-                        console.log("Firebase Error: " + error);
-                    });
+            let setLoc = db.collection('users').doc(email);
+            if (boolean) {
+                 let favoritePlaces = {
+                    [buisnessUID]: true
                 }
-                else {
-                    setLoc.update({
-                        ['favoritePlaces.'+buisnessUID]: false 
-                    })
-                    .then(() => {
-                        if(user) {
-                            user.favoritePlaces[buisnessUID] = false;
-                            Util.basicUtil.consoleLog('setFavorite', true);
-                            returnData(user, true);
+                setLoc.set({
+                    favoritePlaces
+                },
+                {
+                    merge: true
+                })
+                .then(() => {
+                    Util.asyncStorage.GetAsyncStorageVar('User', (userStringify) => {
+                        if(userStringify) {
+                            userStringify = JSON.parse(userStringify);
+                            userStringify = userStringify.favoritePlaces[buisnessUID] = true;
+                            userStringify = userStringify.toString();
+                            Util.asyncStorage.SetAsyncStorageVar('User', userStringify);
                         }
                         else {
                             console.log('User could not be found in AsyncStorage');
                             Util.basicUtil.consoleLog('setFavorite', false);
                         }
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog('setFavorite', false);
-                        console.log("Firebase Error: " + error);
                     });
-                }
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
             }
-            
+            else {
+                // Remove the 'capital' field from the document
+                setLoc.update({
+                    favoritePlaces: {
+                        [buisnessUID]: false
+                    }
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
         },
-        isFavorited: async (buisnessUID, user, returnData) => {
-            try { 
+        isFavorited: async (buisnessUID, returnData) => {
+            Util.asyncStorage.GetAsyncStorageVar('User', (userStringify) => {
                 let boolean;
-                let userStringify = user;
+                userStringify = JSON.parse(userStringify);
                 if(userStringify.favoritePlaces && userStringify.favoritePlaces[buisnessUID] == true) {
                     boolean = true;
                 }
@@ -313,11 +302,11 @@ const Util = {
                 }
                 Util.basicUtil.consoleLog('isFavorited', true);
                 returnData(boolean);
-            }
-            catch (error) {
+            })
+            .catch((error) => {
                 Util.basicUtil.consoleLog('isFavorited', false);
                 console.log("Firebase Error: " + error);
-            };
+            });
         },
         QueryPublicUsers: function(db, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
@@ -404,19 +393,7 @@ const Util = {
               blob.close();
               let image = await snapshot.ref.getDownloadURL();
               callback(image)
-        },
-        getFeedData: (query, email, returnData) => {
-            if(query) {
-                Util.location.GrabWhatsPoppinFeed(query, email, (dataObj) => {
-                    returnData(dataObj);
-                });
-            }
-            else {
-                Util.location.GrabWhatsPoppinFeed(null, email, (checkInArr) => {
-                    returnData(checkInArr);
-                });
-            }
-        } 
+        }
     },
     business:{
         UploadAddressProof: async (uri, name, email, callback) => {
@@ -609,10 +586,7 @@ const Util = {
                     Util.basicUtil.consoleLog('GetUserLocation', true);
                     returnData(loc);
                 })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('GetUserLocation', false);
-                    console.log("Expo Location Error: " + error);
-                });
+                
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
@@ -1283,14 +1257,6 @@ const Util = {
             },
             signOut: async()=>{
                 firebase.auth().signOut();
-            },
-            deleteOldData: () => {
-
-            },
-            setTrigger: () => {
-                functions.firestore.document('user/{email}').OnWirte((change, context) => { 
-                    console.log(change, context);
-                })
             }
         },
         OAuth: {
