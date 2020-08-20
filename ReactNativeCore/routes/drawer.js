@@ -268,7 +268,6 @@ class Navigator extends React.Component {
             dataLoaded: true,
             userExists: true
           });
-          Util.dataCalls.Firebase.setTrigger(user.email);
           if(user.displayName){
             this.initializeParams(user);
           }

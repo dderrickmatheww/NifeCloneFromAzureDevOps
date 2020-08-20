@@ -1,7 +1,6 @@
 import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
-import * as functions from 'firebase-functions';
 import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
 import jsSHA from "jssha";
@@ -586,76 +585,24 @@ const Util = {
             }
         },
         checkUserCheckInCount: async (buisnessUID, userLocation, returnData) => {
-            let db = firebase.firestore();
-            let dataObj = {};
-            let userArr = [];
-            let businessesArr = [];
-            let checkInCount = {};
-            let checkInArray = [];
-            let withinRadius;
-            let userRef = await db.collection('users').get();
-            if(buisnessUID) {
-                userLocation = {
-                    latitude: userLocation.latitude,
-                    longitude: userLocation.longitude
-                }
-                userRef.forEach(doc => {
-                    if(doc.data().checkIn) {
-                        if(doc.data().checkIn.buisnessUID == buisnessUID) {
-                            userArr.push(doc.data().checkIn.buisnessUID = {
-                                checkIn: doc.data().checkIn,
-                                user: {
-                                    email: doc.data().email,
-                                    checkInTime: doc.data().checkIn.checkInTime,
-                                    privacy: doc.data().checkIn.privacy
-                                }
-                            });
-                        }
-                    }
-                });
-                returnData(userArr);
+            obj = {
+                buisnessUID: buisnessUID,
+                userLocation: userLocation
             }
-            else {
-                if(userRef.empty){
-                    console.log('No matching documents.');
-                    return;
-                }
-                else {
-                    userRef.forEach(doc => {
-                        if(doc.data().checkIn && !doc.data().checkIn.address == "") {
-                            withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
-                            if(withinRadius) {
-                                userArr.push(doc.data().checkIn.buisnessUID = {
-                                    checkIn: doc.data().checkIn,
-                                    user: {
-                                        email: doc.data().email,
-                                        checkInTime: doc.data().checkIn.checkInTime,
-                                        privacy: doc.data().checkIn.privacy
-                                    }
-                                });
-                                if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {
-                                    businessesArr.push(doc.data().checkIn.buisnessUID);
-                                }
-                            }
-                        }
-                    });
-                    businessesArr.forEach((element) => {
-                        checkInCount =  {
-                            checkedIn: 0,
-                            buisnessUID: element,
-                            users: [],
-                            buisnessData: null
-                        }
-                        userArr.forEach((element2) => {
-                            Util.location.checkInCount(element2, element, checkInCount);
-                        });
-                        checkInArray.push(checkInCount);
-                    });
-                    checkInArray.sort(Util.basicUtil.compareValues('checkedIn', 'desc'));
-                    dataObj['countData'] = checkInArray;
-                    returnData(dataObj);
-                }
-            }
+            console.log(obj)
+            console.log(userLocation)
+            await fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
+            })
+            .then(response => response.json())
+            .then(async data => {
+                console.log(data)
+                returnData(data.result);
+            }).catch((error) => {
+                console.log(error)
+            }); 
         },
         checkInCount: (userData, buisnessData, checkInCount) => {
             if(userData.checkIn.buisnessUID == buisnessData) {
@@ -1240,14 +1187,6 @@ const Util = {
             },
             signOut: async()=>{
                 firebase.auth().signOut();
-            },
-            deleteOldData: () => {
-
-            },
-            setTrigger: () => {
-                functions.firestore.document('user/{email}').OnWirte((change, context) => { 
-                    console.log(change, context);
-                })
             }
         },
         OAuth: {
