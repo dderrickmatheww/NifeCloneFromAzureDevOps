@@ -24,14 +24,6 @@ export default class PopUpModal extends React.Component  {
         })
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.isVisible !== this.props.isVisible) {
-            this.setState({
-                isVisible: this.props.isVisible
-            })
-        }
-    }
-
     render(){
         
         return(

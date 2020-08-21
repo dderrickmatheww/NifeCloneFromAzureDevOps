@@ -604,46 +604,6 @@ const Util = {
                 console.log(error)
             }); 
         },
-        checkInCount: (userData, buisnessData, checkInCount) => {
-            if(userData.checkIn.buisnessUID == buisnessData) {
-                checkInCount['checkedIn']++;
-                checkInCount['users'].push(userData.user);
-                checkInCount['buisnessData'] = userData.checkIn;
-            }
-        },
-        IsWithinRadius: (checkIn, userLocation, boolean) => {
-            let withinRadius;
-            let checkInLat = parseInt(checkIn.latAndLong.split(',')[0]);
-            let checkInLong = parseInt(checkIn.latAndLong.split(',')[1]);
-            let userLat = parseInt(userLocation.coords.latitude);
-            let userLong = parseInt(userLocation.coords.longitude);
-            if(boolean) {
-                return withinRadius = isPointWithinRadius(
-                    {
-                        latitude: checkInLat,
-                        longitude: checkInLong
-                    }, 
-                    {
-                        latitude: userLat,
-                        longitude: userLong
-                    }, 
-                    100
-                ); 
-            }
-            else {
-                return withinRadius = isPointWithinRadius(
-                    {
-                        latitude: checkInLat,
-                        longitude: checkInLong
-                    }, 
-                    {
-                        latitude: userLat,
-                        longitude: userLong
-                    }, 
-                    32000
-                ); 
-            }
-        },
         DistanceBetween: (lat, long, userLocation, returnData) => {
             returnData(
                 getDistance(
