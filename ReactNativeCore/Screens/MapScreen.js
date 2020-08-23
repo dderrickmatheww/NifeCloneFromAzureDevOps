@@ -54,7 +54,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": theme.LIGHT_PINK
+          "color": "#D4DE24"
         }
       ]
     },
@@ -71,7 +71,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": theme.LIGHT_PINK
+          "color": "#D4DE24"
         }
       ]
     },
@@ -127,7 +127,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": theme.LIGHT_PINK
+          "color": "#D4DE24"
         }
       ]
     },
@@ -315,81 +315,79 @@ class MapScreen extends React.Component  {
   
   render() {
     return (
-      this.state.isLoaded ?
-
-        this.state.markers != null 
-        && 
-        this.state.markers != undefined ? 
-
-        //if modal is not visible, show markers
-        (
-          <View style={localStyles.container}>  
-            <MapView
-                style={localStyles.map}
-                provider={PROVIDER_GOOGLE}
-                showsMyLocationButton={true}
-                showsUserLocation={true}
-                showsPointsOfInterest={false}
-                userLocationUpdateInterval={1000}
-                region={this.state.region}
-                onUserLocationChange={(e) => {null}}
-                showsScale={true}
-                customMapStyle={this.mapStyle}
-                minZoomLevel={15}
-                maxZoomLevel={20}
-                moveOnMarkerPress={false}
-              >
-              {this.state.markers.map(marker => (
-                
-                  <Marker
-                    coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
-                    key={marker.id}
-                    onCalloutPress={(e) => console.log(e)}
-                    pinColor="#FF33CC"
-                    calloutOffset={{x: 0.5, y: 0.25}}
-                    calloutAnchor={{x: 0.5, y: 0.25}}
-                  > 
-                    <Callout 
-                      tooltip={true}
-                      onPress={(e) => {this.HandleMarkerPress(e, marker.id)}}
-                      style={{justifyContent: 'center', alignContent: 'center'}}
-                    >
-                      <VisitedByCallout marker={marker}/>
-                    </Callout>
-                  </ Marker>
-                ))} 
-            </MapView>
-            { this.state.isModalVisible ?
-                <BarModal 
-                isVisible={this.state.isModalVisible}
-                source={this.state.modalProps.source}
-                userLocation={this.state.region}
-                barName={this.state.modalProps.barName}
-                rating={this.state.modalProps.rating}
-                reviewCount={this.state.modalProps.reviewCount}
-                price={this.state.modalProps.price}
-                phone={this.state.modalProps.phone}
-                closed={this.state.modalProps.closed}
-                address={this.state.modalProps.address}
-                toggleModal={(boolean) => this.toggleModal(boolean)}
-                buisnessUID={this.state.modalProps.id}
-                latitude={this.state.modalProps.latitude}
-                longitude={this.state.modalProps.longitude}
-              > 
-              </BarModal> : null
-            }       
-            <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
-          </View>
-        ) 
-        :
-        null
-    :
+      this.state.isLoaded 
+      &&
+      this.state.markers != null 
+      && 
+      this.state.markers != undefined ? 
+      (
+        <View style={localStyles.container}>  
+          <MapView
+              style={localStyles.map}
+              provider={PROVIDER_GOOGLE}
+              showsMyLocationButton={true}
+              showsUserLocation={true}
+              showsPointsOfInterest={false}
+              userLocationUpdateInterval={1000}
+              region={this.state.region}
+              onUserLocationChange={(e) => {null}}
+              showsScale={true}
+              customMapStyle={this.mapStyle}
+              minZoomLevel={15}
+              maxZoomLevel={20}
+              moveOnMarkerPress={false}
+            >
+            {this.state.markers.map(marker => (
+              
+                <Marker
+                  coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
+                  key={marker.id}
+                  pinColor={"#5fcae7"}
+                  calloutOffset={{x: 0.5, y: 0.25}}
+                  calloutAnchor={{x: 0.5, y: 0.25}}
+                > 
+                  <Callout 
+                    tooltip={true}
+                    onPress={(e) => {this.HandleMarkerPress(e, marker.id)}}
+                    style={{justifyContent: 'center', alignContent: 'center'}}
+                  >
+                    <VisitedByCallout marker={marker}/>
+                  </Callout>
+                </ Marker>
+              ))} 
+          </MapView>
+          { this.state.isModalVisible ?
+              <BarModal 
+              isVisible={this.state.isModalVisible}
+              source={this.state.modalProps.source}
+              userLocation={this.state.region}
+              barName={this.state.modalProps.barName}
+              rating={this.state.modalProps.rating}
+              reviewCount={this.state.modalProps.reviewCount}
+              price={this.state.modalProps.price}
+              phone={this.state.modalProps.phone}
+              closed={this.state.modalProps.closed}
+              address={this.state.modalProps.address}
+              toggleModal={(boolean) => this.toggleModal(boolean)}
+              buisnessUID={this.state.modalProps.id}
+              latitude={this.state.modalProps.latitude}
+              longitude={this.state.modalProps.longitude}
+              user={this.state.userData}
+              refresh={this.props.refresh}
+            > 
+            </BarModal> : null
+          }       
+          <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} /> 
+        </View>
+      ) 
+      :
+        
       <View style={localStyles.activityIndicator}>
             <ActivityIndicator 
                 size={'large'}
-                color={theme.LIGHT_PINK}
+                color={"#D4DE24"}
             />
-            <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress}/>
+            <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress}/>
       </View>
   ) 
   }

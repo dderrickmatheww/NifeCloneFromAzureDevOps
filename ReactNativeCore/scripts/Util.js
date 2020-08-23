@@ -241,7 +241,7 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: (email, buisnessUID, boolean) => {
+        setFavorite: (email, buisnessUID, boolean, callback) => {
             let db = firebase.firestore();
             let setLoc = db.collection('users').doc(email);
             if (boolean) {
@@ -255,19 +255,8 @@ const Util = {
                     merge: true
                 })
                 .then(() => {
-                    Util.asyncStorage.GetAsyncStorageVar('User', (userStringify) => {
-                        if(userStringify) {
-                            userStringify = JSON.parse(userStringify);
-                            userStringify = userStringify.favoritePlaces[buisnessUID] = true;
-                            userStringify = userStringify.toString();
-                            Util.asyncStorage.SetAsyncStorageVar('User', userStringify);
-                        }
-                        else {
-                            console.log('User could not be found in AsyncStorage');
-                            Util.basicUtil.consoleLog('setFavorite', false);
-                        }
-                    });
                     Util.basicUtil.consoleLog('setFavorite', true);
+                    callback(true)
                 })
                 .catch((error) => {
                     Util.basicUtil.consoleLog('setFavorite', false);
@@ -283,6 +272,7 @@ const Util = {
                 })
                 .then(() => {
                     Util.basicUtil.consoleLog('setFavorite', true);
+                    callback(false)
                 })
                 .catch((error) => {
                     Util.basicUtil.consoleLog('setFavorite', false);
@@ -290,23 +280,20 @@ const Util = {
                 });
             }
         },
-        isFavorited: async (buisnessUID, returnData) => {
-            Util.asyncStorage.GetAsyncStorageVar('User', (userStringify) => {
-                let boolean;
-                userStringify = JSON.parse(userStringify);
-                if(userStringify.favoritePlaces && userStringify.favoritePlaces[buisnessUID] == true) {
-                    boolean = true;
+        isFavorited: async (buisnessUID, userData, returnData) => {
+            if(userData.favoritePlaces){
+                let favorites = userData.favoritePlaces;
+                console.log('Favorites ' + favorites)
+                if(favorites[buisnessUID]){
+                    returnData(favorites[buisnessUID]);
+                } else {
+                    returnData(false);
                 }
-                else {
-                    boolean = false;
-                }
-                Util.basicUtil.consoleLog('isFavorited', true);
-                returnData(boolean);
-            })
-            .catch((error) => {
-                Util.basicUtil.consoleLog('isFavorited', false);
-                console.log("Firebase Error: " + error);
-            });
+            } else {
+                returnData(false);
+            }
+
+            
         },
         QueryPublicUsers: function(db, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
@@ -761,7 +748,7 @@ const Util = {
                     return interval + " minutes";
                 }
                 // Util.basicUtil.consoleLog('TimeSince', true);
-                return "A few seconds";
+                return "a few seconds";
             }
             catch (error) {
                 Util.basicUtil.consoleLog('TimeSince', false);

@@ -3,7 +3,6 @@ import {
   Image,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
   View,
   ScrollView,
   ActivityIndicator
@@ -15,6 +14,7 @@ import * as firebase from 'firebase';
 import theme from "../../../Styles/theme";
 import Util from "../../../scripts/Util";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Favorite from "../../Universal Components/Favorite";
 
 class BarModal extends React.Component  {
 
@@ -35,6 +35,7 @@ class BarModal extends React.Component  {
   }
 
   componentDidMount() {
+    this.setState({userData:this.props.user})
     Util.location.DistanceBetween(this.props.latitude, this.props.longitude, this.props.userLocation, (distance) => {
       distance = distance.toFixed(1);
       this.setState({
@@ -56,6 +57,15 @@ class BarModal extends React.Component  {
     })
 
 
+  }
+
+  favoriteABar = async (buisnessUID, boolean) => {
+    console.log('handle press fired 2!!!!!!!!!!')
+    let updatedUserData = this.props.user;
+    await Util.user.setFavorite(updatedUserData.email, buisnessUID, boolean, (boolean) => {
+      updatedUserData['favoritePlaces'][buisnessUID] = boolean;
+      this.props.refresh(updatedUserData, null, null, null);
+    });
   }
 
   toggleTab = (tabstate) => {
@@ -99,7 +109,13 @@ class BarModal extends React.Component  {
   renderInner = () => (
     <View style={{flex: 1, height:2000}}>
       <View style={styles.panel}>
-        <Text style={styles.panelTitle}>{this.props.barName}</Text>
+        <View style={styles.titleHeader}>
+          <Text style={styles.panelTitle}>{this.props.barName}</Text>  
+          <View style={{position:"absolute", top:0, right:10}}>
+            <Favorite favoriteTrigg={(buisnessUID, bool) => this.favoriteABar(buisnessUID, bool)} user={this.props.user} buisnessUID={this.props.buisnessUID} />
+          </View>
+          
+        </View>
         <Text style={styles.panelText}>
           {this.state.distanceBetween} miles away
         </Text>
@@ -132,7 +148,7 @@ class BarModal extends React.Component  {
                   this.state.businessData ? 
                       this.state.businessData.events.length > 0 ?
                         this.state.businessData.events.map((event, i)=>(
-                          <View style={styles.eventCont}>
+                          <View  key={i} style={styles.eventCont}>
                             <Text  style={styles.eventText}>
                               {event.event}
                             </Text>
@@ -159,7 +175,7 @@ class BarModal extends React.Component  {
                   this.state.businessData ? 
                       this.state.businessData.specials.length > 0 ?
                         this.state.businessData.specials.map((special, i)=>(
-                          <View style={styles.eventCont}>
+                          <View key={i} style={styles.eventCont}>
                             <Text  style={styles.eventText}>
                               {special.special}
                             </Text>
@@ -214,7 +230,7 @@ class BarModal extends React.Component  {
                   />
                 </View>
               }
-              <View style={styles.panelButton}>
+              {!this.state.userData.isBusiness ? <View style={styles.panelButton}>
                 <CheckInOutButtons 
                   email={this.state.userData.email}
                   barName={this.props.barName}
@@ -226,7 +242,7 @@ class BarModal extends React.Component  {
                   source={this.props.source}
                   closed={this.props.closed}
                 />
-              </View>
+              </View> : null}
             </View>
           : null
         }
@@ -266,6 +282,20 @@ class BarModal extends React.Component  {
 const IMAGE_SIZE = 200
 
 const styles = StyleSheet.create({
+  panelTitle: {
+    fontSize: 25,
+    height: 35,
+    color: theme.LIGHT_PINK,
+    textAlign:"center",
+    fontWeight:"bold",
+    marginRight:10,
+    marginLeft:15
+  },
+  titleHeader:{
+    marginTop:-20,
+    flexDirection:"row",
+    justifyContent:"center",
+  },
   eventText:{
     color:theme.LIGHT_PINK,
     paddingVertical:10,
@@ -383,14 +413,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: theme.LIGHT_PINK
   },
-  panelTitle: {
-    fontSize: 25,
-    height: 35,
-    marginTop:-20,
-    color: theme.LIGHT_PINK,
-    textAlign:"center",
-    fontWeight:"bold"
-  },
+  
   panelSubtitle: {
     fontSize: 14,
     color: 'gray',
