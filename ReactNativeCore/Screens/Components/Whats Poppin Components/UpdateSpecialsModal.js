@@ -9,10 +9,11 @@ import * as firebase from 'firebase';
 import {Modal, Button, TextInput, Text} from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
+import { event } from "react-native-reanimated";
 
 export default class StatusModal extends React.Component  {
     state = {
-      statusText: null,
+      specialText: null,
       userData:null,
       saving:false,
     };
@@ -20,61 +21,89 @@ export default class StatusModal extends React.Component  {
 
     async componentDidMount() {
       this.setState({userData:this.props.user});
+      this.setState({business:this.props.business});
+      this.setState({specials:this.props.business.specials});
+
+      let specials = this.props.business.specials;
+      let text = ""
+      specials.forEach((special, i)=>{
+        console.log("how many specials: " + specials.length)
+        if(i != specials.length - 1){
+          text += special.special + ", "
+        }
+        else if(i == specials.length - 1 || specials.length == 1){
+          text += special.special
+        }
+        
+      })
+      this.setState({specialText:text})
     }
 
-    onStatusChange = (text) => {
-      console.log(text);
-      this.setState({statusText: text});
+    onEventChange = (text) => {
+      // console.log(text);
+      this.setState({specialText: text});
     }
+    
 
     onSaveStatus = () => {
-      this.setState({saving:true});
       
-      let status = this.state.statusText;
-      let obj = {status:{
-        text: status,
-        timestamp: new Date()
-      }}
-      let user = this.state.userData;
-      Util.user.UpdateUser(firebase.firestore(), user.email, obj, ()=>{
-        console.log('Updating Status');
-        
-       
-        this.updateUserAsync(user, obj);
-        this.setState({saving:false});
-        this.props.onSave();
-      });
+      
+      let specialText = this.state.specialText;
+      let user = this.state.userData
+      if(specialText){
+        this.setState({saving:true});
+        let specialArray = specialText.split(",")
+        let obj = {specials:[]}
+        specialArray.forEach((special)=>{
+          obj.specials.push({
+            special: special,
+            uploaded: new Date()
+          })
+        })
+        let business = this.state.business;
+        Util.business.UpdateUser(firebase.firestore(), user.email, obj, ()=>{
+          console.log('Updating specials');
+          
+         
+          this.updateUserAsync(business, obj);
+          this.setState({saving:false});
+          this.props.onSave();
+          this.props.onDismiss()
+        });
+      }
+      else{
+        alert('Please enter specials if you wish to update them')
+      }
     }
 
-    updateUserAsync = (user, obj) => {
-      user['status']= obj.status;
-      let userStringify = JSON.stringify(user);
-      Util.asyncStorage.SetAsyncStorageVar('User', userStringify)
-      .then(()=>{
-        this.props.refresh(user, null, null);
-      });
+    updateUserAsync = (business, obj) => {
+      business['specials']= obj.specials;
+      this.props.refresh(null, null, null, business);
+      
     }
 
     render(){     
         return(         
             <Modal 
-              contentContainerStyle={{width:"90%", height:"40%", borderRadius:50, alignSelf:"center"}}
+              contentContainerStyle={{width:"90%", height:"60%", borderRadius:50, alignSelf:"center"}}
               visible={this.props.isVisible}
               dismissable={true}
               onDismiss={() => this.props.onDismiss()}
+              theme={{colors:{placeholder:theme.LIGHT_GREY}}}
             >
               
                 <View style={localStyles.viewDark}>
                   <TextInput
                     mode={"outlined"}
                     label=""
-                    placeholder={"What're you feelin' tonight?"}
-                    onChangeText={text => this.onStatusChange(text)}
+                    placeholder={"What drink specials are you offering? (Ex: $1 Beer, $6 Vodka)"}
+                    onChangeText={text => this.onEventChange(text)}
                     style={localStyles.textInput}
-                    value={this.state.statusText}
+                    value={this.state.specialText}
                     multiline={true}
                     > 
                   </TextInput>
+        <Text style={{color:theme.LIGHT_PINK, alignSelf:"center", marginBottom:10}}>Seperate specials with commas {"\n"}(Ex: $1 Beer, $6 Vodka)</Text>
                   {
                     this.state.saving ?
                     <ActivityIndicator style={{marginVertical:5}} color={theme.LIGHT_PINK} size="large" />
@@ -86,7 +115,7 @@ export default class StatusModal extends React.Component  {
                       mode="contained" 
                       onPress={() => this.onSaveStatus()}
                     >
-                      <Text style={{color:theme.LIGHT_PINK}}>Update Status</Text>
+                      <Text style={{color:theme.LIGHT_PINK}}>Update Specials</Text>
                     </Button>
                   }
                   
@@ -120,7 +149,7 @@ const localStyles = StyleSheet.create({
     borderColor:theme.LIGHT_PINK,
     borderRadius:10,
     borderWidth:1,
-    width:"50%",
+    width:"60%",
     marginBottom:10
   },
 

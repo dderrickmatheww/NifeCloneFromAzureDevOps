@@ -33,6 +33,7 @@ export default class FriendsFeed extends React.Component  {
 
     setFriendDataArrays = () => {
         let friends = this.props.friends;
+        let user = this.props.user;
         let friendFeedData = [];
         friends.forEach((friend) =>{
             if(friend.status){
@@ -80,10 +81,12 @@ export default class FriendsFeed extends React.Component  {
                         }
                         friendFeedData.push(obj);
                     }
-                    
                 })
             }
+            
         });
+        
+        
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
         this.setState({feedData:friendFeedData});
     }
@@ -98,6 +101,11 @@ export default class FriendsFeed extends React.Component  {
     }
     onDismissSnackBar = () => {
         this.setState({snackBarVisable: false});
+    }
+
+    refresh = (userData, friendData, requests) =>{
+        this.props.refresh(userData, null, null)
+        setFriendDataArrays()
     }
 
     render() {
@@ -117,7 +125,7 @@ export default class FriendsFeed extends React.Component  {
                     </TouchableOpacity> 
                 </View>
                 
-               <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%"}}>
+               <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
                     {
                         this.state.feedData ?
                             this.state.feedData.map((data, i)=>(
@@ -143,7 +151,7 @@ export default class FriendsFeed extends React.Component  {
                     user={this.state.userData}
                     onDismiss={()=>this.onDismiss()}
                     onSave={()=>this.onSave()}
-                    refresh={this.props.refresh}
+                    refresh={this.refresh}
                   >
                   </StatusModal> 
                   :

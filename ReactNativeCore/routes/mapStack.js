@@ -2,19 +2,27 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MapScreen from '../Screens/MapScreen';
 
-function Map({route, navigation}){
-  const {user, refresh, friends} = route.params;
+
+function MapComp({route, navigation}){
+  const {user, friends, refresh} = route.params;
   return(
-    <MapScreen refresh={refresh} user={user} friends={friends} navigation={ navigation } onDrawerPress={() => navigation.openDrawer()}></MapScreen>
+    <MapScreen refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} ></MapScreen>
+
   );
 }
+
 const Stack = createStackNavigator();
-export default class MapStack extends React.Component {
-  render() {
+
+class MapStack extends React.Component {
+  render(){
     return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Map" component={Map} initialParams={{ user: this.props.user, refresh: this.props.refresh, friends: this.props.friends }} options={{title: 'Map'}} />
+        <Stack.Screen name="Map" component={MapComp} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}} options={{title: 'Map'}} />
       </Stack.Navigator>
     );
   }
+  
 };
+
+export default MapStack;
+

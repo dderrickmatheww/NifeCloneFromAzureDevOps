@@ -8,8 +8,6 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^10.0.6",
-    "@firebase/functions": "^0.4.49",
-    "@google-cloud/tasks": "^2.1.0",
     "@react-native-community/datetimepicker": "^2.4.1",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/bottom-tabs": "^5.3.4",
@@ -27,12 +25,11 @@
     "expo-device": "~2.0.0",
     "expo-facebook": "^8.1.0",
     "expo-google-app-auth": "^8.1.0",
-    "expo-image-picker": "~8.0.1",
     "expo-location": "^8.1.0",
     "expo-permissions": "^8.1.0",
     "expo-random": "^8.1.0",
     "expo-task-manager": "^8.1.0",
-    "firebase": "^7.17.1",
+    "firebase": "^7.15.5",
     "firebase-admin": "^8.13.0",
     "firebase-app": "0.0.1",
     "firebase-auth": "^0.1.2",
@@ -57,7 +54,8 @@
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.3.5",
     "react-navigation-material-bottom-tabs": "^2.2.8",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.20"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.20",
+    "expo-image-picker": "~8.0.1"
   },
   "devDependencies": {
     "@babel/core": "~7.6.0",

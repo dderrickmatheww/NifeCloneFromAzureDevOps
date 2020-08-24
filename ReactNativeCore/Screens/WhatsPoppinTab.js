@@ -3,6 +3,7 @@ import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, Styl
 import theme from '../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import { styles } from '../Styles/style';
+import getFeedData from './Components/Whats Poppin Components/GetFeedData';
 import DataRow from './Components/Whats Poppin Components/DataRow';
 import * as firebase from 'firebase';
 import InputWithIcon from './Universal Components/InputWithIcon';
@@ -18,24 +19,26 @@ class WhatsPoppin extends React.Component  {
     state = {
         isLoggedIn: firebase.auth().currentUser ? true : false,
         user: firebase.auth().currentUser ? firebase.auth().currentUser : null,
-        userData: null,
         query: null,
         feedData: null,
         DataRoWKey: 0,
         modalVisable: false,
+        tweetData: null,
+        launch: true,
         refresh: false
     }
 
-    componentDidMount () {
-        this.getUpdatedUserData();
-        this.props.navigation.addListener('isFocused', this.getUpdatedUserData)
+    async componentDidMount () {
+        await this.grabFeedData();
+        this.setState({ isLoggedIn: firebase.auth().currentUser ? true : false });
+        this.setState({ user: firebase.auth().currentUser });
+        this.rerender = this.props.navigation.addListener('focus', () => {
+            this.componentDidMount();
+        });
     }
 
-    getUpdatedUserData = () => {
-        this.setState({
-            userData: this.props.user
-        });
-        this.grabFeedData();
+    componentWillUnmount() {
+        this.rerender();
     }
 
     onChangeText = (text, type) => {
@@ -54,13 +57,18 @@ class WhatsPoppin extends React.Component  {
         if(this.state.isLoggedIn) {
             let query = this.state.query;
             let email = this.state.user.email;
-            Util.user.getFeedData(query, email, (dataObj) => {
+            getFeedData(query, email, (dataObj) => {
                 this.setState({ 
                     feedData: dataObj,
                     refresh: false
                 });
             });
         }
+    }
+
+    favoriteABar = (buisnessUID, boolean) => {
+        let email = this.state.user.email;
+        Util.user.setFavorite(email, buisnessUID, boolean);
     }
 
     onRefresh = () => {
@@ -70,60 +78,64 @@ class WhatsPoppin extends React.Component  {
 
     render() {
         return (
-            this.state.isLoggedIn ? 
-                this.state.feedData ?
-                <SafeAreaView style={styles.safeAreaContainer} >
-                    <View style={localStyles.navHeader}>
-                        {/* Drawer Button */}
-                        <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                            <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
-                        </TouchableOpacity> 
-                        <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
+            this.state.launch ?
+                this.state.isLoggedIn ? 
+                    this.state.feedData ?
+                    <SafeAreaView style={styles.safeAreaContainer} >
+                        <View style={localStyles.navHeader}>
+                            {/* Drawer Button */}
+                            <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
+                                <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
+                            </TouchableOpacity> 
+                            <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
+                                <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
+                            </View>
                         </View>
+                        <ScrollView 
+                            style={styles.dataRowScrollView}
+                            refreshControl={
+                                <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh} colors={'#ff1493'} />
+                            }
+                        >
+                            <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
+                            {
+                                this.state.feedData.countData.map(data => (
+                                    <DataRow 
+                                        key={ data.buisnessUID }
+                                        buisnessUID={ data.buisnessUID }
+                                        phone={ data.buisnessData.phone }
+                                        name={ data.buisnessData.name }
+                                        barImage={ data.buisnessData.barPhoto }
+                                        address={ data.buisnessData.address ? data.buisnessData.address.split(',') : null }
+                                        lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
+                                        long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
+                                        modalVisability={ this.state.modalVisable }
+                                        userData={ data.users }
+                                        usersCheckedIn={ data.checkedIn }
+                                        email={this.state.user.email}
+                                        favoriteABar={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
+                                    />
+                                ))
+                            }
+                            <View style={{ height: 120 }} />
+                        </ScrollView>
+                    </SafeAreaView>
+                    : 
+                    <View style={styles.viewDark}>
+                        <ActivityIndicator 
+                            size={'large'}
+                            color={theme.LIGHT_PINK}
+                        />
                     </View>
-                    <ScrollView 
-                        style={styles.dataRowScrollView}
-                        refreshControl={
-                            <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh} colors={theme.LIGHT_PINK} tintColor={theme.LIGHT_PINK} />
-                        }
-                    >
-                        <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
-                        {
-                            this.state.feedData.countData.map(data => (
-                                <DataRow 
-                                    key={ data.buisnessUID }
-                                    buisnessUID={ data.buisnessUID }
-                                    phone={ data.buisnessData.phone }
-                                    name={ data.buisnessData.name }
-                                    barImage={ data.buisnessData.barPhoto }
-                                    address={ data.buisnessData.address ? data.buisnessData.address.split(',') : null }
-                                    lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
-                                    long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
-                                    modalVisability={ this.state.modalVisable }
-                                    userData={ data.users }
-                                    usersCheckedIn={ data.checkedIn }
-                                    user={ this.props.user }
-                                    refresh={ this.props.refresh }
-                                    email={ this.state.user.email }
-                                />
-                            ))
-                        }
-                        <View style={{ height: 120 }} />
-                    </ScrollView>
-                </SafeAreaView>
                 : 
-                <View style={styles.viewDark}>
-                    <ActivityIndicator 
-                        size={'large'}
-                        color={theme.LIGHT_PINK}
-                    />
-                </View>
-            : 
-            <PleaseLogin 
-                navigation={this.props.navigation}
-                appName={`What's poppin' feed`}
-            />
+                <PleaseLogin 
+                    navigation={this.props.navigation}
+                    appName={`What's poppin' feed`}
+                />
+            :
+            <ScrollView style={styles.viewDark}>
+                
+            </ScrollView>
         )
     }
 }

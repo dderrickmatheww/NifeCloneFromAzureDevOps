@@ -2,12 +2,12 @@ import React  from "react";
 import {
     Text,
     View,
-    TouchableOpacity,
     ActivityIndicator,
     StyleSheet
 } from "react-native";
 import Util from '../../scripts/Util';
 import theme from '../../Styles/theme';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class CheckInOutButtons extends React.Component  {
     state = {
@@ -177,20 +177,19 @@ const localStyles = StyleSheet.create({
       backgroundColor: theme.DARK
     },
     descCont: {
-      width: '33%',
       borderRadius: 20,
       padding: '1%',
-      borderColor: "black",
+      borderColor: theme.LIGHT_PINK_OPAC,
       borderWidth: 1,
       justifyContent: 'center', 
       alignItems: 'center' ,
-      backgroundColor:"#BEB2C8",
+      backgroundColor:theme.LIGHT_PINK,
       textAlign:"center",
       margin:"1%",
     },
     modalText:{
       width: '100%',
-      color: "#20232a",
+      color: theme.DARK,
       padding: 5,
       fontWeight:"bold",
       justifyContent: 'center', 
@@ -201,6 +200,7 @@ const localStyles = StyleSheet.create({
     checkInContainer: {
         flexDirection:"row",
         width:"90%",
+        justifyContent:"center",
         textAlign:"center",
         alignItems:"center"
     },

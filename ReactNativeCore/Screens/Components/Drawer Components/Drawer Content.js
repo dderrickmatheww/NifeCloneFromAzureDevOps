@@ -61,7 +61,7 @@ export function DrawerContent(props) {
                                   {props.user.displayName}
                                 </Title>
                                 {/* status */}
-                                <Caption style={styles.caption}>
+                                <Caption style={styles.statuscaption}>
                                   Status: { props.user.status ? props.user.status.text ? props.user.status.text : "No Status" : "No Status"} 
                                 </Caption>
                                 {/* TODO Badge */}
@@ -84,18 +84,20 @@ export function DrawerContent(props) {
                                 {/* <Paragraph style={[styles.paragraph, styles.caption]}>420</Paragraph>
                                 <Caption style={styles.caption}>Points</Caption> */}
                             </View>
-                            <View style={styles.section}>
-                                <TouchableOpacity 
-                                    onPress={ () =>  props.navigation.navigate('Profile', {screen:'QRCode'})  }
-                                    style={{zIndex:10, alignSelf:"flex-end",position:"relative", width:"auto", height:"auto"}}
-                                >
-                                    <Avatar.Icon 
-                                    size={30}
-                                    icon="qrcode-scan"
-                                    color={theme.LIGHT_PINK}
-                                    style={{position: "relative",backgroundColor:theme.DARK, color:theme.LIGHT_PINK}}/>
-                                </TouchableOpacity>
-                            </View>
+                            {!props.user.isBusiness ?
+                                <View style={styles.section}>
+                                    <TouchableOpacity 
+                                        onPress={ () =>  props.navigation.navigate('Profile', {screen:'QRCode'})  }
+                                        style={{zIndex:10, alignSelf:"flex-end",position:"relative", width:"auto", height:"auto"}}
+                                    >
+                                        <Avatar.Icon 
+                                        size={30}
+                                        icon="qrcode-scan"
+                                        color={theme.LIGHT_PINK}
+                                        style={{position: "relative",backgroundColor:theme.DARK, color:theme.LIGHT_PINK}}/>
+                                    </TouchableOpacity>
+                                </View> 
+                            : null}
                         </View>
                     </View>
 
@@ -133,9 +135,10 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Map</Text>}
-                            onPress={() => {props.navigation.navigate('Map')}}
+                            onPress={() => {props.navigation.navigate('Map', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}
                         />
-                        <List.Accordion
+                       { !props.user.isBusiness ? 
+                            <List.Accordion
                                 titleStyle={{color:theme.LIGHT_PINK}}
                                 
                                 title="      You"
@@ -161,44 +164,63 @@ export function DrawerContent(props) {
                                         props.navigation.closeDrawer();    
                                     }}
                                 />
+                               
                                 <DrawerItem 
-                                    icon={() => (
-                                        <Ionicons 
-                                        name="ios-people" 
-                                        color={theme.LIGHT_PINK}
-                                        size={20}
-                                        />
-                                    )}
-                                    label={()=> <Text style={styles.text}>Friends</Text>}
-                                    onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
-                                                    params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
-                                                })
+                                        icon={() => (
+                                            <Ionicons 
+                                            name="ios-people" 
+                                            color={theme.LIGHT_PINK}
+                                            size={20}
+                                            />
+                                        )}
+                                        label={()=> <Text style={styles.text}>Friends</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
+                                                        params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
+                                                    })
+                                                }
                                             }
-                                        }
-                                />
+                                    /> 
+                               
+                                {/* <DrawerItem 
+                                        icon={() => (
+                                            <Ionicons 
+                                            name="md-search" 
+                                            color={theme.LIGHT_PINK}
+                                            size={20}
+                                            />
+                                        )}
+                                        label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
+                                    /> */}
+                                
+                              
+                                <DrawerItem 
+                                        icon={() => (
+                                            <Ionicons 
+                                            name="md-qr-scanner" 
+                                            color={theme.LIGHT_PINK}
+                                            size={20}
+                                            />
+                                        )}
+                                        label={()=> <Text style={styles.text}>Scan Friends QR Code</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
+                                    /> 
+                            </List.Accordion> :
                                 <DrawerItem 
                                     icon={() => (
-                                        <Ionicons 
-                                        name="md-search" 
+                                        <MaterialCommunityIcons 
+                                        name="account-box-outline" 
                                         color={theme.LIGHT_PINK}
                                         size={20}
                                         />
                                     )}
-                                    label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
-                                    onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
+                                    label={()=> <Text style={styles.text}>Profile</Text>}
+                                    onPress={() => {
+                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, friends:props.friends}})
+                                        props.navigation.closeDrawer();    
+                                    }}
                                 />
-                                <DrawerItem 
-                                    icon={() => (
-                                        <Ionicons 
-                                        name="md-qr-scanner" 
-                                        color={theme.LIGHT_PINK}
-                                        size={20}
-                                        />
-                                    )}
-                                    label={()=> <Text style={styles.text}>Scan Friends QR Code</Text>}
-                                    onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
-                                />
-                            </List.Accordion>
+                            }
                         
                         <DrawerItem 
                             icon={() => (
@@ -228,7 +250,7 @@ export function DrawerContent(props) {
                         <TouchableRipple onPress={() => {toggleTheme()}}>
                             <View style={styles.preference}>
                                 <Text>Dark Theme</Text>
-                                <View pointerEvents="none">
+                                <View pointerEvents="none"> 
                                     <Switch value={theme.DARK}/>
                                 </View>
                             </View>
@@ -277,6 +299,13 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       color: theme.LIGHT_PINK
     },
+    statuscaption: {
+        fontSize: 12,
+        lineHeight: 14,
+        color:theme.LIGHT_PINK,
+        flexWrap:"wrap",
+        overflow:"hidden"
+      },
     caption: {
       fontSize: 12,
       lineHeight: 14,

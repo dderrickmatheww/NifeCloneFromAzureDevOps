@@ -241,82 +241,59 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: async (user, buisnessUID, boolean, returnData) => {
+        setFavorite: (email, buisnessUID, boolean, callback) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(user.email);
-            let doc = await setLoc.get();
-            console.log(Object.keys(doc.data().favoritePlaces).length);
-            console.log(boolean)
-            if(Object.keys(doc.data().favoritePlaces).length >= 10 && boolean) {
-                console.log('Here')
-                returnData(user, false);
+            let setLoc = db.collection('users').doc(email);
+            if (boolean) {
+                 let favoritePlaces = {
+                    [buisnessUID]: true
+                }
+                setLoc.set({
+                    favoritePlaces
+                },
+                {
+                    merge: true
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                    callback(true)
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
             }
             else {
-                if (boolean) {
-                    let favoritePlaces = {
-                        [buisnessUID]: true
+                // Remove the 'capital' field from the document
+                setLoc.update({
+                    favoritePlaces: {
+                        [buisnessUID]: false
                     }
-                    setLoc.set({
-                        favoritePlaces
-                    },
-                    {
-                        merge: true
-                    })
-                    .then(() => {
-                        if(user) {
-                            user.favoritePlaces[buisnessUID] = true;
-                            Util.basicUtil.consoleLog('setFavorite', true);
-                            returnData(user, true);
-                        }
-                        else {
-                            Util.basicUtil.consoleLog('setFavorite', false);
-                        }
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog('setFavorite', false);
-                        console.log("Firebase Error: " + error);
-                    });
-                }
-                else {
-                    setLoc.update({
-                        ['favoritePlaces.'+buisnessUID]: false 
-                    })
-                    .then(() => {
-                        if(user) {
-                            user.favoritePlaces[buisnessUID] = false;
-                            Util.basicUtil.consoleLog('setFavorite', true);
-                            returnData(user, true);
-                        }
-                        else {
-                            console.log('User could not be found in AsyncStorage');
-                            Util.basicUtil.consoleLog('setFavorite', false);
-                        }
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog('setFavorite', false);
-                        console.log("Firebase Error: " + error);
-                    });
-                }
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('setFavorite', true);
+                    callback(false)
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('setFavorite', false);
+                    console.log("Firebase Error: " + error);
+                });
             }
-            
         },
-        isFavorited: async (buisnessUID, user, returnData) => {
-            try { 
-                let boolean;
-                let userStringify = user;
-                if(userStringify.favoritePlaces && userStringify.favoritePlaces[buisnessUID] == true) {
-                    boolean = true;
+        isFavorited: async (buisnessUID, userData, returnData) => {
+            if(userData.favoritePlaces){
+                let favorites = userData.favoritePlaces;
+                console.log('Favorites ' + favorites)
+                if(favorites[buisnessUID]){
+                    returnData(favorites[buisnessUID]);
+                } else {
+                    returnData(false);
                 }
-                else {
-                    boolean = false;
-                }
-                Util.basicUtil.consoleLog('isFavorited', true);
-                returnData(boolean);
+            } else {
+                returnData(false);
             }
-            catch (error) {
-                Util.basicUtil.consoleLog('isFavorited', false);
-                console.log("Firebase Error: " + error);
-            };
+
+            
         },
         QueryPublicUsers: function(db, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
@@ -403,19 +380,7 @@ const Util = {
               blob.close();
               let image = await snapshot.ref.getDownloadURL();
               callback(image)
-        },
-        getFeedData: (query, email, returnData) => {
-            if(query) {
-                Util.location.GrabWhatsPoppinFeed(query, email, (dataObj) => {
-                    returnData(dataObj);
-                });
-            }
-            else {
-                Util.location.GrabWhatsPoppinFeed(null, email, (checkInArr) => {
-                    returnData(checkInArr);
-                });
-            }
-        } 
+        }
     },
     business:{
         UploadAddressProof: async (uri, name, email, callback) => {
@@ -536,6 +501,48 @@ const Util = {
                 console.log("Firebase Error: " + error);
             });
         },
+        GetBusinessesByUserFavorites: function(favArr, callback){
+            const businessRef = firebase.firestore().collection('businesses')
+            var businesses = []
+            var favorites =  businessRef.where('businessId', 'in', favArr).get()
+            .then((data)=>{
+                data.forEach((business)=>{
+                    if(business && business.data()){
+                        businesses.push(business.data())
+                    }
+                })
+                callback(businesses)
+                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
+                console.log("Firebase Error: " + error);
+            });
+            // if(favorites.empty){
+            //     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
+            //     return;
+            // }
+            // favorites.forEach(doc=>{
+            //     businesses.push(doc.data);
+            // })
+            // console.log(JSON.stringify(businesses[0]))
+        },
+        GetBusinessByUID: async (uid, callback) => {
+            let busRef = firebase.firestore().collection('businesses')
+            const snapshot = await busRef.where('businessId', "==", uid).get()
+            if(!snapshot.empty){
+                Util.basicUtil.consoleLog("GetBusinessByUID", true)
+                let tempArr = []
+                snapshot.forEach((doc) =>{
+                    tempArr.push(doc.data())
+                })
+                callback(tempArr[0])
+            } else {
+                Util.basicUtil.consoleLog("GetBusinessByUID", false)
+                callback(false)
+            }
+            
+        }
     },
     location: {
         SaveLocation: function(db, email, location, callback){
@@ -559,16 +566,14 @@ const Util = {
         GetUserLocation: (returnData) => {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Location.reverseGeocodeAsync(location.coords).then((region)=>{
+                    console.log(region)
                     let loc = location;
                     loc['region'] = region[0];
                     Util.location.SetUserLocationData(location.coords);
                     Util.basicUtil.consoleLog('GetUserLocation', true);
                     returnData(loc);
                 })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('GetUserLocation', false);
-                    console.log("Expo Location Error: " + error);
-                });
+                
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
@@ -683,7 +688,7 @@ const Util = {
                     return interval + " minutes";
                 }
                 // Util.basicUtil.consoleLog('TimeSince', true);
-                return Math.floor(seconds) + " seconds";
+                return "a few seconds";
             }
             catch (error) {
                 Util.basicUtil.consoleLog('TimeSince', false);
