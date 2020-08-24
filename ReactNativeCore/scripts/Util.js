@@ -590,83 +590,23 @@ const Util = {
             }
         },
         checkUserCheckInCount: async (buisnessUID, userLocation, returnData) => {
-            let db = firebase.firestore();
-            let dataObj = {};
-            let userArr = [];
-            let businessesArr = [];
-            let checkInCount = {};
-            let checkInArray = [];
-            let withinRadius;
-            let userRef = await db.collection('users').get();
-            if(buisnessUID) {
-                userLocation = {
-                    latitude: userLocation.latitude,
-                    longitude: userLocation.longitude
-                }
-                userRef.forEach(doc => {
-                    if(doc.data().checkIn) {
-                        if(doc.data().checkIn.buisnessUID == buisnessUID) {
-                            userArr.push(doc.data().checkIn.buisnessUID = {
-                                checkIn: doc.data().checkIn,
-                                user: {
-                                    email: doc.data().email,
-                                    checkInTime: doc.data().checkIn.checkInTime,
-                                    privacy: doc.data().checkIn.privacy
-                                }
-                            });
-                        }
-                    }
-                });
-                returnData(userArr);
+            obj = {
+                buisnessUID: buisnessUID,
+                userLocation: userLocation
             }
-            else {
-                if(userRef.empty){
-                    console.log('No matching documents.');
-                    return;
-                }
-                else {
-                    userRef.forEach(doc => {
-                        if(doc.data().checkIn && !doc.data().checkIn.address == "") {
-                            withinRadius = Util.location.IsWithinRadius(doc.data().checkIn, userLocation, false);
-                            if(withinRadius) {
-                                userArr.push(doc.data().checkIn.buisnessUID = {
-                                    checkIn: doc.data().checkIn,
-                                    user: {
-                                        email: doc.data().email,
-                                        checkInTime: doc.data().checkIn.checkInTime,
-                                        privacy: doc.data().checkIn.privacy
-                                    }
-                                });
-                                if(!businessesArr.includes(doc.data().checkIn.buisnessUID)) {
-                                    businessesArr.push(doc.data().checkIn.buisnessUID);
-                                }
-                            }
-                        }
-                    });
-                    businessesArr.forEach((element) => {
-                        checkInCount =  {
-                            checkedIn: 0,
-                            buisnessUID: element,
-                            users: [],
-                            buisnessData: null
-                        }
-                        userArr.forEach((element2) => {
-                            Util.location.checkInCount(element2, element, checkInCount);
-                        });
-                        checkInArray.push(checkInCount);
-                    });
-                    checkInArray.sort(Util.basicUtil.compareValues('checkedIn', 'desc'));
-                    dataObj['countData'] = checkInArray;
-                    returnData(dataObj);
-                }
-            }
-        },
-        checkInCount: (userData, buisnessData, checkInCount) => {
-            if(userData.checkIn.buisnessUID == buisnessData) {
-                checkInCount['checkedIn']++;
-                checkInCount['users'].push(userData.user);
-                checkInCount['buisnessData'] = userData.checkIn;
-            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
+            })
+            .then(response => response.json())
+            .then(async data => {
+                returnData(data.result);
+                Util.basicUtil.consoleLog('checkUserCheckInCount', true);
+            }).catch((error) => {
+                console.log(error)
+                Util.basicUtil.consoleLog('checkUserCheckInCount', false);
+            }); 
         },
         IsWithinRadius: (checkIn, userLocation, boolean) => {
             let withinRadius;
