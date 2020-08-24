@@ -161,7 +161,7 @@ export default class FriendsFeed extends React.Component  {
             }
             
             if(user.checkIn){
-                if((user.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && user.checkIn.checkInTime){
+                if((user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && user.checkIn.checkInTime){
                     // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                     let obj = {
                         name: user.displayName,

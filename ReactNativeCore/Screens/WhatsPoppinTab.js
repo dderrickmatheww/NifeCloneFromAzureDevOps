@@ -81,7 +81,7 @@ class WhatsPoppin extends React.Component  {
             this.state.launch ?
                 this.state.isLoggedIn ? 
                     this.state.feedData ?
-                    <SafeAreaView style={styles.safeAreaContainer} >
+                    <View style={styles.safeAreaContainer} >
                         <View style={localStyles.navHeader}>
                             {/* Drawer Button */}
                             <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
@@ -94,7 +94,7 @@ class WhatsPoppin extends React.Component  {
                         <ScrollView 
                             style={styles.dataRowScrollView}
                             refreshControl={
-                                <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh} colors={'#ff1493'} />
+                                <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh}  />
                             }
                         >
                             <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
@@ -119,7 +119,7 @@ class WhatsPoppin extends React.Component  {
                             }
                             <View style={{ height: 120 }} />
                         </ScrollView>
-                    </SafeAreaView>
+                    </View>
                     : 
                     <View style={styles.viewDark}>
                         <ActivityIndicator 

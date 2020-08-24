@@ -28,7 +28,7 @@ export default class FriendsFeed extends React.Component  {
         this.setState({userData:this.props.user});
         this.setState({friendData:this.props.friends});
         this.setFriendDataArrays();
-        console.log("friendData: " + JSON.stringify(this.props.friends));
+        //console.log("friendData: " + JSON.stringify(this.props.friends));
     }
 
     setFriendDataArrays = () => {
@@ -37,7 +37,7 @@ export default class FriendsFeed extends React.Component  {
         let friendFeedData = [];
         friends.forEach((friend) =>{
             if(friend.status){
-                console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
+                //console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
                 let obj = {
                     name: friend.displayName,
                     text: friend.status.text,
@@ -51,7 +51,7 @@ export default class FriendsFeed extends React.Component  {
             }
             if(friend.checkIn){
                 if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime){
-                    // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
+                    // //console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                     let obj = {
                         name: friend.displayName,
                         text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
@@ -69,7 +69,7 @@ export default class FriendsFeed extends React.Component  {
                 keys.forEach((key)=>{
                     let visited = friend.lastVisited[key];
                     if(visited.privacy == "Public" || visited.privacy == "Friends"){
-                        // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
+                        // //console.log(" \n visited.checkInTime. :" + visited.checkInTime);
                         let obj = {
                             name: friend.displayName,
                             text: "Visited " + (visited.name ? visited.name : "somewhere"),
