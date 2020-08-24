@@ -158,7 +158,6 @@ const Util = {
         CheckIn: async (checkInObj, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(checkInObj.email);
-            let data = await db.collection('users').doc(checkInObj.email).get();
             let lastVisited = {};
             lastVisited[checkInObj.buisnessUID] = {
                 checkInTime: new Date(),
@@ -169,71 +168,47 @@ const Util = {
                 address: checkInObj.address,
                 barPhoto: checkInObj.image,
             }
-            if(data.data().checkIn) {
-                setLoc.update({
-                    'checkIn.checkInTime': new Date(),
-                    'checkIn.latAndLong': checkInObj.latAndLong,
-                    'checkIn.buisnessUID': checkInObj.buisnessUID,
-                    'checkIn.privacy': checkInObj.privacy,
-                    'checkIn.name': checkInObj.barName,
-                    'checkIn.phone': checkInObj.phone,
-                    'checkIn.address': checkInObj.address,
-                    'checkIn.barPhoto': checkInObj.image
-                })
-                .then(() => {
-                    setLoc.set({
-                        lastVisited
-                    })
-                    .then(() => {
-                        Util.basicUtil.consoleLog('CheckIn', true);
-                        returnData('true');
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog('CheckIn', false);
-                        console.log("Firebase Error: " + error);
-                    });
-                })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('CheckIn', false);
-                    console.log("Firebase Error: " + error);
-                });
-            }
-            else {
-                setLoc.set({
-                    checkIn: {
-                        checkInTime: new Date(),
-                        latAndLong: checkInObj.latAndLong,
-                        buisnessUID: checkInObj.buisnessUID,
-                        privacy: checkInObj.privacy,
-                        name: checkInObj.barName,
-                        phone: checkInObj.phone,
-                        address: checkInObj.address,
-                        barPhoto: checkInObj.image,
-                    },
-                    lastVisited
-                })
-                .then(() => {
-                    Util.basicUtil.consoleLog('CheckIn', true);
-                    returnData('true');
-                })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('CheckIn', false);
-                    console.log("Firebase Error: " + error);
-                });
-            }
+            setLoc.set({
+                checkIn: {
+                    checkInTime: new Date(),
+                    latAndLong: checkInObj.latAndLong,
+                    buisnessUID: checkInObj.buisnessUID,
+                    privacy: checkInObj.privacy,
+                    name: checkInObj.barName,
+                    phone: checkInObj.phone,
+                    address: checkInObj.address,
+                    barPhoto: checkInObj.image,
+                },
+                lastVisited
+            },
+            {
+                merge: true
+            })
+            .then(() => {
+                Util.basicUtil.consoleLog('CheckIn', true);
+                returnData('true');
+            })
+            .catch((error) => {
+                Util.basicUtil.consoleLog('CheckIn', false);
+                console.log("Firebase Error: " + error);
+            });
         },
         CheckOut: async (email, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
-            setLoc.update({
-                'checkIn.buisnessUID': "",
-                'checkIn.checkInTime': "",
-                'checkIn.privacy': "",
-                'checkIn.latAndLong': "",
-                'checkIn.name': "",
-                'checkIn.phone': "",
-                'checkIn.address': "",
-                'checkIn.barPhoto': "",
+            setLoc.set({
+            checkIn: {
+                buisnessUID: "",
+                checkInTime: "",
+                privacy: "",
+                latAndLong: "",
+                name: "",
+                phone: "",
+                address: "",
+                barPhoto: "",
+            }},
+            {
+                merge: true
             })
             .then(() => {
                 Util.basicUtil.consoleLog('CheckOut', true);
