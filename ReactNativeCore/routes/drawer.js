@@ -285,15 +285,11 @@ class Navigator extends React.Component {
       firebase.auth().onAuthStateChanged((user) =>{
         this.setState({authLoaded: true});
         if (user) {
-<<<<<<< HEAD
           this.setState({
             dataLoaded: true,
             userExists: true
           });
-=======
-          this.setState({dataLoaded:true});
-          this.setState({userExists:true}); 
->>>>>>> dev
+
           if(user.displayName){
             this.initializeParams(user);
           }
