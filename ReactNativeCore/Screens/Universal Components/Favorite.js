@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text,  ActivityIndicator } from 'react-native';
 import IconWithBadge from './IconWithBadge';
 import theme from '../../Styles/theme';
 import { styles } from '../../Styles/style';
 import Util from '../../scripts/Util';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default class Favorite extends React.Component  { 
 
@@ -13,7 +14,7 @@ export default class Favorite extends React.Component  {
     }
 
     componentDidMount() {
-        Util.user.isFavorited(this.props.buisnessUID, (boolean) => {
+        Util.user.isFavorited(this.props.buisnessUID, this.props.user, (boolean) => {
             this.setState({
                 isFavorited: boolean,
                 loading: false
@@ -21,28 +22,28 @@ export default class Favorite extends React.Component  {
         });
     }
 
+    handlePress = (bool) =>{
+        
+        this.setState({isFavorited: bool});
+        this.props.favoriteTrigg(this.props.buisnessUID, bool);
+    }
+
     render() {
         return ( 
-            <View style={{width: 10, textAlign:"center", alignItems:"center"}}>
+            <View style={{width: 10, textAlign:"center", alignItems:"center", zIndex:1000}}>
                 {
                     !this.state.loading ?
                         this.state.isFavorited ?
                             <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({isFavorited: false});
-                                    this.props.favoriteTrigg(this.props.buisnessUID, false);
-                                }}
+                                onPress={() => this.handlePress(false)}
                             >
                                 <IconWithBadge name={'star'} badgeCount={0} color={theme.LIGHT_PINK} size={30} type={'AntDesign'} />
                             </TouchableOpacity>
                         :
                         <TouchableOpacity
-                            onPress={async () => {
-                                this.setState({isFavorited: true});
-                                this.props.favoriteTrigg(this.props.buisnessUID, true);
-                            }}
+                        onPress={() => this.handlePress(true)}
                         >
-                            <IconWithBadge name={'staro'} badgeCount={0} color={theme.DARK_PINK} size={30} type={'AntDesign'} />
+                            <IconWithBadge name={'staro'} badgeCount={0} color={theme.LIGHT_PINK_OPAC} size={30} type={'AntDesign'} />
                         </TouchableOpacity>
                     :
                     <View style={styles.viewDark}>

@@ -94,7 +94,7 @@ class WhatsPoppin extends React.Component  {
                         <ScrollView 
                             style={styles.dataRowScrollView}
                             refreshControl={
-                                <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh} colors={'#ff1493'} tintColor={'#ff1493'} />
+                                <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh} colors={'#ff1493'} />
                             }
                         >
                             <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
