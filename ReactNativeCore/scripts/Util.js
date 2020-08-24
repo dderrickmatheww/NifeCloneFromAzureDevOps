@@ -158,6 +158,7 @@ const Util = {
         CheckIn: async (checkInObj, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(checkInObj.email);
+            let data = await db.collection('users').doc(checkInObj.email).get();
             let lastVisited = {};
             lastVisited[checkInObj.buisnessUID] = {
                 checkInTime: new Date(),
@@ -168,47 +169,71 @@ const Util = {
                 address: checkInObj.address,
                 barPhoto: checkInObj.image,
             }
-            setLoc.set({
-                checkIn: {
-                    checkInTime: new Date(),
-                    latAndLong: checkInObj.latAndLong,
-                    buisnessUID: checkInObj.buisnessUID,
-                    privacy: checkInObj.privacy,
-                    name: checkInObj.barName,
-                    phone: checkInObj.phone,
-                    address: checkInObj.address,
-                    barPhoto: checkInObj.image,
-                },
-                lastVisited
-            },
-            {
-                merge: true
-            })
-            .then(() => {
-                Util.basicUtil.consoleLog('CheckIn', true);
-                returnData('true');
-            })
-            .catch((error) => {
-                Util.basicUtil.consoleLog('CheckIn', false);
-                console.log("Firebase Error: " + error);
-            });
+            if(data.data().checkIn) {
+                setLoc.update({
+                    'checkIn.checkInTime': new Date(),
+                    'checkIn.latAndLong': checkInObj.latAndLong,
+                    'checkIn.buisnessUID': checkInObj.buisnessUID,
+                    'checkIn.privacy': checkInObj.privacy,
+                    'checkIn.name': checkInObj.barName,
+                    'checkIn.phone': checkInObj.phone,
+                    'checkIn.address': checkInObj.address,
+                    'checkIn.barPhoto': checkInObj.image
+                })
+                .then(() => {
+                    setLoc.set({
+                        lastVisited
+                    })
+                    .then(() => {
+                        Util.basicUtil.consoleLog('CheckIn', true);
+                        returnData('true');
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.consoleLog('CheckIn', false);
+                        console.log("Firebase Error: " + error);
+                    });
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('CheckIn', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
+            else {
+                setLoc.set({
+                    checkIn: {
+                        checkInTime: new Date(),
+                        latAndLong: checkInObj.latAndLong,
+                        buisnessUID: checkInObj.buisnessUID,
+                        privacy: checkInObj.privacy,
+                        name: checkInObj.barName,
+                        phone: checkInObj.phone,
+                        address: checkInObj.address,
+                        barPhoto: checkInObj.image,
+                    },
+                    lastVisited
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('CheckIn', true);
+                    returnData('true');
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('CheckIn', false);
+                    console.log("Firebase Error: " + error);
+                });
+            }
         },
         CheckOut: async (email, returnData) => {
             let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
-            setLoc.set({
-            checkIn: {
-                buisnessUID: "",
-                checkInTime: "",
-                privacy: "",
-                latAndLong: "",
-                name: "",
-                phone: "",
-                address: "",
-                barPhoto: "",
-            }},
-            {
-                merge: true
+            setLoc.update({
+                'checkIn.buisnessUID': "",
+                'checkIn.checkInTime': "",
+                'checkIn.privacy': "",
+                'checkIn.latAndLong': "",
+                'checkIn.name': "",
+                'checkIn.phone': "",
+                'checkIn.address': "",
+                'checkIn.barPhoto': "",
             })
             .then(() => {
                 Util.basicUtil.consoleLog('CheckOut', true);
@@ -589,20 +614,52 @@ const Util = {
                 buisnessUID: buisnessUID,
                 userLocation: userLocation
             }
-            console.log(obj)
-            console.log(userLocation)
-            await fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
             { 
                 method: 'POST',
                 body: JSON.stringify(obj)
             })
             .then(response => response.json())
             .then(async data => {
-                console.log(data)
                 returnData(data.result);
+                Util.basicUtil.consoleLog('checkUserCheckInCount', true);
             }).catch((error) => {
                 console.log(error)
+                Util.basicUtil.consoleLog('checkUserCheckInCount', false);
             }); 
+        },
+        IsWithinRadius: (checkIn, userLocation, boolean) => {
+            let withinRadius;
+            let checkInLat = parseInt(checkIn.latAndLong.split(',')[0]);
+            let checkInLong = parseInt(checkIn.latAndLong.split(',')[1]);
+            let userLat = parseInt(userLocation.coords.latitude);
+            let userLong = parseInt(userLocation.coords.longitude);
+            if(boolean) {
+                return withinRadius = isPointWithinRadius(
+                    {
+                        latitude: checkInLat,
+                        longitude: checkInLong
+                    }, 
+                    {
+                        latitude: userLat,
+                        longitude: userLong
+                    }, 
+                    100
+                ); 
+            }
+            else {
+                return withinRadius = isPointWithinRadius(
+                    {
+                        latitude: checkInLat,
+                        longitude: checkInLong
+                    }, 
+                    {
+                        latitude: userLat,
+                        longitude: userLong
+                    }, 
+                    32000
+                ); 
+            }
         },
         DistanceBetween: (lat, long, userLocation, returnData) => {
             returnData(

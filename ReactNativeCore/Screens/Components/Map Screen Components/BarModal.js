@@ -148,7 +148,7 @@ class BarModal extends React.Component  {
           }}>
             <Image style={styles.map} source={{uri: this.props.source.uri}} />
           </TouchableWithoutFeedback>
-          <PopUpModal isVisible={this.state.popUpVisible} navigation={ this.props.navigation } route={'Profile'}/>
+          
         </View>
       :
       null

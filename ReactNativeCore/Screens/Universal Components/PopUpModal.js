@@ -27,7 +27,7 @@ export default class PopUpModal extends React.Component  {
     render(){
         
         return(
-        <Modal 
+        <Modal  
         animationType="slide"
         visible={this.state.isVisible}
         transparent={true}
