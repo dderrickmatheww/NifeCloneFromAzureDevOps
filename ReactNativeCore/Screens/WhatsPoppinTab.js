@@ -31,7 +31,7 @@ class WhatsPoppin extends React.Component  {
     async componentDidMount () {
         await this.grabFeedData();
         this.setState({ isLoggedIn: firebase.auth().currentUser ? true : false });
-        this.setState({ user: firebase.auth().currentUser });
+        this.setState({ user: this.props.user });
         this.rerender = this.props.navigation.addListener('focus', () => {
             this.componentDidMount();
         });

@@ -10,23 +10,39 @@ import { isPointWithinRadius, getDistance  } from 'geolib';
 
 const Util = {
     friends: {
-        GetFriends: function(db, email, callback) {
-            let friendsArr = [];
-            var path = new firebase.firestore.FieldPath('friends', email);
-            let docRef = db.collection('users').where(path, '==', true);
-            docRef.get().then((friends) => {
-                friends.forEach(function(friend) {
-                    if(friend && friend.data()) {
-                        friendsArr.push(friend.data());
-                    }
-                });
-                Util.basicUtil.consoleLog('GetFriends', true);
-                callback(friendsArr);
+        GetFriends: function(email, callback) {
+            let obj = {
+                email: email
+            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/getFriends', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
             })
-            .catch((error) => {
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
+                Util.basicUtil.consoleLog('GetFriends', true);
+            }).catch((error) => {
+                console.log(error)
                 Util.basicUtil.consoleLog('GetFriends', false);
-                console.log("Firebase Error: " + error);
-            });
+            }); 
+        },
+        FilterFriends: (obj, callback) => {
+            
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/filterFriends', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
+            })
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
+                Util.basicUtil.consoleLog('FilterFriends', true);
+            }).catch((error) => {
+                console.log(error)
+                Util.basicUtil.consoleLog('FilterFriends', false);
+            }); 
         },
         AddFriend: function(db, userEmail, friendEmail, callback){
             let updateUserObj = {
@@ -85,26 +101,23 @@ const Util = {
     },
     user: {
         VerifyUser: function(user, email, callback){
-            let db = firebase.firestore();
-            db.collection('users').doc(email).get()
-            .then(async (data) => {
-                if(data.data()){
-                    let dbUser = data.data();
-                    Util.basicUtil.consoleLog('VerifyUser', true);
-                    callback(dbUser);
-                }
-                else {
-                    if(user != undefined || user != null) {
-                        let userObj = Util.user.BuildUserSchema(user.providerData[0]);
-                        db.collection('users').doc(email).set(userObj, { merge:true });
-                        callback(userObj);
-                    }
-                }
+            let obj = {
+                user: user,
+                email: email
+            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
             })
-            .catch((err) => {
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
+                Util.basicUtil.consoleLog('VerifyUser', true);
+            }).catch((error) => {
+                console.log(error)
                 Util.basicUtil.consoleLog('VerifyUser', false);
-                console.log('Firebase Error: ' +  err);
-            })
+            }); 
         },
         BuildUserSchema: (obj) => {
             userObj = {};
@@ -126,22 +139,23 @@ const Util = {
             
             return userObj;
         },
-        GetUserData: function(db, email, callback){
-            db.collection('users').doc(email).get()
-            .then((data) => {
-              if(data.data()){
-                db.collection('users').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
+        GetUserData: function(email, callback){
+            let obj = {
+                email: email
+            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
+            })
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
                 Util.basicUtil.consoleLog('GetUserData', true);
-                callback(data.data());
-              }
-              else {
+            }).catch((error) => {
+                console.log(error)
                 Util.basicUtil.consoleLog('GetUserData', false);
-              }
-          })
-          .catch((error) => {
-            Util.basicUtil.consoleLog('GetUserData', false);
-            console.log("Firebase Error: " + error);
-          });
+            }); 
         },
         UpdateUser: function(db, email, updateObject, callback){
             let userRef = db.collection('users').doc(email);
@@ -281,7 +295,7 @@ const Util = {
             }
         },
         isFavorited: async (buisnessUID, userData, returnData) => {
-            if(userData.favoritePlaces){
+            if(userData.favoritePlaces) {
                 let favorites = userData.favoritePlaces;
                 console.log('Favorites ' + favorites)
                 if(favorites[buisnessUID]){
@@ -472,22 +486,23 @@ const Util = {
 
             return userObj;
         },
-        GetBusinessData: function(db, email, callback){
-            db.collection('businesses').doc(email).get()
-            .then((data) => {
-              if(data.data()){
-                db.collection('businesses').doc(email).set({lastLoginAt: new Date().toUTCString()}, {merge:true});
+        GetBusinessData: function(email, callback){
+            let obj = {
+                email: email
+            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/getBusinessData', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
+            })
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
                 Util.basicUtil.consoleLog('GetBusinessData', true);
-                callback(data.data());
-              }
-              else {
+            }).catch((error) => {
                 Util.basicUtil.consoleLog('GetBusinessData', false);
-              }
-          })
-          .catch((error) => {
-            Util.basicUtil.consoleLog('GetBusinessData', false);
-            console.log("Firebase Error: " + error);
-          });
+                console.log('Firebase Error: ' + error);
+            }); 
         },
         UpdateUser: function(db, email, updateObject, callback){
             let userRef = db.collection('businesses').doc(email);
@@ -502,61 +517,65 @@ const Util = {
             });
         },
         GetBusinessesByUserFavorites: function(favArr, callback){
-            const businessRef = firebase.firestore().collection('businesses')
-            var businesses = []
-            var favorites =  businessRef.where('businessId', 'in', favArr).get()
-            .then((data)=>{
-                data.forEach((business)=>{
-                    if(business && business.data()){
-                        businesses.push(business.data())
-                    }
-                })
-                callback(businesses)
-                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
+            let obj = {
+                favArr: favArr
+            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/saveLocation', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
             })
-            .catch((error) => {
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
+                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
+            }).catch((error) => {
                 Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
-                console.log("Firebase Error: " + error);
-            });
-            // if(favorites.empty){
-            //     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
-            //     return;
-            // }
-            // favorites.forEach(doc=>{
-            //     businesses.push(doc.data);
-            // })
-            // console.log(JSON.stringify(businesses[0]))
+                console.log('Firebase Error: ' + error);
+            }); 
         },
         GetBusinessByUID: async (uid, callback) => {
             let busRef = firebase.firestore().collection('businesses')
-            const snapshot = await busRef.where('businessId', "==", uid).get()
-            if(!snapshot.empty){
-                Util.basicUtil.consoleLog("GetBusinessByUID", true)
-                let tempArr = []
-                snapshot.forEach((doc) =>{
-                    tempArr.push(doc.data())
-                })
-                callback(tempArr[0])
-            } else {
-                Util.basicUtil.consoleLog("GetBusinessByUID", false)
-                callback(false)
+            try {
+                const snapshot = await busRef.where('businessId', "==", uid).get();
+                if(!snapshot.empty) {
+                    let tempArr = [];
+                    snapshot.forEach((doc) =>{
+                        tempArr.push(doc.data())
+                    })
+                    callback(tempArr[0]);
+                } else {
+                    callback(false);
+                }
+                Util.basicUtil.consoleLog("GetBusinessByUID", true);
+            }
+            catch (error) {
+                Util.basicUtil.consoleLog("GetBusinessByUID", false);
+                console.log('Firebase Error: ' + error);
+                callback(false);
             }
             
         }
     },
     location: {
-        SaveLocation: function(db, email, location, callback){
-            let setLoc = db.collection('users').doc(email);
-            setLoc
-            .set({ loginLocation: location }, {merge: true})
-            .then(() => {
-                Util.basicUtil.consoleLog('SaveLocation', true);
-                callback();
+        SaveLocation: function(email, location, callback){
+            let obj = {
+                location: location,
+                email: email
+            }
+            fetch('https://us-central1-nife-75d60.cloudfunctions.net/saveLocation', 
+            { 
+                method: 'POST',
+                body: JSON.stringify(obj)
             })
-            .catch((error) => {
+            .then(response => response.json())
+            .then(async data => {
+                callback(data.result);
+                Util.basicUtil.consoleLog('SaveLocation', true);
+            }).catch((error) => {
                 Util.basicUtil.consoleLog('SaveLocation', false);
-                console.log("Firebase Error: " + error);
-            });
+                console.log('Firebase Error: ' + error);
+            }); 
         },
         SetUserLocationData: function (region) {
             var latAndLong = region.latitude + ',' + region.longitude;

@@ -13,7 +13,7 @@ export default {
   LIGHT_PINK:"#D4DE24",
   LIGHT_PINK_OPAC:"rgba(212, 222, 36, .5)",
   MEDIUM_PINK:"#F69E95",
-  DARK_PINK: "#AB3D5C",
+  DARK_PINK: "rgba(212, 222, 36, .5)",
   BLUE: "#74BBFB",
   TURQUOISE: "#08E8DE",
   mapTheme: [
