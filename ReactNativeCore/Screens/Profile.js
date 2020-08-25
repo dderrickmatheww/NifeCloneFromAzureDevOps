@@ -196,7 +196,21 @@ export default class ProfileScreen extends Component {
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
-                      {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender : "other")}, {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation: "other")}  - {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : "No Age"}
+                      {
+                        !this.state.userData.privacySettings || !this.state.userData.privacySettings.genderPrivacy ?
+                        this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender +", " : "other, ") :
+                        ""
+                      } 
+                      {
+                        !this.state.userData.privacySettings || !this.state.userData.privacySettings.orientationPrivacy ?
+                        this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "other - "):
+                        " "
+                      } 
+                      {
+                        !this.state.userData.privacySettings || !this.state.userData.privacySettings.DOBPrivacy ?
+                        this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : "No Age":
+                        ""
+                      }
                     </Title>
                 </View>
                 {
@@ -375,7 +389,7 @@ const localStyles = StyleSheet.create({
     alignItems:"flex-start"
   },
   navHeader:{
-    marginTop:40,
+    marginTop:25,
     flexDirection:"row",
     borderBottomColor:theme.LIGHT_PINK,
     borderBottomWidth:1,

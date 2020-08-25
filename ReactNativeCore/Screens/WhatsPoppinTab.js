@@ -68,7 +68,9 @@ class WhatsPoppin extends React.Component  {
 
     favoriteABar = (buisnessUID, boolean) => {
         let email = this.state.user.email;
-        Util.user.setFavorite(email, buisnessUID, boolean);
+        Util.user.setFavorite(this.props.user, buisnessUID, boolean, (bool)=>{
+            
+        });
     }
 
     onRefresh = () => {
@@ -110,10 +112,11 @@ class WhatsPoppin extends React.Component  {
                                         lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
                                         long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
                                         modalVisability={ this.state.modalVisable }
-                                        userData={ data.users }
+                                        user={this.props.user}
                                         usersCheckedIn={ data.checkedIn }
                                         email={this.state.user.email}
                                         favoriteABar={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
+
                                     />
                                 ))
                             }

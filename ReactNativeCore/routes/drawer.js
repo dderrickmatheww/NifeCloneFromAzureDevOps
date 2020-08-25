@@ -52,6 +52,13 @@ function MapMain ({route, navigation}){
   )
 }
 
+function Settings ({route, navigation}){
+  const {user, friends, refresh} = route.params;
+  return(
+    <SettingsTab   onDrawerPress={() => navigation.openDrawer()} refresh={refresh} user={user} friends={friends} navigate={navigation} />
+  )
+}
+
 class Navigator extends React.Component {
 
   state = {
@@ -93,7 +100,6 @@ class Navigator extends React.Component {
     //if user exits get user data, get friend data set to async     //console.log('wantedData App.js', currentUser)
 
     if (currentUser) {
-
         //load user
         Util.user.GetUserData(db, currentUser.email, (userData) => {
           if(userData) {
@@ -113,12 +119,8 @@ class Navigator extends React.Component {
               
             }else {
               Util.friends.GetFriends(db, currentUser.email, (data) => {
-                let favoritePlaces = Object.keys(userData.favoritePlaces) 
-                Util.business.GetBusinessesByUserFavorites(favoritePlaces, (places)=>{
-                  this.filterFriends(data, userData);
-                  this.setState({favoritePlaceData:places})
-                  callback();
-                })
+                this.filterFriends(data, userData);
+                callback();
                 // //console.log(JSON.stringify(data));
               });
               
@@ -283,10 +285,10 @@ class Navigator extends React.Component {
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
+        //auth done loading
         this.setState({authLoaded: true});
         if (user) {
           this.setState({
-            dataLoaded: true,
             userExists: true
           });
 
@@ -297,13 +299,8 @@ class Navigator extends React.Component {
             this.firstTimeSignUp(user);
           }
         } else {
-          this.setState({authLoaded: true});
-          this.setState({dataLoaded:true});
           this.setState({userExists:false});
           this.setState({userData: null});
-
-          //console.log('No user');
-
         }
       });
     }
@@ -317,7 +314,6 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-      this.state.dataLoaded ? 
       this.state.userData ? 
         <NavigationContainer>
           <Drawer.Navigator 
@@ -328,7 +324,7 @@ class Navigator extends React.Component {
             drawerStyle={{
               backgroundColor: theme.DARK
             }}
-            initialRouteName='Map'
+            initialRouteName='My Feed'
 
             overlayColor="#20232A"
             drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
@@ -339,7 +335,7 @@ class Navigator extends React.Component {
             <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
             <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
             <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
-            <Drawer.Screen name="Settings" component={SettingsTab} />
+            <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
           </Drawer.Navigator>
         </NavigationContainer>
         : 
@@ -349,10 +345,6 @@ class Navigator extends React.Component {
           </View> 
           :
           <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
-        :
-        <View style={styles.viewDark}>
-          <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-        </View> 
         :
         <Loading></Loading>
     );

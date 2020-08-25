@@ -81,7 +81,7 @@ export default class FriendsFeed extends React.Component  {
                     friendFeedData.push(obj);
                 }
                 if(friend.checkIn){
-                    if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime){
+                    if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime && (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
                         // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                         let obj = {
                             name: friend.displayName,
@@ -99,7 +99,7 @@ export default class FriendsFeed extends React.Component  {
                     let keys = Object.keys(friend.lastVisited);
                     keys.forEach((key)=>{
                         let visited = friend.lastVisited[key];
-                        if(visited.privacy == "Public" || visited.privacy == "Friends"){
+                        if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
                             // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
                             let obj = {
                                 name: friend.displayName,
@@ -161,7 +161,7 @@ export default class FriendsFeed extends React.Component  {
             }
             
             if(user.checkIn){
-                if((user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && user.checkIn.checkInTime){
+                if((user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && user.checkIn.checkInTime && (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
                     // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                     let obj = {
                         name: user.displayName,
@@ -179,7 +179,7 @@ export default class FriendsFeed extends React.Component  {
                 let keys = Object.keys(user.lastVisited);
                 keys.forEach((key)=>{
                 let visited = user.lastVisited[key];
-                if(visited.privacy == "Public" || visited.privacy == "Friends"){
+                if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
                     // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
                     let obj = {
                         name: user.displayName,
