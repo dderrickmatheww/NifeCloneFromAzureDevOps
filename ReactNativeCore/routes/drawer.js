@@ -58,19 +58,15 @@ class Navigator extends React.Component {
     friendData: [],
     authLoaded: false,
     userChecked: false,
-    friendRequests:null,
-    dataLoaded:false,
-    userExists:false,
+    friendRequests: null,
+    dataLoaded: false,
+    userExists: false,
     displayName: null,
-    uploading:false,
-    businessData:null,
-    isBusiness:false, //only set at business sign up for first time
-    businessState:null,
-    favoritePlaceData:null,
-  }
-  //sends user login location to db
-  setWantedData = (currentUser, location, callback) => {
-    
+    uploading: false,
+    businessData: null,
+    isBusiness: false, //only set at business sign up for first time
+    businessState: null,
+    favoritePlaceData: null,
   }
 
   getLocationAsync = (callback) => {

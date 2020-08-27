@@ -236,7 +236,7 @@ const Util = {
         IsUserCheckedIn: (email, buisnessUID, returnData) => {
             let db = firebase.firestore();
             try {
-                Util.user.GetUserData(db, email, (userData) => {
+                Util.user.GetUserData(email, (userData) => {
                     let user = userData;
                     if(!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
                         returnData("false");
