@@ -1,17 +1,19 @@
 import * as React from 'react';
 import * as Device from 'expo-device';
-import { View, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import IconWithBadge from './IconWithBadge';
 import theme from '../../Styles/theme';
 import { styles } from '../../Styles/style';
 import Util from '../../scripts/Util';
-// let TouchableOpacity;
-// if(Device.osName == "Android") {
-//     TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
-// }
-// else {
-//     TouchableOpacity = require('react-native').TouchableOpacity;
-// }
+
+let TouchableOpacity;
+if(Device.osName == "Android") {
+    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
+}
+else {
+    TouchableOpacity = require('react-native').TouchableOpacity;
+}
+
 export default class Favorite extends React.Component  { 
 
     state= {
