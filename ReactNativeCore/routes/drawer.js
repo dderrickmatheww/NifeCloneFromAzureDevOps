@@ -289,10 +289,6 @@ class Navigator extends React.Component {
             dataLoaded: true,
             userExists: true
           });
-<<<<<<< HEAD
-=======
-
->>>>>>> d7e868bfbf54d6409a72fda3532084c39ce35706
           if(user.displayName){
             this.initializeParams(user);
           }
