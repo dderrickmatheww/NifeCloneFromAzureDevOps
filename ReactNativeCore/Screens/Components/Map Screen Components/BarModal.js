@@ -62,7 +62,7 @@ class BarModal extends React.Component  {
   favoriteABar = async (buisnessUID, boolean) => {
     console.log('handle press fired 2!!!!!!!!!!')
     let updatedUserData = this.props.user;
-    await Util.user.setFavorite(updatedUserData.email, buisnessUID, boolean, (boolean) => {
+    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, (boolean) => {
       updatedUserData['favoritePlaces'][buisnessUID] = boolean;
       this.props.refresh(updatedUserData, null, null, null);
     });
