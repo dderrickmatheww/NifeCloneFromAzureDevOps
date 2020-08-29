@@ -311,7 +311,7 @@ const Util = {
         QueryPublicUsers: function(db, query, take, callback){
             let newQuery=  query.toLowerCase();
             var path = new firebase.firestore.FieldPath('privacySettings', "searchPrivacy");
-            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery)
+            let usersRef = db.collection('users').where(path, '==', false)
             usersRef.get()
             .then((data) => {
               if(data){
@@ -321,16 +321,23 @@ const Util = {
                     queriedUsers.push(user.data());
                 });
                 
-                queriedUsers.forEach((user)=>{
-                    let qUserEmail = user.email.toLowerCase();
-                    let qUserEmailRefined = qUserEmail.split('@')[0];
-                    let qUserName = user.displayName.toLowerCase();
-                    if((qUserEmail == newQuery || qUserName.includes(newQuery) || qUserEmailRefined.includes(newQuery) ) && user.email != userEmail){
-                        wantedUsers.push(user);
-                    }
-                });
-                Util.basicUtil.consoleLog('QueryUsers', true);
-                callback(wantedUsers);
+                if(queriedUsers.length > 0){
+                    queriedUsers.forEach((user)=>{
+                        let qUserEmail = user.email.toLowerCase();
+                        let qUserEmailRefined = qUserEmail.split('@')[0];
+                        let qUserName = user.displayName.toLowerCase();
+                        if((qUserEmail == newQuery || qUserName.includes(newQuery) || qUserEmailRefined.includes(newQuery) ) && user.email != firebase.auth().currentUser.email){
+                            wantedUsers.push(user);
+                        }
+                    });
+                    Util.basicUtil.consoleLog('QueryUsers', true);
+                    callback(wantedUsers);
+                }
+                else {
+                    Util.basicUtil.consoleLog('QueryUsers just no users', true);
+                    callback([]);
+                }
+               
               }
               else {
                 Util.basicUtil.consoleLog('QueryUsers', false);
@@ -338,29 +345,6 @@ const Util = {
           })
           .catch((error) => {
                 Util.basicUtil.consoleLog('QueryUsers', false);
-                console.log("Firebase Error: " + error);
-          });
-        },
-        QueryPrivateUsers: function(db, query, take, callback){
-            var path = new firebase.firestore.FieldPath('privacySettings', "public");
-            let newQuery=  query.toLowerCase();
-            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery).where('privacySettings', '==', undefined).where(path, '==', undefined);
-            usersRef.get()
-            .then((data) => {
-              if(data){
-                let wantedUser = [];
-                data.forEach((user)=>{
-                    wantedUser.push(user.data());
-                });
-                Util.basicUtil.consoleLog('QueryPrivateUsers', true);
-                callback(wantedUser);
-              }
-              else {
-                Util.basicUtil.consoleLog('QueryPrivateUsers', false);
-              }
-          })
-          .catch((error) => {
-                Util.basicUtil.consoleLog('QueryPrivateUsers', false);
                 console.log("Firebase Error: " + error);
           });
         },

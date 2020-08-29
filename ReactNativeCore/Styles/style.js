@@ -217,7 +217,7 @@ export const styles = StyleSheet.create({
   },
   safeAreaContainer: {
     flex: 1,
-    marginTop:10,
+    paddingTop:"7%",
     backgroundColor: '#20232a',
   },
   clearCacheBtn: {
@@ -249,7 +249,10 @@ export const styles = StyleSheet.create({
   },
   dataRowScrollView: {
     flex: 1,
-    backgroundColor: '#20232a'
+        width: "100%",
+        paddingHorizontal: "5%",
+        paddingBottom: 10,
+        paddingTop: 10
   },
   Logo: {
     width: 25, 
