@@ -8,6 +8,7 @@ import Util from '../scripts/Util';
 import theme from '../Styles/theme';
 import { styles } from '../Styles/style';
 import VisitedByCallout from './Components/Map Screen Components/VisitedByCallout';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
@@ -322,7 +323,7 @@ class MapScreen extends React.Component  {
       this.state.markers != undefined ? 
       (
         <View style={localStyles.container}>  
-          <MapView
+          {/* <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
               showsMyLocationButton={true}
@@ -377,7 +378,14 @@ class MapScreen extends React.Component  {
             > 
             </BarModal> : null
           }       
-          <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} /> 
+          <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} />  */}
+          <TouchableOpacity onPress={
+            this.props.navigation.navigate('Profile', 
+                {screen:"ProfileScreen", params:{user:this.state.userData, friends:this.state.friendData}}
+              )
+            }>
+
+          </TouchableOpacity>
         </View>
       ) 
       :
