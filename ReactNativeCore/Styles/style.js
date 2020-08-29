@@ -126,15 +126,6 @@ export const styles = StyleSheet.create({
     margin: 10,
     marginTop: 30
   },
-  facebookButtonContainer: {
-    top: 80
-  },
-  googleButtonContainer: {
-    top: 90
-  },
-  nifeButtonContainer: {
-    top: 100
-  },
   
   loggedInContainer: {
     flex: 1,
@@ -144,11 +135,10 @@ export const styles = StyleSheet.create({
   },
   facebookLoginBtn: {
     backgroundColor: '#4267b2',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    marginTop: '33%',
     borderRadius: 20,
-    height: 50,
-    width: 210,
+    height: 60,
+    width: 300,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -180,9 +170,10 @@ export const styles = StyleSheet.create({
     backgroundColor: '#228B22',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    marginTop: '33%',
     borderRadius: 20,
-    height: 50,
-    width: 210,
+    height: 60,
+    width: 300,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -193,11 +184,10 @@ export const styles = StyleSheet.create({
     backgroundColor: 'black',
     borderColor: '#FF69B4',
     borderWidth: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    marginTop: '33%',
     borderRadius: 20,
-    height: 50,
-    width: 210,
+    height: 60,
+    width: 300,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row'
@@ -257,7 +247,8 @@ export const styles = StyleSheet.create({
     left: 2,
     borderColor: "#fff",
     borderWidth: .2,
-    borderRadius: 5
+    borderRadius: 5,
+    top: '-12%'
   },
   LogoData: {
     width: 90,
@@ -278,7 +269,8 @@ export const styles = StyleSheet.create({
   loggedOutText: {
     color: "#fff",
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    top: '-12%'
   },
   facebookDataText: {
     color: theme.LIGHT_PINK,
@@ -358,11 +350,20 @@ export const styles = StyleSheet.create({
   },
   headerText: {
     textAlign:"center",
-    fontSize: 16,
-    color:theme.LIGHT_PINK
+    fontSize: 26,
+    color: theme.LIGHT_PINK,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    textShadowColor: '#000',
+    fontFamily: 'Palatino-Bold',
+    color:"#FFCC00"
   },
   headerContainer: {
-    top: 60
+    top: 60,
+    width: '80%',
+    borderBottomWidth: 1,
+    paddingBottom: 10,
+    borderColor: 'grey'
   },
   searchBar: {
     top: 10,
