@@ -241,12 +241,18 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: (email, buisnessUID, boolean, callback) => {
+        setFavorite: (userData, buisnessUID, boolean, callback) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(email);
+            let setLoc = db.collection('users').doc(userData.email);
             if (boolean) {
-                 let favoritePlaces = {
-                    [buisnessUID]: true
+                var favoritePlaces;
+                if(userData.favoritePlaces){
+                    favoritePlaces = userData.favoritePlaces;
+                    favoritePlaces[buisnessUID] = true;
+                }else{
+                    favoritePlaces = {
+                        [buisnessUID]: true
+                    }
                 }
                 setLoc.set({
                     favoritePlaces
@@ -265,10 +271,17 @@ const Util = {
             }
             else {
                 // Remove the 'capital' field from the document
-                setLoc.update({
-                    favoritePlaces: {
+                var favoritePlaces;
+                if(userData.favoritePlaces){
+                    favoritePlaces = userData.favoritePlaces;
+                    favoritePlaces[buisnessUID] = false;
+                }else{
+                    favoritePlaces = {
                         [buisnessUID]: false
                     }
+                }
+                setLoc.update({
+                    favoritePlaces
                 })
                 .then(() => {
                     Util.basicUtil.consoleLog('setFavorite', true);
@@ -296,8 +309,9 @@ const Util = {
             
         },
         QueryPublicUsers: function(db, query, take, callback){
-            var path = new firebase.firestore.FieldPath('privacySettings', "public");
-            let usersRef = db.collection('users').where(path, '==', true);
+            let newQuery=  query.toLowerCase();
+            var path = new firebase.firestore.FieldPath('privacySettings', "searchPrivacy");
+            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery)
             usersRef.get()
             .then((data) => {
               if(data){
@@ -306,7 +320,7 @@ const Util = {
                 data.forEach((user)=>{
                     queriedUsers.push(user.data());
                 });
-                let newQuery=  query.toLowerCase();
+                
                 queriedUsers.forEach((user)=>{
                     let qUserEmail = user.email.toLowerCase();
                     let qUserEmailRefined = qUserEmail.split('@')[0];
@@ -330,7 +344,7 @@ const Util = {
         QueryPrivateUsers: function(db, query, take, callback){
             var path = new firebase.firestore.FieldPath('privacySettings', "public");
             let newQuery=  query.toLowerCase();
-            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery);
+            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery).where('privacySettings', '==', undefined).where(path, '==', undefined);
             usersRef.get()
             .then((data) => {
               if(data){
@@ -981,7 +995,7 @@ const Util = {
                         fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="+ query +"&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=" + GOOGLE_API_KEY)
                         .then(response => response.json())
                         .then(async data => {
-                            dataObj['data'] = data.data;
+                            dataObj = data['data'];
                             //Grabs post from Google based on query
                             Util.basicUtil.consoleLog("Google's placeData", true);
                             returnData(dataObj);
@@ -993,10 +1007,10 @@ const Util = {
                     }
                     // Get the Whats Poppin feed using Google's Map API for default
                     else {
-                        fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=bar&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=" + GOOGLE_API_KEY)
+                        fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=bars&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry,user_ratings_total,place_id&locationbias=circle:8000&key=" + GOOGLE_API_KEY)
                         .then(response => response.json())
                         .then(async data => {
-                            dataObj['data'] = data.data;
+                            dataObj['data'] = data;
                             //Grabs post from Google based for default
                             Util.basicUtil.consoleLog("Google's placeData", true);
                             returnData(dataObj);

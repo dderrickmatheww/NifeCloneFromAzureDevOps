@@ -181,7 +181,7 @@ export function DrawerContent(props) {
                                             }
                                     /> 
                                
-                                {/* <DrawerItem 
+                                <DrawerItem 
                                         icon={() => (
                                             <Ionicons 
                                             name="md-search" 
@@ -191,7 +191,7 @@ export function DrawerContent(props) {
                                         )}
                                         label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
                                         onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
-                                    /> */}
+                                    />
                                 
                               
                                 <DrawerItem 
@@ -231,7 +231,7 @@ export function DrawerContent(props) {
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Settings</Text>}
-                            onPress={() => {props.navigation.navigate('Settings')}}
+                            onPress={() => {props.navigation.navigate('Settings', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}
                         />
                         
                          {/* <DrawerItem 
