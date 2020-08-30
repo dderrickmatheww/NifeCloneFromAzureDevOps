@@ -32,7 +32,7 @@ export default class Favorite extends React.Component  {
 
     handlePress = (bool) =>{
         this.setState({isFavorited: bool});
-        this.props.favoriteTrigg(this.props.buisnessUID, bool);
+        this.props.favoriteTrigg(this.props.buisnessUID, bool, this.props.buisnessName);
     }
 
     render() {

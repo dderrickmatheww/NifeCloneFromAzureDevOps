@@ -66,10 +66,22 @@ class WhatsPoppin extends React.Component  {
         }
     }
 
-    favoriteABar = (buisnessUID, boolean) => {
+    favoriteABar = (buisnessUID, boolean, buisnessName) => {
         let email = this.state.user.email;
-        Util.user.setFavorite(email, buisnessUID, boolean, () => {
-            
+        let updatedUserData = this.props.user;
+        Util.user.setFavorite(email, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
+            if(boolean2) {
+                this.setState({navModal: true});
+            }
+            else {
+                if(typeof updatedUserData['favoritePlaces'] !== 'undefined') {
+                    updatedUserData['favoritePlaces'][buisnessUID] = {
+                      favorited: boolean,
+                      name: buisnessName
+                    };
+                    this.props.refresh(updatedUserData, null, null, null);
+                }
+            }
         });
     }
 
@@ -115,7 +127,7 @@ class WhatsPoppin extends React.Component  {
                                     user={ this.state.user }
                                     usersCheckedIn={ data.checkedIn }
                                     email={this.state.user.email}
-                                    favoriteABar={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
+                                    favoriteABar={(buisnessUID, boolean, buisnessName) => {this.favoriteABar(buisnessUID, boolean, buisnessName)}}
                                 />
                             ))
                         }

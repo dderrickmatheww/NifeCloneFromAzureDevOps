@@ -374,6 +374,8 @@ class MapScreen extends React.Component  {
               longitude={this.state.modalProps.longitude}
               user={this.state.userData}
               refresh={this.props.refresh}
+              navigation={this.props.navigation}
+              friendData={this.props.friends}
             > 
             </BarModal> : null
           }       

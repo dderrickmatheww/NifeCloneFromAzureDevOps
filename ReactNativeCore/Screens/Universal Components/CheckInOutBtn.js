@@ -7,7 +7,15 @@ import {
 } from "react-native";
 import Util from '../../scripts/Util';
 import theme from '../../Styles/theme';
-import { TouchableOpacity } from "react-native-gesture-handler";
+import * as Device from 'expo-device';
+
+let TouchableOpacity;
+if(Device.osName == "Android") {
+    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
+}
+else {
+    TouchableOpacity = require('react-native').TouchableOpacity;
+}
 
 export default class CheckInOutButtons extends React.Component  {
     state = {
@@ -39,8 +47,10 @@ export default class CheckInOutButtons extends React.Component  {
                             this.setState({loading: true});
                             let email = this.props.email;
                             Util.user.CheckOut(email, (boolean) => {
-                                this.setState({checkedIn: boolean});
-                                this.setState({loading: false});
+                                this.setState({
+                                    checkedIn: boolean,
+                                    loading: false
+                                });
                             });
                         }}
                         style={localStyles.descCont}
@@ -69,8 +79,10 @@ export default class CheckInOutButtons extends React.Component  {
                                 withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
                                 if(checkInObj.closed == "No" && withinRadius) {
                                     Util.user.CheckIn(checkInObj, (boolean) => {
-                                        this.setState({checkedIn: boolean});
-                                        this.setState({loading: false});
+                                        this.setState({
+                                            checkedIn: boolean,
+                                            loading: false
+                                        });
                                     });
                                     
                                 }
@@ -105,8 +117,10 @@ export default class CheckInOutButtons extends React.Component  {
                                 withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
                                 if(checkInObj.closed == "No" && withinRadius) {
                                     Util.user.CheckIn(checkInObj, (boolean) => {
-                                        this.setState({checkedIn: boolean});
-                                        this.setState({loading: false});
+                                        this.setState({
+                                            checkedIn: boolean,
+                                            loading: false
+                                        });
                                     });
                                 }
                                 else if (checkInObj.closed == "Yes") {
@@ -140,8 +154,10 @@ export default class CheckInOutButtons extends React.Component  {
                                 withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
                                 if(checkInObj.closed == "No" && withinRadius) {
                                     Util.user.CheckIn(checkInObj, (boolean) => {
-                                        this.setState({checkedIn: boolean});
-                                        this.setState({loading: false});
+                                        this.setState({
+                                            checkedIn: boolean,
+                                            loading: false
+                                        });
                                     });
                                 }
                                 else if (checkInObj.closed == "Yes") {
