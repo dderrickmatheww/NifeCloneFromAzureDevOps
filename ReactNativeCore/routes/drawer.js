@@ -51,6 +51,13 @@ function MapMain ({route, navigation}){
   )
 }
 
+function Settings ({route, navigation}){
+  const {user, friends, refresh} = route.params;
+  return(
+    <SettingsTab   onDrawerPress={() => navigation.openDrawer()} refresh={refresh} user={user} friends={friends} navigate={navigation} />
+  )
+}
+
 class Navigator extends React.Component {
 
   state = {
@@ -239,10 +246,10 @@ class Navigator extends React.Component {
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
+        //auth done loading
         this.setState({authLoaded: true});
         if (user) {
           this.setState({
-            dataLoaded: true,
             userExists: true
           });
           if(user.displayName){
@@ -280,7 +287,7 @@ class Navigator extends React.Component {
             drawerStyle={{
               backgroundColor: theme.DARK
             }}
-            initialRouteName='Map'
+            initialRouteName='My Feed'
 
             overlayColor="#20232A"
             drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
@@ -291,7 +298,7 @@ class Navigator extends React.Component {
             <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
             <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
             <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
-            <Drawer.Screen name="Settings" component={SettingsTab} />
+            <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
           </Drawer.Navigator>
         </NavigationContainer>
         : 

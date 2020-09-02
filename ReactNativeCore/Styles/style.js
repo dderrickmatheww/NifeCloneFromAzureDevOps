@@ -207,6 +207,7 @@ export const styles = StyleSheet.create({
   },
   safeAreaContainer: {
     flex: 1,
+    marginTop:10,
     backgroundColor: '#20232a',
   },
   clearCacheBtn: {
