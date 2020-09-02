@@ -107,7 +107,7 @@ class BarModal extends React.Component  {
     }
   }
   renderInner = () => (
-    <View style={{flex: 1, height:2000}}>
+    <View style={{flex: 1, height:650}}>
       <View style={styles.panel}>
         <View style={styles.titleHeader}>
           <Text style={styles.panelTitle}>{this.props.barName}</Text>  

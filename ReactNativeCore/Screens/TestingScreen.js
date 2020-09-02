@@ -75,14 +75,13 @@ class TestingScreen extends React.Component  {
                         }
                         setLoc.set({
                             privacySettings:{
-                                DOBPrivacy:true,
-                                checkInPrivacy:true,
-                                favoritingPrivacy:true,
-                                genderPrivacy:true,
-                                orientationPrivacy:true,
-                                public:true,
-                                searchPrivacy:true,
-                                visitedPrivacy:true,
+                                DOBPrivacy:false,
+                                checkInPrivacy:false,
+                                favoritingPrivacy:false,
+                                genderPrivacy:false,
+                                orientationPrivacy:false,
+                                searchPrivacy:false,
+                                visitedPrivacy:false,
                             },
 
                             checkIn: {

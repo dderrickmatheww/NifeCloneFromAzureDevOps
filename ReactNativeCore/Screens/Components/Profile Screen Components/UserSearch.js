@@ -37,10 +37,20 @@ export default class UserSearch extends Component {
     let wantedUsers = []
     this.setState({isSearching:true});
     Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) =>{
-      console.log("Public Users: \n" + JSON.stringify(users));
-      users.forEach((user)=>{wantedUsers.push(user)});
-      this.setState({queriedUsers:wantedUsers});
-      this.setState({isSearching:true});
+      if(users.length > 0){
+        console.log("Public Users: \n" + JSON.stringify(users));
+        users.forEach((user)=>{wantedUsers.push(user)});
+        this.setState({
+          queriedUsers:wantedUsers,
+          isSearching:false
+        });
+      }
+      else{
+        this.setState({
+          queriedUsers:null,
+          isSearching:false
+        });
+      }
       // Util.user.QueryPrivateUsers(firebase.firestore(), queryText,  this.state.take,(privUsers) =>{
       //   console.log("Private Users: \n" + JSON.stringify(privUsers));
       //   users.forEach((privUsers)=>{wantedUsers.push(privUsers)});

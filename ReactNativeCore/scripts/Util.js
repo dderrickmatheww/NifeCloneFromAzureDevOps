@@ -1119,15 +1119,10 @@ const Util = {
                     if(friends.length > 0) {
                         bars.forEach((bar, index) => {
                             friends.forEach((friend) => {
-                                if((friend.checkIn) &&
-                                (friend.checkIn.buisnessUID == bar.id) &&
-                                (friend.checkIn.privacy != "Private")) {
+                                if( (friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private") ) {
                                     currentlyCheckIn.push(friend);
                                 }
-                                if((friend.lastVisited) && 
-                                (friend.lastVisited[bar.id]) && 
-                                (friend.lastVisited[bar.id].privacy != "Private") &&
-                                (!currentlyCheckIn.includes(friend))){
+                                if((friend.lastVisited) && (friend.lastVisited[bar.id]) &&  (friend.lastVisited[bar.id].privacy != "Private") && (!currentlyCheckIn.includes(friend))){
                                     friendArr.push(friend);
                                 }
                             });
