@@ -4,6 +4,9 @@ import theme from './theme';
 import Constants from 'expo-constants';
 
 export const styles = StyleSheet.create({
+  calloutText:{
+    color:theme.LIGHT_PINK
+  },
   center: {
     flex: 1,
     justifyContent: 'center',
@@ -101,7 +104,8 @@ export const styles = StyleSheet.create({
   },
   callOutMarker: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: theme.DARK,
+    color:theme.LIGHT_PINK,
     borderRadius: 3,
     padding: 30,
     margin: 25,
@@ -110,7 +114,8 @@ export const styles = StyleSheet.create({
     maxWidth: '65%',
     borderRadius: 20,
     borderColor: theme.LIGHT_PINK,
-    borderWidth: 2
+    borderWidth: 2,
+    flexDirection:"column"
   },
   multiAvatar: {
     top: '5%',
@@ -123,6 +128,7 @@ export const styles = StyleSheet.create({
     alignContent: 'center',
   },
   friendText: {
+    color:theme.LIGHT_PINK,
     margin: 10,
     marginTop: 30
   },
@@ -228,8 +234,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a',
-    marginBottom: 20,
-    marginTop: 20,
+    marginVertical:5,
     backgroundColor: theme.DARK,
     padding: 15,
     borderRadius: 15,
@@ -368,12 +373,12 @@ export const styles = StyleSheet.create({
     borderColor: 'grey'
   },
   searchBar: {
-    top: 10,
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     width: 350,
     height: 25,
-    margin: 5,
+    marginTop:5,
+    marginHorizontal:10,
     alignItems: 'center',
     justifyContent: 'center'
   },

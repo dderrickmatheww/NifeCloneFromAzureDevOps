@@ -104,13 +104,14 @@ class WhatsPoppin extends React.Component  {
                             <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
                         </View>
                     </View>
+                    <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
                     <ScrollView 
                         style={styles.dataRowScrollView}
                         refreshControl={
-                            <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh} colors={'#ff1493'} />
+                            <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh}  />
                         }
                     >
-                        <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
+                        
                         {
                             this.state.feedData.countData.map(data => (
                                 <DataRow 
@@ -151,6 +152,7 @@ class WhatsPoppin extends React.Component  {
 }
 const localStyles = StyleSheet.create({ 
     navHeader: {
+        marginTop:5,
         flexDirection:"row",
         borderBottomColor:theme.LIGHT_PINK,
         borderBottomWidth:1,

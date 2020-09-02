@@ -188,8 +188,8 @@ export default class ProfileScreen extends Component {
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
-                      {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender : "")}, 
-                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation: "")} - {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth._seconds * 1000) : "No Age"}
+                      {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender + ", " : "")} 
+                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "")}  {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth._seconds * 1000) : ""}
                     </Title>
                 </View>
                 {
@@ -275,7 +275,7 @@ export default class ProfileScreen extends Component {
                     
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
                     {
-                        this.state.userData.favoriteDrinks.length != 0 ? 
+                       this.state.userData.favoriteDrinks && this.state.userData.favoriteDrinks.length != 0 ? 
                         this.state.userData.favoriteDrinks.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
