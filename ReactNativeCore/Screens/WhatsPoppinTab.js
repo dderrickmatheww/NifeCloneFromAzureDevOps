@@ -88,14 +88,14 @@ class WhatsPoppin extends React.Component  {
             this.state.launch ?
                 this.state.isLoggedIn ? 
                     this.state.feedData ?
-                    <View style={styles.safeAreaContainer} >
+                    <View style={styles.viewDark} >
                         <View style={localStyles.navHeader}>
                             {/* Drawer Button */}
                             <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
                                 <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
                             </TouchableOpacity> 
                             <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                                <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
+                                <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Whats Poppin</Headline>
                             </View>
                         </View>
                         <ScrollView 
@@ -121,7 +121,6 @@ class WhatsPoppin extends React.Component  {
                                         usersCheckedIn={ data.checkedIn }
                                         email={this.state.user.email}
                                         favoriteABar={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
-
                                     />
                                 ))
                             }
@@ -195,13 +194,14 @@ class WhatsPoppin extends React.Component  {
 }
 const localStyles = StyleSheet.create({ 
     navHeader: {
+        marginTop:30,
         flexDirection:"row",
         borderBottomColor:theme.LIGHT_PINK,
         borderBottomWidth:1,
         width:"98%",
         textAlign:"center",
         alignItems:"center",
-    },
+        },
     DrawerOverlay: {
         alignSelf:"flex-start",
         opacity: 0.75,
