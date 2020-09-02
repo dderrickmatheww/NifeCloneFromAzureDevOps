@@ -20,12 +20,11 @@ export default class ProfileScreen extends Component {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: this.props.user,
     modalVisible: false,
-    friendData:this.props.friends,
-    isUsersProfile: this.props.user.email == firebase.auth().currentUser.email,
+    friendData: this.props.friends,
     isAddingFriend:false,
     areFriends: false,
-    statusModalVisible:false,
-    uploading:false,
+    statusModalVisible: false,
+    uploading: false,
   }
 
   
@@ -49,15 +48,11 @@ export default class ProfileScreen extends Component {
   //Set user data
   setUserData = async () => {
     if(this.state.isUsersProfile){
-      this.setState({userData:this.props.user});
-      // console.log(JSON.stringify(this.props.user));
-      
+      this.setState({userData: this.props.user});
     }
     else {
       Util.user.GetUserData(firebase.firestore(), this.props.user.email, (user)=>{
         this.setState({userData: user});
-        
-        // console.log(JSON.stringify(this.state.userData));
       });
     }
   }
@@ -71,7 +66,7 @@ export default class ProfileScreen extends Component {
         this.setState({friendData: friends});
         let userEmail = firebase.auth().currentUser.email
         friends.forEach((friend) => {
-          if(friend.email == userEmail){
+          if(friend.email == userEmail) {
             console.log('friend: ' + friend);
             this.setState({areFriends: friend['friends'][this.props.user.email] == true});
             console.log('Are Friends : ' + this.state.areFriends)
@@ -80,7 +75,6 @@ export default class ProfileScreen extends Component {
         // console.log(JSON.stringify(this.state.friendData));
       });  
     }
-    
   }
   
   addFriend = () => {
@@ -90,11 +84,12 @@ export default class ProfileScreen extends Component {
       this.setState({areFriends:true});
     });
   }
+
   removeFriend = () => {
     this.setState({isAddingFriend:true});
     Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-      this.setState({isAddingFriend:false}); 
-      this.setState({areFriends:false});     
+      this.setState({isAddingFriend: false}); 
+      this.setState({areFriends: false});     
     });
   }
 
@@ -105,20 +100,17 @@ export default class ProfileScreen extends Component {
 
    //gets user and friend data
   getAsyncStorageData = (callback) => {
-    this.setState({isUsersProfile:this.props.isUserProfile});
-    
+    this.setState({isUsersProfile: this.props.isUserProfile});
     this.setUserData();
     this.setFriendData();
   }
   onDismissStatus = ()=> {
-    this.setState({statusModalVisible:false});
+    this.setState({statusModalVisible: false});
 }
 
-  componentDidMount(){
+  componentDidMount() {
     this.getAsyncStorageData();
     this.getBusinessData();
-    console.log('User: ' + firebase.auth().currentUser.email); 
-    console.log('Profile Owner: ' + this.state.userData.email);
   }
 
   getBusinessData = () => {
@@ -196,21 +188,8 @@ export default class ProfileScreen extends Component {
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
-                      {
-                        !this.state.userData.privacySettings || !this.state.userData.privacySettings.genderPrivacy ?
-                        this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender +", " : "other, ") :
-                        ""
-                      } 
-                      {
-                        !this.state.userData.privacySettings || !this.state.userData.privacySettings.orientationPrivacy ?
-                        this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "other - "):
-                        " "
-                      } 
-                      {
-                        !this.state.userData.privacySettings || !this.state.userData.privacySettings.DOBPrivacy ?
-                        this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : "No Age":
-                        ""
-                      }
+                      {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender : "")}, 
+                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation: "")} - {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth._seconds * 1000) : "No Age"}
                     </Title>
                 </View>
                 {
@@ -296,7 +275,7 @@ export default class ProfileScreen extends Component {
                     
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
                     {
-                        this.state.userData.favoriteDrinks ? 
+                        this.state.userData.favoriteDrinks.length != 0 ? 
                         this.state.userData.favoriteDrinks.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
@@ -325,24 +304,24 @@ export default class ProfileScreen extends Component {
                       Favorite Bars: 
                     </Title>
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
+                     { this.state.userData.favoritePlaces ? 
+                        Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
+                          <Chip mode={"outlined"}
+                              key={i}  
+                              style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                              }} 
+                              textStyle={{color:theme.LIGHT_PINK}}>
+                              {bar.name ? bar.name : 'None'}
+                          </Chip>
+                        ))
+                      :
                       <Chip mode={"outlined"}  
-                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                        }} 
-                        textStyle={{color:theme.LIGHT_PINK}}>
-                        Cutty's
-                      </Chip>
-                      <Chip mode={"outlined"}  
-                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                        }} 
-                        textStyle={{color:theme.LIGHT_PINK}}>
-                        Big Gun
-                      </Chip>
-                      <Chip mode={"outlined"}  
-                        style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                        }} 
-                        textStyle={{color:theme.LIGHT_PINK}}>
-                        Ghost Monkey
-                      </Chip>
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                          None
+                        </Chip>
+                    }
                     </ScrollView>
                   </View>
                 

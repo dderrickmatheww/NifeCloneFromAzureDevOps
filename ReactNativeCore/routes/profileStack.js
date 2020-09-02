@@ -72,10 +72,6 @@ function ScanQR({ navigation}){
 const Stack = createStackNavigator();
 
 export default class ProfileStack extends React.Component  {
-
-
-
-  
   render(){
     return (
       <Stack.Navigator headerMode="none">
