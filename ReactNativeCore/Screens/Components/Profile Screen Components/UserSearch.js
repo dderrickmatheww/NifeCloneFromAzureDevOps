@@ -94,7 +94,7 @@ export default class UserSearch extends Component {
                             this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
                           }>
                           <View style={localStyles.friendCont}>
-                            <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
+                            <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
                           </View>
                         </TouchableOpacity>
                         
