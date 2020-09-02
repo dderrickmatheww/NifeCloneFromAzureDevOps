@@ -235,7 +235,7 @@ class Navigator extends React.Component {
   }
 
   initializeParams = (user) => {
-    Util.user.VerifyUser(user, user.email, () => { 
+    Util.user.VerifyUser(firebase.auth().currentUser, user.email, () => { 
       this.getLocationAsync((location) => {
         Util.location.SaveLocation(user.email, location, () => {
           this.getNeededData(user);
