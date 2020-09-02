@@ -18,16 +18,16 @@ import EditBusinessProfile from './EditBusinessProfile'
 export default class EditProfile extends Component {
   
   state = {
-    userData:  null,
-    dateOfBirth: null,
+    userData:  this.props.user,
+    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds * 1000) : null,
     maxDateValue: null,
-    gender: 'other',
-    sexualOrientation: 'other',
-    bio: null,
-    favoriteDrinks: [],
+    gender: this.props.user.gender ? this.props.user.gender : 'other',
+    sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'other',
+    bio: this.props.user.bio ? this.props.user.bio : "",
+    favoriteDrinks: this.props.user.favoriteDrinks.length > 0 ? this.props.user.favoriteDrinks : null,
     showDatePicker: false,
     doneLoading: false,
-    favoriteBars: null
+    favoriteBars: this.props.user.favoritePlaces ? this.props.user.favoritePlaces : null
   }
 
   setMaxDate = () => {
@@ -39,9 +39,9 @@ export default class EditProfile extends Component {
   //Set user data
   setUserData = async () => {
       var user = this.props.user;
-      this.setState({
+      await this.setState({
         userData: user,
-        dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.setMaxDate(),
+        dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth._seconds * 1000) : this.setMaxDate(),
         gender: user.gender ? user.gender : "other",
         sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other',
         bio: user.bio ? user.bio : "",
@@ -53,14 +53,15 @@ export default class EditProfile extends Component {
 
   //gets user and friend data
   componentDidMount(){
+    console.log(this.state)
     this.setMaxDate();
-    this.setUserData();    
+    this.setUserData();
   }
 
-  onDOBChange = (event, selectedDate) => {
+  onDOBChange = async (event, selectedDate) => {
     if(selectedDate){
       var date = new Date(selectedDate);
-      this.setState({dateOfBirth: date});
+      await this.setState({dateOfBirth: date});
       console.log("New DOB: " + this.state.dateOfBirth)
       this.setState({showDatePicker: false});
     }
@@ -121,7 +122,7 @@ export default class EditProfile extends Component {
 
   onSave = () => {
     var profileInfo = {
-      dateOfBirth: this.state.dateOfBirth ? new Date(this.state.dateOfBirth._seconds * 1000) : null,
+      dateOfBirth: this.state.dateOfBirth ? new Date(this.state.dateOfBirth) : null,
       gender: this.state.gender,
       sexualOrientation: this.state.sexualOrientation,
       bio: this.state.bio,
@@ -178,18 +179,18 @@ export default class EditProfile extends Component {
 
               <ScrollView contentContainerStyle={{justifyContent:"flex-start",  width:"90%"}} style={localStyles.mainCont}> 
               {/* Input Area */}
-                  <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:15}}>
+                  <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom: 15}}>
                     All information is optional and can be hidden via privacy settings! 
                   </Text>
                     
                     {/* DOB */}
                   <View style={localStyles.fieldCont}> 
                     <View style={{flexDirection:"row", width:"90%"}}>
-                      <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                        Date of Birth:  {this.state.dateOfBirth ? new Date(this.state.dateOfBirth._seconds * 1000).toLocaleDateString() : "None given."}
+                      <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom: 5}}>
+                        Date of Birth:  {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
-                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft:50, paddingBottom:5}}
-                        onPress={() => this.setState({showDatePicker:true})}
+                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: 50, paddingBottom: 5}}
+                        onPress={() => this.setState({showDatePicker: true})}
                       >
                           <Ionicons name="md-calendar" size={24} color={theme.LIGHT_PINK} />
                       </TouchableOpacity>
@@ -199,7 +200,7 @@ export default class EditProfile extends Component {
                       this.state.showDatePicker && (
                         <DateTimePicker
                           mode={"date"}
-                          value={this.state.userData.dateOfBirth ? new Date(parseInt(this.state.userData.dateOfBirth._seconds) * 1000) : new Date()}
+                          value={this.state.dateOfBirth ? new Date(this.state.dateOfBirth) : new Date()}
                           maximumDate={ this.setMaxDate()}
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
@@ -250,20 +251,31 @@ export default class EditProfile extends Component {
                       Click a bar to delete from your favorites!
                     </Text>
                     {
-                        this.state.userData.favoritePlaces ? 
+                        this.state.favoriteBars ? 
                         Object.values(this.state.favoriteBars).map((bar, i) => (
+                            Object.values(this.state.favoriteBars).length > 1 ?
+                              !bar.favorited ?
+                              <Chip mode={"outlined"}  
+                                key={i}
+                                style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                                }} 
+                                bar={bar}
+                                textStyle={{color:theme.LIGHT_PINK}}
+                                onPress={(e) => {
+                                  let UID = Object.keys(this.state.favoritePlaces)[i];
+                                  this.deleteFavBar(bar, UID);
+                                }}
+                              >
+                                {bar.name}
+                              </Chip>
+                              :
+                              null
+                            :
                             <Chip mode={"outlined"}  
-                              key={i}
-                              style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                              }} 
-                              bar={bar}
-                              textStyle={{color:theme.LIGHT_PINK}}
-                              onPress={(e) => {
-                                let UID = Object.keys(this.state.favoritePlaces)[i];
-                                this.deleteFavBar(bar, UID);
-                              }}
-                            >
-                              {bar.name}
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                              You have no favorites!
                             </Chip>
                         ))
                         :
