@@ -94,7 +94,6 @@ class Navigator extends React.Component {
             //user data set in filterfriends
             if(userData.isBusiness) {
               Util.business.GetBusinessData(currentUser.email, (businessData) => {
-                //console.log(JSON.stringify(businessData))
                 this.setState({
                   businessData: businessData,
                   userData: userData
@@ -124,7 +123,7 @@ class Navigator extends React.Component {
           }
         });
     } else {
-      console.log('No user found!');
+      alert(`A user could not be found. Error code: 0001`);
     }
   }
 
@@ -147,7 +146,7 @@ class Navigator extends React.Component {
   firstTimeSignUp = (user) => {
     //console.log('setting display name first time')
     if(this.state.displayName){
-      user.updateProfile({displayName:this.state.displayName}).then(()=>{
+      user.updateProfile({displayName: this.state.displayName}).then(()=>{
         this.initializeParams(user);
       });
     }
@@ -202,8 +201,8 @@ class Navigator extends React.Component {
           let userData = this.state.userData;
           userData['photoSource'] = resUri;
           Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
-            this.setState({userData:userData});
-            this.setState({uploading:false});
+            this.setState({userData: userData});
+            this.setState({uploading: false});
           });
           if(this.state.userData.isBusiness){
             Util.business.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
