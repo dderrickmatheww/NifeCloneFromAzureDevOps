@@ -358,7 +358,6 @@ export const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textShadowColor: '#000',
-    fontFamily: 'Palatino-Bold',
     color:"#FFCC00"
   },
   headerContainer: {

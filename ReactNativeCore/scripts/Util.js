@@ -314,15 +314,20 @@ const Util = {
             }
         },
         isFavorited: async (buisnessUID, userData, returnData) => {
-            if(userData.favoritePlaces) {
-                let favorites = userData.favoritePlaces;
-                if(favorites[buisnessUID]){
-                    returnData(favorites[buisnessUID].favorited);
-                } 
-                else {
+            if(userData){
+                if(userData.favoritePlaces) {
+                    let favorites = userData.favoritePlaces;
+                    console.log('Favorites ' + favorites)
+                    if(favorites[buisnessUID]){
+                        returnData(favorites[buisnessUID]);
+                    } else {
+                        returnData(false);
+                    }
+                } else {
                     returnData(false);
                 }
-            } else {
+            }else{
+                console.log("NO USER DATA DUDE")
                 returnData(false);
             }
         },
