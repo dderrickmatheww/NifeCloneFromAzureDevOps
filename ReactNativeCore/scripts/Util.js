@@ -637,7 +637,7 @@ const Util = {
                 buisnessUID: buisnessUID,
                 userLocation: userLocation
             }
-            if(buisnessUID && userLocation) {
+            if(userLocation) {
                 fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
                 { 
                     method: 'POST',

@@ -68,7 +68,6 @@ class WhatsPoppin extends React.Component  {
 
     favoriteABar = (buisnessUID, boolean, buisnessName) => {
         let email = this.state.user.email;
-<<<<<<< HEAD
         let updatedUserData = this.props.user;
         Util.user.setFavorite(email, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
             if(boolean2) {
@@ -83,14 +82,6 @@ class WhatsPoppin extends React.Component  {
                     this.props.refresh(updatedUserData, null, null, null);
                 }
             }
-=======
-<<<<<<< HEAD
-        Util.user.setFavorite(this.props.user, buisnessUID, boolean, (bool)=>{
-=======
-        Util.user.setFavorite(email, buisnessUID, boolean, () => {
->>>>>>> NewDMMBranch
-            
->>>>>>> dev
         });
     }
 
@@ -101,57 +92,6 @@ class WhatsPoppin extends React.Component  {
 
     render() {
         return (
-<<<<<<< HEAD
-            this.state.launch ?
-                this.state.isLoggedIn ? 
-                    this.state.feedData ?
-                    <View style={styles.safeAreaContainer} >
-                        <View style={localStyles.navHeader}>
-                            {/* Drawer Button */}
-                            <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                                <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
-                            </TouchableOpacity> 
-                            <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                                <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
-                            </View>
-                        </View>
-                        <ScrollView 
-                            style={styles.dataRowScrollView}
-                            refreshControl={
-                                <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh}  />
-                            }
-                        >
-                            <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
-                            {
-                                this.state.feedData.countData.map(data => (
-                                    <DataRow 
-                                        key={ data.buisnessUID }
-                                        buisnessUID={ data.buisnessUID }
-                                        phone={ data.buisnessData.phone }
-                                        name={ data.buisnessData.name }
-                                        barImage={ data.buisnessData.barPhoto }
-                                        address={ data.buisnessData.address ? data.buisnessData.address.split(',') : null }
-                                        lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
-                                        long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
-                                        modalVisability={ this.state.modalVisable }
-                                        user={this.props.user}
-                                        usersCheckedIn={ data.checkedIn }
-                                        email={this.state.user.email}
-                                        favoriteABar={(buisnessUID, boolean) => {this.favoriteABar(buisnessUID, boolean)}}
-
-                                    />
-                                ))
-                            }
-                            <View style={{ height: 120 }} />
-                        </ScrollView>
-                    </View>
-                    : 
-                    <View style={styles.viewDark}>
-                        <ActivityIndicator 
-                            size={'large'}
-                            color={theme.LIGHT_PINK}
-                        />
-=======
             this.state.isLoggedIn ? 
                 this.state.feedData ?
                 <SafeAreaView style={styles.safeAreaContainer} >
@@ -163,7 +103,6 @@ class WhatsPoppin extends React.Component  {
                         <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
                             <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
                         </View>
->>>>>>> NewDMMBranch
                     </View>
                     <ScrollView 
                         style={styles.dataRowScrollView}
