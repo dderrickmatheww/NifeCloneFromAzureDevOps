@@ -190,7 +190,7 @@ export function DrawerContent(props) {
                                             />
                                         )}
                                         label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
-                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Search',  params:{currentUser: props.user}})}}
                                     />
                                 
                               

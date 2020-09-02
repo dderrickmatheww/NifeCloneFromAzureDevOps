@@ -14,7 +14,6 @@ import theme from '../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
-import BusinessProfile from './BusinessProfile'
 const defPhoto = require('../Media/Images/logoicon.png');
 export default class ProfileScreen extends Component {
   state = {
@@ -39,6 +38,7 @@ export default class ProfileScreen extends Component {
     var bDay = new Date(birthday);
     var ageDifMs = Date.now() - bDay.getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    console.log(Math.abs(ageDate.getUTCFullYear() - 1970))
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
@@ -142,7 +142,7 @@ export default class ProfileScreen extends Component {
    render () {
       return ( 
         ////////////////////////////////////////
-          this.state.userData ? !this.state.userData.isBusiness ?
+          this.state.userData ? 
           <Surface style={styles.loggedInContainer}>
             <View style={localStyles.navHeader}>
               {/* Drawer Button */}
@@ -361,7 +361,7 @@ export default class ProfileScreen extends Component {
 
             </ScrollView>
             </Surface>
-            : <BusinessProfile refresh={this.props.refresh} user={this.state.userData} friends={this.state.friendData} isUserProfile={this.state.isUsersProfile} navigation={this.props.navigation} onDrawerPress={this.props.onDrawerPress}></BusinessProfile> :
+            :
            
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
