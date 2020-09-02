@@ -305,7 +305,7 @@ export default class FriendsFeed extends React.Component  {
                         
                     <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
                             {
-                                this.state.feedData ?
+                                this.state.feedData && this.state.feedData.length >0 ?
                                     this.state.feedData.map((data, i)=>(
                                         <View key={i} style={localStyles.feedDataRow}>
                                             <Avatar.Image source={data.image} size={50}/>
@@ -323,9 +323,9 @@ export default class FriendsFeed extends React.Component  {
                                         </View> 
                                     )) 
                                     : 
-                                    <View style={localStyles.feedDataRow}>
-                                        <Text style={{color:theme.LIGHT_PINK}}>No data from any of your friends...</Text>
-                                    </View>
+                                    
+                                        <Text style={{color:theme.LIGHT_PINK}}>Nothing to show here, add some friends and favorite spots if you haven't already!</Text>
+                                    
                             }
                             
                     </ScrollView>

@@ -152,6 +152,7 @@ class WhatsPoppin extends React.Component  {
 }
 const localStyles = StyleSheet.create({ 
     navHeader: {
+        marginTop:5,
         flexDirection:"row",
         borderBottomColor:theme.LIGHT_PINK,
         borderBottomWidth:1,
