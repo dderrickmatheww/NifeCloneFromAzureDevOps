@@ -9,24 +9,25 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   TextInput,
-  Surface
+  Surface,
+  Chip
 } from 'react-native-paper';
 import EditBusinessProfile from './EditBusinessProfile'
 
 
 export default class EditProfile extends Component {
   
-
   state = {
     userData:  null,
     dateOfBirth: null,
     maxDateValue: null,
     gender: 'other',
     sexualOrientation: 'other',
-    bio:null,
+    bio: null,
     favoriteDrinks: [],
     showDatePicker: false,
     doneLoading: false,
+    favoriteBars: null
   }
 
   setMaxDate = () => {
@@ -37,32 +38,20 @@ export default class EditProfile extends Component {
 
   //Set user data
   setUserData = async () => {
-    
       var user = this.props.user;
-      this.setState({userData: user});
-      console.log("User: " + JSON.stringify(user));
-
-      this.setState({dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.setMaxDate()});
-      
-
-      this.setState({gender: user.gender ? user.gender : "other"});
-     
-
-      this.setState({sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other'});
-      
-
-      this.setState({bio: user.bio ? user.bio : ""});
-      
-      
-      this.setState({favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks: []});
-      
-      
-      this.setState({doneLoading: true});
-
+      this.setState({
+        userData: user,
+        dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth.seconds * 1000) : this.setMaxDate(),
+        gender: user.gender ? user.gender : "other",
+        sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other',
+        bio: user.bio ? user.bio : "",
+        favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks : [],
+        doneLoading: true,
+        favoriteBars: user.favoritePlaces ? user.favoritePlaces : {}
+      });
   }
 
-   //gets user and friend data
-
+  //gets user and friend data
   componentDidMount(){
     this.setMaxDate();
     this.setUserData();    
@@ -73,15 +62,13 @@ export default class EditProfile extends Component {
       var date = new Date(selectedDate);
       this.setState({dateOfBirth: date});
       console.log("New DOB: " + this.state.dateOfBirth)
-      this.setState({showDatePicker:false});
+      this.setState({showDatePicker: false});
     }
     else {
-      this.setState({showDatePicker:false});
+      this.setState({showDatePicker: false});
     }
-    
   }
 
-  
   onGenderChange = (gender) => {
     console.log(gender);
     this.setState({gender:gender})
@@ -107,22 +94,40 @@ export default class EditProfile extends Component {
     } else {
       drinkArr = fieldText.split(',');
     }
+    this.setState({favoriteDrinks: drinkArr});
+  }
 
-    console.log("result text: " + drinkArr);
-    this.setState({favoriteDrinks:drinkArr});
+  deleteFavBar = (bar, UID) => {
+    let barName = bar.name;
+    Util.user.setFavorite(this.state.userData.email, UID, false, barName, (boolean, boolean2) => {
+      let updatedUserData = this.props.user;
+      if(boolean2) {
+        this.setState({navModal: true});
+      }
+      else {
+        if(typeof updatedUserData['favoritePlaces'] !== 'undefined') {
+          updatedUserData['favoritePlaces'][UID] = {
+            favorited: boolean,
+            name: barName
+          };
+          this.setState({
+            favoriteBars: updatedUserData['favoritePlaces']
+          });
+          this.props.refresh(updatedUserData, null, null, null);
+        }
+      }
+    });
   }
 
   onSave = () => {
-    console.log('Saving attempted');
     var profileInfo = {
-      dateOfBirth: new Date(this.state.dateOfBirth),
+      dateOfBirth: this.state.dateOfBirth ? new Date(this.state.dateOfBirth._seconds * 1000) : null,
       gender: this.state.gender,
       sexualOrientation: this.state.sexualOrientation,
       bio: this.state.bio,
-      favoriteDrinks: this.state.favoriteDrinks
+      favoriteDrinks: this.state.favoriteDrinks,
+      favoritePlaces: this.state.favoriteBars
     }
-    
-    
 
     Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
     , (data)=>{
@@ -140,8 +145,8 @@ export default class EditProfile extends Component {
 
     function extend(dest, src) {
       for(var key in src) {
-          if(key=='dateOfBirth'){
-            dest[key] = {seconds:new Date(src[key]).getTime()/1000};
+          if(key =='dateOfBirth'){
+            dest[key] = { seconds: new Date(src[key]).getTime()/1000};
           }
           else if(typeof(src[key]) == "string" ){
             dest[key] = src[key].replace(String.fromCharCode(92), '').replace('"',"");
@@ -181,8 +186,7 @@ export default class EditProfile extends Component {
                   <View style={localStyles.fieldCont}> 
                     <View style={{flexDirection:"row", width:"90%"}}>
                       <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                        Date of Birth:  {this.state.dateOfBirth ? this.state.dateOfBirth.toLocaleDateString('en-US'): "None given."}
-                        
+                        Date of Birth:  {this.state.dateOfBirth ? new Date(this.state.dateOfBirth._seconds * 1000).toLocaleDateString() : "None given."}
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft:50, paddingBottom:5}}
                         onPress={() => this.setState({showDatePicker:true})}
@@ -195,7 +199,7 @@ export default class EditProfile extends Component {
                       this.state.showDatePicker && (
                         <DateTimePicker
                           mode={"date"}
-                          value={this.state.dateOfBirth}
+                          value={this.state.userData.dateOfBirth ? new Date(parseInt(this.state.userData.dateOfBirth._seconds) * 1000) : new Date()}
                           maximumDate={ this.setMaxDate()}
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
@@ -211,7 +215,7 @@ export default class EditProfile extends Component {
                     <Surface style={localStyles.surface}>
                       <Picker 
                         mode={"dropdown"}
-                        style={{backgroundColor:theme.DARK,width:"100%", alignSelf:"center"}}
+                        style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
                         selectedValue={this.state.gender ? this.state.gender : "other"}
                         onValueChange={(value) => this.onGenderChange(value)}
                       >
@@ -229,8 +233,9 @@ export default class EditProfile extends Component {
                     </Text>
                     <Surface style={localStyles.surface}>
                       <Picker
-                      selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
-                        style={{backgroundColor:theme.DARK,width:"100%", alignSelf:"center", borderRadius: 50,}}
+                        mode={"dropdown"}
+                        selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
+                        style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
                         onValueChange={(value) => this.onSexualOrientationChange(value)}
                       >
                         <Picker.Item color={theme.LIGHT_PINK} label="Straight" value="straight"/>
@@ -239,9 +244,37 @@ export default class EditProfile extends Component {
                         <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
                       </Picker>
                     </Surface>
-                    
                   </View>
-
+                  <View style={localStyles.fieldCont}> 
+                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                      Click a bar to delete from your favorites!
+                    </Text>
+                    {
+                        this.state.userData.favoritePlaces ? 
+                        Object.values(this.state.favoriteBars).map((bar, i) => (
+                            <Chip mode={"outlined"}  
+                              key={i}
+                              style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                              }} 
+                              bar={bar}
+                              textStyle={{color:theme.LIGHT_PINK}}
+                              onPress={(e) => {
+                                let UID = Object.keys(this.state.favoritePlaces)[i];
+                                this.deleteFavBar(bar, UID);
+                              }}
+                            >
+                              {bar.name}
+                            </Chip>
+                        ))
+                        :
+                        <Chip mode={"outlined"}  
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            }} 
+                            textStyle={{color:theme.LIGHT_PINK}}>
+                          You have no favorites!
+                        </Chip>
+                    }
+                  </View>
                   <View style={localStyles.fieldCont}> 
                     <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
                       Bio: 
@@ -270,7 +303,6 @@ export default class EditProfile extends Component {
                     style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
                     value={this.state.favoriteDrinks.toString()}
                     >
-                      
                     </TextInput>
                     
                   </View>
@@ -287,7 +319,7 @@ export default class EditProfile extends Component {
               >
                 <Ionicons name="ios-close-circle-outline" size={30} color={theme.LIGHT_PINK} />
               </TouchableOpacity>
-              <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+              <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
             </View>
             :
         ///////////////////////////////////////////

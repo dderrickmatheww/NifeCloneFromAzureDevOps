@@ -7,14 +7,23 @@ import {
   ScrollView,
   ActivityIndicator
 } from 'react-native';
+import * as Device from 'expo-device';
 import BottomSheet from 'reanimated-bottom-sheet';
 import { AirbnbRating } from 'react-native-ratings';
 import CheckInOutButtons from '../../Universal Components/CheckInOutBtn';
 import * as firebase from 'firebase';
 import theme from "../../../Styles/theme";
 import Util from "../../../scripts/Util";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import Favorite from "../../Universal Components/Favorite";
+import PopUpModal from "../../Universal Components/PopUpModal";
+
+let TouchableOpacity;
+if(Device.osName == "Android") {
+    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
+}
+else {
+    TouchableOpacity = require('react-native').TouchableOpacity;
+}
 
 class BarModal extends React.Component  {
 
@@ -26,45 +35,55 @@ class BarModal extends React.Component  {
     DetailsTab: true,
     EventsTab: false,
     SpecialsTab: false,
-    businessData:null,
-    loadingBusiness:false
+    businessData: null,
+    loadingBusiness: false,
+    navModal: false
   }
 
   toggleModal = (boolean) => {
     this.props.toggleModal(boolean);
   }
 
+  toggleNavModal = (boolean) => {
+    this.setState({navModal: boolean});
+  }
+
   componentDidMount() {
-    this.setState({userData:this.props.user})
+    this.setState({userData: this.props.user});
     Util.location.DistanceBetween(this.props.latitude, this.props.longitude, this.props.userLocation, (distance) => {
       distance = distance.toFixed(1);
       this.setState({
         distanceBetween: distance
-      })
+      });
     });
-
-
     Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
       this.setState({
         checkedIn: dataObj.length
-      })
-    })
-    this.setState({loadingBusiness:true})
+      });
+    });
+    this.setState({loadingBusiness: true});
     Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
       // console.log("business - " + JSON.stringify(data))
-      this.setState({businessData:data})
-      this.setState({loadingBusiness:false})
-    })
-
-
+      this.setState({businessData: data});
+      this.setState({loadingBusiness: false});
+    });
   }
 
-  favoriteABar = async (buisnessUID, boolean) => {
-    console.log('handle press fired 2!!!!!!!!!!')
+  favoriteABar = async (buisnessUID, boolean, buisnessName) => {
     let updatedUserData = this.props.user;
-    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, (boolean) => {
-      updatedUserData['favoritePlaces'][buisnessUID] = boolean;
-      this.props.refresh(updatedUserData, null, null, null);
+    await Util.user.setFavorite(updatedUserData.email, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
+      if(boolean2) {
+        this.setState({navModal: true});
+      }
+      else {
+        if(typeof updatedUserData['favoritePlaces'] !== 'undefined') {
+          updatedUserData['favoritePlaces'][buisnessUID] = {
+            favorited: boolean,
+            name: buisnessName
+          };
+          this.props.refresh(updatedUserData, null, null, null);
+        }
+      }
     });
   }
 
@@ -72,47 +91,48 @@ class BarModal extends React.Component  {
     if(tabstate.details){
       if(!this.state.DetailsTab)
       {
-        this.setState({DetailsTab:true})
+        this.setState({DetailsTab: true});
       }
       if(this.state.EventsTab){
-        this.setState({EventsTab:false})
+        this.setState({EventsTab: false});
       }
       if(this.state.SpecialsTab){
-        this.setState({SpecialsTab:false})
+        this.setState({SpecialsTab: false});
       }
     }
     if(tabstate.events){
       if(!this.state.EventsTab)
       {
-        this.setState({EventsTab:true})
+        this.setState({EventsTab: true});
       }
       if(this.state.DetailsTab){
-        this.setState({DetailsTab:false})
+        this.setState({DetailsTab: false});
       }
       if(this.state.SpecialsTab){
-        this.setState({SpecialsTab:false})
+        this.setState({SpecialsTab: false});
       }
     }
     if(tabstate.specials){
       if(!this.state.SpecialsTab)
       {
-        this.setState({SpecialsTab:true})
+        this.setState({SpecialsTab: true});
       }
       if(this.state.EventsTab){
-        this.setState({EventsTab:false})
+        this.setState({EventsTab: false});
       }
       if(this.state.DetailsTab){
-        this.setState({DetailsTab:false})
+        this.setState({DetailsTab: false});
       }
     }
   }
+
   renderInner = () => (
     <View style={{flex: 1, height:650}}>
       <View style={styles.panel}>
         <View style={styles.titleHeader}>
           <Text style={styles.panelTitle}>{this.props.barName}</Text>  
-          <View style={{position:"absolute", top:0, right:10}}>
-            <Favorite favoriteTrigg={(buisnessUID, bool) => this.favoriteABar(buisnessUID, bool)} user={this.props.user} buisnessUID={this.props.buisnessUID} />
+          <View style={{position: "absolute", top: 0, right: 10}}>
+            <Favorite favoriteTrigg={(buisnessUID, bool, buisnessName) => this.favoriteABar(buisnessUID, bool, buisnessName)} user={this.props.user} buisnessUID={this.props.buisnessUID} buisnessName={this.props.barName} />
           </View>
           
         </View>
@@ -246,7 +266,14 @@ class BarModal extends React.Component  {
             </View>
           : null
         }
-
+        <PopUpModal 
+          toggleModal={(boolean) => {this.toggleNavModal(boolean)}} 
+          isVisible={this.state.navModal} 
+          navigation={this.props.navigation} 
+          route={'Profile'}
+          userData={this.props.user}
+          friendData={this.props.friends}
+        />
       </View>
     </View>
   )
@@ -263,7 +290,7 @@ class BarModal extends React.Component  {
 
   render() {
     return (
-      this.state.isVisible ? 
+      this.state.isVisible ?
           <BottomSheet
             ref={this.bs}
             snapPoints={['70%', '50%','88%', '0%']}

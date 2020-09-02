@@ -11,70 +11,45 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default class PopUpModal extends React.Component  {
     state = {
-       isVisible: false,
+       isVisible: this.props.isVisible ? true : false,
     }
 
-    closeModal = () => {
-        this.setState({isVisible: false});
+    toggleModal = async (boolean) => {
+        await this.setState({isVisible: boolean});
+        this.props.toggleModal(this.state.isVisible);
     }
 
-    componentDidMount() {
-        this.setState({
-            isVisible: this.props.isVisible
-        })
+    componentDidUpdate(prevProps) {
+        if (this.props.isVisible !== prevProps.isVisible) {
+            this.setState({
+                isVisible: this.props.isVisible
+            });
+        }
     }
 
     render(){
-        
         return(
         <Modal  
-        animationType="slide"
-        visible={this.state.isVisible}
-        transparent={true}
+            animationType="slide"
+            visible={this.state.isVisible}
+            transparent={true}
         >
             <View style={localStyles.centeredView}>
                 <View style={localStyles.modalView}>
                     <TouchableHighlight  style={localStyles.closeButton}
-                            onPress={this.closeModal()}
+                            onPress={() => {
+                                this.toggleModal(false);
+                            }}
                         >
                         <Ionicons name="ios-close" size={32} color="#E2E4E3"/>
                     </TouchableHighlight>
                     <View style={localStyles.titleCont}>
                         <Text style={localStyles.modalTitle}>Opps, it looks like you've hit your favorite limit! (Max: 10)</Text>
-                        <Text style={localStyles.modalTitle}>Would you like to edit your favorites?</Text>
-                    </View>
-                    <View style={localStyles.BtnHolder}>
-                        <TouchableHighlight
-                            onPress={() => {
-                            this.props.navigation.navigate(this.props.route);
-                            }}
-                            style={localStyles.Btn}
-                        >
-                            <Text
-                                style={localStyles.BtnText}
-                            >
-                                Yes
-                            </Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight
-                            onPress={() => {
-                                this.setState({
-                                    isVisible: false
-                                });
-                            }}
-                            style={localStyles.Btn}
-                        >
-                            <Text
-                                style={localStyles.BtnText}
-                            >
-                                No
-                            </Text>
-                        </TouchableHighlight>
+                        <Text style={localStyles.modalTitle}>Please go to your profile to edit your favorites if desired!</Text>
                     </View>
                 </View>
             </View>
         </Modal>
-            
         )
     }
 }
@@ -92,7 +67,7 @@ const localStyles = StyleSheet.create({
     },
     modalView: {
       width:"90%",
-      height:"50%",
+      height:"30%", 
       backgroundColor: theme.DARK,
       borderColor: theme.LIGHT_PINK,
       borderWidth: 1,

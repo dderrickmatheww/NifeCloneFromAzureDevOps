@@ -1,4 +1,4 @@
-import { AsyncStorage, ProgressBarAndroidComponent } from 'react-native';
+import { AsyncStorage, ProgressBarAndroidComponent, Alert } from 'react-native';
 import { FACEBOOK_APP_ID, GOOGLE_API_KEY, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Facebook from 'expo-facebook';
@@ -14,35 +14,38 @@ const Util = {
             let obj = {
                 email: email
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/getFriends', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('GetFriends', true);
-            }).catch((error) => {
-                console.log(error)
-                Util.basicUtil.consoleLog('GetFriends', false);
-            }); 
+            if(email) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/getFriends', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('GetFriends', true);
+                }).catch((error) => {
+                    console.log(error)
+                    Util.basicUtil.consoleLog('GetFriends', false);
+                }); 
+            }
         },
         FilterFriends: (obj, callback) => {
-            
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/filterFriends', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('FilterFriends', true);
-            }).catch((error) => {
-                console.log(error)
-                Util.basicUtil.consoleLog('FilterFriends', false);
-            }); 
+            if(obj) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/filterFriends', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('FilterFriends', true);
+                }).catch((error) => {
+                    console.log(error)
+                    Util.basicUtil.consoleLog('FilterFriends', false);
+                }); 
+            }
         },
         AddFriend: function(db, userEmail, friendEmail, callback){
             let updateUserObj = {
@@ -104,20 +107,22 @@ const Util = {
             let obj = {
                 user: user,
                 email: email
+            };
+            if (user && email) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('VerifyUser', true);
+                }).catch((error) => {
+                    console.log(error)
+                    Util.basicUtil.consoleLog('VerifyUser', false);
+                }); 
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('VerifyUser', true);
-            }).catch((error) => {
-                console.log(error)
-                Util.basicUtil.consoleLog('VerifyUser', false);
-            }); 
         },
         BuildUserSchema: (obj) => {
             userObj = {};
@@ -142,20 +147,22 @@ const Util = {
         GetUserData: function(email, callback){
             let obj = {
                 email: email
+            };
+            if(email) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('GetUserData', true);
+                }).catch((error) => {
+                    console.log(error)
+                    Util.basicUtil.consoleLog('GetUserData', false);
+                });
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('GetUserData', true);
-            }).catch((error) => {
-                console.log(error)
-                Util.basicUtil.consoleLog('GetUserData', false);
-            }); 
         },
         UpdateUser: function(db, email, updateObject, callback){
             let userRef = db.collection('users').doc(email);
@@ -255,72 +262,69 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: (userData, buisnessUID, boolean, callback) => {
+        setFavorite: async (email, buisnessUID, boolean, buisnessName, callback) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(userData.email);
-            if (boolean) {
-                var favoritePlaces;
-                if(userData.favoritePlaces){
-                    favoritePlaces = userData.favoritePlaces;
-                    favoritePlaces[buisnessUID] = true;
-                }else{
-                    favoritePlaces = {
-                        [buisnessUID]: true
-                    }
-                }
-                setLoc.set({
-                    favoritePlaces
-                },
-                {
-                    merge: true
-                })
-                .then(() => {
-                    Util.basicUtil.consoleLog('setFavorite', true);
-                    callback(true)
-                })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('setFavorite', false);
-                    console.log("Firebase Error: " + error);
-                });
+            let setLoc = db.collection('users').doc(email);
+            let userData = await db.collection('users').doc(email).get();
+            let userObj = userData.data();
+            if(typeof userObj.favoritePlaces !== 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
+                callback(false, true);
             }
             else {
-                // Remove the 'capital' field from the document
-                var favoritePlaces;
-                if(userData.favoritePlaces){
-                    favoritePlaces = userData.favoritePlaces;
-                    favoritePlaces[buisnessUID] = false;
-                }else{
-                    favoritePlaces = {
-                        [buisnessUID]: false
-                    }
-                }
-                setLoc.update({
-                    favoritePlaces
-                })
-                .then(() => {
-                    Util.basicUtil.consoleLog('setFavorite', true);
-                    callback(false)
-                })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('setFavorite', false);
-                    console.log("Firebase Error: " + error);
-                });
+                if (boolean) {
+                    let favoritePlaces = {
+                       [buisnessUID]: {
+                           favorited: true,
+                           name: buisnessName
+                       }
+                   }
+                   setLoc.set({
+                       favoritePlaces
+                   },
+                   {
+                       merge: true
+                   })
+                   .then(() => {
+                       Util.basicUtil.consoleLog('setFavorite', true);
+                       callback(true, false);
+                   })
+                   .catch((error) => {
+                       Util.basicUtil.consoleLog('setFavorite', false);
+                       console.log("Firebase Error: " + error);
+                   });
+               }
+               else {
+                   // Remove the 'capital' field from the document
+                   setLoc.update({
+                       favoritePlaces: {
+                           [buisnessUID]: {
+                            favorited: false
+                           }
+                       }
+                   })
+                   .then(() => {
+                       Util.basicUtil.consoleLog('setFavorite', true);
+                       callback(false, false);
+                   })
+                   .catch((error) => {
+                       Util.basicUtil.consoleLog('setFavorite', false);
+                       console.log("Firebase Error: " + error);
+                   });
+               }
             }
         },
         isFavorited: async (buisnessUID, userData, returnData) => {
             if(userData.favoritePlaces) {
                 let favorites = userData.favoritePlaces;
-                console.log('Favorites ' + favorites)
                 if(favorites[buisnessUID]){
-                    returnData(favorites[buisnessUID]);
-                } else {
+                    returnData(favorites[buisnessUID].favorited);
+                } 
+                else {
                     returnData(false);
                 }
             } else {
                 returnData(false);
             }
-
-            
         },
         QueryPublicUsers: function(db, query, take, callback){
             let newQuery=  query.toLowerCase();
@@ -487,20 +491,22 @@ const Util = {
         GetBusinessData: function(email, callback){
             let obj = {
                 email: email
+            };
+            if(email) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/getBusinessData', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('GetBusinessData', true);
+                }).catch((error) => {
+                    Util.basicUtil.consoleLog('GetBusinessData', false);
+                    console.log('Firebase Error: ' + error);
+                }); 
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/getBusinessData', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('GetBusinessData', true);
-            }).catch((error) => {
-                Util.basicUtil.consoleLog('GetBusinessData', false);
-                console.log('Firebase Error: ' + error);
-            }); 
         },
         UpdateUser: function(db, email, updateObject, callback){
             let userRef = db.collection('businesses').doc(email);
@@ -517,20 +523,22 @@ const Util = {
         GetBusinessesByUserFavorites: function(favArr, callback){
             let obj = {
                 favArr: favArr
+            };
+            if(favArr) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/saveLocation', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
+                }).catch((error) => {
+                    Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
+                    console.log('Firebase Error: ' + error);
+                });
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/saveLocation', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
-            }).catch((error) => {
-                Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
-                console.log('Firebase Error: ' + error);
-            }); 
         },
         GetBusinessByUID: async (uid, callback) => {
             let busRef = firebase.firestore().collection('businesses')
@@ -560,20 +568,22 @@ const Util = {
             let obj = {
                 location: location,
                 email: email
+            };
+            if(email && location) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/saveLocation', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('SaveLocation', true);
+                }).catch((error) => {
+                    Util.basicUtil.consoleLog('SaveLocation', false);
+                    console.log('Firebase Error: ' + error);
+                });
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/saveLocation', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                callback(data.result);
-                Util.basicUtil.consoleLog('SaveLocation', true);
-            }).catch((error) => {
-                Util.basicUtil.consoleLog('SaveLocation', false);
-                console.log('Firebase Error: ' + error);
-            }); 
         },
         SetUserLocationData: function (region) {
             var latAndLong = region.latitude + ',' + region.longitude;
@@ -611,19 +621,21 @@ const Util = {
                 buisnessUID: buisnessUID,
                 userLocation: userLocation
             }
-            fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
-            { 
-                method: 'POST',
-                body: JSON.stringify(obj)
-            })
-            .then(response => response.json())
-            .then(async data => {
-                returnData(data.result);
-                Util.basicUtil.consoleLog('checkUserCheckInCount', true);
-            }).catch((error) => {
-                console.log(error)
-                Util.basicUtil.consoleLog('checkUserCheckInCount', false);
-            }); 
+            if(userLocation) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    returnData(data.result);
+                    Util.basicUtil.consoleLog('checkUserCheckInCount', true);
+                }).catch((error) => {
+                    console.log(error)
+                    Util.basicUtil.consoleLog('checkUserCheckInCount', false);
+                }); 
+            }
         },
         IsWithinRadius: (checkIn, userLocation, boolean) => {
             let withinRadius;
@@ -915,14 +927,14 @@ const Util = {
                   });
                   if (type === 'success') {
                     // Get the user's name using Facebook's Graph API
-                    fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`)
+                    fetch(`https://graph.facebook.com/me?access_token=${token}&fields=email`)
                     .then(response => response.json())
                     .then(async data => {
                         const credential = firebase.auth.FacebookAuthProvider.credential(token);
                         await firebase.auth().signInWithCredential(credential)
                         .catch((error) => { 
                             Util.basicUtil.consoleLog("Facbook's login", false);
-                            console.log('Firebase Facebook Auth Error: ' + error); 
+                            Util.basicUtil.Alert('Facebook Login Error', error.message, null);
                         });
                         dataObj['data'] = firebase.auth().currentUser;
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
@@ -931,14 +943,14 @@ const Util = {
                     })
                     .catch((error) => {
                         Util.basicUtil.consoleLog("Facbook's login", false);
-                        console.log("Firebase Facebook Auth Error: " + error.message);
+                        Util.basicUtil.Alert('Facebook Login Error', error.message, null);
                     });
                   } else {
                     // type === 'cancel'
                   }
                 } catch ({ message }) {
                   Util.basicUtil.consoleLog("Facbook's login", false);
-                  console.log(`Facebook Login Error: ${message}`);
+                  Util.basicUtil.Alert('Facebook Login Error', message, null);
                 }
             }
         },
@@ -1042,7 +1054,7 @@ const Util = {
                         await firebase.auth().signInWithCredential(googleCredential)
                         .catch((error) => {
                             Util.basicUtil.consoleLog("Google's login", false);
-                            console.log("Firebase Google Auth Error: " + error.message);
+                            Util.basicUtil.Alert('Google Login Error', error.message, null);
                         });
                         dataObj['user'] = firebase.auth().currentUser;
                         dataObj['data'] = firebase.auth();
@@ -1055,7 +1067,7 @@ const Util = {
                 } 
                 catch ({ message }) {
                     Util.basicUtil.consoleLog("Google's login", false);
-                    alert(`Google login Error: ${message}`);
+                    Util.basicUtil.Alert('Google Login Error', message, null);
                 }
             }
         },
@@ -1071,16 +1083,16 @@ const Util = {
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                             .catch(function(error) {
                                 Util.basicUtil.consoleLog("Nife's sign-up", false);
-                                console.log("Nife sign-up Error: " + error);
+                                Util.basicUtil.Alert('Nife Business Sign-Up Error', error.message, null);
                             });
                             dataObj['data'] = firebase.auth().currentUser;
                             dataObj['token'] = null;
                             dataObj['user'] = firebase.auth().currentUser;
-                            Util.basicUtil.consoleLog("Nife's sign-up", true);
+                            Util.basicUtil.consoleLog("Nife's Business sign-up", true);
                             callBack(dataObj);
                         } catch ({ message }) {
-                            Util.basicUtil.consoleLog("Nife's sign-up", false);
-                            alert(`Nife sign-up Error: ${message}`);
+                            Util.basicUtil.consoleLog("Nife's Business sign-up", false);
+                            Util.basicUtil.Alert('Nife Business Sign-Up Error', message, null);
                         } 
                     }
                     else {
@@ -1089,17 +1101,17 @@ const Util = {
                             let password = signUpInfo.password1
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                             .catch(function(error) {
-                                Util.basicUtil.consoleLog("Nife's sign-up", false);
-                                console.log("Nife sign-up Error: " + error);
+                                Util.basicUtil.consoleLog("Nife's User sign-up", false);
+                                Util.basicUtil.Alert('Nife Sign-Up Error', error.message, null);
                             });
                             dataObj['data'] = firebase.auth().currentUser;
                             dataObj['token'] = null;
                             dataObj['user'] = firebase.auth().currentUser;
-                            Util.basicUtil.consoleLog("Nife's sign-up", true);
+                            Util.basicUtil.consoleLog("Nife's User sign-up", true);
                             callBack(dataObj);
                         } catch ({ message }) {
-                            Util.basicUtil.consoleLog("Nife's sign-up", false);
-                            alert(`Nife sign-up Error: ${message}`);
+                            Util.basicUtil.consoleLog("Nife's User sign-up", false);
+                            Util.basicUtil.Alert('Nife Sign-Up Error', message, null);
                         } 
                     }
                 }
@@ -1110,7 +1122,7 @@ const Util = {
                         firebase.auth().signInWithEmailAndPassword(email, password)
                         .catch(function(error) {
                             Util.basicUtil.consoleLog("Nife's login", false);
-                            console.log("Nife login Error: " + error);
+                            Util.basicUtil.Alert('Nife Login Error', error.message, null);
                         });
                         dataObj['data'] = firebase.auth().currentUser;
                         dataObj['token'] = null;
@@ -1119,7 +1131,7 @@ const Util = {
                         callBack(dataObj);
                     } catch ({ message }) {
                         Util.basicUtil.consoleLog("Nife's login", false);
-                        alert(`Nife login Error: ${message}`);
+                        Util.basicUtil.Alert('Nife Login Error', message, null);
                     }
                 }
             }
@@ -1154,7 +1166,7 @@ const Util = {
                 })
                 .catch((err) => {
                     Util.basicUtil.consoleLog("Yelp's placeData", false);
-                    console.log("Yelp's placeData Error: " + err);
+                    Util.basicUtil.Alert('Map Business Data Error (API Y PlaceData)', err.message, null);
                 });
             },
             buildParameters: (lat, long, radius) => {
@@ -1179,7 +1191,7 @@ const Util = {
                 })
                 .catch((err) => {
                     Util.basicUtil.consoleLog("businessPhoneVerification", false);
-                    console.log("businessPhoneVerification" + err);
+                    Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
                 });
             }
         },
@@ -1321,6 +1333,19 @@ const Util = {
                 (order === 'desc') ? (comparison * -1) : comparison
                 );
             };
+        },
+        Alert: (title, message, okFunction) => {
+            Alert.alert(
+                title,
+                message,
+                [
+                  { 
+                    text: "OK", 
+                    onPress: okFunction ? okFunction() : () => {}
+                  }
+                ],
+                { cancelable: false }
+              );
         }
     }
 }

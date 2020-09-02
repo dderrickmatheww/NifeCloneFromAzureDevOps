@@ -25,18 +25,20 @@ export default class DataRow extends React.Component  {
                             <Headline style={{color:theme.LIGHT_PINK, fontSize: 14, }}>{this.props.name}</Headline>
                         </View>
                         <View style={localStyles.DrawerOverlay}>
-                            <Favorite favoriteTrigg={(buisnessUID, boolean) => {this.props.favoriteABar(buisnessUID, boolean)}} user={this.props.user} buisnessUID={this.props.buisnessUID} />
+                            <Favorite favoriteTrigg={(buisnessUID, boolean, buisnessName) => {this.props.favoriteABar(buisnessUID, boolean, buisnessName)}} user={this.props.user} buisnessUID={this.props.buisnessUID} buisnessName={this.props.name}/>
                         </View>
                 </View>
                 {
-                     this.props.address ?
+                     this.props.address && typeof this.props.address[0] !== 'undefined' ?
                         <Text style={styles.facebookDataText}>
                             {this.props.address[0]} {"\n"}
                             {this.props.address[1] + ', ' + this.props.address[2]} {"\n"}
                             Phone #: {this.props.phone} {"\n"}
                         </Text>
                     :
-                        null
+                    <Text style={styles.facebookDataText}>
+                        No address available!
+                    </Text>
                 }
                 { 
                     this.props.usersCheckedIn > 1 ? 
