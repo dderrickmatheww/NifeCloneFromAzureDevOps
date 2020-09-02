@@ -228,8 +228,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a',
-    marginBottom: 20,
-    marginTop: 20,
+    marginVertical:5,
     backgroundColor: theme.DARK,
     padding: 15,
     borderRadius: 15,
@@ -368,12 +367,12 @@ export const styles = StyleSheet.create({
     borderColor: 'grey'
   },
   searchBar: {
-    top: 10,
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     width: 350,
     height: 25,
-    margin: 5,
+    marginTop:5,
+    marginHorizontal:10,
     alignItems: 'center',
     justifyContent: 'center'
   },

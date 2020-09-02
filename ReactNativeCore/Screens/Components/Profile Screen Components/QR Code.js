@@ -38,12 +38,12 @@ export default class QRCodeScreen extends Component {
                 source={{uri:Util.user.GenerateQRCode(firebase.auth().currentUser.email)}}
                 style={{width:300,height:300, marginTop:30}}
               />
-              <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+              <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
             </View>
                 :
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-                <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+                <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
             </View> 
         
       );

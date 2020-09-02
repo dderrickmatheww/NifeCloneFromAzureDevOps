@@ -373,7 +373,7 @@ const Util = {
         },
         GenerateQRCode: (userEmail) => {
             let email = encodeURI(userEmail);
-            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=20232A&color=eca6c4"
+            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=D4DE24&color=eca6c4"
             return QRSource;
         },
         UploadImage: async (uri, email, callback) => {
