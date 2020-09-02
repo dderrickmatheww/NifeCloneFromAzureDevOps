@@ -17,7 +17,6 @@ import * as Permissions from 'expo-permissions';
 import Login from '../Screens/Login Screen';
 import {DrawerContent} from '../Screens/Components/Drawer Components/Drawer Content';
 import * as ImagePicker from 'expo-image-picker';
-import "firebase/firebase-functions"
 
 
 
@@ -66,21 +65,15 @@ class Navigator extends React.Component {
     friendData: [],
     authLoaded: false,
     userChecked: false,
-    friendRequests:null,
-    dataLoaded:false,
-    userExists:false,
+    friendRequests: null,
+    dataLoaded: false,
+    userExists: false,
     displayName: null,
-    uploading:false,
-    businessData:null,
-    isBusiness:false, //only set at business sign up for first time
-    businessState:null,
-    favoritePlaceData:null,
-  }
-  //sends user login location to db
-  setWantedData = (db, currentUser, location, callback) => {
-    Util.location.SaveLocation(db, currentUser.email, location, () => {
-      callback();
-    });
+    uploading: false,
+    businessData: null,
+    isBusiness: false, //only set at business sign up for first time
+    businessState: null,
+    favoritePlaceData: null,
   }
 
   getLocationAsync = (callback) => {
@@ -96,79 +89,50 @@ class Navigator extends React.Component {
     });
   }
 
-  getNeededData = (db, currentUser, callback) => {
-    //if user exits get user data, get friend data set to async     //console.log('wantedData App.js', currentUser)
-
+  getNeededData = (currentUser) => {
+    //if user exits get user data, get friend data set to async
     if (currentUser) {
         //load user
-        Util.user.GetUserData(db, currentUser.email, (userData) => {
+        Util.user.GetUserData(currentUser.email, (userData) => {
           if(userData) {
             let user = JSON.stringify(userData);
             Util.asyncStorage.SetAsyncStorageVar('User', user);
-            
             //load users who are friends or have requested the user
             //user data set in filterfriends
-            if(userData.isBusiness){
-              Util.business.GetBusinessData(db, currentUser.email, (businessData) => {
+            if(userData.isBusiness) {
+              Util.business.GetBusinessData(currentUser.email, (businessData) => {
                 //console.log(JSON.stringify(businessData))
-                this.setState({businessData: businessData,
-                  userData:userData
+                this.setState({
+                  businessData: businessData,
+                  userData: userData
                 });
-                callback()
               });
-              
-            }else {
-              Util.friends.GetFriends(db, currentUser.email, (data) => {
-                this.filterFriends(data, userData);
-                callback();
-                // //console.log(JSON.stringify(data));
+            }
+            else {
+              Util.friends.GetFriends(currentUser.email, (data) => {
+                let obj = {
+                  userFriends: userData.friends,
+                  usersThatRequested: data
+                }
+                Util.friends.FilterFriends(obj, (data) => {
+                  this.setState({
+                    friendData: data.acceptedFriends,
+                    friendRequests: data.requests,
+                    friendRequests: data.requests,
+                    userChecked: true,
+                    userData: userData
+                  });
+                })
               });
-              
-            }  
+            }
           }
           else {
-            this.setState({userChecked:true});
+            this.setState({ userChecked: true });
           }
         });
-        
     } else {
-      //console.log('no user!');
-
+      console.log('No user found!');
     }
-  }
-
-  filterFriends = (friendsData, userData)=> {
-    let userFriends = userData.friends;
-    let usersThatRequested = friendsData;
-    let requests = [];
-    let acceptedFriends = [];
-    if(userFriends){
-      let keys = Object.keys(userFriends);
-      keys.forEach(function(key){
-        if(userFriends[key] == null){
-          usersThatRequested.forEach((user)=>{
-            if(key == user.email){
-              requests.push(user);
-            }
-          });
-        }
-        if(userFriends[key] == true){
-          usersThatRequested.forEach((user)=>{
-            if(key == user.email){
-              acceptedFriends.push(user);
-            }
-          });
-        }
-      });
-    }
-    
-    let friends = JSON.stringify(friendsData);
-    Util.asyncStorage.SetAsyncStorageVar('Friends', friends);
-    
-    this.setState({friendData: acceptedFriends});
-    this.setState({friendRequests: requests});
-    this.setState({userData:userData});
-    this.setState({userChecked:true});
   }
 
   refreshFromAsync = (userData, friendData, requests, businessData) => {
@@ -265,22 +229,20 @@ class Navigator extends React.Component {
   }
 
   setIsBusiness = (bool, signUpState) => {
-    this.setState({isBusiness:bool});
+    this.setState({ isBusiness: bool });
     if(signUpState){
-      //console.log(JSON.stringify(signUpState));
-      this.setState({businessState:signUpState});
+      this.setState({ businessState: signUpState });
     }
   }
 
-
   initializeParams = (user) => {
-      Util.user.VerifyUser(user, user.email, () => { 
-        this.getLocationAsync((location) => {
-          this.setWantedData(firebase.firestore(), firebase.auth().currentUser, location, () => {
-            this.getNeededData(firebase.firestore(),  firebase.auth().currentUser, ()=>{console.log('got data')});
-          });        
+    Util.user.VerifyUser(user, user.email, () => { 
+      this.getLocationAsync((location) => {
+        Util.location.SaveLocation(user.email, location, () => {
+          this.getNeededData(user);
         });
-      });
+      });        
+    });
   }
   componentDidMount() {
     try{
@@ -291,7 +253,6 @@ class Navigator extends React.Component {
           this.setState({
             userExists: true
           });
-
           if(user.displayName){
             this.initializeParams(user);
           }
@@ -299,8 +260,11 @@ class Navigator extends React.Component {
             this.firstTimeSignUp(user);
           }
         } else {
-          this.setState({userExists:false});
-          this.setState({userData: null});
+          this.setState({
+            authLoaded: true,
+            userData: null,
+            userExists: false
+          });
         }
       });
     }
@@ -344,7 +308,7 @@ class Navigator extends React.Component {
             <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
           </View> 
           :
-          <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login so we can show you where you should have a night to remember..."}></Login> 
+          <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></Login>  
         :
         <Loading></Loading>
     );

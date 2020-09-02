@@ -25,7 +25,7 @@ export default class DataRow extends React.Component  {
                             <Headline style={{color:theme.LIGHT_PINK, fontSize: 14, }}>{this.props.name}</Headline>
                         </View>
                         <View style={localStyles.DrawerOverlay}>
-                            <Favorite user={this.props.user} favoriteTrigg={(buisnessUID, boolean) => {this.props.favoriteABar(buisnessUID, boolean)}} buisnessUID={this.props.buisnessUID} />
+                            <Favorite favoriteTrigg={(buisnessUID, boolean) => {this.props.favoriteABar(buisnessUID, boolean)}} user={this.props.user} buisnessUID={this.props.buisnessUID} />
                         </View>
                 </View>
                 {

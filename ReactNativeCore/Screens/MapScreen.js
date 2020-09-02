@@ -297,8 +297,8 @@ class MapScreen extends React.Component  {
 
   getAsyncStorageData = () => {
     this.setState({
-      userData:this.props.user,
-      friendData:this.props.friends
+      userData: this.props.user,
+      friendData: this.props.friends
     })
 
     this.clientLocationFunction();
