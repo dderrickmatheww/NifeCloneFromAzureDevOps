@@ -30,6 +30,7 @@ export default class ProfileScreen extends Component {
     statusModalVisible:false,
     uploading:false,
     businessData: null,
+    followerCount:0,
   }
 
   
@@ -110,6 +111,10 @@ export default class ProfileScreen extends Component {
         this.setState({businessData: data})
         console.log(JSON.stringify(data))
       })
+      Util.business.GetFavoriteCount(this.state.userData.businessId, (count)=>{
+        console.log("COUNT MOTHER FUCKER: " + count)
+        this.setState({followerCount:count});
+      })
     }
   }
 
@@ -118,20 +123,23 @@ export default class ProfileScreen extends Component {
     this.getBusinessData();
     console.log('User: ' + firebase.auth().currentUser.email); 
     console.log('Profile Owner: ' + this.state.userData.email);
+    
   }
 
-  unFavoriteBar = () => {
-    // this.setState({isAddingFriend:true});
-    // Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-    //   this.setState({isAddingFriend:false}); 
-    //   this.setState({areFriends:false});     
-    // });
-  }
+ 
   favoriteABar = async (buisnessUID, boolean) => {
     let updatedUserData = this.props.currentUser;
-    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, (boolean) => {
-      updatedUserData['favoritePlaces'][buisnessUID] = boolean;
-      this.props.refresh(updatedUserData, null, null, null);
+    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, this.state.userData.displayName, (boolean, boolean2) => {
+      if(!boolean2){
+        updatedUserData['favoritePlaces'][buisnessUID] = boolean;
+        this.props.refresh(updatedUserData, null, null, null);
+        this.setState({
+          followerCount: boolean ? this.state.followerCount += 1 : this.state.followerCount > 0 ?  this.state.followerCount -=1 : 0
+        })
+      } else {
+        alert("You already have 10 favorites! Remove some to add more.")
+      }
+      
     });
   }
 
@@ -238,11 +246,9 @@ export default class ProfileScreen extends Component {
                       <Caption  style={localStyles.FriendCount}></Caption>
                     
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
-                      <TouchableOpacity
-                       disabled={this.state.isUsersProfile ? false : true}
-                       onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{user: this.state.userData, friends:this.state.friendData}})}>
-                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Followers</Caption>
-                      </TouchableOpacity>
+                      
+                      <Caption style={localStyles.FriendCount}>{this.state.followerCount} Followers</Caption>
+                      
                     </View>
                   </View>
               </View>

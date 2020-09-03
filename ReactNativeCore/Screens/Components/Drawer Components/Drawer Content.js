@@ -189,7 +189,7 @@ export function DrawerContent(props) {
                                             size={20}
                                             />
                                         )}
-                                        label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
+                                        label={()=> <Text style={styles.text}>Find your friends or bars!</Text>}
                                         onPress={() => {props.navigation.navigate('Profile', {screen:'Search',  params:{currentUser: props.user}})}}
                                     />
                                 

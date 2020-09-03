@@ -268,19 +268,19 @@ const Util = {
             let userData = await db.collection('users').doc(user.email).get();
             let oldFavorites = user.favoritePlaces ? user.favoritePlaces : {};
             let userObj = userData.data();
-            if(typeof userObj.favoritePlaces !== 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
+            if(typeof userObj.favoritePlaces != 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
                 callback(false, true);
             }
             else {
                 if (boolean) {
-                    let favoritePlaces = {
-                       [buisnessUID]: {
+                    let favoritePlaces = oldFavorites;
+                    favoritePlaces[buisnessUID] = {
                            favorited: true,
                            name: buisnessName
                        }
-                   }
+                   
                    setLoc.set({
-                       favoritePlaces
+                       favoritePlaces: favoritePlaces
                    },
                    {
                        merge: true
@@ -567,6 +567,29 @@ const Util = {
                 callback(false);
             }
             
+        },
+        GetFavoriteCount: async(uid, callback)=>{
+            var db = firebase.firestore();
+            var path = new firebase.firestore.FieldPath('favoritePlaces', uid, 'favorited');
+            var usersRef = db.collection('users').where(path, '==', true).get()
+            .then((data)=>{
+                if(data){
+                    Util.basicUtil.consoleLog("Favorite Count ", true)
+                    var tempArr = []
+                    data.forEach((item)=>{
+                        tempArr.push(item.data());
+                    });
+                    callback(tempArr.length);
+                }
+                else{
+                    Util.basicUtil.consoleLog("Favorite Count ", true)
+                    callback(0)
+                }
+            })
+            .catch((error)=>{
+                console.log(error)
+                Util.basicUtil.consoleLog("Favorite Count ", false)
+            })
         }
     },
     location: {
