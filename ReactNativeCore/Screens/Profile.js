@@ -189,7 +189,7 @@ export default class ProfileScreen extends Component {
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
                       {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender + ", " : "")} 
-                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "")}  {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth._seconds * 1000) : ""}
+                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "")}  {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth.seconds * 1000) : ""}
                     </Title>
                 </View>
                 {

@@ -71,7 +71,7 @@ class BarModal extends React.Component  {
 
   favoriteABar = async (buisnessUID, boolean, buisnessName) => {
     let updatedUserData = this.props.user;
-    await Util.user.setFavorite(updatedUserData.email, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
+    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
       if(boolean2) {
         this.setState({navModal: true});
       }

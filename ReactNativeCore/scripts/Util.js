@@ -262,10 +262,11 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: async (email, buisnessUID, boolean, buisnessName, callback) => {
+        setFavorite: async (user, buisnessUID, boolean, buisnessName, callback) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(email);
-            let userData = await db.collection('users').doc(email).get();
+            let setLoc = db.collection('users').doc(user.email);
+            let userData = await db.collection('users').doc(user.email).get();
+            let oldFavorites = user.favoritePlaces ? user.favoritePlaces : {};
             let userObj = userData.data();
             if(typeof userObj.favoritePlaces !== 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
                 callback(false, true);
@@ -295,12 +296,12 @@ const Util = {
                }
                else {
                    // Remove the 'capital' field from the document
+                   let favoritePlaces = oldFavorites;
+                   favoritePlaces[buisnessUID] = {
+                    favorited: false,
+                   }
                    setLoc.update({
-                       favoritePlaces: {
-                           [buisnessUID]: {
-                            favorited: false
-                           }
-                       }
+                    favoritePlaces:favoritePlaces
                    })
                    .then(() => {
                        Util.basicUtil.consoleLog('setFavorite', true);
@@ -319,7 +320,7 @@ const Util = {
                     let favorites = userData.favoritePlaces;
                     console.log('Favorites ' + favorites)
                     if(favorites[buisnessUID]){
-                        returnData(favorites[buisnessUID]);
+                        returnData(favorites[buisnessUID].favorited);
                     } else {
                         returnData(false);
                     }

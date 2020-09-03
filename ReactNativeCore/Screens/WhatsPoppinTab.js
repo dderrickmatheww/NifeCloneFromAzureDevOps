@@ -69,7 +69,7 @@ class WhatsPoppin extends React.Component  {
     favoriteABar = (buisnessUID, boolean, buisnessName) => {
         let email = this.state.user.email;
         let updatedUserData = this.props.user;
-        Util.user.setFavorite(email, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
+        Util.user.setFavorite(updatedUserData, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
             if(boolean2) {
                 this.setState({navModal: true});
             }
