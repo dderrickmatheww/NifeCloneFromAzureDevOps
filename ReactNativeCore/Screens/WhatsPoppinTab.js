@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import theme from '../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import { styles } from '../Styles/style';
@@ -27,7 +27,8 @@ class WhatsPoppin extends React.Component  {
         refresh: false,
         DetailsTab:true,
         EventsTab: false,
-        SpecialsTab: false
+        SpecialsTab: false,
+        feedLoadDone:false,
     }
 
     async componentDidMount () {
@@ -63,7 +64,8 @@ class WhatsPoppin extends React.Component  {
                     feedData: dataObj,
                     refresh: false,
                     isLoggedIn: firebase.auth().currentUser ? true : false,
-                    user: this.props.user 
+                    user: this.props.user,
+                    feedLoadDone:true
                 });
             });
         }
@@ -135,7 +137,7 @@ class WhatsPoppin extends React.Component  {
     render() {
         return (
             this.state.isLoggedIn ? 
-                this.state.feedData ?
+                
                 <SafeAreaView style={styles.safeAreaContainer} >
                     <View style={localStyles.navHeader}>
                         {/* Drawer Button */}
@@ -147,6 +149,8 @@ class WhatsPoppin extends React.Component  {
                         </View>
                     </View>
                     <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
+                    {this.state.feedData ?
+                    this.state.feedData.countData && this.state.feedData.countData.length > 0 ?
                     <ScrollView 
                         style={styles.dataRowScrollView}
                         refreshControl={
@@ -175,15 +179,22 @@ class WhatsPoppin extends React.Component  {
                             ))
                         }
                         <View style={{ height: 120 }} />
-                    </ScrollView>
+                    </ScrollView> :
+                    <View style={styles.viewDark}>
+                        <Text style={{color:theme.LIGHT_PINK, fontSize:16}}>
+                            Nothing seems to be happening... Tell your friends about Nife and start checking in to give us more data!
+                        </Text>
+                    </View>
+                     : 
+                     <View style={styles.viewDark}>
+                         <ActivityIndicator 
+                             size={'large'}
+                             color={theme.LIGHT_PINK}
+                         />
+                     </View>
+                    }
                 </SafeAreaView>
-                : 
-                <View style={styles.viewDark}>
-                    <ActivityIndicator 
-                        size={'large'}
-                        color={theme.LIGHT_PINK}
-                    />
-                </View>
+               
             : 
             <PleaseLogin 
                 navigation={this.props.navigation}
