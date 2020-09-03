@@ -80,16 +80,21 @@ export default class ProfileScreen extends Component {
   addFriend = () => {
     this.setState({isAddingFriend:true});
     Util.friends.AddFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-      this.setState({isAddingFriend:false}); 
-      this.setState({areFriends:true});
+      this.setState({
+        isAddingFriend:false, 
+        areFriends:true,
+      }); 
     });
   }
 
   removeFriend = () => {
     this.setState({isAddingFriend:true});
     Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-      this.setState({isAddingFriend: false}); 
-      this.setState({areFriends: false});     
+      this.setState({
+        isAddingFriend:false, 
+        areFriends:false,
+        friendCount: this.state.friendCount -= 1
+      });  
     });
   }
 
