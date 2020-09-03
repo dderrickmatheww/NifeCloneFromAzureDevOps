@@ -111,7 +111,7 @@ export default class FriendsFeed extends React.Component  {
 
     render() {
         return (
-            this.state.feedData ?
+            
            <View style={styles.viewDark}>
                <View style={localStyles.navHeader}>
                     {/* Drawer Button */}
@@ -126,7 +126,9 @@ export default class FriendsFeed extends React.Component  {
                     </TouchableOpacity> 
                 </View>
                 
-               <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
+               {
+                this.state.feedData ?
+                <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
                     {
                         this.state.feedData && this.state.feedData.length > 0 ?
                             this.state.feedData.map((data, i)=>(
@@ -144,7 +146,11 @@ export default class FriendsFeed extends React.Component  {
                             
                     }
                     
-               </ScrollView>
+               </ScrollView> :
+                <View style={styles.viewDark}>
+                    <ActivityIndicator size="large" color="#eca6c4"></ActivityIndicator>
+                </View>
+               }
                {
                    this.state.modalVisable ?
                   <StatusModal
@@ -171,10 +177,7 @@ export default class FriendsFeed extends React.Component  {
                     Updated your status!
                 </Snackbar>
            </View> 
-           :
-           <View style={styles.viewDark}>
-            <ActivityIndicator size="large" color="#eca6c4"></ActivityIndicator>
-          </View>
+           
         )
     }
 }

@@ -71,7 +71,7 @@ class BarModal extends React.Component  {
 
   favoriteABar = async (buisnessUID, boolean, buisnessName) => {
     let updatedUserData = this.props.user;
-    await Util.user.setFavorite(updatedUserData.email, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
+    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, buisnessName, (boolean, boolean2) => {
       if(boolean2) {
         this.setState({navModal: true});
       }
@@ -234,7 +234,7 @@ class BarModal extends React.Component  {
               <Text style={styles.ratingText}> in {this.props.reviewCount} reviews.</Text>
               { 
               !this.state.checkedIn == "" || this.state.checkedIn == 0 ?
-                  this.state.checkedIn >= 1 ?
+                  this.state.checkedIn == 1 ?
                     <Text style={styles.ratingText}>
                       There is {this.state.checkedIn} person here!
                     </Text>

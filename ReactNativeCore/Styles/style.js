@@ -284,7 +284,7 @@ export const styles = StyleSheet.create({
     color: theme.LIGHT_PINK,
     fontSize: 11,
     fontFamily: theme.fontFamily,
-    padding: 10
+    alignSelf:"center"
   },
   checkedInDataText: {
     color: theme.LIGHT_PINK,

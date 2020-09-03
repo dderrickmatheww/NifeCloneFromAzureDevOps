@@ -34,6 +34,8 @@ export default class ProfileScreen extends Component {
   }  
 
   calculateAge = (birthday) => { // birthday is a date
+    console.log('Birthday '+ birthday);
+    console.log('User Data Birthday '+ JSON.stringify( this.state.userData.dateOfBirth));
     var bDay = new Date(birthday);
     var ageDifMs = Date.now() - bDay.getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
@@ -117,7 +119,7 @@ export default class ProfileScreen extends Component {
     if(this.state.userData.isBusiness){
       Util.business.GetBusinessData(firebase.firestore(), firebase.auth().currentUser.email, (data)=>{
         this.setState({businessData: data})
-        console.log(JSON.stringify(data))
+        // console.log(JSON.stringify(data))
       })
     }
   }
@@ -306,13 +308,14 @@ export default class ProfileScreen extends Component {
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
                      { this.state.userData.favoritePlaces ? 
                         Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
+                          bar.favorited ?
                           <Chip mode={"outlined"}
                               key={i}  
                               style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
                               }} 
                               textStyle={{color:theme.LIGHT_PINK}}>
                               {bar.name ? bar.name : 'None'}
-                          </Chip>
+                          </Chip> : null
                         ))
                       :
                       <Chip mode={"outlined"}  
@@ -431,7 +434,6 @@ const localStyles = StyleSheet.create({
   },
   loggedInContainer:{
     paddingHorizontal:10,
-    paddingBottom:25
   },
   loggedInSubView:{
     flex: 1, 
