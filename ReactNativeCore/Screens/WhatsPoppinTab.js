@@ -148,7 +148,7 @@ class WhatsPoppin extends React.Component  {
                             <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
                         </View>
                     </View>
-                    <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/>
+                    {/* <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/> */}
                     {this.state.feedData ?
                     this.state.feedData.countData && this.state.feedData.countData.length > 0 ?
                     <ScrollView 
@@ -212,6 +212,7 @@ const localStyles = StyleSheet.create({
         width:"98%",
         textAlign:"center",
         alignItems:"center",
+        alignSelf:"center"
     },
     DrawerOverlay: {
         alignSelf:"flex-start",
