@@ -318,7 +318,7 @@ const Util = {
             if(userData){
                 if(userData.favoritePlaces) {
                     let favorites = userData.favoritePlaces;
-                    console.log('Favorites ' + favorites)
+                    console.log('Favorites ' + JSON.stringify(favorites))
                     if(favorites[buisnessUID]){
                         returnData(favorites[buisnessUID].favorited);
                     } else {

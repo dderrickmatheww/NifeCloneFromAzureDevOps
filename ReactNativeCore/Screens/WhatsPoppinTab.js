@@ -24,7 +24,10 @@ class WhatsPoppin extends React.Component  {
         DataRoWKey: 0,
         modalVisable: false,
         tweetData: null,
-        refresh: false
+        refresh: false,
+        DetailsTab:true,
+        EventsTab: false,
+        SpecialsTab: false
     }
 
     async componentDidMount () {
@@ -89,6 +92,45 @@ class WhatsPoppin extends React.Component  {
         this.setState({ refresh: true });
         this.grabFeedData();
     }
+
+    toggleTab = (tabstate) => {
+        if(tabstate.details){
+          if(!this.state.DetailsTab)
+          {
+            this.setState({DetailsTab: true});
+          }
+          if(this.state.EventsTab){
+            this.setState({EventsTab: false});
+          }
+          if(this.state.SpecialsTab){
+            this.setState({SpecialsTab: false});
+          }
+        }
+        if(tabstate.events){
+          if(!this.state.EventsTab)
+          {
+            this.setState({EventsTab: true});
+          }
+          if(this.state.DetailsTab){
+            this.setState({DetailsTab: false});
+          }
+          if(this.state.SpecialsTab){
+            this.setState({SpecialsTab: false});
+          }
+        }
+        if(tabstate.specials){
+          if(!this.state.SpecialsTab)
+          {
+            this.setState({SpecialsTab: true});
+          }
+          if(this.state.EventsTab){
+            this.setState({EventsTab: false});
+          }
+          if(this.state.DetailsTab){
+            this.setState({DetailsTab: false});
+          }
+        }
+      }
 
     render() {
         return (

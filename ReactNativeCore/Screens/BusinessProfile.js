@@ -131,7 +131,10 @@ export default class ProfileScreen extends Component {
     let updatedUserData = this.props.currentUser;
     await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, this.state.userData.displayName, (boolean, boolean2) => {
       if(!boolean2){
-        updatedUserData['favoritePlaces'][buisnessUID] = boolean;
+        updatedUserData['favoritePlaces'][buisnessUID] = {
+          favorited: boolean,
+          name: this.state.userData.displayName
+        };
         this.props.refresh(updatedUserData, null, null, null);
         this.setState({
           followerCount: boolean ? this.state.followerCount += 1 : this.state.followerCount > 0 ?  this.state.followerCount -=1 : 0
