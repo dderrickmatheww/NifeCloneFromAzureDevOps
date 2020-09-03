@@ -90,7 +90,7 @@ export default class UserSearch extends Component {
                     this.state.queriedUsers.map((user, i) => (
                         
                         <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => !user.isBusiness ? 
-                          this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user}}) :
+                          this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user, isUsersProfile:false}}) :
                             this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
                           }>
                           <View style={localStyles.friendCont}>
