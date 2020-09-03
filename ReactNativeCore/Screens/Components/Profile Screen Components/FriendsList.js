@@ -125,14 +125,14 @@ class FriendsList extends React.Component {
             <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
             <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
             <View style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, marginBottom:2, width:"98%"}}>
-              <Searchbar
+              {/* <Searchbar
                   placeholder=""
                   onChangeText={(query) => this.onChangeSearch(query)}
                   value={this.state.searchQuery}
                   inputStyle={{color:theme.LIGHT_PINK}}
                   style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, marginBottom:2}}
                   iconColor={theme.LIGHT_PINK}
-                /> 
+                />  */}
             </View>
             
           </View>
@@ -208,7 +208,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.DARK,
     width: "100%",
-    maxHeight: "30%",
+    maxHeight:"10%",
     justifyContent: "flex-end",
     alignItems: "center",
     borderBottomColor: theme.LIGHT_PINK,

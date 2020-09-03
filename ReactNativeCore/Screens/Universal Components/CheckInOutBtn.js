@@ -98,7 +98,7 @@ export default class CheckInOutButtons extends React.Component  {
                         >
                         <Text style={localStyles.modalText}>Public Check In</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                         onPress={() => {
                             this.setState({loading: true});
                             Util.location.GetUserLocation((userLocation) => {
@@ -134,7 +134,7 @@ export default class CheckInOutButtons extends React.Component  {
                         style={localStyles.descCont}
                         >
                         <Text style={localStyles.modalText}>Friend Check In</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity
                         onPress={() => {
                             this.setState({loading: true});
@@ -174,7 +174,7 @@ export default class CheckInOutButtons extends React.Component  {
                         </TouchableOpacity>
                     </View> 
             :
-            <View style={localStyles.activityIndicator}>
+            <View style={localStyles.checkOutContainer}>
                 <ActivityIndicator 
                     size={'large'}
                     color={theme.LIGHT_PINK}
@@ -199,31 +199,34 @@ const localStyles = StyleSheet.create({
       borderWidth: 1,
       justifyContent: 'center', 
       alignItems: 'center' ,
+      alignContent:"center",
       backgroundColor:theme.LIGHT_PINK,
-      textAlign:"center",
       margin:"1%",
     },
     modalText:{
       width: '100%',
       color: theme.DARK,
-      padding: 5,
+      paddingBottom:2.5,
       fontWeight:"bold",
       justifyContent: 'center', 
+      alignSelf:"center",
       alignItems: 'center' ,
       textAlign:"center",
-      fontSize: 12
+      fontSize: 12,
+      paddingHorizontal:5
     },
     checkInContainer: {
+        flexDirection:"row",
+        width:"90%",
+        justifyContent:"space-between",
+        textAlign:"center",
+        alignItems:"center"
+    },
+    checkOutContainer: {
         flexDirection:"row",
         width:"90%",
         justifyContent:"center",
         textAlign:"center",
         alignItems:"center"
-    },
-    checkOutContainer: {
-        width:"90%",
-        textAlign:"center",
-        alignItems:"center",
-        padding: 20
     }
   });
