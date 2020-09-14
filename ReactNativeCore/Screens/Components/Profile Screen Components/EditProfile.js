@@ -62,7 +62,6 @@ export default class EditProfile extends Component {
     if(selectedDate){
       var date = new Date(selectedDate);
       await this.setState({dateOfBirth: date});
-      console.log("New DOB: " + this.state.dateOfBirth)
       this.setState({showDatePicker: false});
     }
     else {
