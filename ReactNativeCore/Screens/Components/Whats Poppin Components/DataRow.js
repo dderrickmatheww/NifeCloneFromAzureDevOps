@@ -22,7 +22,7 @@ export default class DataRow extends React.Component  {
                             source={{uri: this.props.barImage }}
                         />
                         <View style={{width:"45%", textAlign:"center", alignSelf:"center", margin: '2%'}}>
-                            <Headline style={{color:theme.LIGHT_PINK, fontSize: 14, lineHeight: 0 }}>{this.props.name}</Headline>
+                            <Headline style={{color:theme.LIGHT_PINK, fontSize: 14, }}>{this.props.name}</Headline>
                         </View>
                         <View style={localStyles.DrawerOverlay}>
                             <Favorite favoriteTrigg={(buisnessUID, boolean, buisnessName) => {this.props.favoriteABar(buisnessUID, boolean, buisnessName)}} user={this.props.user} buisnessUID={this.props.buisnessUID} buisnessName={this.props.name}/>
@@ -83,7 +83,7 @@ const localStyles = StyleSheet.create({
         borderColor: "#fff",
         borderWidth: 1,
         borderRadius: 5,
-        margin: '2%',
+        marginVertical:5,
         alignItems:"center",
       },
 })

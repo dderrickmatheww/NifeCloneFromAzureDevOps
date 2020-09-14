@@ -329,7 +329,7 @@ const Util = {
         QueryPublicUsers: function(db, query, take, callback){
             let newQuery=  query.toLowerCase();
             var path = new firebase.firestore.FieldPath('privacySettings', "searchPrivacy");
-            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery)
+            let usersRef = db.collection('users').where(path, '==', false)
             usersRef.get()
             .then((data) => {
               if(data){
@@ -339,16 +339,23 @@ const Util = {
                     queriedUsers.push(user.data());
                 });
                 
-                queriedUsers.forEach((user)=>{
-                    let qUserEmail = user.email.toLowerCase();
-                    let qUserEmailRefined = qUserEmail.split('@')[0];
-                    let qUserName = user.displayName.toLowerCase();
-                    if((qUserEmail == newQuery || qUserName.includes(newQuery) || qUserEmailRefined.includes(newQuery) ) && user.email != userEmail){
-                        wantedUsers.push(user);
-                    }
-                });
-                Util.basicUtil.consoleLog('QueryUsers', true);
-                callback(wantedUsers);
+                if(queriedUsers.length > 0){
+                    queriedUsers.forEach((user)=>{
+                        let qUserEmail = user.email.toLowerCase();
+                        let qUserEmailRefined = qUserEmail.split('@')[0];
+                        let qUserName = user.displayName.toLowerCase();
+                        if((qUserEmail == newQuery || qUserName.includes(newQuery) || qUserEmailRefined.includes(newQuery) ) && user.email != firebase.auth().currentUser.email){
+                            wantedUsers.push(user);
+                        }
+                    });
+                    Util.basicUtil.consoleLog('QueryUsers', true);
+                    callback(wantedUsers);
+                }
+                else {
+                    Util.basicUtil.consoleLog('QueryUsers just no users', true);
+                    callback([]);
+                }
+               
               }
               else {
                 Util.basicUtil.consoleLog('QueryUsers', false);
@@ -356,29 +363,6 @@ const Util = {
           })
           .catch((error) => {
                 Util.basicUtil.consoleLog('QueryUsers', false);
-                console.log("Firebase Error: " + error);
-          });
-        },
-        QueryPrivateUsers: function(db, query, take, callback){
-            var path = new firebase.firestore.FieldPath('privacySettings', "public");
-            let newQuery=  query.toLowerCase();
-            let usersRef = db.collection('users').where(path, '==', false).where('email', '==', newQuery).where('privacySettings', '==', undefined).where(path, '==', undefined);
-            usersRef.get()
-            .then((data) => {
-              if(data){
-                let wantedUser = [];
-                data.forEach((user)=>{
-                    wantedUser.push(user.data());
-                });
-                Util.basicUtil.consoleLog('QueryPrivateUsers', true);
-                callback(wantedUser);
-              }
-              else {
-                Util.basicUtil.consoleLog('QueryPrivateUsers', false);
-              }
-          })
-          .catch((error) => {
-                Util.basicUtil.consoleLog('QueryPrivateUsers', false);
                 console.log("Firebase Error: " + error);
           });
         },
@@ -1166,15 +1150,10 @@ const Util = {
                     if(friends.length > 0) {
                         bars.forEach((bar, index) => {
                             friends.forEach((friend) => {
-                                if((friend.checkIn) &&
-                                (friend.checkIn.buisnessUID == bar.id) &&
-                                (friend.checkIn.privacy != "Private")) {
+                                if( (friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private") ) {
                                     currentlyCheckIn.push(friend);
                                 }
-                                if((friend.lastVisited) && 
-                                (friend.lastVisited[bar.id]) && 
-                                (friend.lastVisited[bar.id].privacy != "Private") &&
-                                (!currentlyCheckIn.includes(friend))){
+                                if((friend.lastVisited) && (friend.lastVisited[bar.id]) &&  (friend.lastVisited[bar.id].privacy != "Private") && (!currentlyCheckIn.includes(friend))){
                                     friendArr.push(friend);
                                 }
                             });
@@ -1197,7 +1176,7 @@ const Util = {
                 //radius in meters
                 paramString +="radius="+radius+"&";
                 //type
-                paramString +="categories=bars"
+                paramString += "categories=bars,beergardens,musicvenues";
                 return paramString;
             } ,
             businessVerification: (name, address, city, state, zip, country, callback) =>{

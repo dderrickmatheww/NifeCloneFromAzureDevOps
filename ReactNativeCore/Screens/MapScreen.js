@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator } from 'react-native';
+import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout, Heatmap } from 'react-native-maps';
 
 import BarModal from './Components/Map Screen Components/BarModal';
@@ -8,6 +8,7 @@ import Util from '../scripts/Util';
 import theme from '../Styles/theme';
 import { styles } from '../Styles/style';
 import VisitedByCallout from './Components/Map Screen Components/VisitedByCallout';
+
 
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
@@ -322,7 +323,7 @@ class MapScreen extends React.Component  {
       this.state.markers != undefined ? 
       (
         <View style={localStyles.container}>  
-          <MapView
+           <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
               showsMyLocationButton={true}
@@ -379,7 +380,8 @@ class MapScreen extends React.Component  {
             > 
             </BarModal> : null
           }       
-          <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} /> 
+          <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} />  
+          
         </View>
       ) 
       :
@@ -403,6 +405,8 @@ const localStyles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent:"center",
+    backgroundColor: '#20232a'
   },
   friendPic:{
     position:"relative",

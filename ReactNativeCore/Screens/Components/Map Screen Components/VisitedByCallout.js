@@ -18,7 +18,7 @@ export default class VisitedByCallout extends React.Component  {
                                 friend.lastVisited && friend.lastVisited[this.props.marker.id] ?
                                 <View key={i} style={styles.friendVisitedBy}>
                                     <Avatar.Image
-                                    source={{uri: friend.providerData.photoURL}}
+                                    source={{uri: friend.photoSource}}
                                     size={30}
                                     style={styles.singleAvatar}
                                     /> 
@@ -40,13 +40,13 @@ export default class VisitedByCallout extends React.Component  {
                                                 {
                                                     i = 0 ? 
                                                         <Avatar.Image
-                                                            source={{uri: friend.providerData.photoURL}}
+                                                            source={{uri: friend.photoSource}}
                                                             size={30}
                                                             style={{ borderWidth: 1.5, borderColor: theme.LIGHT_PINK}}
                                                         />
                                                     : 
                                                         <Avatar.Image
-                                                            source={{uri: friend.providerData.photoURL}}
+                                                            source={{uri: friend.photoSource}}
                                                             size={30}
                                                             style={{right: i * 0.2, borderWidth: 1.5, borderColor: theme.LIGHT_PINK, marginLeft: -10}}
                                                         />

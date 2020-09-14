@@ -202,37 +202,37 @@ export default class SettingsTab extends Component {
                     4. General public/private setting
                 */}
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Allow Users To Search For Me</Text>
+                  <Text style={localStyles.switchText}>Do Not Allow Users To Search For Me</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({searchPrivacy:true})} value={this.state.searchPrivacy}></Switch>
                 </View>
 
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Allow Users To See Places I Favorite</Text>
+                  <Text style={localStyles.switchText}>Do Not Allow Users To See Places I Favorite</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({favoritingPrivacy:true})} value={this.state.favoritingPrivacy}></Switch>
                 </View>
 
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Allow Friends To See My Check Ins</Text>
+                  <Text style={localStyles.switchText}>Do Not Allow Friends To See My Check Ins</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({checkInPrivacy:true})} value={this.state.checkInPrivacy}></Switch>
                 </View>
                 
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Allow Friends To See Places I Visited</Text>
+                  <Text style={localStyles.switchText}>Do Not Allow Friends To See Places I Visited</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({visitedPrivacy:true})} value={this.state.visitedPrivacy}></Switch>
                 </View>
 
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Show Date Of Birth On Your Profile</Text>
+                  <Text style={localStyles.switchText}>Do Not Show Date Of Birth On Your Profile</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({DOBPrivacy:true})} value={this.state.DOBPrivacy}></Switch>
                 </View>
 
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Show Sexual Orientation On Your Profile</Text>
+                  <Text style={localStyles.switchText}>Do Not Show Sexual Orientation On Your Profile</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({orientationPrivacy:true})} value={this.state.orientationPrivacy}></Switch>
                 </View>
 
                 <View style={localStyles.switchCont}>
-                  <Text style={localStyles.switchText}>Show Sexual Gender On Your Profile</Text>
+                  <Text style={localStyles.switchText}>Do Not Show Sexual Gender On Your Profile</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({genderPrivacy:true})} value={this.state.genderPrivacy}></Switch>
                 </View>
 
@@ -261,7 +261,7 @@ const localStyles = StyleSheet.create({
     alignSelf:"flex-start",
     color:theme.LIGHT_PINK,
     paddingLeft:10,
-    fontSize:16
+    fontSize:14
   },
   switchCont:{
     flexDirection:"row",

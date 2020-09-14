@@ -497,7 +497,7 @@ const localStyles = StyleSheet.create({
         width:"100%",
     },
     navHeader:{
-      marginTop:40,
+      marginTop:30,
       flexDirection:"row",
       borderBottomColor:theme.LIGHT_PINK,
       borderBottomWidth:1,
