@@ -65,15 +65,17 @@ export default class ProfileScreen extends Component {
       this.setState({friendData: this.props.friends});
     }
     else{
-      let friends = this.props.user.friends;
-      let friendEmails = Object.keys(friends);
-      var count = this.state.friendCount;
-      friendEmails.forEach((email)=>{
-        if(friends[email] == true){
-          count += 1;
-        }
-      });
-      this.setState({friendCount:count})
+      if(this.props.friends){
+        let friends = this.props.user.friends;
+        let friendEmails = Object.keys(friends);
+        var count = this.state.friendCount;
+        friendEmails.forEach((email)=>{
+          if(friends[email] == true){
+            count += 1;
+          }
+        });
+        this.setState({friendCount:count})
+      }
     }
   }
   
@@ -117,7 +119,7 @@ export default class ProfileScreen extends Component {
     this.getAsyncStorageData();
     this.getBusinessData();
     if(!this.props.isUserProfile){
-      if(this.props.user.friends[firebase.auth().currentUser.email]== true){
+      if(this.props.user.friends && this.props.user.friends[firebase.auth().currentUser.email]== true){
         this.setState({areFriends:true})
       }
     }
@@ -199,7 +201,7 @@ export default class ProfileScreen extends Component {
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
                       {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender + ", " : "")} 
-                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "")}  {this.state.userData.dateOfBirth ? this.calculateAge(this.state.userData.dateOfBirth._seconds * 1000) : ""}
+                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "")}  {this.props.user.dateOfBirth ? this.calculateAge(this.props.user.dateOfBirth._seconds ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : ""}
                     </Title>
                 </View>
                 {
