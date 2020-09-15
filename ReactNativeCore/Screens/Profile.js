@@ -241,9 +241,15 @@ export default class ProfileScreen extends Component {
                 {/* <Caption  style={localStyles.FriendCount}>Casual Socialite | 420 Points</Caption> */}
                   
                   <View style={localStyles.LocAndFriends}>
-                    <View style={{alignSelf:"flex-start", width:"50%"}}>
-                      <Caption  style={localStyles.FriendCount}>{this.state.userData.loginLocation && this.state.userData.loginLocation.region? this.state.userData.loginLocation.region.city : "Margarittaville"}, {this.state.userData.loginLocation && this.state.userData.loginLocation.region ? this.state.userData.loginLocation.region.region : "Somewhere"}</Caption>
-                    </View>
+                    {<View style={{alignSelf:"flex-start", width:"50%"}}>
+                      {
+                        !this.state.userData.privacySettings.locationPrivacy ?
+                        <Caption  style={localStyles.FriendCount}>
+                          {this.state.userData.loginLocation && this.state.userData.loginLocation.region? this.state.userData.loginLocation.region.city : "Margarittaville"}, {this.state.userData.loginLocation && this.state.userData.loginLocation.region ? this.state.userData.loginLocation.region.region : "Somewhere"}
+                        </Caption>
+                          : null
+                          }
+                    </View>}
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
                       <TouchableOpacity
                        disabled={this.state.isUsersProfile ? false : true}

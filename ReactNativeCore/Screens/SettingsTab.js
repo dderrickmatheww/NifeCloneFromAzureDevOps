@@ -22,6 +22,7 @@ export default class SettingsTab extends Component {
     DOBPrivacy:false,
     genderPrivacy:false,
     orientationPrivacy:false,
+    locationPrivacy:false,
   }
   //Set login status
   setLoggedinStatus = async (dataObj) => {
@@ -177,6 +178,23 @@ export default class SettingsTab extends Component {
        });
       this.setState({genderPrivacy:!this.state.genderPrivacy})
     }
+    if(obj.locationPrivacy){
+      if(!this.state.locationPrivacy == true){
+        alert("Users can no longer see your location on your profile.")
+       }
+       let user = this.state.userData;
+       user['privacySettings']["locationPrivacy"] = !this.state.locationPrivacy
+       let updateObj = {
+         privacySettings:{
+          locationPrivacy: !this.state.locationPrivacy
+         }
+       }
+       this.props.refresh(user);
+       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
+         console.log('favoritingPrivacy toggled on DB');
+       });
+      this.setState({locationPrivacy:!this.state.locationPrivacy})
+    }
    }
 
 
@@ -219,6 +237,11 @@ export default class SettingsTab extends Component {
                 <View style={localStyles.switchCont}>
                   <Text style={localStyles.switchText}>Do Not Allow Friends To See Places I Visited</Text>
                   <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({visitedPrivacy:true})} value={this.state.visitedPrivacy}></Switch>
+                </View>
+
+                <View style={localStyles.switchCont}>
+                  <Text style={localStyles.switchText}>Do Not Show Your Location On Your Profile</Text>
+                  <Switch style={localStyles.switch} onValueChange={()=>this.handleSwitch({locationPrivacy:true})} value={this.state.locationPrivacy}></Switch>
                 </View>
 
                 <View style={localStyles.switchCont}>
