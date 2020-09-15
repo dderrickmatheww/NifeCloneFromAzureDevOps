@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, 
+    Text } from 'react-native';
 import {
     Avatar,
     Title,
     Caption,
     Paragraph,
     Drawer,
-    Text,
     List
 } from 'react-native-paper';
 import {
@@ -17,6 +17,7 @@ import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
 import Util from '../../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import IconWithBadge from "../../Universal Components/IconWithBadge"
 
 const defPhoto = require('../../../Media/Images/logoicon.png');
 
@@ -142,12 +143,14 @@ export function DrawerContent(props) {
                                 titleStyle={{color:theme.LIGHT_PINK}}
                                 
                                 title="      You"
-                                left={() => <MaterialCommunityIcons 
-                                    name="account" 
+                                left={() => <IconWithBadge
+                                    name={'ios-person'}
                                     color={theme.LIGHT_PINK}
                                     size={20}
-                                    style={{paddingLeft:10}}
-                                    />}
+                                    type="Ionicons"
+                                    isDrawer={true}
+                                    badgeCount={props.requests ? props.requests.length : 0}
+                                ></IconWithBadge>}
                                 theme={{colors:{text : theme.LIGHT_PINK}}}
                             >
                                <DrawerItem 
@@ -167,13 +170,16 @@ export function DrawerContent(props) {
                                
                                 <DrawerItem 
                                         icon={() => (
-                                            <Ionicons 
-                                            name="ios-people" 
-                                            color={theme.LIGHT_PINK}
-                                            size={20}
-                                            />
+                                            <IconWithBadge
+                                                name={'ios-people'}
+                                                color={theme.LIGHT_PINK}
+                                                size={20}
+                                                type="Ionicons"
+                                                badgeCount={props.requests ? props.requests.length : 0}
+                                            ></IconWithBadge>
                                         )}
-                                        label={()=> <Text style={styles.text}>Friends</Text>}
+                                        label={()=> <Text style={styles.text}>Friends</Text>
+                                        }
                                         onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
                                                         params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
                                                     })
