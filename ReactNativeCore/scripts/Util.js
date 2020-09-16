@@ -116,7 +116,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result);
+                    }
                     Util.basicUtil.consoleLog('VerifyUser', true);
                 }).catch((error) => {
                     console.log(error)
@@ -577,7 +579,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result);
+                    }
                     Util.basicUtil.consoleLog('SaveLocation', true);
                 }).catch((error) => {
                     Util.basicUtil.consoleLog('SaveLocation', false);
@@ -590,21 +594,27 @@ const Util = {
             Util.asyncStorage.SetAsyncStorageVar('userLocationData', latAndLong);
             Util.basicUtil.consoleLog('SaveLocation', true);
         },
-        GetUserLocation: (returnData) => {
+        GetUserLocation: (returnData, user) => {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
                 Location.reverseGeocodeAsync(location.coords).then((region)=>{
-                    console.log(region)
                     let loc = location;
                     loc['region'] = region[0];
-                    Util.location.SetUserLocationData(location.coords);
+                    if(user) {
+                        Util.location.SaveLocation(user.email, location);
+                    }
                     Util.basicUtil.consoleLog('GetUserLocation', true);
-                    returnData(loc);
+                    if(returnData) {
+                        returnData(loc);
+                    }
                 })
-                
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('GetUserLocation', false);
+                    console.log("Expo Location ReverseGeocode Error: " + error);
+                });
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
-                console.log("Expo Location Error: " + error);
+                console.log("Expo Location getCurrentPosition Error: " + error);
             });
         },
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
@@ -1170,7 +1180,7 @@ const Util = {
                 });
             },
             buildParameters: (lat, long, radius) => {
-                var paramString ="";
+                var paramString = "";
                 //location, lat long
                 paramString += "latitude=" + lat+ "&longitude=" + long + "&";
                 //radius in meters
