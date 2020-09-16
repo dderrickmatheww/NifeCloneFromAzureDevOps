@@ -28,7 +28,7 @@ export default class EditProfile extends Component {
     showDatePicker: false,
     doneLoading: false,
     favoriteBars: null,
-    faveCount:0
+    faveCount: 0
   }
 
   setMaxDate = () => {
@@ -48,7 +48,6 @@ export default class EditProfile extends Component {
           actualFavoriteBars.push(actualFavoriteBars)
         }
       });
-
 
       this.setState({
         userData: user,
@@ -154,8 +153,7 @@ export default class EditProfile extends Component {
       displayName: this.state.displayName
     }
 
-    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
-    , (data)=>{
+    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data)=>{
         console.log('saving attempted');
     });
 
