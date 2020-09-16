@@ -326,7 +326,7 @@ class MapScreen extends React.Component  {
            <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
-              showsMyLocationButton={true}
+              showsMyLocationButton={false}
               showsUserLocation={true}
               showsPointsOfInterest={false}
               userLocationUpdateInterval={1000}

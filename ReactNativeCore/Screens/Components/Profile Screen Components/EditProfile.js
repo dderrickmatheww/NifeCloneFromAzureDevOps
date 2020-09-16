@@ -27,7 +27,8 @@ export default class EditProfile extends Component {
     favoriteDrinks: this.props.user.favoriteDrinks.length > 0 ? this.props.user.favoriteDrinks : null,
     showDatePicker: false,
     doneLoading: false,
-    favoriteBars: this.props.user.favoritePlaces ? this.props.user.favoritePlaces : null
+    favoriteBars: null,
+    faveCount:0
   }
 
   setMaxDate = () => {
@@ -39,7 +40,17 @@ export default class EditProfile extends Component {
   //Set user data
   setUserData = async () => {
       var user = this.props.user;
-      await this.setState({
+      let favorites = this.props.user.favoritePlaces;
+      let barIds = Object.keys(favorites);
+      let actualFavoriteBars = [];
+      barIds.forEach((id)=>{
+        if(favorites[id]['favorited']== true){
+          actualFavoriteBars.push(actualFavoriteBars)
+        }
+      });
+
+
+      this.setState({
         userData: user,
         dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth._seconds * 1000) : this.setMaxDate(),
         gender: user.gender ? user.gender : "other",
@@ -47,8 +58,11 @@ export default class EditProfile extends Component {
         bio: user.bio ? user.bio : "",
         favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks : [],
         doneLoading: true,
-        favoriteBars: user.favoritePlaces ? user.favoritePlaces : {}
+        favoriteBars: user.favoritePlaces ? user.favoritePlaces : {},
+        displayName: user.displayName,
+        faveCount: actualFavoriteBars.length,
       });
+
   }
 
   //gets user and friend data
@@ -99,7 +113,7 @@ export default class EditProfile extends Component {
 
   deleteFavBar = (bar, UID) => {
     let barName = bar.name;
-    Util.user.setFavorite(this.state.userData.email, UID, false, barName, (boolean, boolean2) => {
+    Util.user.setFavorite(this.state.userData, UID, false, barName, (boolean, boolean2) => {
       let updatedUserData = this.props.user;
       if(boolean2) {
         this.setState({navModal: true});
@@ -110,23 +124,34 @@ export default class EditProfile extends Component {
             favorited: boolean,
             name: barName
           };
+          let favorites = this.props.updatedUserData.favoritePlaces;
+          let barIds = Object.keys(favorites);
+          let actualFavoriteBars = [];
+          barIds.forEach((id)=>{
+            if(favorites[id]['favorited']== true){
+              actualFavoriteBars.push(actualFavoriteBars)
+            }
+          });
           this.setState({
-            favoriteBars: updatedUserData['favoritePlaces']
+            userData: updatedUserData,
+            faveCount:actualFavoriteBars.length
           });
           this.props.refresh(updatedUserData, null, null, null);
         }
       }
     });
+
   }
 
   onSave = () => {
     var profileInfo = {
-      dateOfBirth: this.state.dateOfBirth ? new Date(this.state.dateOfBirth) : null,
+      dateOfBirth: this.state.dateOfBirth ? this.state.dateOfBirth : null,
       gender: this.state.gender,
       sexualOrientation: this.state.sexualOrientation,
       bio: this.state.bio,
       favoriteDrinks: this.state.favoriteDrinks,
-      favoritePlaces: this.state.favoriteBars
+      favoritePlaces: this.state.favoriteBars,
+      displayName: this.state.displayName
     }
 
     Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
@@ -165,28 +190,48 @@ export default class EditProfile extends Component {
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
   }
 
+  onNameChange = (displayName) => {
+    console.log(displayName);
+    this.setState({displayName:displayName})
+  }
+
    render () {
       return ( 
         ////////////////////////////////////////
           this.state.doneLoading ?
             <View style={styles.loggedInContainer}>
               <View style={localStyles.HeaderCont}>
-                  <View style={{flexDirection:"row"}}>
-                    <Text style={localStyles.Header}>{this.state.userData.displayName}</Text>
-                  </View>
+                  
               </View>
-
               <ScrollView contentContainerStyle={{justifyContent:"flex-start",  width:"90%"}} style={localStyles.mainCont}> 
               {/* Input Area */}
                   <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom: 15}}>
                     All information is optional and can be hidden via privacy settings! 
                   </Text>
+                  {/* Display name */}
+                  <View style={localStyles.fieldCont}> 
+                    <Text style={localStyles.fieldLabel}>
+                      Display Name: 
+                    </Text>
+                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    mode={"flat"}
+                    label=""
+                    placeholder={"What should we call you?"}
+                    onChangeText={text => this.onNameChange(text)}
+                    value={this.state.displayName}
+                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
+                    
+                    </TextInput>
+                  </View>
                     
                     {/* DOB */}
                   <View style={localStyles.fieldCont}> 
                     <View style={{flexDirection:"row", width:"90%"}}>
-                      <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom: 5}}>
-                        Date of Birth:  {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
+                      <Text style={localStyles.fieldLabel}>
+                        Date of Birth:  
+                      </Text>
+                      <Text style={{color:theme.LIGHT_PINK, fontSize:18, marginBottom:5, marginLeft:20}}>
+                        {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: 50, paddingBottom: 5}}
                         onPress={() => this.setState({showDatePicker: true})}
@@ -199,7 +244,7 @@ export default class EditProfile extends Component {
                       this.state.showDatePicker && (
                         <DateTimePicker
                           mode={"date"}
-                          value={this.state.dateOfBirth ? new Date(this.state.dateOfBirth) : new Date()}
+                          value={this.state.dateOfBirth ? this.state.dateOfBirth :this.state.maxDateValue}
                           maximumDate={ this.setMaxDate()}
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
@@ -209,7 +254,7 @@ export default class EditProfile extends Component {
                   </View>
 
                   <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text  style={localStyles.fieldLabel}>
                       Gender: 
                     </Text>
                     <Surface style={localStyles.surface}>
@@ -228,7 +273,7 @@ export default class EditProfile extends Component {
                   </View>
 
                   <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text  style={localStyles.fieldLabel}>
                       Sexual Orientation: 
                     </Text>
                     <Surface style={localStyles.surface}>
@@ -245,49 +290,42 @@ export default class EditProfile extends Component {
                       </Picker>
                     </Surface>
                   </View>
-                  <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
-                      Click a bar to delete from your favorites!
-                    </Text>
-                    {
-                        this.state.favoriteBars ? 
-                        Object.values(this.state.favoriteBars).map((bar, i) => (
-                            Object.values(this.state.favoriteBars).length > 1 ?
-                              !bar.favorited ?
-                              <Chip mode={"outlined"}  
+                  {this.state.faveCount > 0 ?
+                    <View style={localStyles.fieldCont}> 
+                      <Text  style={localStyles.fieldLabel}>
+                        Click a bar to delete from your favorites!
+                      </Text>
+                      {
+                          this.state.userData.favoritePlaces ?  
+                          Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
+                            
+                            this.state.userData.favoritePlaces[Object.keys(this.state.userData.favoritePlaces)[i]]['favorited'] == true ? 
+                            <Chip mode={"outlined"}  
                                 key={i}
-                                style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                                style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2, marginVertical:2
                                 }} 
                                 bar={bar}
                                 textStyle={{color:theme.LIGHT_PINK}}
                                 onPress={(e) => {
-                                  let UID = Object.keys(this.state.favoritePlaces)[i];
+                                  let UID = Object.keys(this.state.userData.favoritePlaces)[i];
                                   this.deleteFavBar(bar, UID);
                                 }}
                               >
                                 {bar.name}
-                              </Chip>
-                              :
-                              null
-                            :
-                            <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                            }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
-                              You have no favorites!
-                            </Chip>
-                        ))
-                        :
-                        <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                            }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
-                          You have no favorites!
-                        </Chip>
-                    }
-                  </View>
+                              </Chip> : null
+                          )) 
+                          :
+                          <Chip mode={"outlined"}  
+                              style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                              }} 
+                              textStyle={{color:theme.LIGHT_PINK}}>
+                            You have no favorites!
+                          </Chip>
+                      }
+                    </View> : null
+                  }
                   <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text style={localStyles.fieldLabel}>
                       Bio: 
                     </Text>
                     <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
@@ -302,7 +340,7 @@ export default class EditProfile extends Component {
                   </View>
 
                   <View style={localStyles.fieldCont}>
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text  style={localStyles.fieldLabel}>
                       Favorite Drinks (comma seperated): 
                     </Text>
                     {/* index one to on change */}
@@ -344,6 +382,13 @@ export default class EditProfile extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  fieldLabel:{ 
+    fontSize: 18,
+    color: theme.LIGHT_PINK,
+    marginBottom:5,
+    textDecorationLine:"underline",
+    fontWeight:"bold"
+  },
   surface: {
     width:"auto",
     elevation: 10,
@@ -410,7 +455,7 @@ const localStyles = StyleSheet.create({
     flex: 1, 
     backgroundColor: theme.DARK,
     width: "100%",
-    maxHeight:"15%",
+    maxHeight:"12%",
     justifyContent:"flex-end",
     alignItems:"center",
     borderBottomColor: theme.LIGHT_PINK,

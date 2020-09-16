@@ -65,7 +65,7 @@ export default class LoginScreen extends Component {
               />
             </TouchableOpacity>
           </View>
-          <Text style={{color:"#FFCC00", fontWeight:"bold", top: 25, fontFamily: 'Palatino-Bold',}}>
+          <Text style={{color:"#FFCC00", fontWeight:"bold", top: 25, }}>
             If you are a business, please sign in with Nife!
           </Text>
           <NifeLoginModal  setBusiness={this.props.setBusiness} onDismiss={()=>this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} modalVisible={this.state.modalVisible} callback={() => {

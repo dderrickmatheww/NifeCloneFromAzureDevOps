@@ -63,16 +63,6 @@ class TestingScreen extends React.Component  {
                         let randomBusiness = localBusinesses[this.getRandomInt(localBusinesses.length-1)];
                         let db = firebase.firestore();
                         let setLoc =  db.collection('users').doc(user.email);
-                        let lastVisited = {};
-                        lastVisited[randomBusiness.id] = {
-                            checkInTime: new Date(),
-                            latAndLong: randomBusiness.coordinates.latitude +","+randomBusiness.coordinates.longitude,
-                            privacy: "Public",
-                            name: randomBusiness.name,
-                            phone: randomBusiness.phone,
-                            address: randomBusiness.location.address1+", "+randomBusiness.location.city+", "+randomBusiness.location.state+" "+randomBusiness.location.zip_code,
-                            barPhoto: randomBusiness.image_url,
-                        }
                         setLoc.set({
                             privacySettings:{
                                 DOBPrivacy:false,
@@ -94,7 +84,7 @@ class TestingScreen extends React.Component  {
                                 address: randomBusiness.location.address1+", "+randomBusiness.location.city+", "+randomBusiness.location.state+" "+randomBusiness.location.zip_code,
                                 barPhoto: randomBusiness.image_url,
                             },
-                            lastVisited
+                            lastVisited:{}
                         },
                         {
                             merge: true

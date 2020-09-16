@@ -14,7 +14,7 @@ import theme from '../Styles/theme';
 import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
-import BusinessProfile from './BusinessProfile'
+import Favorite from './Universal Components/Favorite'
 
 
 const defPhoto = require('../Media/Images/logoicon.png');
@@ -30,6 +30,7 @@ export default class ProfileScreen extends Component {
     statusModalVisible:false,
     uploading:false,
     businessData: null,
+    followerCount:0,
   }
 
   
@@ -86,20 +87,7 @@ export default class ProfileScreen extends Component {
     
   }
   
-  favoriteBar = () => {
-    // this.setState({isAddingFriend:true});
-    // Util.friends.AddFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-    //   this.setState({isAddingFriend:false}); 
-    //   this.setState({areFriends:true});
-    // });
-  }
-  unFavoriteBar = () => {
-    // this.setState({isAddingFriend:true});
-    // Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
-    //   this.setState({isAddingFriend:false}); 
-    //   this.setState({areFriends:false});     
-    // });
-  }
+ 
 
   logout = () => {
     this.setState({ isLoggedin: false });
@@ -119,9 +107,13 @@ export default class ProfileScreen extends Component {
 
   getBusinessData = () => {
     if(this.state.userData.isBusiness){
-      Util.business.GetBusinessData(firebase.firestore(), firebase.auth().currentUser.email, (data)=>{
+      Util.business.GetBusinessByUID(this.state.userData.businessId, (data)=>{
         this.setState({businessData: data})
         console.log(JSON.stringify(data))
+      })
+      Util.business.GetFavoriteCount(this.state.userData.businessId, (count)=>{
+        console.log("COUNT MOTHER FUCKER: " + count)
+        this.setState({followerCount:count});
       })
     }
   }
@@ -131,8 +123,28 @@ export default class ProfileScreen extends Component {
     this.getBusinessData();
     console.log('User: ' + firebase.auth().currentUser.email); 
     console.log('Profile Owner: ' + this.state.userData.email);
+    
   }
 
+ 
+  favoriteABar = async (buisnessUID, boolean) => {
+    let updatedUserData = this.props.currentUser;
+    await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, this.state.userData.displayName, (boolean, boolean2) => {
+      if(!boolean2){
+        updatedUserData['favoritePlaces'][buisnessUID] = {
+          favorited: boolean,
+          name: this.state.userData.displayName
+        };
+        this.props.refresh(updatedUserData, null, null, null);
+        this.setState({
+          followerCount: boolean ? this.state.followerCount += 1 : this.state.followerCount > 0 ?  this.state.followerCount -=1 : 0
+        })
+      } else {
+        alert("You already have 10 favorites! Remove some to add more.")
+      }
+      
+    });
+  }
 
   UploadPic = () => {
     this.setState({uploading:true});
@@ -156,17 +168,18 @@ export default class ProfileScreen extends Component {
 
               {/* Add Friend */}
               
-                {this.state.businessData.email == firebase.auth().currentUser.email ? null: <TouchableOpacity 
-                onPress={() => this.unFavoriteBar()}
-                style={localStyles.AddFriendOverlay}>
+                {this.state.businessData.email == firebase.auth().currentUser.email ? null: 
+                <View style={{marginRight:15}}>
+                  <Favorite
+                    favoriteTrigg={(buisnessUID, bool) => this.favoriteABar(buisnessUID, bool)} user={this.props.currentUser} buisnessUID={this.state.userData.businessId} 
+                  />
+                </View>
                   
-                  <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Favorite</Text>
-                  
-                </TouchableOpacity>}
+                }
               
 
               {/* Edit Button */}
-              {this.state.isUsersProfile ? 
+              {this.state.userData.email == firebase.auth().currentUser.email ? 
               <TouchableOpacity style={{
                 position:"relative",
                 left: this.state.businessData.email != firebase.auth().currentUser.email ? 220 : 275,
@@ -236,11 +249,9 @@ export default class ProfileScreen extends Component {
                       <Caption  style={localStyles.FriendCount}></Caption>
                     
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
-                      <TouchableOpacity
-                       disabled={this.state.isUsersProfile ? false : true}
-                       onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{user: this.state.userData, friends:this.state.friendData}})}>
-                        <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : "0")} Followers</Caption>
-                      </TouchableOpacity>
+                      
+                      <Caption style={localStyles.FriendCount}>{this.state.followerCount} Followers</Caption>
+                      
                     </View>
                   </View>
               </View>
@@ -370,7 +381,8 @@ const localStyles = StyleSheet.create({
     flexDirection:"row",
     borderBottomColor:theme.LIGHT_PINK,
     borderBottomWidth:1,
-    width:"98%"
+    width:"98%",
+    justifyContent:"space-between"
   },
   EditOverlay: {
     position:"relative",

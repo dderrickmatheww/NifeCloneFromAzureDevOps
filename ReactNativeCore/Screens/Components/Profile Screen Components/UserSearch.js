@@ -21,10 +21,12 @@ export default class UserSearch extends Component {
     take:50,
     searchText:null,
     isSearching: false,
+    currentUserData:false,
   }
 
   componentDidMount(){
-
+    this.setState({currentUserData:this.props.currentUser});
+    console.log(this.props.currentUser)
   }
   
   onChangeSearch = (query) => {
@@ -86,13 +88,20 @@ export default class UserSearch extends Component {
                     this.state.queriedUsers ? 
 
                     this.state.queriedUsers.map((user, i) => (
-                      <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user}})}>
-                        <View style={localStyles.friendCont}>
-                          <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.providerData.photoURL}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
-                        </View>
-                      </TouchableOpacity>
+                        
+                        <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => !user.isBusiness ? 
+                          this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user, isUsersProfile:false}}) :
+                            this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
+                          }>
+                          <View style={localStyles.friendCont}>
+                            <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
+                          </View>
+                        </TouchableOpacity>
+                        
+                         
+                    )
                       
-                    ))
+                    )
                     : this.state.isSearching ?
                     <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> : <Paragraph style={localStyles.paragraph}>No Results...</Paragraph> 
                   }

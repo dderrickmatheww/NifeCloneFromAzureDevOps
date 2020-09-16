@@ -189,8 +189,8 @@ export function DrawerContent(props) {
                                             size={20}
                                             />
                                         )}
-                                        label={()=> <Text style={styles.text}>Find your drinking buddies</Text>}
-                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Search'})}}
+                                        label={()=> <Text style={styles.text}>Find your friends or bars!</Text>}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Search',  params:{currentUser: props.user}})}}
                                     />
                                 
                               
@@ -234,7 +234,7 @@ export function DrawerContent(props) {
                             onPress={() => {props.navigation.navigate('Settings', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}
                         />
                         
-                         <DrawerItem 
+                         {/* <DrawerItem 
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="settings" 
@@ -244,7 +244,7 @@ export function DrawerContent(props) {
                             )}
                             label={()=> <Text style={styles.text}>Test</Text>}
                             onPress={() => {props.navigation.navigate('Test')}}
-                        /> 
+                        />  */}
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>

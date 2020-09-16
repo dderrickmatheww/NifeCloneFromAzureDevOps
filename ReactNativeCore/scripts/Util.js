@@ -264,24 +264,25 @@ const Util = {
                 console.log('Catch error: ' + error);
             }
         },
-        setFavorite: async (email, buisnessUID, boolean, buisnessName, callback) => {
+        setFavorite: async (user, buisnessUID, boolean, buisnessName, callback) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(email);
-            let userData = await db.collection('users').doc(email).get();
+            let setLoc = db.collection('users').doc(user.email);
+            let userData = await db.collection('users').doc(user.email).get();
+            let oldFavorites = user.favoritePlaces ? user.favoritePlaces : {};
             let userObj = userData.data();
-            if(typeof userObj.favoritePlaces !== 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
+            if(typeof userObj.favoritePlaces != 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
                 callback(false, true);
             }
             else {
                 if (boolean) {
-                    let favoritePlaces = {
-                       [buisnessUID]: {
+                    let favoritePlaces = oldFavorites;
+                    favoritePlaces[buisnessUID] = {
                            favorited: true,
                            name: buisnessName
                        }
-                   }
+                   
                    setLoc.set({
-                       favoritePlaces
+                       favoritePlaces: favoritePlaces
                    },
                    {
                        merge: true
@@ -297,12 +298,12 @@ const Util = {
                }
                else {
                    // Remove the 'capital' field from the document
+                   let favoritePlaces = oldFavorites;
+                   favoritePlaces[buisnessUID] = {
+                    favorited: false,
+                   }
                    setLoc.update({
-                       favoritePlaces: {
-                           [buisnessUID]: {
-                            favorited: false
-                           }
-                       }
+                    favoritePlaces:favoritePlaces
                    })
                    .then(() => {
                        Util.basicUtil.consoleLog('setFavorite', true);
@@ -316,15 +317,20 @@ const Util = {
             }
         },
         isFavorited: async (buisnessUID, userData, returnData) => {
-            if(userData.favoritePlaces) {
-                let favorites = userData.favoritePlaces;
-                if(favorites[buisnessUID]){
-                    returnData(favorites[buisnessUID].favorited);
-                } 
-                else {
+            if(userData){
+                if(userData.favoritePlaces) {
+                    let favorites = userData.favoritePlaces;
+                    console.log('Favorites ' + JSON.stringify(favorites))
+                    if(favorites[buisnessUID]){
+                        returnData(favorites[buisnessUID].favorited);
+                    } else {
+                        returnData(false);
+                    }
+                } else {
                     returnData(false);
                 }
-            } else {
+            }else{
+                console.log("NO USER DATA DUDE")
                 returnData(false);
             }
         },
@@ -370,7 +376,7 @@ const Util = {
         },
         GenerateQRCode: (userEmail) => {
             let email = encodeURI(userEmail);
-            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=20232A&color=eca6c4"
+            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=D4DE24&color=eca6c4"
             return QRSource;
         },
         UploadImage: async (uri, email, callback) => {
@@ -563,6 +569,29 @@ const Util = {
                 callback(false);
             }
             
+        },
+        GetFavoriteCount: async(uid, callback)=>{
+            var db = firebase.firestore();
+            var path = new firebase.firestore.FieldPath('favoritePlaces', uid, 'favorited');
+            var usersRef = db.collection('users').where(path, '==', true).get()
+            .then((data)=>{
+                if(data){
+                    Util.basicUtil.consoleLog("Favorite Count ", true)
+                    var tempArr = []
+                    data.forEach((item)=>{
+                        tempArr.push(item.data());
+                    });
+                    callback(tempArr.length);
+                }
+                else{
+                    Util.basicUtil.consoleLog("Favorite Count ", true)
+                    callback(0)
+                }
+            })
+            .catch((error)=>{
+                console.log(error)
+                Util.basicUtil.consoleLog("Favorite Count ", false)
+            })
         }
     },
     location: {
