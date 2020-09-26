@@ -452,8 +452,6 @@ const localStyles = StyleSheet.create({
     marginRight:126
   },
   searchBar: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.LIGHT_PINK,
     width: '90%',
     height: 25,
     marginTop: '22%',

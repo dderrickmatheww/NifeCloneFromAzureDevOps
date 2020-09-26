@@ -5,7 +5,6 @@
     "name": "ReactNativeCore",
     "slug": "ReactNativeCore",
     "privacy": "unlisted",
-    "sdkVersion": "36.0.0",
     "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
@@ -13,19 +12,18 @@
       "android",
       "web"
     ],
-    "splash":{
+    "splash": {
       "image": "./Media/Images/Splash.png"
     },
-    
-    "ios":{
+    "ios": {
       "bundleIdentifier": "com.yeetdevops.nife"
     },
     "android": {
       "package": "com.yeetdevops.nife",
       "userInterfaceStyle": "dark"
     },
-    "androidStatusBar" : {
-      "barStyle":"light-content"
+    "androidStatusBar": {
+      "barStyle": "light-content"
     }
   }
 }
