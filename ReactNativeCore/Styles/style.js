@@ -372,16 +372,6 @@ export const styles = StyleSheet.create({
     paddingBottom: 10,
     borderColor: 'grey'
   },
-  searchBar: {
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
-    width: 350,
-    height: 25,
-    marginTop:5,
-    marginHorizontal:10,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   textInput: {
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',

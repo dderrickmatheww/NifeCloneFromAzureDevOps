@@ -633,7 +633,7 @@ const Util = {
                     }
                     Util.basicUtil.consoleLog('GetUserLocation', true);
                     if(returnData) {
-                        returnData(loc);
+                        returnData(loc, region);
                     }
                 })
                 .catch((error) => {
@@ -1208,14 +1208,20 @@ const Util = {
                     Util.basicUtil.Alert('Map Business Data Error (API Y PlaceData)', err.message, null);
                 });
             },
-            buildParameters: (lat, long, radius) => {
+            buildParameters: (lat, long, radius, isQuery, term, region) => {
                 var paramString = "";
-                //location, lat long
-                paramString += "latitude=" + lat+ "&longitude=" + long + "&";
-                //radius in meters
-                paramString +="radius="+radius+"&";
-                //type
-                paramString += "categories=bars,beergardens,musicvenues";
+                if(isQuery) {
+                    paramString += 'term=' + term;
+                    paramString += '&location=' + region[0].city + ', ' + region[0].region;
+                }
+                else {
+                    //location, lat long
+                    paramString += "latitude=" + lat+ "&longitude=" + long + "&";
+                    //radius in meters
+                    paramString +="radius="+radius+"&";
+                    //type
+                    paramString += "categories=bars,beergardens,musicvenues";
+                }
                 return paramString;
             } ,
             businessVerification: (name, address, city, state, zip, country, callback) =>{
