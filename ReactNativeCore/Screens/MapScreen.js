@@ -1,7 +1,7 @@
 import React from 'react';
 import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout, Heatmap } from 'react-native-maps';
-
+import InputWithIcon from '../Screens/Universal Components/InputWithIcon';
 import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import Util from '../scripts/Util';
@@ -39,7 +39,9 @@ class MapScreen extends React.Component  {
     },
     friendData:null,
     userData:null,
-    buisnessUID: null
+    buisnessUID: null,
+    searchParam: "",
+    dropDownData: []
   };
   
   mapStyle = [
@@ -215,16 +217,25 @@ class MapScreen extends React.Component  {
     }
   ];
 
-  clientLocationFunction = () => { 
-    Util.location.GetUserLocation(async (loc) => {
+  OnChangeMapRegion = () => {
+    Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
       let { width, height } = Dimensions.get('window');
+      let boolean = this.state.searchParam != "";
       ASPECT_RATIO = width / height;
       LATITUDE = userLocation.latitude;
       LONGITUDE = userLocation.longitude;
       LATITUDE_DELTA = 0.0922;
       LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-      await this.gatherLocalMarkers(LATITUDE, LONGITUDE, this.state.friendData, userLocation);
+      let baseURL = 'https://api.yelp.com/v3/businesses/search?';
+      let params;
+      if(boolean) {
+        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 8000, boolean, this.state.searchParam, region);
+      }
+      else {
+        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 8000, boolean, "", region);
+      }
+      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean);
       this.setState({ 
         isLoaded: true,
         region: {
@@ -237,14 +248,24 @@ class MapScreen extends React.Component  {
     });
   }
 
-  gatherLocalMarkers = (lat, long, friendData, userLocation) => {  
-    let baseURL = 'https://api.yelp.com/v3/businesses/search?';
-    let params = Util.dataCalls.Yelp.buildParameters(lat, long, 8000);
+  gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean) => {  
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
-      this.setState({
-        markers: data,
-        userLocation: userLocation
-      });
+      if(boolean) {
+        //Combined the array to save orginal places from being overwritten
+        let combinedDataArray = this.state.markers.concat(data);
+        this.setState({
+          markers: combinedDataArray,
+          userLocation: userLocation,
+          dropDownData: data
+        });
+      }
+      else {
+        //Orginal data call to get markers based on user location
+        this.setState({
+          markers: data,
+          userLocation: userLocation
+        });
+      }
     });
   }
 
@@ -253,6 +274,16 @@ class MapScreen extends React.Component  {
   HandleMarkerPress = (e, key) => {
     var places = this.state.markers;
     this.setWantedPlaceData(places, key);
+  }
+
+  OnSearch = (text, eventCount, target) => {
+    this.OnChangeMapRegion();
+  }
+
+  OnSearchInputChange = (text, type) => {
+    this.setState({
+      searchParam: text
+    });
   }
 
   setWantedPlaceData = (places, key) => {
@@ -295,17 +326,16 @@ class MapScreen extends React.Component  {
     this.setState({isModalVisible: boolean});
   }
 
-  getAsyncStorageData = () => {
+  setInitialState = () => {
     this.setState({
       userData: this.props.user,
       friendData: this.props.friends
-    })
-
-    this.clientLocationFunction();
+    });
+    this.OnChangeMapRegion();
   }
 
   componentDidMount() {
-    this.getAsyncStorageData();
+    this.setInitialState();
   }
   
   generateFriendBubbles = (friend) => {
@@ -323,6 +353,7 @@ class MapScreen extends React.Component  {
       this.state.markers != undefined ? 
       (
         <View style={localStyles.container}>  
+       
            <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
@@ -337,7 +368,11 @@ class MapScreen extends React.Component  {
               minZoomLevel={14}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
+              loadingBackgroundColor={'#20232a'}
             >
+            <View >
+              <InputWithIcon styles={localStyles.searchBar} name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
+            </View>
             {this.state.markers.map(marker => (
               
                 <Marker
@@ -415,6 +450,17 @@ const localStyles = StyleSheet.create({
     borderRadius: 50,
     bottom: 12,
     marginRight:126
+  },
+  searchBar: {
+    borderBottomWidth: 1,
+    borderBottomColor: theme.LIGHT_PINK,
+    width: '90%',
+    height: 25,
+    marginTop: '22%',
+    marginHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: theme.LIGHT_PINK
   },
   activityIndicator: {
     flex: 1,

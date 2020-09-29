@@ -18,17 +18,17 @@ import EditBusinessProfile from './EditBusinessProfile'
 export default class EditProfile extends Component {
   
   state = {
-    userData:  null,
-    dateOfBirth: null,
+    userData:  this.props.user,
+    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds * 1000) : null,
     maxDateValue: null,
-    gender: 'other',
-    sexualOrientation: 'other',
-    bio: null,
-    favoriteDrinks: [],
+    gender: this.props.user.gender ? this.props.user.gender : 'other',
+    sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'other',
+    bio: this.props.user.bio ? this.props.user.bio : "",
+    favoriteDrinks: this.props.user.favoriteDrinks.length > 0 ? this.props.user.favoriteDrinks : null,
     showDatePicker: false,
     doneLoading: false,
     favoriteBars: null,
-    faveCount:0
+    faveCount: 0
   }
 
   setMaxDate = () => {
@@ -53,7 +53,6 @@ export default class EditProfile extends Component {
       }
       
 
-
       this.setState({
         userData: user,
         dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth._seconds * 1000) : this.setMaxDate(),
@@ -71,15 +70,15 @@ export default class EditProfile extends Component {
 
   //gets user and friend data
   componentDidMount(){
+    console.log(this.state)
     this.setMaxDate();
-    this.setUserData();    
+    this.setUserData();
   }
 
-  onDOBChange = (event, selectedDate) => {
+  onDOBChange = async (event, selectedDate) => {
     if(selectedDate){
       var date = new Date(selectedDate);
-      this.setState({dateOfBirth: date});
-      console.log("New DOB: " + this.state.dateOfBirth)
+      await this.setState({dateOfBirth: date});
       this.setState({showDatePicker: false});
     }
     else {
@@ -158,8 +157,7 @@ export default class EditProfile extends Component {
       displayName: this.state.displayName
     }
 
-    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
-    , (data)=>{
+    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data)=>{
         console.log('saving attempted');
     });
 
@@ -209,7 +207,7 @@ export default class EditProfile extends Component {
               </View>
               <ScrollView contentContainerStyle={{justifyContent:"flex-start",  width:"90%"}} style={localStyles.mainCont}> 
               {/* Input Area */}
-                  <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:15}}>
+                  <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom: 15}}>
                     All information is optional and can be hidden via privacy settings! 
                   </Text>
                   {/* Display name */}
@@ -237,8 +235,8 @@ export default class EditProfile extends Component {
                       <Text style={{color:theme.LIGHT_PINK, fontSize:18, marginBottom:5, marginLeft:20}}>
                         {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
-                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft:50, paddingBottom:5}}
-                        onPress={() => this.setState({showDatePicker:true})}
+                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: 50, paddingBottom: 5}}
+                        onPress={() => this.setState({showDatePicker: true})}
                       >
                           <Ionicons name="md-calendar" size={24} color={theme.LIGHT_PINK} />
                       </TouchableOpacity>

@@ -76,53 +76,26 @@ class Navigator extends React.Component {
     favoritePlaceData: null,
   }
 
-  getLocationAsync = (callback) => {
-    // permissions returns only for location permissions on iOS and under certain conditions, see Permissions.LOCATION
-    Permissions.askAsync(Permissions.LOCATION).then(status => {
-      if (status.status === 'granted') {
-        Util.location.GetUserLocation((location) => {
-          callback(location);
-        });
-      } else {
-        throw new Error('Location permission not granted');
-      }
-    });
-  }
-
   getNeededData = (currentUser) => {
     //if user exits get user data, get friend data set to async
     if (currentUser) {
         //load user
         Util.user.GetUserData(currentUser.email, (userData) => {
           if(userData) {
-            let user = JSON.stringify(userData);
-            Util.asyncStorage.SetAsyncStorageVar('User', user);
-            //load users who are friends or have requested the user
             //user data set in filterfriends
             if(userData.isBusiness) {
-              Util.business.GetBusinessData(currentUser.email, (businessData) => {
                 this.setState({
-                  businessData: businessData,
+                  businessData: userData.businessData,
                   userData: userData
                 });
-              });
             }
             else {
-              Util.friends.GetFriends(currentUser.email, (data) => {
-                let obj = {
-                  userFriends: userData.friends,
-                  usersThatRequested: data
-                }
-                Util.friends.FilterFriends(obj, (data) => {
-                  this.setState({
-                    friendData: data.acceptedFriends,
-                    friendRequests: data.requests,
-                    friendRequests: data.requests,
-                    userChecked: true,
-                    userData: userData
-                  });
-                })
-              });
+                this.setState({
+                  friendData: userData.friendData.acceptedFriends,
+                  friendRequests: userData.friendData.requests,
+                  userChecked: true,
+                  userData: userData
+                });
             }
           }
           else {
@@ -234,13 +207,15 @@ class Navigator extends React.Component {
     }
   }
 
-  initializeParams = (user) => {
-    Util.user.VerifyUser(firebase.auth().currentUser, user.email, () => { 
-      this.getLocationAsync((location) => {
-        Util.location.SaveLocation(user.email, location, () => {
-          this.getNeededData(user);
-        });
-      });        
+  initializeParams = async (user) => {
+    await Util.user.VerifyUser(user, user.email);
+    await this.getNeededData(user);
+    Permissions.askAsync(Permissions.LOCATION).then((status) => {
+      if (status.status === 'granted') {
+        Util.location.GetUserLocation(null, user);
+      } else {
+        throw new Error('Location permission not granted');
+      }
     });
   }
   componentDidMount() {
