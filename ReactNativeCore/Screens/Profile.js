@@ -321,7 +321,7 @@ export default class ProfileScreen extends Component {
                     <Title style={localStyles.descTitle}>
                       Favorite Bars: 
                     </Title>
-                    <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
+                    <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:0}}>
                      { this.state.userData.favoritePlaces ? 
                         Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
                           bar.favorited ?

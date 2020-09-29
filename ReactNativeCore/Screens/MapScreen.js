@@ -334,7 +334,7 @@ class MapScreen extends React.Component  {
               onUserLocationChange={(e) => {null}}
               showsScale={true}
               customMapStyle={this.mapStyle}
-              minZoomLevel={15}
+              minZoomLevel={14}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
             >
