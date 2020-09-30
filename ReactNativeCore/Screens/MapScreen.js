@@ -41,7 +41,8 @@ class MapScreen extends React.Component  {
     userData:null,
     buisnessUID: null,
     searchParam: "",
-    dropDownData: []
+    dropDownData: [],
+    isSearch: false
   };
   
   mapStyle = [
@@ -249,10 +250,18 @@ class MapScreen extends React.Component  {
   }
 
   gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean) => {  
+    console.log(baseURL, boolean)
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
       if(boolean) {
+        //Check for duplicate buisnesses
+        let duplicateCheckArr = [];
+        data.forEach((buisness) => {
+          if(!this.state.markers.includes(buisness)) {
+            duplicateCheckArr.push(buisness);
+          }
+        });
         //Combined the array to save orginal places from being overwritten
-        let combinedDataArray = this.state.markers.concat(data);
+        let combinedDataArray = this.state.markers.concat(duplicateCheckArr);
         this.setState({
           markers: combinedDataArray,
           userLocation: userLocation,
@@ -278,6 +287,9 @@ class MapScreen extends React.Component  {
 
   OnSearch = (text, eventCount, target) => {
     this.OnChangeMapRegion();
+    this.setState({
+      searchParam: text
+    });
   }
 
   OnSearchInputChange = (text, type) => {
@@ -353,7 +365,7 @@ class MapScreen extends React.Component  {
       this.state.markers != undefined ? 
       (
         <View style={localStyles.container}>  
-       
+          <InputWithIcon name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
            <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
@@ -370,9 +382,7 @@ class MapScreen extends React.Component  {
               moveOnMarkerPress={false}
               loadingBackgroundColor={'#20232a'}
             >
-            <View >
-              <InputWithIcon styles={localStyles.searchBar} name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
-            </View>
+            
             {this.state.markers.map(marker => (
               
                 <Marker
@@ -451,15 +461,7 @@ const localStyles = StyleSheet.create({
     bottom: 12,
     marginRight:126
   },
-  searchBar: {
-    width: '90%',
-    height: 25,
-    marginTop: '22%',
-    marginHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: theme.LIGHT_PINK
-  },
+  
   activityIndicator: {
     flex: 1,
     justifyContent: 'center', 

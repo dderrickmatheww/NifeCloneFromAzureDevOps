@@ -1213,6 +1213,7 @@ const Util = {
                 if(isQuery) {
                     paramString += 'term=' + term;
                     paramString += '&location=' + region[0].city + ', ' + region[0].region;
+                    paramString += "&categories=bars,beergardens,musicvenues";
                 }
                 else {
                     //location, lat long

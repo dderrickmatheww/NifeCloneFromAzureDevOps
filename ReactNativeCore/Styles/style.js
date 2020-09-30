@@ -392,9 +392,20 @@ export const styles = StyleSheet.create({
         width: 0,
         height: 2
     },
+    
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5
+  },
+  searchBar: {
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgrey',
+    width: 350,
+    height: 25,
+    marginTop:5,
+    marginHorizontal:10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   modalText: {
       marginBottom: 15,
