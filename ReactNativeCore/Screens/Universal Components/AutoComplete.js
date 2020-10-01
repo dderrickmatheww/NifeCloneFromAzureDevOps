@@ -1,30 +1,41 @@
 import * as React from 'react';
-import { View, TextInput, SafeAreaView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import theme from '../../Styles/theme';
+import { askAsync } from 'expo-permissions';
 
 export default class AutoComplete extends React.Component { 
 
     state = {
         showAutoComplete: false,
         searchQuery: "",
-        searchData: []
+        searchData: [],
+        loading: true
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.autocompleteData !== this.props.autocompleteData) {
+            this.setState({
+                searchData: this.props.autocompleteData,
+                loading: false
+            })
+        }
+    }
+    
+    componentDidMount() {
+        this.setState({
+            searchData: this.props.autocompleteData
+        })
     }
 
-    showResults = (text) => {
-        // Auto Complete while typing code, commented out for future updates
-
-        // let resultArr = [];
-        // for(i = 0; i < this.props.autocompleteData.length; i++) {
-        //     if(this.props.autocompleteData[i].includes(text)) {
-        //         resultArr.push(this.props.autocompleteData[i]);
-        //     }
-        // }
+    showResults = async (text) => {
+        await this.props.onSubmit(this.state.searchQuery);
         this.setState({
-            // searchData: resultArr,
             showAutoComplete: true,
-            searchQuery: text
-        })
+            searchQuery: text,
+            searchData: this.props.autocompleteData,
+            loading: true
+        });
     }
 
     render() {
@@ -38,19 +49,36 @@ export default class AutoComplete extends React.Component {
                     secureTextEntry={this.props.secureText}
                     keyboardType={this.props.keyboardType}
                     value={this.state.searchQuery}
-                    onChangeText={(text) => this.showResults(text)}
-                    onSubmitEditing={() => { this.props.onSubmit(this.state.searchQuery)}}
+                    onChangeText={(text) => {this.setState({
+                        searchQuery: text
+                    })}}
+                    onSubmitEditing={() => { this.showResults(this.state.searchQuery)}}
                 />
-                {
-                    this.state.showAutoComplete && this.state.searchData.length > 0 ?
-                        this.state.searchData.map((bar) => {
-                            <TouchableOpacity>
-                                <Text>{bar.name}</Text>
-                            </TouchableOpacity>
-                        })
-                    :
-                        null
-                }
+                
+                    {
+                        this.state.showAutoComplete ?
+                            <ScrollView
+                                contentContainerStyle={localStyles.autoCompleteContainer}
+                            >
+                                {
+                                    !this.state.loading ?
+                                        this.state.searchData.map((bar) => (
+                                            <TouchableOpacity style={localStyles.autoCompBtn}>
+                                                <Text style={localStyles.autoCompText}>{bar.name}</Text>
+                                            </TouchableOpacity>
+                                        ))
+                                    :
+                                    <ActivityIndicator 
+                                        style={localStyles.autoCompLoader}
+                                        size={'large'}
+                                        color={"#D4DE24"}
+                                    />
+                                }
+                            </ScrollView>
+                        :
+                            null
+                    }
+                
             </View>
         );
     }
@@ -58,10 +86,9 @@ export default class AutoComplete extends React.Component {
 
   const localStyles = StyleSheet.create({
     container: {
-        alignItems: 'center',
-        justifyContent: 'center',
         zIndex: 1000,
-        marginTop: '-165%'
+        alignItems: 'center',
+        justifyContent:"center"
     },
     searchBar: {
         borderBottomWidth: 3,
@@ -79,5 +106,36 @@ export default class AutoComplete extends React.Component {
             height: 20
         },
         textShadowRadius: 20
+    },
+    autoCompBtn: {
+        width: 350,
+        marginTop: 10,
+        marginBottom: 5,
+        height: 35,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'lightgrey',
+        borderRadius: 3,
+        borderWidth: 1,
+        borderColor: theme.LIGHT_PINK
+    },
+    autoCompLoader: {
+        width: 350,
+        marginTop: 10,
+        marginBottom: 5,
+        height: 35,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    autoCompleteContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme.DARK,
+        maxHeight: 1000,
+        padding: 5,
+        borderWidth: 2,
+        borderColor: 'lightgrey',
+        width: 350,
+        borderRadius: 2
     }
   })

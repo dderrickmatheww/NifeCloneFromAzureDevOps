@@ -5,7 +5,7 @@ import AutoComplete from '../Universal Components/AutoComplete';
 import theme from '../../Styles/theme';
 
 export default function InputWithIcon({ name, color, size, placeHolderText, returnKey, secureText, onChangeText, type, keyboardType, value, styles, onSubmit, autocomplete, autocompleteData, onCallback}) {
-  console.log(autocompleteData)  
+ 
   return (
     autocomplete ?
       <AutoComplete autocompleteData={autocompleteData} onSubmit={(text) => { onSubmit(text) }} placeHolderText={placeHolderText} color={color} returnKey={returnKey} secureText={secureText} keyboardType={keyboardType}/>

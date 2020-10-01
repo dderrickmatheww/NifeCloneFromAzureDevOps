@@ -364,8 +364,10 @@ class MapScreen extends React.Component  {
       && 
       this.state.markers != undefined ? 
       (
-        <View style={localStyles.container}>  
-          <InputWithIcon name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
+        <View style={localStyles.container}>
+          <View style={localStyles.autoCompContainer}>
+            <InputWithIcon name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
+          </View>
            <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
@@ -447,10 +449,13 @@ const localStyles = StyleSheet.create({
     marginTop: 12,
     position:"relative"
   },
+  autoCompContainer: {
+    height: '30%',
+    zIndex: 1000,
+    marginTop: '25%'
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent:"center",
     backgroundColor: '#20232a'
   },
   friendPic:{
