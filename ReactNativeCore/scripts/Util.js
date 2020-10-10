@@ -379,7 +379,7 @@ const Util = {
             let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data="+email+"&size=500x500&bgcolor=20232A&color=D4DE24"
             return QRSource;
         },
-        UploadImage: async (uri, email, callback) => {
+        UploadImage: async (uri, email, callback, isProof) => {
             const blob = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function() {
@@ -397,7 +397,7 @@ const Util = {
               const ref = firebase
                 .storage()
                 .ref()
-                .child(email);
+                .child(!isProof ? email : email);
               const snapshot = await ref.put(blob);
             
               // We're done with the blob, close and release it
@@ -407,7 +407,7 @@ const Util = {
         }
     },
     business:{
-        UploadAddressProof: async (uri, name, email, callback) => {
+        UploadAddressProof: async (uri, email, callback) => {
             const blob = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function() {
@@ -425,7 +425,7 @@ const Util = {
               const ref = firebase
                 .storage()
                 .ref()
-                .child("businessProof/"+email);
+                .child(email + " address proof");
               const snapshot = await ref.put(blob);
             
               // We're done with the blob, close and release it
