@@ -280,8 +280,13 @@ class MapScreen extends React.Component  {
 
   //gets the data from the modal, matches with markers saved in state
   //puts matching data on modal. 
-  HandleMarkerPress = (e, key) => {
-    var places = this.state.markers;
+  HandleMarkerPress = (e, key, places) => {
+    if(places) {
+      var places = places;
+    }
+    else {
+      var places = this.state.markers;
+    }
     this.setWantedPlaceData(places, key);
   }
 
@@ -366,7 +371,7 @@ class MapScreen extends React.Component  {
       (
         <View style={localStyles.container}>
           <View style={localStyles.autoCompContainer}>
-            <InputWithIcon name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
+            <InputWithIcon name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} PopUpBarModel={(e, buisnessUID, places) => { this.HandleMarkerPress(e, buisnessUID, places) }} autocompleteData={this.state.dropDownData}/>
           </View>
            <MapView
               style={localStyles.map}

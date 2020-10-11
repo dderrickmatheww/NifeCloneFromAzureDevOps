@@ -1,8 +1,14 @@
 import * as React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, TextInput, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import * as Device from 'expo-device'
 import theme from '../../Styles/theme';
-import { askAsync } from 'expo-permissions';
+let TouchableOpacity;
+if(Device.osName == "Android") {
+    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
+}
+else {
+    TouchableOpacity = require('react-native').TouchableOpacity;
+}
 
 export default class AutoComplete extends React.Component { 
 
@@ -63,7 +69,13 @@ export default class AutoComplete extends React.Component {
                                 {
                                     !this.state.loading ?
                                         this.state.searchData.map((bar) => (
-                                            <TouchableOpacity style={localStyles.autoCompBtn}>
+                                            <TouchableOpacity 
+                                            OnPress={(e) => {
+                                                console.log('First Click');
+                                                this.props.PopUpBarModel(e, bar.id, this.state.searchData);
+                                            }}
+                                            key={bar.id}
+                                            style={localStyles.autoCompBtn}>
                                                 <Text style={localStyles.autoCompText}>{bar.name}</Text>
                                             </TouchableOpacity>
                                         ))
