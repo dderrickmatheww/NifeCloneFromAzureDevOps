@@ -218,7 +218,7 @@ class MapScreen extends React.Component  {
     }
   ];
 
-  OnChangeMapRegion = () => {
+  OnChangeMapRegion = (autoCompUpdate) => {
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
       let { width, height } = Dimensions.get('window');
@@ -236,7 +236,7 @@ class MapScreen extends React.Component  {
       else {
         params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 8000, boolean, "", region);
       }
-      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean);
+      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean, autoCompUpdate);
       this.setState({ 
         isLoaded: true,
         region: {
@@ -249,24 +249,16 @@ class MapScreen extends React.Component  {
     });
   }
 
-  gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean) => {  
-    console.log(baseURL, boolean)
+  gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean, autoCompUpdate) => {  
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
       if(boolean) {
-        //Check for duplicate buisnesses
-        let duplicateCheckArr = [];
-        data.forEach((buisness) => {
-          if(!this.state.markers.includes(buisness)) {
-            duplicateCheckArr.push(buisness);
-          }
-        });
-        //Combined the array to save orginal places from being overwritten
-        let combinedDataArray = this.state.markers.concat(duplicateCheckArr);
         this.setState({
-          markers: combinedDataArray,
           userLocation: userLocation,
           dropDownData: data
         });
+        if(autoCompUpdate) {
+          autoCompUpdate(this.state.dropDownData);
+        }
       }
       else {
         //Orginal data call to get markers based on user location
@@ -290,11 +282,11 @@ class MapScreen extends React.Component  {
     this.setWantedPlaceData(places, key);
   }
 
-  OnSearch = (text, eventCount, target) => {
-    this.OnChangeMapRegion();
-    this.setState({
+  OnSearch = async (text, autoCompUpdate) => {
+    await this.setState({
       searchParam: text
     });
+    this.OnChangeMapRegion(autoCompUpdate);
   }
 
   OnSearchInputChange = (text, type) => {
@@ -371,7 +363,21 @@ class MapScreen extends React.Component  {
       (
         <View style={localStyles.container}>
           <View style={localStyles.autoCompContainer}>
-            <InputWithIcon name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} PopUpBarModel={(e, buisnessUID, places) => { this.HandleMarkerPress(e, buisnessUID, places) }} autocompleteData={this.state.dropDownData}/>
+            <InputWithIcon 
+              name={'ios-mail'} 
+              color={theme.LIGHT_PINK} 
+              size={12} placeHolderText={'Search...'} 
+              returnKey={'search'} 
+              secureText={false} 
+              onChangeText={(text, type) => this.OnSearchInputChange(text, type)} 
+              type={'name'} 
+              keyboardType={'default'} 
+              value={this.state.searchParam} 
+              onSubmit={(text, autoCompUpdate) => this.OnSearch(text, autoCompUpdate)} 
+              autocomplete={true} 
+              PopUpBarModel={(e, buisnessUID, places) => { this.HandleMarkerPress(e, buisnessUID, places) }} 
+              autocompleteData={this.state.dropDownData}
+            />
           </View>
            <MapView
               style={localStyles.map}
@@ -455,7 +461,7 @@ const localStyles = StyleSheet.create({
     position:"relative"
   },
   autoCompContainer: {
-    height: '30%',
+    maxHeight: '30%',
     zIndex: 1000,
     marginTop: '25%'
   },
