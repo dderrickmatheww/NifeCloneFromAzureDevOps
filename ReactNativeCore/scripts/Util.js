@@ -592,7 +592,25 @@ const Util = {
                 console.log(error)
                 Util.basicUtil.consoleLog("Favorite Count ", false)
             })
+        },
+        SendProofEmail: async(email, image) =>{
+            let obj = {
+                image: image,
+                email: email
+            };
+            if (email && image) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/sendVerificationEmail', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    Util.basicUtil.consoleLog('SendProofEmail', true);
+                })
+            }
         }
+
     },
     location: {
         SaveLocation: function(email, location, callback){
