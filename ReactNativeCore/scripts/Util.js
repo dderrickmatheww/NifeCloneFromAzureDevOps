@@ -953,7 +953,7 @@ const Util = {
             login: async (callBack) => {
                 let dataObj = {};
                 // Listen for authentication state to change.
-                await Facebook.initializeAsync(FACEBOOK_APP_ID, BUNDLE_ID);
+                await Facebook.initializeAsync({FACEBOOK_APP_ID, BUNDLE_ID});
                 try {
                   const {
                     type,

@@ -1,11 +1,12 @@
 {
-  "name": "ReactNativeCore",
-  "displayName": "ReactNativeCore",
+  "name": "Nife",
+  "displayName": "Nife",
   "expo": {
-    "name": "ReactNativeCore",
-    "slug": "ReactNativeCore",
+    "name": "Nife",
+    "slug": "Nife",
+    "icon": "./Media/Images/Nife App Logo w BG.png",
     "privacy": "unlisted",
-    "version": "1.0.0",
+    "version": "2.0.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
       "ios",
@@ -16,11 +17,18 @@
       "image": "./Media/Images/Splash.png"
     },
     "ios": {
-      "bundleIdentifier": "com.yeetdevops.nife"
+      "bundleIdentifier": "com.virastar.nife",
+      "buildNumber": "2.0.0.0"
     },
     "android": {
-      "package": "com.yeetdevops.nife",
-      "userInterfaceStyle": "dark"
+      "package": "com.virastar.nife",
+      "userInterfaceStyle": "dark",
+      "versionCode": 2,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0"
+        }
+      }
     },
     "androidStatusBar": {
       "barStyle": "light-content"
