@@ -598,7 +598,7 @@ const Util = {
                 image: image,
                 email: email
             };
-            if (user && image) {
+            if (email && image) {
                 fetch('https://us-central1-nife-75d60.cloudfunctions.net/sendVerificationEmail', 
                 { 
                     method: 'POST',
@@ -606,14 +606,8 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    if(callback) {
-                        callback(data.result);
-                    }
                     Util.basicUtil.consoleLog('SendProofEmail', true);
-                }).catch((error) => {
-                    console.log(error)
-                    Util.basicUtil.consoleLog('SendProofEmail', false);
-                }); 
+                })
             }
         }
 

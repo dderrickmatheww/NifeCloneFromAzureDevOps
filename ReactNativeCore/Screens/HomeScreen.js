@@ -274,7 +274,7 @@ export default class FriendsFeed extends React.Component  {
 
     refresh = (userData, friendData, requests, businessData) =>{
         this.props.refresh(userData, null, null, businessData)
-        console.log("refresh hit!!!!!!!!!!!!!!!!!!!!!!!!")
+        // console.log("refresh hit!!!!!!!!!!!!!!!!!!!!!!!!")
         this.setFriendDataArrays()
         let friendFeedData = this.state.feedData;
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
@@ -292,8 +292,16 @@ export default class FriendsFeed extends React.Component  {
           .then((image)=>{
             let uri = image.uri;
             Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
+                console.log(resUri)
+                      console.log("")
                 this.setState({isVerified:true});
                 Util.business.SendProofEmail(userEmail, resUri);
+                Util.user.UpdateUser(firebase.firestore(), userEmail, {isVerified:true}, ()=>{
+                    let user = this.state.userData;
+                    user.isVerified = true;
+                    this.setState({userData:user});
+                    this.refresh(user, null, null, null);
+                })
             }, true);
           });
           }
@@ -306,8 +314,16 @@ export default class FriendsFeed extends React.Component  {
                 .then((image)=>{
                   let uri = image.uri
                   Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
+                      console.log(resUri)
+                      console.log("")
                     this.setState({isVerified:true});
                     Util.business.SendProofEmail(userEmail, resUri);
+                    Util.user.UpdateUser(firebase.firestore(), userEmail, {isVerified:true}, ()=>{
+                        let user = this.state.userData;
+                        user.isVerified = true;
+                        this.setState({userData:user});
+                        this.refresh(user, null, null, null);
+                    })
                   }, true);
               });
               }
