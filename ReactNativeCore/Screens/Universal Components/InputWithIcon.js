@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as Device from 'expo-device';
 import { View, TextInput, Text, ActivityIndicator, StyleSheet, FlatList } from 'react-native';
+import {
+  Avatar
+} from 'react-native-paper';
 import theme from '../../Styles/theme';
 
 let TouchableOpacity;
@@ -26,13 +29,25 @@ export default class InputWithIcon extends React.Component {
       isAutoComplete: this.props.autocomplete ? true : false
     });
   }
+  componentWillUnmount() {
+    this.setState({
+      showAutoComplete: false
+    });
+  }
+
+  onBlur = () => {
+    this.setState({
+      showAutoComplete: false,
+      loading: true
+    });
+  }
 
   handleBarSelect = (id) => {
     this.setState({
       showAutoComplete: false,
       searchData: [],
       loading: true
-    })
+    });
     this.props.PopUpBarModel(null, id, this.state.searchData);
   }
 
@@ -61,12 +76,27 @@ export default class InputWithIcon extends React.Component {
               keyboardType={this.props.keyboardType}
               value={this.state.searchQuery}
               onChangeText={(text) => {
-                this.setState({
-                  searchQuery: text
-                });
+                if(text == "") {
+                  this.setState({
+                    showAutoComplete: false,
+                    searchQuery: text
+                  });
+                }
+                else{
+                  this.setState({
+                    searchQuery: text
+                  });
+                }
               }}
               onSubmitEditing={() => { 
-                this.showResults(this.state.searchQuery);
+                if(this.state.searchQuery == "") {
+                  this.setState({
+                    showAutoComplete: false
+                  });
+                }
+                else{
+                  this.showResults(this.state.searchQuery);
+                }
               }}
           />
           {
@@ -84,25 +114,32 @@ export default class InputWithIcon extends React.Component {
                             onPress={() => { this.handleBarSelect(item.id); }}
                             style={localStyles.autoCompBtn}
                           >
+                            { 
+                              item.image_url ? 
+                                <Avatar.Image 
+                                  source={{
+                                    uri:  item.image_url  
+                                  }}
+                                  style={localStyles.buisnessImage}
+                                  size={45}
+                                />
+                              :
+                                null
+                            }
                             <Text
                               style={localStyles.nameTxt}
                             >
-                              {item.name}:
+                              {item.name}
                             </Text>
                             { 
-                              item.location.address1 !== '' ?
+                              typeof item.distance !== 'undefined' ?
                                   <Text
                                     style={localStyles.addressTxt}
                                   >
-                                      {item.location.address1}, {"\n"}
-                                      {item.location.city}
+                                      {item.distance} mi. away
                                   </Text>
                               :
-                                <Text
-                                  style={localStyles.addressTxt}
-                                >
-                                  No address available!
-                                </Text>
+                               null
                             }
                           </TouchableOpacity>
                         )}
@@ -141,12 +178,13 @@ export default class InputWithIcon extends React.Component {
   const localStyles = StyleSheet.create({
     container: {
       alignItems: 'center',
-      justifyContent:"center"
+      justifyContent:"center",
+      width: '100%'
   },
   searchBar: {
       borderBottomWidth: 3,
       borderBottomColor: 'lightgrey',
-      width: '80%',
+      width: '90%',
       marginHorizontal: 10,
       alignItems: 'center',
       color: theme.BLUE,
@@ -159,6 +197,15 @@ export default class InputWithIcon extends React.Component {
       },
       textShadowRadius: 20
   },
+  row: {
+    flexDirection: 'row'
+  },
+  buisnessImage: {
+    width: '20%',
+    alignItems: "flex-start",
+    justifyContent: 'flex-start',
+    backgroundColor: 'lightgrey',
+  },
   autoCompBtn: {
       width: 350,
       marginTop: 10,
@@ -168,17 +215,28 @@ export default class InputWithIcon extends React.Component {
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: 'lightgrey',
+      borderRadius: 3,
+      borderWidth: 3,
+      borderColor: theme.DARK_PINK,
       flexDirection: 'row'
   },
   nameTxt: {
-    padding: 3,
-    alignItems: "flex-start",
-    justifyContent: 'flex-start'
-  },
-  addressTxt: {
+    width: '43%',
     padding: 3,
     alignItems: "center",
-    justifyContent: 'flex-start'
+    justifyContent: 'center',
+    fontWeight: 'bold',
+    textShadowColor: 'black',
+    textShadowOffset: {
+        width: 20, 
+        height: 20
+    }
+  },
+  addressTxt: {
+    width: '33%',
+    padding: 3,
+    alignItems: "center",
+    justifyContent: 'center'
   },
   autoCompBtnContainer: {
     padding: 5,
@@ -188,7 +246,7 @@ export default class InputWithIcon extends React.Component {
     width: '100%',
   },
   autoCompLoader: {
-      width: 350,
+      width: '90%',
       marginTop: 10,
       marginBottom: 5,
       height: 35,
@@ -203,7 +261,6 @@ export default class InputWithIcon extends React.Component {
       padding: 5,
       borderWidth: 2,
       borderColor: 'lightgrey',
-      width: 350,
-      borderRadius: 2
+      width: '90%',
   }
   })
