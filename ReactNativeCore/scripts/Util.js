@@ -1186,8 +1186,8 @@ const Util = {
                     let bars = response.businesses;
                     var friendArr = [];
                     var currentlyCheckIn = [];
-                    if(friends.length > 0) {
-                        bars.forEach((bar, index) => {
+                    bars.forEach(async (bar, index) => {
+                        if(friends.length > 0) {
                             friends.forEach((friend) => {
                                 if( (friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private") ) {
                                     currentlyCheckIn.push(friend);
@@ -1196,10 +1196,14 @@ const Util = {
                                     friendArr.push(friend);
                                 }
                             });
-                            response.businesses[index].lastVisitedBy = friendArr;
-                            response.businesses[index].currentlyCheckIn = currentlyCheckIn;
-                        });
-                    }
+                        }
+                        response.businesses[index].lastVisitedBy = friendArr;
+                        response.businesses[index].currentlyCheckIn = currentlyCheckIn;
+                        if(typeof response.businesses[index].distance !== 'undefined'){
+                            let miles = parseInt(response.businesses[index].distance) / 1609;
+                            response.businesses[index].distance = miles.toFixed(1);
+                        }
+                    });
                     Util.basicUtil.consoleLog("Yelp's placeData", true);
                     returnData(response.businesses);
                 })
@@ -1213,6 +1217,7 @@ const Util = {
                 if(isQuery) {
                     paramString += 'term=' + term;
                     paramString += '&location=' + region[0].city + ', ' + region[0].region;
+                    paramString += "&categories=bars,beergardens,musicvenues";
                 }
                 else {
                     //location, lat long
@@ -1391,7 +1396,10 @@ const Util = {
                 ],
                 { cancelable: false }
               );
-        }
+        },
+        getMiles: (i) => {
+            return i*0.000621371192;
+       }
     }
 }
 

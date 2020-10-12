@@ -41,7 +41,8 @@ class MapScreen extends React.Component  {
     userData:null,
     buisnessUID: null,
     searchParam: "",
-    dropDownData: []
+    dropDownData: [],
+    isSearch: false
   };
   
   mapStyle = [
@@ -217,7 +218,7 @@ class MapScreen extends React.Component  {
     }
   ];
 
-  OnChangeMapRegion = () => {
+  OnChangeMapRegion = (autoCompUpdate) => {
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
       let { width, height } = Dimensions.get('window');
@@ -235,7 +236,7 @@ class MapScreen extends React.Component  {
       else {
         params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 8000, boolean, "", region);
       }
-      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean);
+      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean, autoCompUpdate);
       this.setState({ 
         isLoaded: true,
         region: {
@@ -248,16 +249,16 @@ class MapScreen extends React.Component  {
     });
   }
 
-  gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean) => {  
+  gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean, autoCompUpdate) => {  
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
       if(boolean) {
-        //Combined the array to save orginal places from being overwritten
-        let combinedDataArray = this.state.markers.concat(data);
         this.setState({
-          markers: combinedDataArray,
           userLocation: userLocation,
           dropDownData: data
         });
+        if(autoCompUpdate) {
+          autoCompUpdate(this.state.dropDownData);
+        }
       }
       else {
         //Orginal data call to get markers based on user location
@@ -271,13 +272,21 @@ class MapScreen extends React.Component  {
 
   //gets the data from the modal, matches with markers saved in state
   //puts matching data on modal. 
-  HandleMarkerPress = (e, key) => {
-    var places = this.state.markers;
+  HandleMarkerPress = (e, key, places) => {
+    if(places) {
+      var places = places;
+    }
+    else {
+      var places = this.state.markers;
+    }
     this.setWantedPlaceData(places, key);
   }
 
-  OnSearch = (text, eventCount, target) => {
-    this.OnChangeMapRegion();
+  OnSearch = async (text, autoCompUpdate) => {
+    await this.setState({
+      searchParam: text
+    });
+    this.OnChangeMapRegion(autoCompUpdate);
   }
 
   OnSearchInputChange = (text, type) => {
@@ -352,8 +361,24 @@ class MapScreen extends React.Component  {
       && 
       this.state.markers != undefined ? 
       (
-        <View style={localStyles.container}>  
-       
+        <View style={localStyles.container}>
+          <View style={localStyles.autoCompContainer}>
+            <InputWithIcon 
+              name={'ios-mail'} 
+              color={theme.LIGHT_PINK} 
+              size={12} placeHolderText={'Search...'} 
+              returnKey={'search'} 
+              secureText={false} 
+              onChangeText={(text, type) => this.OnSearchInputChange(text, type)} 
+              type={'name'} 
+              keyboardType={'default'} 
+              value={this.state.searchParam} 
+              onSubmit={(text, autoCompUpdate) => this.OnSearch(text, autoCompUpdate)} 
+              autocomplete={true} 
+              PopUpBarModel={(e, buisnessUID, places) => { this.HandleMarkerPress(e, buisnessUID, places) }} 
+              autocompleteData={this.state.dropDownData}
+            />
+          </View>
            <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
@@ -370,9 +395,7 @@ class MapScreen extends React.Component  {
               moveOnMarkerPress={false}
               loadingBackgroundColor={'#20232a'}
             >
-            <View >
-              <InputWithIcon styles={localStyles.searchBar} name={'ios-mail'} color={theme.LIGHT_PINK} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.OnSearchInputChange(text, type)} type={'name'} keyboardType={'default'} value={this.state.searchParam} onSubmit={(text, eventCount, target) => this.OnSearch(text, eventCount, target)} autocomplete={true} autocompleteData={this.state.dropDownData}/>
-            </View>
+            
             {this.state.markers.map(marker => (
               
                 <Marker
@@ -437,10 +460,13 @@ const localStyles = StyleSheet.create({
     marginTop: 12,
     position:"relative"
   },
+  autoCompContainer: {
+    maxHeight: '30%',
+    zIndex: 1000,
+    marginTop: '25%'
+  },
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent:"center",
     backgroundColor: '#20232a'
   },
   friendPic:{
@@ -451,17 +477,7 @@ const localStyles = StyleSheet.create({
     bottom: 12,
     marginRight:126
   },
-  searchBar: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.LIGHT_PINK,
-    width: '90%',
-    height: 25,
-    marginTop: '22%',
-    marginHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: theme.LIGHT_PINK
-  },
+  
   activityIndicator: {
     flex: 1,
     justifyContent: 'center', 

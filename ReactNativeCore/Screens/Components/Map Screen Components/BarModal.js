@@ -293,7 +293,7 @@ class BarModal extends React.Component  {
       this.state.isVisible ?
           <BottomSheet
             ref={this.bs}
-            snapPoints={['70%', '50%','88%', '0%']}
+            snapPoints={['70%', '50%', '25%', '0%']}
             renderContent={this.renderInner}
             renderHeader={this.renderHeader}
             enabledInnerScrolling={false}

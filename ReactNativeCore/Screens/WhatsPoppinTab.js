@@ -6,7 +6,6 @@ import { styles } from '../Styles/style';
 import getFeedData from './Components/Whats Poppin Components/GetFeedData';
 import DataRow from './Components/Whats Poppin Components/DataRow';
 import * as firebase from 'firebase';
-import InputWithIcon from './Universal Components/InputWithIcon';
 import PleaseLogin from './Universal Components/PleaseLogin';
 import {
     Headline
