@@ -592,7 +592,31 @@ const Util = {
                 console.log(error)
                 Util.basicUtil.consoleLog("Favorite Count ", false)
             })
+        },
+        SendProofEmail: async(email, image) =>{
+            let obj = {
+                image: image,
+                email: email
+            };
+            if (user && image) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/sendVerificationEmail', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    if(callback) {
+                        callback(data.result);
+                    }
+                    Util.basicUtil.consoleLog('SendProofEmail', true);
+                }).catch((error) => {
+                    console.log(error)
+                    Util.basicUtil.consoleLog('SendProofEmail', false);
+                }); 
+            }
         }
+
     },
     location: {
         SaveLocation: function(email, location, callback){

@@ -152,7 +152,6 @@ class BarModal extends React.Component  {
             <Text style={this.state.EventsTab ? styles.tabOff : styles.tabOn}>
               Events
             </Text>
-
           </TouchableOpacity>
           <TouchableOpacity onPress={ () => this.toggleTab({specials:true}) } style={[styles.tab]}>
             <Text style={this.state.SpecialsTab ? styles.tabOff : styles.tabOn}>

@@ -293,8 +293,7 @@ export default class FriendsFeed extends React.Component  {
             let uri = image.uri;
             Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
                 this.setState({isVerified:true});
-
-              
+                Util.business.SendProofEmail(userEmail, resUri);
             }, true);
           });
           }
@@ -308,8 +307,7 @@ export default class FriendsFeed extends React.Component  {
                   let uri = image.uri
                   Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
                     this.setState({isVerified:true});
-
-                    
+                    Util.business.SendProofEmail(userEmail, resUri);
                   }, true);
               });
               }
