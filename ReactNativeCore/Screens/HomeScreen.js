@@ -14,8 +14,11 @@ import  theme  from '../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import Util from '../scripts/Util';
 import StatusModal from '../Screens/Components/Profile Screen Components/Status Modal';
+import AddressProof from '../Screens/Universal Components/AddressProof';
 import EventsModal from '../Screens/Components/Whats Poppin Components/UpdateEventsModal';
 import SpecialsModal from '../Screens/Components/Whats Poppin Components/UpdateSpecialsModal';
+import * as firebase from 'firebase';
+import * as ImagePicker from 'expo-image-picker';
 
 var defPhoto = require('../Media/Images/logoicon.png')
 export default class FriendsFeed extends React.Component  {
@@ -30,14 +33,16 @@ export default class FriendsFeed extends React.Component  {
         businessData:this.props.business,
         snackBarVisable:false,
         menuVisable: false,
-        snackBarText:"status"
+        snackBarText:"status",
+        isVerified:false,
     }
     
     componentDidMount(){
         this.setState({
             userData:this.props.user,
             friendData:this.props.friends,
-            businessData:this.props.business
+            businessData:this.props.business,
+            isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
         this.setFriendDataArrays();
         this.sortFeed()
@@ -277,6 +282,42 @@ export default class FriendsFeed extends React.Component  {
         this.render()
     }
 
+    handleUploadImage = () => {
+        let userEmail = firebase.auth().currentUser.email;
+        ImagePicker.getCameraRollPermissionsAsync()
+        .then((result)=>{
+          if(result.status == "granted"){
+            this.setState({uploading:true});
+          ImagePicker.launchImageLibraryAsync()
+          .then((image)=>{
+            let uri = image.uri;
+            Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
+                this.setState({isVerified:true});
+
+              
+            }, true);
+          });
+          }
+          else {
+            ImagePicker.requestCameraRollPermissionsAsync()
+            .then((result)=>{
+              if(result.status == "granted"){
+                this.setState({uploading:true});
+                ImagePicker.launchImageLibraryAsync()
+                .then((image)=>{
+                  let uri = image.uri
+                  Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
+                    this.setState({isVerified:true});
+
+                    
+                  }, true);
+              });
+              }
+            });
+          }
+        });
+      }
+
     render() {
         return (
             
@@ -356,6 +397,20 @@ export default class FriendsFeed extends React.Component  {
                                     </TouchableOpacity> 
                                 </View> 
                             </Modal>
+                        :
+                        null
+                    }
+                    {
+                         !this.state.isVerified && this.state.userData.isBusiness?
+                        <AddressProof
+                            isVisible={!this.state.userData.isVerified }
+                            user={this.state.userData}
+                            onDismiss={()=>this.onDismiss()}
+                            onSave={()=>this.onSave({status:true})}
+                            refresh={this.refresh}
+                            uploadImage={this.handleUploadImage}
+                        >
+                        </AddressProof> 
                         :
                         null
                     }

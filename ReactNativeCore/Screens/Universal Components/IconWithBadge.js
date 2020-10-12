@@ -5,9 +5,9 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons'; 
 
-export default function IconWithBadge({ name, badgeCount, color, size, type }) {
+export default function IconWithBadge({ name, badgeCount, color, size, type , isDrawer}) {
     return (
-      <View style={{ width: 30, height: size, margin: 5 }}>
+      <View style={{ width: 30, height: size, marginLeft:isDrawer?12:0}}>
         {
           type == 'Ionicons' ?
             <Ionicons name={name} size={size} color={color} />
@@ -23,8 +23,8 @@ export default function IconWithBadge({ name, badgeCount, color, size, type }) {
             style={{
               // On React Native < 0.57 overflow outside of parent will not work on Android, see https://git.io/fhLJ8
               position: 'absolute',
-              right: -6,
-              top: -3,
+              right:3,
+              top: 0,
               backgroundColor: 'red',
               borderRadius: 6,
               width: 12,

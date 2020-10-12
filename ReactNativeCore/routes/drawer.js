@@ -30,9 +30,9 @@ function CustomDrawerContent(props, {navigation}){
 }
 
 function Poppin ({route, navigation}){
-  const {user, friends, business, favorites, refresh} = route.params;
+  const {user, friends, business, favorites, refresh, uploadImage} = route.params;
   return(
-    <PoppinStack favorites={favorites} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
+    <PoppinStack uploadImage={uploadImage} favorites={favorites} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
   )
 }
 
@@ -271,7 +271,7 @@ class Navigator extends React.Component {
           >
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
-            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{uploadImage:this.handleUploadImage, user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
             <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
           </Drawer.Navigator>

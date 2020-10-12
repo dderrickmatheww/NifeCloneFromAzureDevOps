@@ -41,13 +41,17 @@ export default class EditProfile extends Component {
   setUserData = async () => {
       var user = this.props.user;
       let favorites = this.props.user.favoritePlaces;
-      let barIds = Object.keys(favorites);
       let actualFavoriteBars = [];
-      barIds.forEach((id)=>{
-        if(favorites[id]['favorited']== true){
-          actualFavoriteBars.push(actualFavoriteBars)
-        }
-      });
+      if(favorites){
+        let barIds = Object.keys(favorites);
+        
+        barIds.forEach((id)=>{
+          if(favorites[id]['favorited']== true){
+            actualFavoriteBars.push(actualFavoriteBars)
+          }
+        });
+      }
+      
 
       this.setState({
         userData: user,
