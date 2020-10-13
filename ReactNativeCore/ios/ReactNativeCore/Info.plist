@@ -43,6 +43,39 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSAppTransportSecurity</key>
+	<!-- Facebook OAuth -->
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+	<key>CFBundleURLSchemes</key>
+	<array>
+		<string>fb2910411615715770</string>
+	</array>
+	</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>2910411615715770</string>
+	<key>FacebookDisplayName</key>
+	<string>Nife Authentication</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>fbapi</string>
+	<string>fbapi20130214</string>
+	<string>fbapi20130410</string>
+	<string>fbapi20130702</string>
+	<string>fbapi20131010</string>
+	<string>fbapi20131219</string>
+	<string>fbapi20140410</string>
+	<string>fbapi20140116</string>
+	<string>fbapi20150313</string>
+	<string>fbapi20150629</string>
+	<string>fbapi20160328</string>
+	<string>fbauth</string>
+	<string>fb-messenger-share-api</string>
+	<string>fbauth2</string>
+	<string>fbshareextension</string>
+	</array>
+
 	<!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/ -->
 	<dict>
     <key>NSAllowsArbitraryLoads</key>
@@ -78,5 +111,6 @@
 	<string>Give ReactNativeCore periences permission to access your photos</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Allow ReactNativeCore to access your reminders</string>
+	
 </dict>
 </plist>

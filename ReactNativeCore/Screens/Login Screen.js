@@ -32,7 +32,7 @@ export default class LoginScreen extends Component {
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>{this.props.text}</Text>
           </View>
-          <View style={styles.facebookButtonContainer}>
+          {/* <View style={styles.facebookButtonContainer}>
             <TouchableOpacity style={styles.facebookLoginBtn} onPress={() => Util.dataCalls.Facebook.login((dataObj) => {
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
@@ -43,7 +43,7 @@ export default class LoginScreen extends Component {
                   source={require("../Media/Images/fblogo.png")}
                 />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View style={styles.googleButtonContainer}>
             <TouchableOpacity style={styles.googleLoginBtn} onPress={() => Util.dataCalls.Google.login((dataObj) => {
               this.setUserData(dataObj.user);

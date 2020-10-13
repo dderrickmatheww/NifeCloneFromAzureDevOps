@@ -949,7 +949,7 @@ const Util = {
                 }
             },
             postData: async (dataObj, token, returnData) => {
-                await Facebook.initializeAsync(FACEBOOK_APP_ID, BUNDLE_ID);
+                await Facebook.initializeAsync({FACEBOOK_APP_ID, BUNDLE_ID});
                 try {
                     // Get the user's name using Facebook's Graph API
                     fetch('https://graph.facebook.com/v7.0/' + dataObj.page.id + '/posts?&access_token='+ token)
@@ -971,7 +971,10 @@ const Util = {
             login: async (callBack) => {
                 let dataObj = {};
                 // Listen for authentication state to change.
-                await Facebook.initializeAsync({FACEBOOK_APP_ID, BUNDLE_ID});
+                console.log(FACEBOOK_APP_ID, BUNDLE_ID)
+                await Facebook.initializeAsync({
+                    appId: FACEBOOK_APP_ID
+                });
                 try {
                   const {
                     type,
@@ -979,8 +982,9 @@ const Util = {
                     expires,
                     permissions,
                     declinedPermissions,
-                  } = await Facebook.logInWithReadPermissionsAsync(FACEBOOK_APP_ID, {
-                    permissions: ['public_profile'],
+                  } = await Facebook.logInWithReadPermissionsAsync({
+                    appId: FACEBOOK_APP_ID,
+                    permissions: ['public_profile']
                   });
                   if (type === 'success') {
                     // Get the user's name using Facebook's Graph API
@@ -988,10 +992,11 @@ const Util = {
                     .then(response => response.json())
                     .then(async data => {
                         const credential = firebase.auth.FacebookAuthProvider.credential(token);
+                        console.log(credential);
                         await firebase.auth().signInWithCredential(credential)
                         .catch((error) => { 
                             Util.basicUtil.consoleLog("Facbook's login", false);
-                            Util.basicUtil.Alert('Facebook Login Error', error.message, null);
+                            Util.basicUtil.Alert('Firebase Facebook Login Error', error.message, null);
                         });
                         dataObj['data'] = firebase.auth().currentUser;
                         Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
@@ -1000,7 +1005,7 @@ const Util = {
                     })
                     .catch((error) => {
                         Util.basicUtil.consoleLog("Facbook's login", false);
-                        Util.basicUtil.Alert('Facebook Login Error', error.message, null);
+                        Util.basicUtil.Alert('Google Cloud Facebook Login Error', error.message, null);
                     });
                   } else {
                     // type === 'cancel'

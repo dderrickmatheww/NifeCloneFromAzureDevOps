@@ -17,11 +17,11 @@
       "image": "./Media/Images/Splash.png"
     },
     "ios": {
-      "bundleIdentifier": "com.virastar.nife",
+      "bundleIdentifier": "com.reactnativecore",
       "buildNumber": "2.0.0.0"
     },
     "android": {
-      "package": "com.virastar.nife",
+      "package": "com.reactnativecore",
       "userInterfaceStyle": "dark",
       "versionCode": 2,
       "config": {
@@ -33,5 +33,8 @@
     "androidStatusBar": {
       "barStyle": "light-content"
     }
-  }
+  },
+  "facebookScheme": "fb2910411615715770",
+  "facebookAppId": "2910411615715770",
+  "facebookDisplayName": "Nife Authentication"
 }

@@ -255,8 +255,7 @@ export const styles = StyleSheet.create({
     left: 2,
     borderColor: "#fff",
     borderWidth: .2,
-    borderRadius: 5,
-    top: '-12%'
+    borderRadius: 5
   },
   LogoData: {
     width: 90,
@@ -277,8 +276,7 @@ export const styles = StyleSheet.create({
   loggedOutText: {
     color: "#fff",
     alignItems: 'center',
-    justifyContent: 'center',
-    top: '-12%'
+    justifyContent: 'center'
   },
   facebookDataText: {
     color: theme.LIGHT_PINK,
