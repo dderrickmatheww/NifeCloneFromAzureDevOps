@@ -12,14 +12,13 @@ import {
   Surface,
   Chip
 } from 'react-native-paper';
-import EditBusinessProfile from './EditBusinessProfile'
 
 
 export default class EditProfile extends Component {
   
   state = {
     userData:  this.props.user,
-    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds * 1000) : null,
+    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds ? this.props.user.dateOfBirth._seconds : this.props.user.dateOfBirth.seconds * 1000) : null,
     maxDateValue: null,
     gender: this.props.user.gender ? this.props.user.gender : 'other',
     sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'other',
@@ -52,10 +51,10 @@ export default class EditProfile extends Component {
         });
       }
       
-
+      //console.log(user.dateOfBirth)
       this.setState({
         userData: user,
-        dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth._seconds * 1000) : this.setMaxDate(),
+        dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth._seconds ? user.dateOfBirth._seconds : user.dateOfBirth.seconds * 1000) : this.setMaxDate(),
         gender: user.gender ? user.gender : "other",
         sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other',
         bio: user.bio ? user.bio : "",
@@ -70,7 +69,7 @@ export default class EditProfile extends Component {
 
   //gets user and friend data
   componentDidMount(){
-    console.log(this.state)
+    //console.log(this.state)
     this.setMaxDate();
     this.setUserData();
   }
@@ -87,17 +86,17 @@ export default class EditProfile extends Component {
   }
 
   onGenderChange = (gender) => {
-    console.log(gender);
+    //console.log(gender);
     this.setState({gender:gender})
   }
 
   onSexualOrientationChange = (orientation) => {
-    console.log(orientation);
+    //console.log(orientation);
     this.setState({sexualOrientation:orientation})
   }
 
   onBioChange = (bio) => {
-    console.log(bio);
+    //console.log(bio);
     this.setState({bio:bio})
   }
 
@@ -158,7 +157,7 @@ export default class EditProfile extends Component {
     }
 
     Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data)=>{
-        console.log('saving attempted');
+        //console.log('saving attempted');
     });
 
     var user = this.state.userData;
@@ -187,12 +186,12 @@ export default class EditProfile extends Component {
   }
 
   onCancel = () => {
-    console.log('Canceling Edit')
+    //console.log('Canceling Edit')
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
   }
 
   onNameChange = (displayName) => {
-    console.log(displayName);
+    //console.log(displayName);
     this.setState({displayName:displayName})
   }
 

@@ -55,7 +55,7 @@ class BarModal extends React.Component  {
     });
     this.setState({loadingBusiness: true});
     Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-      // console.log("business - " + JSON.stringify(data))
+      // //console.log("business - " + JSON.stringify(data))
       this.setState({businessData: data});
       this.setState({loadingBusiness: false});
     });
