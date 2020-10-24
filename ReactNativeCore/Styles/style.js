@@ -234,7 +234,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center', 
     alignItems: 'center' ,
     backgroundColor: '#20232a',
-    marginVertical:5,
+    marginVertical:2,
     backgroundColor: theme.DARK,
     padding: 15,
     borderRadius: 15,

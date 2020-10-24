@@ -37,11 +37,10 @@ export default class FriendsFeed extends React.Component  {
         let friendFeedData = [];
         friends.forEach((friend) =>{
             if(friend.status){
-                //console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
                 let obj = {
                     name: friend.displayName,
                     text: friend.status.text,
-                    time: new Date(friend.status.timestamp.seconds * 1000),
+                    time: new Date(friend.status.timestamp.seconds ? friend.status.timestamp.seconds : friend.status.timestamp._seconds  * 1000),
                     image: friend.photoSource ? {uri:friend.photoSource} : defPhoto,
                     status: true,
                     visited:false,
@@ -51,11 +50,10 @@ export default class FriendsFeed extends React.Component  {
             }
             if(friend.checkIn){
                 if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime &&(!friend.privacySettings || !friend.privacySettings.checkInPrivacy)){
-                    // //console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
                     let obj = {
                         name: friend.displayName,
                         text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
-                        time: new Date(friend.checkIn.checkInTime.seconds * 1000),
+                        time: new Date(friend.checkIn.checkInTime.seconds ? friend.checkIn.checkInTime.seconds: friend.checkIn.checkInTime._seconds * 1000),
                         image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
                         status: false,
                         visited:false,
@@ -69,11 +67,10 @@ export default class FriendsFeed extends React.Component  {
                 keys.forEach((key)=>{
                     let visited = friend.lastVisited[key];
                     if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
-                        // //console.log(" \n visited.checkInTime. :" + visited.checkInTime);
                         let obj = {
                             name: friend.displayName,
                             text: "Visited " + (visited.name ? visited.name : "somewhere"),
-                            time: new Date(visited.checkInTime.seconds * 1000),
+                            time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds: visited.checkInTime._seconds * 1000),
                             image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
                             status: false,
                             visited:true,
@@ -232,7 +229,7 @@ const localStyles = StyleSheet.create({
         borderWidth:1,
         paddingVertical:5,
         paddingHorizontal:5,
-        marginVertical:5,
+        marginVertical:2,
         width:"100%",
     },
     noFeedData:{
