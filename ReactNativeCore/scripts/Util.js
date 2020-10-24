@@ -377,26 +377,27 @@ const Util = {
             return QRSource;
         },
         UploadImage: async (uri, email, callback, isProof) => {
-            let obj = {
-                email: email,
-                uri: uri,
-                isProof: isProof
-            };
-            if(email) {
-                fetch('https://us-central1-nife-75d60.cloudfunctions.net/UploadImage', 
-                { 
-                    method: 'POST',
-                    body: JSON.stringify(obj)
-                })
-                .then(response => response.json())
-                .then(async data => {
-                    callback(data.result);
-                    Util.basicUtil.consoleLog('UploadImage', true);
-                }).catch((error) => {
-                    Util.basicUtil.consoleLog('UploadImage', false);
-                    Util.basicUtil.Alert('Function UploadImage - Error message:', error.message, null);
-                }); 
-            }
+            const blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function() {
+                  resolve(xhr.response);
+                };
+                xhr.onerror = function(e) {
+                  reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', uri, true);
+                xhr.send(null);
+            });
+            const ref = firebase
+            .storage()
+            .ref()
+            .child(!isProof ? email : email);
+            const snapshot = await ref.put(blob);
+            // We're done with the blob, close and release it
+            blob.close();
+            let image = await snapshot.ref.getDownloadURL();
+            callback(image);
         }
     },
     business:{

@@ -303,14 +303,18 @@ const styles = StyleSheet.create({
       fontSize: 16,
       marginTop: 3,
       fontWeight: 'bold',
-      color: theme.LIGHT_PINK
+      lineHeight: 16,
+      color: theme.LIGHT_PINK,
+      flexWrap: "wrap",
+        maxWidth: '80%'
     },
     statuscaption: {
+        marginTop: 3,
         fontSize: 12,
         lineHeight: 14,
         color:theme.LIGHT_PINK,
-        flexWrap:"wrap",
-        overflow:"hidden"
+        flexWrap: "wrap",
+        maxWidth: '78%'
       },
     caption: {
       fontSize: 12,

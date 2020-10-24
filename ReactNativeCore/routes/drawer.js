@@ -124,7 +124,6 @@ class Navigator extends React.Component {
 
 
   firstTimeSignUp = (user) => {
-    //console.log('setting display name first time')
     if(this.state.displayName){
       user.updateProfile({displayName: this.state.displayName}).then(()=>{
         this.initializeParams(user);
@@ -135,11 +134,9 @@ class Navigator extends React.Component {
 
   onSignUpStates = (obj) => {
     if(!this.state.isBusiness){
-      //console.log('setting display name first time')
       this.setState({displayName:obj.displayName});
     }
     else {
-      //console.log('setting business name');
       this.setState({displayName: obj.businessName});
     }
   }
