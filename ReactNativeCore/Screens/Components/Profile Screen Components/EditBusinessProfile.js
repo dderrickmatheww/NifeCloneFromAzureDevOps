@@ -14,7 +14,7 @@ import {
 
 
 
-export default class EditProfile extends Component {
+export default class EditBusinessProfile extends Component {
   
 
   state = {
@@ -144,8 +144,7 @@ export default class EditProfile extends Component {
       }
     }
 
-    Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo
-    , (data)=>{
+    Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data)=>{
         //console.log('saving attempted');
     });
 

@@ -7,23 +7,15 @@ import {
   ScrollView,
   ActivityIndicator
 } from 'react-native';
-import * as Device from 'expo-device';
 import BottomSheet from 'reanimated-bottom-sheet';
-import { AirbnbRating } from 'react-native-ratings';
+// import { AirbnbRating } from 'react-native-ratings';
 import CheckInOutButtons from '../../Universal Components/CheckInOutBtn';
 import * as firebase from 'firebase';
 import theme from "../../../Styles/theme";
 import Util from "../../../scripts/Util";
 import Favorite from "../../Universal Components/Favorite";
 import PopUpModal from "../../Universal Components/PopUpModal";
-
-let TouchableOpacity;
-if(Device.osName == "Android") {
-    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
-}
-else {
-    TouchableOpacity = require('react-native').TouchableOpacity;
-}
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 class BarModal extends React.Component  {
 
@@ -63,7 +55,7 @@ class BarModal extends React.Component  {
     });
     this.setState({loadingBusiness: true});
     Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-      // console.log("business - " + JSON.stringify(data))
+      // //console.log("business - " + JSON.stringify(data))
       this.setState({businessData: data});
       this.setState({loadingBusiness: false});
     });
@@ -222,15 +214,15 @@ class BarModal extends React.Component  {
                 source={{uri: this.props.source.uri}}
               />
               
-                <AirbnbRating 
+                {/* <AirbnbRating 
                 starContainerStyle={styles.ratingSystem}
                 defaultRating={this.props.rating}
                 showRating={false}
                 isDisabled={true}
                 reviewSize={20}
                 selectedColor={theme.LIGHT_PINK}
-              />
-              <Text style={styles.ratingText}> in {this.props.reviewCount} reviews.</Text>
+              /> */}
+              {/* <Text style={styles.ratingText}> in {this.props.reviewCount} reviews.</Text> */}
               { 
               !this.state.checkedIn == "" || this.state.checkedIn == 0 ?
                   this.state.checkedIn == 1 ?
@@ -292,7 +284,7 @@ class BarModal extends React.Component  {
       this.state.isVisible ?
           <BottomSheet
             ref={this.bs}
-            snapPoints={['70%', '50%', '25%', '0%']}
+            snapPoints={['75%', '50%', '25%', '0%']}
             renderContent={this.renderInner}
             renderHeader={this.renderHeader}
             enabledInnerScrolling={false}

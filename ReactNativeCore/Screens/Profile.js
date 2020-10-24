@@ -35,12 +35,12 @@ export default class ProfileScreen extends Component {
   }  
 
   calculateAge = (birthday) => { // birthday is a date
-    console.log('Birthday '+ birthday);
-    console.log('User Data Birthday '+ JSON.stringify( this.state.userData.dateOfBirth));
+    //console.log('Birthday '+ birthday);
+    //console.log('User Data Birthday '+ JSON.stringify( this.state.userData.dateOfBirth));
     var bDay = new Date(birthday);
     var ageDifMs = Date.now() - bDay.getTime();
     var ageDate = new Date(ageDifMs); // miliseconds from epoch
-    console.log(Math.abs(ageDate.getUTCFullYear() - 1970))
+    //console.log(Math.abs(ageDate.getUTCFullYear() - 1970))
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
@@ -129,7 +129,7 @@ export default class ProfileScreen extends Component {
     if(this.state.userData.isBusiness){
       Util.business.GetBusinessData(firebase.firestore(), firebase.auth().currentUser.email, (data)=>{
         this.setState({businessData: data})
-        // console.log(JSON.stringify(data))
+        // //console.log(JSON.stringify(data))
       })
     }
   }

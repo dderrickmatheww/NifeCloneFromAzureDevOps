@@ -91,8 +91,8 @@ class Navigator extends React.Component {
             }
             else {
                 this.setState({
-                  friendData: userData.friendData.acceptedFriends,
-                  friendRequests: userData.friendData.requests,
+                  friendData: userData.friendData.acceptedFriends ? userData.friendData.acceptedFriends : null,
+                  friendRequests: userData.friendData.requests ? userData.friendData.requests : null,
                   userChecked: true,
                   userData: userData
                 });
