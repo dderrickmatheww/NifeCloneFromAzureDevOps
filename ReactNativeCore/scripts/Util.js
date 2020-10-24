@@ -25,7 +25,7 @@ const Util = {
                     callback(data.result);
                     Util.basicUtil.consoleLog('GetFriends', true);
                 }).catch((error) => {
-                    console.log(error)
+                    Util.basicUtil.Alert('Function GetFriends - Error message:', error.message, null);
                     Util.basicUtil.consoleLog('GetFriends', false);
                 }); 
             }
@@ -42,7 +42,7 @@ const Util = {
                     callback(data.result);
                     Util.basicUtil.consoleLog('FilterFriends', true);
                 }).catch((error) => {
-                    console.log(error)
+                    Util.basicUtil.Alert('Function FilterFriends - Error message:', error.message, null);
                     Util.basicUtil.consoleLog('FilterFriends', false);
                 }); 
             }
@@ -53,8 +53,6 @@ const Util = {
             }
             // User that requested the friend
             updateUserObj.friends[friendEmail] = true;
-            
-            console.log('Attempting to add: ' +friendEmail+ " as a friend")
             Util.user.UpdateUser(db, userEmail, updateUserObj,()=>{
                 Util.basicUtil.consoleLog("AddFriend " + userEmail, true);
 
@@ -80,7 +78,7 @@ const Util = {
                 Util.basicUtil.consoleLog("RemoveFriend " + userEmail, true);
 
                 let friendUpdateObj = {
-                    friends:{}
+                    friends: { }
                 }
                 friendUpdateObj.friends[userEmail] = false;
                 Util.user.UpdateUser(db, friendEmail, friendUpdateObj,()=>{
@@ -91,12 +89,11 @@ const Util = {
         },
         AcceptFriendRequest: function(db, userEmail, friendEmail, callback){
             let updateUserObj = {
-                friends:{}
+                friends: {}
             }
             // User that will have a friend request
             updateUserObj.friends[friendEmail] = true;
-            console.log('Attempting to accept: ' +friendEmail+ " as a friend")
-            Util.user.UpdateUser(db, userEmail, updateUserObj,()=>{
+            Util.user.UpdateUser(db, userEmail, updateUserObj, () => {
                 Util.basicUtil.consoleLog("AddFriend ", true);
                 callback();
             });
@@ -121,7 +118,7 @@ const Util = {
                     }
                     Util.basicUtil.consoleLog('VerifyUser', true);
                 }).catch((error) => {
-                    console.log(error)
+                    Util.basicUtil.Alert('Function GetUserData - Error message:', error.message, null);
                     Util.basicUtil.consoleLog('VerifyUser', false);
                 }); 
             }
@@ -142,8 +139,7 @@ const Util = {
                 providerId : obj.providerId,
                 uid : obj.uid,
             }
-            userObj['privacySettings'] = {public:true};
-            
+            userObj['privacySettings'] = { public: true };
             return userObj;
         },
         GetUserData: function(email, callback){
@@ -160,8 +156,9 @@ const Util = {
                 .then(async data => {
                     callback(data.result);
                     Util.basicUtil.consoleLog('GetUserData', true);
-                }).catch((error) => {
-                    console.log(error)
+                })
+                .catch((error) => {
+                    Util.basicUtil.Alert('Function GetUserData - Error message:', error.message, null);
                     Util.basicUtil.consoleLog('GetUserData', false);
                 });
             }
@@ -175,7 +172,7 @@ const Util = {
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('UpdateUser', false);
-                console.log("Firebase Error: " + error);
+                Util.basicUtil.Alert('Function UpdateUser - Error message:', error.message, null);
             });
         },
         CheckIn: async (checkInObj, returnData) => {
@@ -213,7 +210,7 @@ const Util = {
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('CheckIn', false);
-                console.log("Firebase Error: " + error);
+                Util.basicUtil.Alert('Function CheckIn - Error message:', error.message, null);
             });
         },
         CheckOut: async (email, returnData) => {
@@ -239,7 +236,7 @@ const Util = {
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('CheckOut', false);
-                console.log("Firebase Error: " + error);
+                Util.basicUtil.Alert('Function CheckOut - Error message:', error.message, null);
             });
         },
         IsUserCheckedIn: (email, buisnessUID, returnData) => {
@@ -261,7 +258,7 @@ const Util = {
             }
             catch (error) {
                 Util.basicUtil.consoleLog('IsUserCheckedIn', false);
-                console.log('Catch error: ' + error);
+                Util.basicUtil.Alert('Function IsUserCheckedIn - Error message:', error.message, null);
             }
         },
         setFavorite: async (user, buisnessUID, boolean, buisnessName, callback) => {
@@ -293,7 +290,7 @@ const Util = {
                    })
                    .catch((error) => {
                        Util.basicUtil.consoleLog('setFavorite', false);
-                       console.log("Firebase Error: " + error);
+                       Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
                    });
                }
                else {
@@ -311,7 +308,7 @@ const Util = {
                    })
                    .catch((error) => {
                        Util.basicUtil.consoleLog('setFavorite', false);
-                       console.log("Firebase Error: " + error);
+                       Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
                    });
                }
             }
@@ -320,7 +317,6 @@ const Util = {
             if(userData){
                 if(userData.favoritePlaces) {
                     let favorites = userData.favoritePlaces;
-                    console.log('Favorites ' + JSON.stringify(favorites))
                     if(favorites[buisnessUID]){
                         returnData(favorites[buisnessUID].favorited);
                     } else {
@@ -329,8 +325,9 @@ const Util = {
                 } else {
                     returnData(false);
                 }
-            }else{
-                console.log("NO USER DATA DUDE")
+            } 
+            else {
+                Util.basicUtil.Alert('Function isFavorited - Error message:', 'No User Data Found', null);
                 returnData(false);
             }
         },
@@ -371,7 +368,7 @@ const Util = {
           })
           .catch((error) => {
                 Util.basicUtil.consoleLog('QueryUsers', false);
-                console.log("Firebase Error: " + error);
+                Util.basicUtil.Alert('Function UploadImage - Error message:', error.message, null);
           });
         },
         GenerateQRCode: (userEmail) => {
@@ -380,30 +377,26 @@ const Util = {
             return QRSource;
         },
         UploadImage: async (uri, email, callback, isProof) => {
-            const blob = await new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.onload = function() {
-                  resolve(xhr.response);
-                };
-                xhr.onerror = function(e) {
-                  console.log(e);
-                  reject(new TypeError('Network request failed'));
-                };
-                xhr.responseType = 'blob';
-                xhr.open('GET', uri, true);
-                xhr.send(null);
-              });
-            
-              const ref = firebase
-                .storage()
-                .ref()
-                .child(!isProof ? email : email);
-              const snapshot = await ref.put(blob);
-            
-              // We're done with the blob, close and release it
-              blob.close();
-              let image = await snapshot.ref.getDownloadURL();
-              callback(image)
+            let obj = {
+                email: email,
+                uri: uri,
+                isProof: isProof
+            };
+            if(email) {
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/UploadImage', 
+                { 
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(async data => {
+                    callback(data.result);
+                    Util.basicUtil.consoleLog('UploadImage', true);
+                }).catch((error) => {
+                    Util.basicUtil.consoleLog('UploadImage', false);
+                    Util.basicUtil.Alert('Function UploadImage - Error message:', error.message, null);
+                }); 
+            }
         }
     },
     business:{
@@ -414,7 +407,7 @@ const Util = {
                   resolve(xhr.response);
                 };
                 xhr.onerror = function(e) {
-                  console.log(e);
+                  Util.basicUtil.Alert('Function UploadAddressProof - Error message:', e.message, null);
                   reject(new TypeError('Network request failed'));
                 };
                 xhr.responseType = 'blob';
@@ -434,7 +427,6 @@ const Util = {
               callback(image)
         },
         VerifyUser: function(user, email, signUpState, callback){
-            console.log(email)
             let db = firebase.firestore();
             db.collection('users').doc(email).get()
             .then((data) => {
@@ -455,7 +447,7 @@ const Util = {
             })
             .catch((err) => {
                 Util.basicUtil.consoleLog('businessesVerifyUser', false);
-                console.log('Firebase Error: ' +  err);
+                Util.basicUtil.Alert('Function businessesVerifyUser - Error message:', err.message, null);
             })
         },
         BuildBusinessSchema: (obj, signUpState, isBusinessTable) => {
@@ -512,20 +504,20 @@ const Util = {
                     Util.basicUtil.consoleLog('GetBusinessData', true);
                 }).catch((error) => {
                     Util.basicUtil.consoleLog('GetBusinessData', false);
-                    console.log('Firebase Error: ' + error);
+                    Util.basicUtil.Alert('Function GetBusinessData - Error message:', error.message, null);
                 }); 
             }
         },
         UpdateUser: function(db, email, updateObject, callback){
             let userRef = db.collection('businesses').doc(email);
-            userRef.set(updateObject, {merge:true})
+            userRef.set(updateObject, { merge: true })
             .then(() => {
                 Util.basicUtil.consoleLog('Updatebusinesses', true);
                 callback()
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('Updatebusinesses', false);
-                console.log("Firebase Error: " + error);
+                Util.basicUtil.Alert('Function Updatebusinesses - Error message:', error.message, null);
             });
         },
         GetBusinessesByUserFavorites: function(favArr, callback){
@@ -544,7 +536,7 @@ const Util = {
                     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
                 }).catch((error) => {
                     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
-                    console.log('Firebase Error: ' + error);
+                    Util.basicUtil.Alert('Function GetBusinessesByUserFavorites - Error message:', error.message, null);
                 });
             }
         },
@@ -564,8 +556,8 @@ const Util = {
                 Util.basicUtil.consoleLog("GetBusinessByUID", true);
             }
             catch (error) {
+                Util.basicUtil.Alert('Function GetBusinessByUID - Error message:', error.message, null);
                 Util.basicUtil.consoleLog("GetBusinessByUID", false);
-                console.log('Firebase Error: ' + error);
                 callback(false);
             }
             
@@ -589,8 +581,8 @@ const Util = {
                 }
             })
             .catch((error)=>{
-                console.log(error)
-                Util.basicUtil.consoleLog("Favorite Count ", false)
+                Util.basicUtil.Alert('Function GetFavoriteCount - Error message:', error.message, null);
+                Util.basicUtil.consoleLog("Favorite Count ", false);
             })
         },
         SendProofEmail: async(email, image) =>{
@@ -632,14 +624,9 @@ const Util = {
                     Util.basicUtil.consoleLog('SaveLocation', true);
                 }).catch((error) => {
                     Util.basicUtil.consoleLog('SaveLocation', false);
-                    console.log('Firebase Error: ' + error);
+                    Util.basicUtil.Alert('Function SaveLocation - Error message:', error.message, null);
                 });
             }
-        },
-        SetUserLocationData: function (region) {
-            var latAndLong = region.latitude + ',' + region.longitude;
-            Util.asyncStorage.SetAsyncStorageVar('userLocationData', latAndLong);
-            Util.basicUtil.consoleLog('SaveLocation', true);
         },
         GetUserLocation: (returnData, user) => {
             Location.getCurrentPositionAsync({enableHighAccuracy:true}).then((location) => {
@@ -656,12 +643,12 @@ const Util = {
                 })
                 .catch((error) => {
                     Util.basicUtil.consoleLog('GetUserLocation', false);
-                    console.log("Expo Location ReverseGeocode Error: " + error);
+                    Util.basicUtil.Alert('Function GetUserLocation > ReverseGeocode - Error message:', error.message, null);
                 });
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('GetUserLocation', false);
-                console.log("Expo Location getCurrentPosition Error: " + error);
+                Util.basicUtil.Alert('Function GetUserLocation - Error message:', error.message, null);
             });
         },
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
@@ -689,7 +676,7 @@ const Util = {
                     returnData(data.result);
                     Util.basicUtil.consoleLog('checkUserCheckInCount', true);
                 }).catch((error) => {
-                    console.log(error)
+                    Util.basicUtil.Alert('Function checkUserCheckInCount - Error message:', error.message, null);
                     Util.basicUtil.consoleLog('checkUserCheckInCount', false);
                 }); 
             }
@@ -745,7 +732,6 @@ const Util = {
     },
     date: {
         TimeSince: (date) => {
-            // console.log(date)
             try {
                 var seconds = Math.floor((new Date() - date) / 1000);
                 var interval = Math.floor(seconds / 31536000);
@@ -778,290 +764,290 @@ const Util = {
             }
             catch (error) {
                 Util.basicUtil.consoleLog('TimeSince', false);
-                console.log("TimeSince Error: " + error);
+                Util.basicUtil.Alert('Function TimeSince - Error message:', e.message, null);
             }
         }
     },
-    asyncStorage: {
-        SetAsyncStorageVar: async (name, value) => {
-            await AsyncStorage.getItem(name, async function(err, result){
-                if(err) {
-                    Util.basicUtil.consoleLog("SetAsyncStorageVar's getItem", false);
-                    console.log('Async Getting Storage Error: ' + err);
-                }
-                else {
-                    if (!result) {
-                        await AsyncStorage.setItem(name, value, function(err){
-                            if (err) {
-                                Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", false);
-                                console.log('Async Setting Storage Error: ' + err);
-                            }
-                            else {
-                                Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", true);
-                            }
-                        });
-                    }
-                    else {
-                        await AsyncStorage.removeItem(name, async function(err){
-                            if (err) {
-                                Util.basicUtil.consoleLog("SetAsyncStorageVar's removeItem", false);
-                                console.log('Async Removing Storage Error: ' + err);
-                            }
-                            else {
-                                await AsyncStorage.setItem(name, value, function(err){
-                                    if (err) {
-                                        Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", false);
-                                        console.log('Async Setting Storage Error: ' + err);
-                                    }
-                                    else {
-                                        Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", true);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-        },
-        IsAsyncVariableSet: async (name) => {
-            await AsyncStorage.getItem(name, async function(err, result){ 
-                if (err) {
-                    Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", false);
-                    console.log('Async Getting Storage Error: ' + err);
-                }
-                else {
-                    if(result) {
-                        Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", true);
-                        return true;
-                    }
-                    else {
-                        Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", true);
-                        return false;
-                    }
-                }
-            })
-        },
-        MultiGetAsyncVar: async (arrayOfNames, callback) => {
-            let returnArray = [];
-            await AsyncStorage.multiGet(arrayOfNames, (err, result) => {
-                if (err) {
-                    Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", false);
-                    console.log('Async Multiget Storage Error: ' + err);
-                }
-                else {
-                    returnArray.push(result);
-                }
-            });
-            if (returnArray.length > 0) {
-                Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", true);
-                callback(returnArray[0]);
-            }
-            else {
-                console.log('No results found of variable names: ' + arrayOfNames);
-                Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", true);
-            }
-        },
-        GetAsyncStorageVar: async (name, callback) => {
-            let returnArray = [];
-            await AsyncStorage.getItem(name, async (err, result) => { 
-                if(err) {
-                    Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", false);
-                    console.log('Async Error getting variable ' + name + ' ' + err);
-                }
-                else {
-                    returnArray.push(result);
-                }
-            });
-            if (returnArray.length > 0) {
-                Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", true);
-                callback(returnArray[0]);
-            }
-        },
-        DeleteAllAsyncStorage: async (returnData) => {
-            await AsyncStorage.clear();
-            Util.basicUtil.consoleLog("DeleteAllAsyncStorage", true);
-            returnData();
-        }
-    },
+    // asyncStorage: {
+    //     SetAsyncStorageVar: async (name, value) => {
+    //         await AsyncStorage.getItem(name, async function(err, result){
+    //             if(err) {
+    //                 Util.basicUtil.consoleLog("SetAsyncStorageVar's getItem", false);
+    //                 console.log('Async Getting Storage Error: ' + err);
+    //             }
+    //             else {
+    //                 if (!result) {
+    //                     await AsyncStorage.setItem(name, value, function(err){
+    //                         if (err) {
+    //                             Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", false);
+    //                             console.log('Async Setting Storage Error: ' + err);
+    //                         }
+    //                         else {
+    //                             Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", true);
+    //                         }
+    //                     });
+    //                 }
+    //                 else {
+    //                     await AsyncStorage.removeItem(name, async function(err){
+    //                         if (err) {
+    //                             Util.basicUtil.consoleLog("SetAsyncStorageVar's removeItem", false);
+    //                             console.log('Async Removing Storage Error: ' + err);
+    //                         }
+    //                         else {
+    //                             await AsyncStorage.setItem(name, value, function(err){
+    //                                 if (err) {
+    //                                     Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", false);
+    //                                     console.log('Async Setting Storage Error: ' + err);
+    //                                 }
+    //                                 else {
+    //                                     Util.basicUtil.consoleLog("SetAsyncStorageVar's setItem", true);
+    //                                 }
+    //                             });
+    //                         }
+    //                     });
+    //                 }
+    //             }
+    //         });
+    //     },
+    //     IsAsyncVariableSet: async (name) => {
+    //         await AsyncStorage.getItem(name, async function(err, result){ 
+    //             if (err) {
+    //                 Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", false);
+    //                 console.log('Async Getting Storage Error: ' + err);
+    //             }
+    //             else {
+    //                 if(result) {
+    //                     Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", true);
+    //                     return true;
+    //                 }
+    //                 else {
+    //                     Util.basicUtil.consoleLog("IsAsyncVariableSet's getItem", true);
+    //                     return false;
+    //                 }
+    //             }
+    //         })
+    //     },
+    //     MultiGetAsyncVar: async (arrayOfNames, callback) => {
+    //         let returnArray = [];
+    //         await AsyncStorage.multiGet(arrayOfNames, (err, result) => {
+    //             if (err) {
+    //                 Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", false);
+    //                 console.log('Async Multiget Storage Error: ' + err);
+    //             }
+    //             else {
+    //                 returnArray.push(result);
+    //             }
+    //         });
+    //         if (returnArray.length > 0) {
+    //             Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", true);
+    //             callback(returnArray[0]);
+    //         }
+    //         else {
+    //             console.log('No results found of variable names: ' + arrayOfNames);
+    //             Util.basicUtil.consoleLog("MultiGetAsyncVar's multiGet", true);
+    //         }
+    //     },
+    //     GetAsyncStorageVar: async (name, callback) => {
+    //         let returnArray = [];
+    //         await AsyncStorage.getItem(name, async (err, result) => { 
+    //             if(err) {
+    //                 Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", false);
+    //                 console.log('Async Error getting variable ' + name + ' ' + err);
+    //             }
+    //             else {
+    //                 returnArray.push(result);
+    //             }
+    //         });
+    //         if (returnArray.length > 0) {
+    //             Util.basicUtil.consoleLog("GetAsyncStorageVar's getItem", true);
+    //             callback(returnArray[0]);
+    //         }
+    //     },
+    //     DeleteAllAsyncStorage: async (returnData) => {
+    //         await AsyncStorage.clear();
+    //         Util.basicUtil.consoleLog("DeleteAllAsyncStorage", true);
+    //         returnData();
+    //     }
+    // },
     dataCalls: {
-        Facebook: {
-            placeData: async (boolean, query, returnData) => {
-                let dataObj = {};
-                let token, lat, long;
-                if (Util.asyncStorage.IsAsyncVariableSet('FBToken')) {
-                    let varibleArray = ['FBToken', 'userLocationData'];
-                    await Util.asyncStorage.MultiGetAsyncVar(varibleArray, (result) => {
-                        token = result[0][1];
-                        lat = result[1][1].split(',')[0];
-                        long = result[1][1].split(',')[1];
-                    });
-                } 
-                else {
-                    token = FB_CLIENT_ID;
-                    Util.asyncStorage.GetAsyncStorageVar('userLocationData', (result) => {
-                        lat = result.split(',')[0];
-                        long = result.split(',')[1];
-                        console.log('lat: ' + lat);
-                        console.log('long: ' + long);
-                    });
-                }
-                try {
-                    // Get the Whats Poppin feed using Facebook's Graph API for user query
-                    if(boolean) {
-                        fetch('https://graph.facebook.com/search?type=place&q='+ query +'&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
-                        .then(response => response.json())
-                        .then(async data => {
-                            dataObj['data'] = data.data;
-                            Util.basicUtil.consoleLog("Facbook's placeData", true);
-                            //Grabs post from FB based for user query
-                            returnData(dataObj);
-                        })
-                        .catch((e) => {
-                            Util.basicUtil.consoleLog("Facbook's placeData", false);
-                            console.log("Facebook Graph API Error: " + e);
-                        });
-                    } 
-                    // Get the Whats Poppin feed using Facebook's Graph API for default
-                    else {
-                        fetch('https://graph.facebook.com/search?type=place&q=bar&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
-                        .then(response => response.json())
-                        .then(async data => {
-                            if(data.error){
-                                Util.basicUtil.consoleLog("Facbook's placeData", false);
-                                console.log('FaceBookError - Code: '+data.error.code + " Message: " + data.error.message);
-                                returnData({});
-                            }
-                            else {
-                                //Grabs post from FB based for default
-                                dataObj['data'] = data.data;
-                                Util.basicUtil.consoleLog("Facbook's placeData", true);
-                                returnData(dataObj);
-                            }
-                        })
-                        .catch((e) => {
-                            Util.basicUtil.consoleLog("Facbook's placeData", false);
-                            console.log("Facebook Graph API Error: " + e);
-                        });
-                    }
-                } catch ({ message }) {
-                    Util.basicUtil.consoleLog("Facbook's placeData", false);
-                    console.log(`Facebook's placeData Query Error: ${message}`);
-                }
-            },
-            postData: async (dataObj, token, returnData) => {
-                await Facebook.initializeAsync({FACEBOOK_APP_ID, BUNDLE_ID});
-                try {
-                    // Get the user's name using Facebook's Graph API
-                    fetch('https://graph.facebook.com/v7.0/' + dataObj.page.id + '/posts?&access_token='+ token)
-                    .then(response => response.json())
-                    .then(async data => {
-                        dataObj['PostData'] = data;
-                        Util.basicUtil.consoleLog("Facbook's postData", true);
-                        returnData(dataObj);
-                    })
-                    .catch((e) => {
-                        Util.basicUtil.consoleLog("Facbook's postData", false);
-                        console.log("Facebook Graph API Error: " + e);
-                    });
-                } catch ({ message }) {
-                    Util.basicUtil.consoleLog("Facbook's postData", false);
-                    console.log(`Facebook's postData Query Error: ${message}`);
-                }
-            },
-            login: async (callBack) => {
-                let dataObj = {};
-                // Listen for authentication state to change.
-                console.log(FACEBOOK_APP_ID, BUNDLE_ID)
-                await Facebook.initializeAsync({
-                    appId: FACEBOOK_APP_ID
-                });
-                try {
-                  const {
-                    type,
-                    token,
-                    expires,
-                    permissions,
-                    declinedPermissions,
-                  } = await Facebook.logInWithReadPermissionsAsync({
-                    appId: FACEBOOK_APP_ID,
-                    permissions: ['public_profile']
-                  });
-                  if (type === 'success') {
-                    // Get the user's name using Facebook's Graph API
-                    fetch(`https://graph.facebook.com/me?access_token=${token}&fields=email`)
-                    .then(response => response.json())
-                    .then(async data => {
-                        const credential = firebase.auth.FacebookAuthProvider.credential(token);
-                        console.log(credential);
-                        await firebase.auth().signInWithCredential(credential)
-                        .catch((error) => { 
-                            Util.basicUtil.consoleLog("Facbook's login", false);
-                            Util.basicUtil.Alert('Firebase Facebook Login Error', error.message, null);
-                        });
-                        dataObj['data'] = firebase.auth().currentUser;
-                        Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
-                        Util.basicUtil.consoleLog("Facbook's login", true);
-                        callBack(dataObj);
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog("Facbook's login", false);
-                        Util.basicUtil.Alert('Google Cloud Facebook Login Error', error.message, null);
-                    });
-                  } else {
-                    // type === 'cancel'
-                  }
-                } catch ({ message }) {
-                  Util.basicUtil.consoleLog("Facbook's login", false);
-                  Util.basicUtil.Alert('Facebook Login Error', message, null);
-                }
-            }
-        },
-        Twitter: {
-            tweetData: async function (dataObj, returnData) {
-                var twitObj = {
-                    method: 'GET'
-                };
-                await Util.asyncStorage.GetAsyncVar('userLocationData', (result) => {
-                    twitObj['lat'] = result.split(',')[0].slice(0, 5);
-                    twitObj['long'] = result.split(',')[1].slice(0, 6);
-                });
-                for(i = 0; i < dataObj.data.length; i++) {
-                    twitObj['url'] = "https://api.twitter.com/1.1/search/tweets.json";
-                    twitObj['paramObj'] = {"q": dataObj.data[i].name, "count": "1", "geocode": twitObj.lat+","+twitObj.long+",20mi", "result_type": "recent"};
-                    twitObj['paramStr'] = "?q="+dataObj.data[i].name+"&count=1&geocode="+twitObj.lat+","+twitObj.long+",20mi&result_type=recent";
-                    twitObj['OAuthString'] = await Util.dataCalls.OAuth.grantAuthorization(twitObj.method, twitObj.url, twitObj.paramObj);
-                    try {
-                        var myHeaders = new Headers();
-                        myHeaders.append("Authorization", twitObj.OAuthString);
-                        myHeaders.append("Cookie", "personalization_id=\""+TWITTER_PERSONALIZATION_ID+"\"; guest_id="+TWITTER_GUEST_ID+"; lang=en");
-                        var requestOptions = {
-                          method: 'GET',
-                          headers: myHeaders,
-                          redirect: 'follow'
-                        };
-                        await fetch(twitObj.url + twitObj.paramStr, requestOptions)
-                        .then(response => response.json())
-                        .then(result => {
-                            if(result && !result.errors && result.statuses.length > 0) {
-                                twitObj['TwitterData'] = result.statuses;
-                            }
-                        })
-                        .catch((error) => {
-                            Util.basicUtil.consoleLog("Twitter's tweetData", false);
-                            console.log(`Twitter's tweetData Error: ${error}`);
-                        });
-                        if(twitObj.TwitterData){
-                            dataObj.data[i]['TwitterData'] = twitObj.TwitterData;
-                        }
-                    } catch ({ message }) {
-                        Util.basicUtil.consoleLog("Twitter's tweetData", false);
-                        alert(`Twitter Query Error: ${message}`);
-                    }
-                }
-                Util.basicUtil.consoleLog("Twitter's tweetData", true);
-                returnData(dataObj);
-            } 
-        },
+        // Facebook: {
+        //     placeData: async (boolean, query, returnData) => {
+        //         let dataObj = {};
+        //         let token, lat, long;
+        //         if (Util.asyncStorage.IsAsyncVariableSet('FBToken')) {
+        //             let varibleArray = ['FBToken', 'userLocationData'];
+        //             await Util.asyncStorage.MultiGetAsyncVar(varibleArray, (result) => {
+        //                 token = result[0][1];
+        //                 lat = result[1][1].split(',')[0];
+        //                 long = result[1][1].split(',')[1];
+        //             });
+        //         } 
+        //         else {
+        //             token = FB_CLIENT_ID;
+        //             Util.asyncStorage.GetAsyncStorageVar('userLocationData', (result) => {
+        //                 lat = result.split(',')[0];
+        //                 long = result.split(',')[1];
+        //                 console.log('lat: ' + lat);
+        //                 console.log('long: ' + long);
+        //             });
+        //         }
+        //         try {
+        //             // Get the Whats Poppin feed using Facebook's Graph API for user query
+        //             if(boolean) {
+        //                 fetch('https://graph.facebook.com/search?type=place&q='+ query +'&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
+        //                 .then(response => response.json())
+        //                 .then(async data => {
+        //                     dataObj['data'] = data.data;
+        //                     Util.basicUtil.consoleLog("Facbook's placeData", true);
+        //                     //Grabs post from FB based for user query
+        //                     returnData(dataObj);
+        //                 })
+        //                 .catch((e) => {
+        //                     Util.basicUtil.consoleLog("Facbook's placeData", false);
+        //                     console.log("Facebook Graph API Error: " + e);
+        //                 });
+        //             } 
+        //             // Get the Whats Poppin feed using Facebook's Graph API for default
+        //             else {
+        //                 fetch('https://graph.facebook.com/search?type=place&q=bar&center='+lat+','+long+'&distance=32186&fields=id,name,location,link,about,description,phone,restaurant_specialties,website&access_token='+ token)
+        //                 .then(response => response.json())
+        //                 .then(async data => {
+        //                     if(data.error){
+        //                         Util.basicUtil.consoleLog("Facbook's placeData", false);
+        //                         console.log('FaceBookError - Code: '+data.error.code + " Message: " + data.error.message);
+        //                         returnData({});
+        //                     }
+        //                     else {
+        //                         //Grabs post from FB based for default
+        //                         dataObj['data'] = data.data;
+        //                         Util.basicUtil.consoleLog("Facbook's placeData", true);
+        //                         returnData(dataObj);
+        //                     }
+        //                 })
+        //                 .catch((e) => {
+        //                     Util.basicUtil.consoleLog("Facbook's placeData", false);
+        //                     console.log("Facebook Graph API Error: " + e);
+        //                 });
+        //             }
+        //         } catch ({ message }) {
+        //             Util.basicUtil.consoleLog("Facbook's placeData", false);
+        //             console.log(`Facebook's placeData Query Error: ${message}`);
+        //         }
+        //     },
+        //     // postData: async (dataObj, token, returnData) => {
+        //     //     await Facebook.initializeAsync({FACEBOOK_APP_ID, BUNDLE_ID});
+        //     //     try {
+        //     //         // Get the user's name using Facebook's Graph API
+        //     //         fetch('https://graph.facebook.com/v7.0/' + dataObj.page.id + '/posts?&access_token='+ token)
+        //     //         .then(response => response.json())
+        //     //         .then(async data => {
+        //     //             dataObj['PostData'] = data;
+        //     //             Util.basicUtil.consoleLog("Facbook's postData", true);
+        //     //             returnData(dataObj);
+        //     //         })
+        //     //         .catch((e) => {
+        //     //             Util.basicUtil.consoleLog("Facbook's postData", false);
+        //     //             console.log("Facebook Graph API Error: " + e);
+        //     //         });
+        //     //     } catch ({ message }) {
+        //     //         Util.basicUtil.consoleLog("Facbook's postData", false);
+        //     //         Util.basicUtil.Alert('Google Map Query API Error:', e, null);
+        //     //         console.log(`Facebook's postData Query Error: ${message}`);
+        //     //     }
+        //     // },
+        //     login: async (callBack) => {
+        //         let dataObj = {};
+        //         // Listen for authentication state to change.
+        //         await Facebook.initializeAsync({
+        //             appId: FACEBOOK_APP_ID
+        //         });
+        //         try {
+        //           const {
+        //             type,
+        //             token,
+        //             expires,
+        //             permissions,
+        //             declinedPermissions,
+        //           } = await Facebook.logInWithReadPermissionsAsync({
+        //             appId: FACEBOOK_APP_ID,
+        //             permissions: ['public_profile']
+        //           });
+        //           if (type === 'success') {
+        //             // Get the user's name using Facebook's Graph API
+        //             fetch(`https://graph.facebook.com/me?access_token=${token}&fields=email`)
+        //             .then(response => response.json())
+        //             .then(async data => {
+        //                 const credential = firebase.auth.FacebookAuthProvider.credential(token);
+        //                 await firebase.auth().signInWithCredential(credential)
+        //                 .catch((error) => { 
+        //                     Util.basicUtil.consoleLog("Facbook's login", false);
+        //                     Util.basicUtil.Alert('Firebase Facebook Login Error', error.message, null);
+        //                 });
+        //                 dataObj['data'] = firebase.auth().currentUser;
+        //                 Util.asyncStorage.SetAsyncStorageVar('FBToken', token);
+        //                 Util.basicUtil.consoleLog("Facbook's login", true);
+        //                 callBack(dataObj);
+        //             })
+        //             .catch((error) => {
+        //                 Util.basicUtil.consoleLog("Facbook's login", false);
+        //                 Util.basicUtil.Alert('Google Cloud Facebook Login Error', error.message, null);
+        //             });
+        //           } else {
+        //             // type === 'cancel'
+        //           }
+        //         } catch ({ message }) {
+        //           Util.basicUtil.consoleLog("Facbook's login", false);
+        //           Util.basicUtil.Alert('Facebook Login Error', message, null);
+        //         }
+        //     }
+        // },
+        // Twitter: {
+        //     tweetData: async function (dataObj, returnData) {
+        //         var twitObj = {
+        //             method: 'GET'
+        //         };
+        //         await Util.asyncStorage.GetAsyncVar('userLocationData', (result) => {
+        //             twitObj['lat'] = result.split(',')[0].slice(0, 5);
+        //             twitObj['long'] = result.split(',')[1].slice(0, 6);
+        //         });
+        //         for(i = 0; i < dataObj.data.length; i++) {
+        //             twitObj['url'] = "https://api.twitter.com/1.1/search/tweets.json";
+        //             twitObj['paramObj'] = {"q": dataObj.data[i].name, "count": "1", "geocode": twitObj.lat+","+twitObj.long+",20mi", "result_type": "recent"};
+        //             twitObj['paramStr'] = "?q="+dataObj.data[i].name+"&count=1&geocode="+twitObj.lat+","+twitObj.long+",20mi&result_type=recent";
+        //             twitObj['OAuthString'] = await Util.dataCalls.OAuth.grantAuthorization(twitObj.method, twitObj.url, twitObj.paramObj);
+        //             try {
+        //                 var myHeaders = new Headers();
+        //                 myHeaders.append("Authorization", twitObj.OAuthString);
+        //                 myHeaders.append("Cookie", "personalization_id=\""+TWITTER_PERSONALIZATION_ID+"\"; guest_id="+TWITTER_GUEST_ID+"; lang=en");
+        //                 var requestOptions = {
+        //                   method: 'GET',
+        //                   headers: myHeaders,
+        //                   redirect: 'follow'
+        //                 };
+        //                 await fetch(twitObj.url + twitObj.paramStr, requestOptions)
+        //                 .then(response => response.json())
+        //                 .then(result => {
+        //                     if(result && !result.errors && result.statuses.length > 0) {
+        //                         twitObj['TwitterData'] = result.statuses;
+        //                     }
+        //                 })
+        //                 .catch((error) => {
+        //                     Util.basicUtil.consoleLog("Twitter's tweetData", false);
+        //                     console.log(`Twitter's tweetData Error: ${error}`);
+        //                 });
+        //                 if(twitObj.TwitterData){
+        //                     dataObj.data[i]['TwitterData'] = twitObj.TwitterData;
+        //                 }
+        //             } catch ({ message }) {
+        //                 Util.basicUtil.consoleLog("Twitter's tweetData", false);
+                        
+        //                 alert(`Twitter Query Error: ${message}`);
+        //             }
+        //         }
+        //         Util.basicUtil.consoleLog("Twitter's tweetData", true);
+        //         returnData(dataObj);
+        //     } 
+        // },
         Google: {
             placeData: async (boolean, query, returnData) => {
                 let dataObj = {};
@@ -1079,7 +1065,7 @@ const Util = {
                         })
                         .catch((e) => {
                             Util.basicUtil.consoleLog("Google's placeData", false);
-                            console.log("Google Map Query API Error: " + e);
+                            Util.basicUtil.Alert('Google Map Query API Error:', e.message, null);
                         });
                     }
                     // Get the Whats Poppin feed using Google's Map API for default
@@ -1093,8 +1079,8 @@ const Util = {
                             returnData(dataObj);
                         })
                         .catch((e) => {
+                            Util.basicUtil.Alert('Google Map Default API Error:', e.message, null);
                             Util.basicUtil.consoleLog("Google's placeData", false);
-                            console.log("Google Map Default API Error: " + e);
                         });
                     }
                 } catch ({ message }) {
@@ -1202,8 +1188,10 @@ const Util = {
         Yelp: {
             placeData: (baseUrl, params, friendData, returnData) => {
                 fetch(baseUrl + params, 
-                    {headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY})
-                })
+                    { 
+                        headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY })
+                    }
+                )
                 .then((data) => data.json())
                 .then((response) => {
                     let friends = friendData;
@@ -1259,7 +1247,6 @@ const Util = {
                 })
                 .then((data) => data.json())
                 .then((response) => {
-                    
                     Util.basicUtil.consoleLog("businessPhoneVerification", true);
                     callback(response);
                 })
@@ -1284,80 +1271,80 @@ const Util = {
                 firebase.auth().signOut();
             }
         },
-        OAuth: {
-            grantAuthorization: async (httpMethod, baseUrl, reqParams) => {
-                const consumerKey = TWITTER_CONSUMER_API_KEY,
-                    consumerSecret = TWITTER_CONSUMER_SECERT_API_SECRET,
-                    accessToken = TWITTER_ACCESS_TOKEN,
-                    accessTokenSecret = TWITTER_ACCESS_SECRET;
-                // timestamp as unix epoch
-                let timestamp  = Math.round(Date.now() / 1000);;
-                // nonce as base64 encoded unique random string
-                let nonce = btoa(consumerKey + ':' + timestamp);
-                // generate signature from base string & signing key
-                let baseString = Util.dataCalls.OAuth.generateBaseString(httpMethod, baseUrl, reqParams, consumerKey, accessToken, timestamp, nonce);
-                let signingKey = Util.dataCalls.OAuth.generateSigningKey(consumerSecret, accessTokenSecret);
-                let signature  = Util.dataCalls.OAuth.generateSignature(baseString, signingKey);
-                // return interpolated string
-                return oAuthObjstr = 'OAuth ' +
-                    'oauth_consumer_key="'  + consumerKey       + '", ' +
-                    'oauth_nonce="'         + nonce             + '", ' +
-                    'oauth_signature="'     + signature         + '", ' +
-                    'oauth_signature_method="HMAC-SHA1", '              +
-                    'oauth_timestamp="'     + timestamp         + '", ' +
-                    'oauth_token="'         + accessToken       + '", ' +
-                    'oauth_version="1.0"';
+        // OAuth: {
+        //     grantAuthorization: async (httpMethod, baseUrl, reqParams) => {
+        //         const consumerKey = TWITTER_CONSUMER_API_KEY,
+        //             consumerSecret = TWITTER_CONSUMER_SECERT_API_SECRET,
+        //             accessToken = TWITTER_ACCESS_TOKEN,
+        //             accessTokenSecret = TWITTER_ACCESS_SECRET;
+        //         // timestamp as unix epoch
+        //         let timestamp  = Math.round(Date.now() / 1000);;
+        //         // nonce as base64 encoded unique random string
+        //         let nonce = btoa(consumerKey + ':' + timestamp);
+        //         // generate signature from base string & signing key
+        //         let baseString = Util.dataCalls.OAuth.generateBaseString(httpMethod, baseUrl, reqParams, consumerKey, accessToken, timestamp, nonce);
+        //         let signingKey = Util.dataCalls.OAuth.generateSigningKey(consumerSecret, accessTokenSecret);
+        //         let signature  = Util.dataCalls.OAuth.generateSignature(baseString, signingKey);
+        //         // return interpolated string
+        //         return oAuthObjstr = 'OAuth ' +
+        //             'oauth_consumer_key="'  + consumerKey       + '", ' +
+        //             'oauth_nonce="'         + nonce             + '", ' +
+        //             'oauth_signature="'     + signature         + '", ' +
+        //             'oauth_signature_method="HMAC-SHA1", '              +
+        //             'oauth_timestamp="'     + timestamp         + '", ' +
+        //             'oauth_token="'         + accessToken       + '", ' +
+        //             'oauth_version="1.0"';
                    
-            },
-            generateSignature: (base_string, signing_key) => {
-                var signature = Util.dataCalls.OAuth.generateHMAC_SHA1Hash(base_string, signing_key);
-                return Util.dataCalls.OAuth.percentEncode(signature);
-            },
-            generateBaseString: (method, url, params, key, token, timestamp, nonce) => {
-                return method
-                + '&' + Util.dataCalls.OAuth.percentEncode(url)
-                + '&' + Util.dataCalls.OAuth.percentEncode(Util.dataCalls.OAuth.generateSortedParamString(params, key, token, timestamp, nonce));
-            },
-            generateSigningKey: (consumer_secret, token_secret) => {
-                return consumer_secret + '&' + token_secret;
-            },
-            percentEncode: (str) => {
-                return encodeURIComponent(str).replace(/[!*()']/g, (character) => {
-                    return '%' + character.charCodeAt(0).toString(16);
-                });
-            },
-            generateHMAC_SHA1Hash: (string, secret) => {
-                let shaObj = new jsSHA("SHA-1", "TEXT");
-                shaObj.setHMACKey(secret, "TEXT");
-                shaObj.update(string);
-                let hmac = shaObj.getHMAC("B64");
-                return hmac;
-            },
-            generateSortedParamString: (params, key, token, timestamp, nonce) => {
-                // Merge oauth params & request params to single object
-                let paramObj = Util.BasicUtil.mergeObject(
-                    {
-                        oauth_consumer_key : key,
-                        oauth_nonce : nonce,
-                        oauth_signature_method : 'HMAC-SHA1',
-                        oauth_timestamp : timestamp,
-                        oauth_token : token,
-                        oauth_version : '1.0'
-                    },
-                    params
-                );
-                // Sort alphabetically
-                let paramObjKeys = Object.keys(paramObj);
-                let len = paramObjKeys.length;
-                paramObjKeys.sort();
-                // Interpolate to string with format as key1=val1&key2=val2&...
-                let paramStr = paramObjKeys[0] + '=' + paramObj[paramObjKeys[0]];
-                for (var i = 1; i < len; i++) {
-                    paramStr += '&' + paramObjKeys[i] + '=' + Util.dataCalls.OAuth.percentEncode(decodeURIComponent(paramObj[paramObjKeys[i]]));
-                }
-                return paramStr;
-            }
-        }
+        //     },
+        //     generateSignature: (base_string, signing_key) => {
+        //         var signature = Util.dataCalls.OAuth.generateHMAC_SHA1Hash(base_string, signing_key);
+        //         return Util.dataCalls.OAuth.percentEncode(signature);
+        //     },
+        //     generateBaseString: (method, url, params, key, token, timestamp, nonce) => {
+        //         return method
+        //         + '&' + Util.dataCalls.OAuth.percentEncode(url)
+        //         + '&' + Util.dataCalls.OAuth.percentEncode(Util.dataCalls.OAuth.generateSortedParamString(params, key, token, timestamp, nonce));
+        //     },
+        //     generateSigningKey: (consumer_secret, token_secret) => {
+        //         return consumer_secret + '&' + token_secret;
+        //     },
+        //     percentEncode: (str) => {
+        //         return encodeURIComponent(str).replace(/[!*()']/g, (character) => {
+        //             return '%' + character.charCodeAt(0).toString(16);
+        //         });
+        //     },
+        //     generateHMAC_SHA1Hash: (string, secret) => {
+        //         let shaObj = new jsSHA("SHA-1", "TEXT");
+        //         shaObj.setHMACKey(secret, "TEXT");
+        //         shaObj.update(string);
+        //         let hmac = shaObj.getHMAC("B64");
+        //         return hmac;
+        //     },
+        //     generateSortedParamString: (params, key, token, timestamp, nonce) => {
+        //         // Merge oauth params & request params to single object
+        //         let paramObj = Util.BasicUtil.mergeObject(
+        //             {
+        //                 oauth_consumer_key : key,
+        //                 oauth_nonce : nonce,
+        //                 oauth_signature_method : 'HMAC-SHA1',
+        //                 oauth_timestamp : timestamp,
+        //                 oauth_token : token,
+        //                 oauth_version : '1.0'
+        //             },
+        //             params
+        //         );
+        //         // Sort alphabetically
+        //         let paramObjKeys = Object.keys(paramObj);
+        //         let len = paramObjKeys.length;
+        //         paramObjKeys.sort();
+        //         // Interpolate to string with format as key1=val1&key2=val2&...
+        //         let paramStr = paramObjKeys[0] + '=' + paramObj[paramObjKeys[0]];
+        //         for (var i = 1; i < len; i++) {
+        //             paramStr += '&' + paramObjKeys[i] + '=' + Util.dataCalls.OAuth.percentEncode(decodeURIComponent(paramObj[paramObjKeys[i]]));
+        //         }
+        //         return paramStr;
+        //     }
+        // }
     },
     basicUtil: {
         mergeObject: (obj1, obj2) => {
