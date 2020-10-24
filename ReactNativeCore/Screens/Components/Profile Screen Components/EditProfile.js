@@ -24,7 +24,7 @@ export default class EditProfile extends Component {
     gender: this.props.user.gender ? this.props.user.gender : 'other',
     sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'other',
     bio: this.props.user.bio ? this.props.user.bio : "",
-    favoriteDrinks: this.props.user.favoriteDrinks.length > 0 ? this.props.user.favoriteDrinks : null,
+    favoriteDrinks: this.props.user.favoriteDrinks && this.props.user.favoriteDrinks >0 ? this.props.user.favoriteDrinks : null,
     showDatePicker: false,
     doneLoading: false,
     favoriteBars: null,
@@ -165,7 +165,6 @@ export default class EditProfile extends Component {
 
     var updatedUser = extend(user, profileInfo);
     var updatedUserString = JSON.stringify(updatedUser);
-    Util.asyncStorage.SetAsyncStorageVar('User', updatedUserString);
     this.props.refresh(updatedUser, null, null);
 
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})

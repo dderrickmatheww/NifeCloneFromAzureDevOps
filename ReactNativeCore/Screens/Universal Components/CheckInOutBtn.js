@@ -7,15 +7,8 @@ import {
 } from "react-native";
 import Util from '../../scripts/Util';
 import theme from '../../Styles/theme';
-import * as Device from 'expo-device';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
-let TouchableOpacity;
-if(Device.osName == "Android") {
-    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
-}
-else {
-    TouchableOpacity = require('react-native').TouchableOpacity;
-}
 
 export default class CheckInOutButtons extends React.Component  {
     state = {
@@ -98,7 +91,7 @@ export default class CheckInOutButtons extends React.Component  {
                         >
                         <Text style={localStyles.modalText}>Public Check In</Text>
                         </TouchableOpacity>
-                        {/* <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => {
                             this.setState({loading: true});
                             Util.location.GetUserLocation((userLocation) => {
@@ -193,19 +186,20 @@ const localStyles = StyleSheet.create({
       backgroundColor: theme.DARK
     },
     descCont: {
-      borderRadius: 20,
+      borderRadius: 10,
       padding: '1%',
       borderColor: theme.LIGHT_PINK_OPAC,
       borderWidth: 1,
       justifyContent: 'center', 
       alignItems: 'center' ,
       alignContent:"center",
-      backgroundColor:theme.LIGHT_PINK,
-      margin:"1%",
+      backgroundColor:theme.DARK,
+      paddingHorizontal:5,
+      paddingVertical:5,
     },
     modalText:{
       width: '100%',
-      color: theme.DARK,
+      color: theme.LIGHT_PINK,
       paddingBottom:2.5,
       fontWeight:"bold",
       justifyContent: 'center', 
