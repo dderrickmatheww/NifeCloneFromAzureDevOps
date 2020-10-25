@@ -91,8 +91,8 @@ class Navigator extends React.Component {
             }
             else {
                 this.setState({
-                  friendData: userData.friendData.acceptedFriends ? userData.friendData.acceptedFriends : null,
-                  friendRequests: userData.friendData.requests ? userData.friendData.requests : null,
+                  friendData: userData.friendData.length > 0 && userData.friendData.acceptedFriends ? userData.friendData.acceptedFriends : [],
+                  friendRequests: userData.friendData.length > 0 && userData.friendData.requests ? userData.friendData.requests : [],
                   userChecked: true,
                   userData: userData
                 });
@@ -215,6 +215,7 @@ class Navigator extends React.Component {
       }
     });
   }
+  
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{

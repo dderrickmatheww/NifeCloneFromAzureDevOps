@@ -118,7 +118,7 @@ const Util = {
                     }
                     Util.basicUtil.consoleLog('VerifyUser', true);
                 }).catch((error) => {
-                    Util.basicUtil.Alert('Function GetUserData - Error message:', error.message, null);
+                    Util.basicUtil.Alert('Function VerifyUser - Error message:', error.message, null);
                     Util.basicUtil.consoleLog('VerifyUser', false);
                 }); 
             }
@@ -1199,24 +1199,26 @@ const Util = {
                     let bars = response.businesses;
                     var friendArr = [];
                     var currentlyCheckIn = [];
-                    bars.forEach(async (bar, index) => {
-                        if(friends.length > 0) {
-                            friends.forEach((friend) => {
-                                if( (friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private") ) {
-                                    currentlyCheckIn.push(friend);
-                                }
-                                if((friend.lastVisited) && (friend.lastVisited[bar.id]) &&  (friend.lastVisited[bar.id].privacy != "Private") && (!currentlyCheckIn.includes(friend))){
-                                    friendArr.push(friend);
-                                }
-                            });
-                        }
-                        response.businesses[index].lastVisitedBy = friendArr;
-                        response.businesses[index].currentlyCheckIn = currentlyCheckIn;
-                        if(typeof response.businesses[index].distance !== 'undefined'){
-                            let miles = parseInt(response.businesses[index].distance) / 1609;
-                            response.businesses[index].distance = miles.toFixed(1);
-                        }
-                    });
+                    if(bars.length > 0) {
+                        bars.forEach(async (bar, index) => {
+                            if(friends.length > 0) {
+                                friends.forEach((friend) => {
+                                    if( (friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private") ) {
+                                        currentlyCheckIn.push(friend);
+                                    }
+                                    if((friend.lastVisited) && (friend.lastVisited[bar.id]) &&  (friend.lastVisited[bar.id].privacy != "Private") && (!currentlyCheckIn.includes(friend))){
+                                        friendArr.push(friend);
+                                    }
+                                });
+                            }
+                            response.businesses[index].lastVisitedBy = friendArr;
+                            response.businesses[index].currentlyCheckIn = currentlyCheckIn;
+                            if(typeof response.businesses[index].distance !== 'undefined'){
+                                let miles = parseInt(response.businesses[index].distance) / 1609;
+                                response.businesses[index].distance = miles.toFixed(1);
+                            }
+                        });
+                    }
                     Util.basicUtil.consoleLog("Yelp's placeData", true);
                     returnData(response.businesses);
                 })
