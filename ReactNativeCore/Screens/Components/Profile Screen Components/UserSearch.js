@@ -26,12 +26,10 @@ export default class UserSearch extends Component {
 
   componentDidMount(){
     this.setState({currentUserData:this.props.currentUser});
-    console.log(this.props.currentUser)
   }
   
   onChangeSearch = (query) => {
     this.setState({searchText:query});
-    console.log(query);
   }
 
   onUserQuery = (query) => {
@@ -40,7 +38,6 @@ export default class UserSearch extends Component {
     this.setState({isSearching:true});
     Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) =>{
       if(users.length > 0){
-        console.log("Public Users: \n" + JSON.stringify(users));
         users.forEach((user)=>{wantedUsers.push(user)});
         this.setState({
           queriedUsers:wantedUsers,

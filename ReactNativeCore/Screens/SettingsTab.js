@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import Util from '../scripts/Util';
 import theme from '../Styles/theme';
-import { Ionicons } from '@expo/vector-icons'; 
-import { styles } from '../Styles/style';
+import { Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
 import{
-  List,
   Switch
 } from 'react-native-paper'
 
@@ -30,33 +28,32 @@ export default class SettingsTab extends Component {
   }  
   //Set user data
   setUserData = async (dataObj) => {
-    this.setState({ userData: this.props.user,
-     });
-     if(this.props.user.privacySettings){
+    this.setState({ userData: this.props.user});
+    if (this.props.user.privacySettings) {
       this.setState({
         searchPrivacy: this.props.user.privacySettings.searchPrivacy ? this.props.user.privacySettings.searchPrivacy : false,
-        checkInPrivacy:this.props.user.privacySettings.checkInPrivacy ? this.props.user.privacySettings.checkInPrivacy : false,
-        favoritingPrivacy:this.props.user.privacySettings.favoritingPrivacy ? this.props.user.privacySettings.favoritingPrivacy : false,
-        visitedPrivacy:this.props.user.privacySettings.visitedPrivacy ? this.props.user.privacySettings.visitedPrivacy : false,
-        DOBPrivacy:this.props.user.privacySettings.DOBPrivacy ? this.props.user.privacySettings.DOBPrivacy : false,
-        genderPrivacy:this.props.user.privacySettings.genderPrivacy ? this.props.user.privacySettings.genderPrivacy : false,
-        orientationPrivacy:this.props.user.privacySettings.orientationPrivacy ? this.props.user.privacySettings.orientationPrivacy : false,
-      })
-     }
+        checkInPrivacy: this.props.user.privacySettings.checkInPrivacy ? this.props.user.privacySettings.checkInPrivacy : false,
+        favoritingPrivacy: this.props.user.privacySettings.favoritingPrivacy ? this.props.user.privacySettings.favoritingPrivacy : false,
+        visitedPrivacy: this.props.user.privacySettings.visitedPrivacy ? this.props.user.privacySettings.visitedPrivacy : false,
+        DOBPrivacy: this.props.user.privacySettings.DOBPrivacy ? this.props.user.privacySettings.DOBPrivacy : false,
+        genderPrivacy: this.props.user.privacySettings.genderPrivacy ? this.props.user.privacySettings.genderPrivacy : false,
+        orientationPrivacy: this.props.user.privacySettings.orientationPrivacy ? this.props.user.privacySettings.orientationPrivacy : false,
+      });
+    }
   }
   logout = () => {
     this.setState({ isLoggedin: false });
     firebase.auth().signOut();
-   }
+  }
 
-   componentDidMount(){
+  componentDidMount() {
     this.setUserData()
-   }
+  }
 
-   handleSwitch(obj){
+   handleSwitch (obj) {
      if(obj.searchPrivacy){
        if(!this.state.searchPrivacy == true){
-        alert("Users can no longer search for you. Friends will have to add you with a QR Code.")
+        Util.basicUtil.Alert('Search Privacy Update!', "Users can no longer search for you. Friends will have to add you with a QR Code.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["searchPrivacy"] = !this.state.searchPrivacy
@@ -66,14 +63,12 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('searchPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj)
       this.setState({searchPrivacy:!this.state.searchPrivacy})
     }
     if(obj.favoritingPrivacy){
       if(!this.state.favoritingPrivacy == true){
-        alert("Users can no longer see your favorite places when they navigate to your profile. ")
+        Util.basicUtil.Alert('Favorite Places Privacy Update!', "Users can no longer see your favorite places when they navigate to your profile. ", null);
       }
       let user = this.state.userData;
        user['privacySettings']["favoritingPrivacy"] = !this.state.favoritingPrivacy
@@ -83,15 +78,13 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj);
       this.setState({favoritingPrivacy:!this.state.favoritingPrivacy})
     }
 
     if(obj.checkInPrivacy){
       if(!this.state.checkInPrivacy == true){
-        alert("Users can no longer see where or when you have checked in on their maps and their feeds. ")
+        Util.basicUtil.Alert('Check In Privacy Update!', "Users can no longer see where or when you have checked in on their maps and their feeds.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["checkInPrivacy"] = !this.state.checkInPrivacy
@@ -101,15 +94,13 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email);
       this.setState({checkInPrivacy:!this.state.checkInPrivacy})
     }
 
     if(obj.visitedPrivacy){
       if(!this.state.visitedPrivacy == true){
-        alert("Users can no longer see places you visited recently on their feeds.")
+        Util.basicUtil.Alert('Last Visited Privacy Update!', "Users can no longer see places you visited recently on their feeds.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["visitedPrivacy"] = !this.state.visitedPrivacy
@@ -119,15 +110,13 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email);
       this.setState({visitedPrivacy:!this.state.visitedPrivacy}) 
     }
 
     if(obj.orientationPrivacy){
       if(!this.state.orientationPrivacy == true){
-        alert("Users can no longer see your sexual orientation on your profile.")
+        Util.basicUtil.Alert('Sexual Orientation Privacy Update!', "Users can no longer see your sexual orientation on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["orientationPrivacy"] = !this.state.orientationPrivacy
@@ -137,15 +126,13 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email);
       this.setState({orientationPrivacy:!this.state.orientationPrivacy})
     }
 
     if(obj.DOBPrivacy){
       if(!this.state.DOBPrivacy == true){
-        alert("Users can no longer see your age on your profile.")
+        Util.basicUtil.Alert('Age Privacy Update!', "Users can no longer see your age on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["DOBPrivacy"] = !this.state.DOBPrivacy
@@ -155,15 +142,13 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email);
       this.setState({DOBPrivacy:!this.state.DOBPrivacy})
     }
 
     if(obj.genderPrivacy){
       if(!this.state.genderPrivacy == true){
-        alert("Users can no longer see your gender on your profile.")
+        Util.basicUtil.Alert('Gender Privacy Update!', "Users can no longer see your gender on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["genderPrivacy"] = !this.state.genderPrivacy
@@ -173,14 +158,12 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj);
       this.setState({genderPrivacy:!this.state.genderPrivacy})
     }
     if(obj.locationPrivacy){
-      if(!this.state.locationPrivacy == true){
-        alert("Users can no longer see your location on your profile.")
+      if(!this.state.locationPrivacy == true) {
+        Util.basicUtil.Alert('Location Privacy Update!', "Users can no longer see your location on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["locationPrivacy"] = !this.state.locationPrivacy
@@ -190,9 +173,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj, ()=>{
-         console.log('favoritingPrivacy toggled on DB');
-       });
+       Util.user.UpdateUser(firebase.firestore(), user.email);
       this.setState({locationPrivacy:!this.state.locationPrivacy})
     }
    }

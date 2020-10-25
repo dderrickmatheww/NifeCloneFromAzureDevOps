@@ -153,7 +153,15 @@ class WhatsPoppin extends React.Component  {
                     <ScrollView 
                         style={styles.dataRowScrollView}
                         refreshControl={
-                            <RefreshControl refreshing={this.state.refresh} onRefresh={this.onRefresh}  />
+                            <RefreshControl 
+                                refreshing={this.state.refresh} 
+                                onRefresh={this.onRefresh}  
+                                size={22}
+                                color={[theme.LIGHT_PINK]}
+                                tintColor={theme.LIGHT_PINK}
+                                title={'Loading...'}
+                                titleColor={theme.LIGHT_PINK}
+                            />
                         }
                     >
                         

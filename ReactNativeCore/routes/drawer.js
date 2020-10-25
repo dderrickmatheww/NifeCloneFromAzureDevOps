@@ -215,7 +215,7 @@ class Navigator extends React.Component {
       }
     });
   }
-  
+
   componentDidMount() {
     try{
       firebase.auth().onAuthStateChanged((user) =>{
@@ -240,8 +240,9 @@ class Navigator extends React.Component {
         }
       });
     }
-    catch (error){
-        console.error(error);
+    catch (error) {
+      Util.basicUtil.Alert('Function componentDidMount in Component Navigator - Error message:', error, null);
+      Util.basicUtil.consoleLog('Navigator/componentDidMount', false);
     }  
   }
 

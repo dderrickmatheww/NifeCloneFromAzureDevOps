@@ -1,6 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ActivityIndicator, 
-    Text } from 'react-native';
+import { 
+    View, 
+    StyleSheet, 
+    ActivityIndicator, 
+    Text 
+} from 'react-native';
 import {
     Avatar,
     Title,
@@ -18,7 +22,6 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../../Universal Components/IconWithBadge"
-
 const defPhoto = require('../../../Media/Images/logoicon.png');
 
 export function DrawerContent(props) {

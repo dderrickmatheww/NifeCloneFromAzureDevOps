@@ -146,11 +146,21 @@ const Util = {
             let obj = {
                 email: email
             };
-            if(email) {
+            let seen = [];
+
+            if(email && typeof obj.email !== 'undefined') {
                 fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
                     method: 'POST',
-                    body: JSON.stringify(obj)
+                    body: JSON.stringify(obj, function(key, val) {
+                        if (val != null && typeof val == "object") {
+                             if (seen.indexOf(val) >= 0) {
+                                 return;
+                             }
+                             seen.push(val);
+                         }
+                         return val;
+                     })
                 })
                 .then(response => response.json())
                 .then(async data => {
@@ -163,17 +173,18 @@ const Util = {
                 });
             }
         },
-        UpdateUser: function(db, email, updateObject, callback){
+        UpdateUser: function(db, email, updateObject){
             let userRef = db.collection('users').doc(email);
-            userRef.set(updateObject, {merge:true})
-            .then(() => {
-                Util.basicUtil.consoleLog('UpdateUser', true);
-                callback()
-            })
-            .catch((error) => {
-                Util.basicUtil.consoleLog('UpdateUser', false);
-                Util.basicUtil.Alert('Function UpdateUser - Error message:', error.message, null);
-            });
+            if(typeof updateObject !== 'undefined') {
+                userRef.set(updateObject, { merge: true })
+                .then(() => {
+                    Util.basicUtil.consoleLog('UpdateUser', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('UpdateUser', false);
+                    Util.basicUtil.Alert('Function UpdateUser - Error message:', error.message, null);
+                });
+            }
         },
         CheckIn: async (checkInObj, returnData) => {
             let db = firebase.firestore();

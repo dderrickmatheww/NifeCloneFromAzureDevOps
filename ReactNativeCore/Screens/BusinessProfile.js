@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, Image, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
 import {
   Title,
   Caption,
-  Text,
   Headline,
   Chip,
   Surface
@@ -16,8 +15,6 @@ import { Ionicons } from '@expo/vector-icons';
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 import Favorite from './Universal Components/Favorite'
 
-
-const defPhoto = require('../Media/Images/logoicon.png');
 export default class ProfileScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
@@ -54,14 +51,10 @@ export default class ProfileScreen extends Component {
   setUserData = async () => {
     if(this.state.isUsersProfile){
       this.setState({userData:this.props.user});
-      // console.log(JSON.stringify(this.props.user));
-      
     }
     else {
-      Util.user.GetUserData(firebase.firestore(), this.props.user.email, (user)=>{
+      Util.user.GetUserData(this.props.user.email, (user) => {
         this.setState({userData: user});
-        
-        // console.log(JSON.stringify(this.state.userData));
       });
     }
   }
@@ -76,9 +69,7 @@ export default class ProfileScreen extends Component {
         let userEmail = firebase.auth().currentUser.email
         friends.forEach((friend) => {
           if(friend.email == userEmail){
-            console.log('friend: ' + friend);
             this.setState({areFriends: friend['friends'][this.props.user.email] == true});
-            console.log('Are Friends : ' + this.state.areFriends)
           }
         });
         // console.log(JSON.stringify(this.state.friendData));
