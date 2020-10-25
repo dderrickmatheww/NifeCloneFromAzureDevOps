@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Image,StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { 
     Text, 
     Headline,
@@ -19,22 +19,23 @@ import EventsModal from '../Screens/Components/Whats Poppin Components/UpdateEve
 import SpecialsModal from '../Screens/Components/Whats Poppin Components/UpdateSpecialsModal';
 import * as firebase from 'firebase';
 import * as ImagePicker from 'expo-image-picker';
+var defPhoto = require('../Media/Images/logoicon.png');
 
-var defPhoto = require('../Media/Images/logoicon.png')
 export default class FriendsFeed extends React.Component  {
+
     state = {
         statusModalVisable: false,
         eventModalVisable: false,
         specialsModalVisable: false,
         modalVisible: false,
-        userData:this.props.user,
-        friendData:this.props.friends,
+        userData: this.props.user,
+        friendData: this.props.friends,
         feedData: null,
-        businessData:this.props.business,
-        snackBarVisable:false,
+        businessData: this.props.business,
+        snackBarVisable: false,
         menuVisable: false,
-        snackBarText:"status",
-        isVerified:false,
+        snackBarText: "status",
+        isVerified: false,
     }
     
     componentDidMount(){
@@ -45,49 +46,47 @@ export default class FriendsFeed extends React.Component  {
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
         this.setFriendDataArrays();
-        this.sortFeed()
-        // console.log("friendData: " + JSON.stringify(this.props.friends));
+        this.sortFeed();
     }
 
     setFriendDataArrays = () => {
-        // this.setState({feedData:null})
         let friends = this.props.friends;
         let user = this.props.user;
         let business = this.props.business;
         let favorites = this.props.favorites;
         let friendFeedData = [];
 
-        if(user.status){
+        if(user.status) {
             let obj = {
                 name: user.displayName,
                 text: user.status.text,
                 time: new Date(user.status.timestamp.seconds ? user.status.timestamp.seconds : user.status.timestamp._seconds * 1000),
                 image: user.photoSource ? {uri:user.photoSource} : defPhoto,
                 status: true,
-                visited:false,
-                checkedIn:false,
+                visited: false,
+                checkedIn: false,
             }
             friendFeedData.push(obj);
         }
         //get friend data if not a business
-        if(!user.isBusiness){
-            friends.forEach((friend) =>{
+        if(!user.isBusiness && typeof friends !== 'undefined' && friends.length > 0) {
+            friends.forEach((friend) => {
                 if(friend.status){
-                    //console.log(" \n friend.status.timestamp :" + friend.status.timestamp);
                     let obj = {
                         name: friend.displayName,
                         text: friend.status.text,
                         time: new Date(friend.status.timestamp.seconds ? friend.status.timestamp.seconds : friend.status.timestamp._seconds * 1000),
                         image: friend.photoSource ? {uri:friend.photoSource} : defPhoto,
                         status: true,
-                        visited:false,
-                        checkedIn:false,
+                        visited: false,
+                        checkedIn: false,
                     }
                     friendFeedData.push(obj);
                 }
                 if(friend.checkIn){
-                    if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime && (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
-                        // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
+                    if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && 
+                    friend.checkIn.checkInTime && 
+                    (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
                         let obj = {
                             name: friend.displayName,
                             text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
@@ -104,33 +103,30 @@ export default class FriendsFeed extends React.Component  {
                     let keys = Object.keys(friend.lastVisited);
                     keys.forEach((key)=>{
                         let visited = friend.lastVisited[key];
-                        if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
-                            // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
+                        if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)) {
                             let obj = {
                                 name: friend.displayName,
                                 text: "Visited " + (visited.name ? visited.name : "somewhere"),
                                 time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds : visited.checkInTime._seconds * 1000),
-                                image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
+                                image: friend.photoSource ? { uri: friend.photoSource } : { defPhoto },
                                 status: false,
                                 visited:true,
                                 checkedIn:false,
                             }
                             friendFeedData.push(obj);
                         }
-                    })
+                    });
                 }
-                
             });
         }
         
         //get user data
         if(!user.isBusiness){
-            if(favorites){
-                console.log('Fav length: ' + favorites.length)
-                favorites.forEach((place)=>{
+            if(favorites && favorites.length > 0) {
+                favorites.forEach((place) => {
                     if(place.events){
                         let events = place.events;
-                        events.forEach((event)=>{
+                        events.forEach((event) => {
                             let obj = {
                                 name: place.displayName,
                                 text: "Event: " + event.event,
@@ -142,12 +138,11 @@ export default class FriendsFeed extends React.Component  {
                                 event: true,
                             }
                             friendFeedData.push(obj);
-                        })
+                        });
                     }
                     if(place.specials){
-                            let specials = place.specials;
-                            specials.forEach((special)=>{
-            
+                        let specials = place.specials;
+                        specials.forEach((special) => {
                             let obj = {
                                 name: place.displayName,
                                 text: "Special: " + special,
@@ -160,14 +155,15 @@ export default class FriendsFeed extends React.Component  {
                                 specials:true,
                             }
                             friendFeedData.push(obj);
-                            })
-                        }
-                })
+                        });
+                    }
+                });
             }
             
-            if(user.checkIn){
-                if((user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && user.checkIn.checkInTime && (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
-                    // console.log(" \n friend.checkIn.checkInTime :" + friend.checkIn.checkInTime);
+            if(user.checkIn) {
+                if((user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && 
+                user.checkIn.checkInTime && 
+                (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
                     let obj = {
                         name: user.displayName,
                         text: "Checked in " + (user.checkIn.name ? " at " +  user.checkIn.name : "somewhere"),
@@ -180,72 +176,68 @@ export default class FriendsFeed extends React.Component  {
                     friendFeedData.push(obj);
                 }
             }
-            if(user.lastVisited){
-                let keys = Object.keys(user.lastVisited);
-                keys.forEach((key)=>{
-                let visited = user.lastVisited[key];
-                if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
-                    // console.log(" \n visited.checkInTime. :" + visited.checkInTime);
-                    let obj = {
-                        name: user.displayName,
-                        text: "Visited " + (visited.name ? visited.name : "somewhere"),
-                        time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds: visited.checkInTime._seconds * 1000),
-                        image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
-                        status: false,
-                        visited:true,
-                        checkedIn:false,
-                    }
-                    friendFeedData.push(obj);
-                }
-                })
-            }
             
+            if(user.lastVisited) {
+                let keys = Object.keys(user.lastVisited);
+                keys.forEach((key) => {
+                    let visited = user.lastVisited[key];
+                    if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
+                        let obj = {
+                            name: user.displayName,
+                            text: "Visited " + (visited.name ? visited.name : "somewhere"),
+                            time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds: visited.checkInTime._seconds * 1000),
+                            image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
+                            status: false,
+                            visited:true,
+                            checkedIn:false,
+                        }
+                        friendFeedData.push(obj);
+                    }
+                });
+            }
         }
         //if its a business
         if(business){
-           if(business.events.length > 0){
-               let events = business.events;
-               events.forEach((event)=>{
-
-                let obj = {
-                    name: business.displayName,
-                    text: "Event: " + event.event,
-                    time: new Date(event.uploaded.seconds ? event.uploaded.seconds : event.uploaded._seconds   * 1000),
-                    image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
-                    status: false,
-                    visited:false,
-                    checkedIn:false,
-                    event: true,
-                }
-                friendFeedData.push(obj);
-               })
+           if(business.events.length > 0) {
+                let events = business.events;
+                events.forEach((event) => {
+                    let obj = {
+                        name: business.displayName,
+                        text: "Event: " + event.event,
+                        time: new Date(event.uploaded.seconds ? event.uploaded.seconds : event.uploaded._seconds   * 1000),
+                        image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
+                        status: false,
+                        visited:false,
+                        checkedIn:false,
+                        event: true,
+                    }
+                    friendFeedData.push(obj);
+                });
            }
-           if(business.specials.length > 0){
+           if(business.specials.length > 0) {
                 let specials = business.specials;
-                specials.forEach((special)=>{
-
-                let obj = {
-                    name: business.displayName,
-                    text: "Special: " + special.special,
-                    time: new Date(special.uploaded.seconds ? special.uploaded.seconds : special.uploaded._seconds * 1000),
-                    image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
-                    status: false,
-                    visited:false,
-                    checkedIn:false,
-                    event: false,
-                    specials:true,
-                }
-                friendFeedData.push(obj);
-                })
+                specials.forEach((special) => {
+                    let obj = {
+                        name: business.displayName,
+                        text: "Special: " + special.special,
+                        time: new Date(special.uploaded.seconds ? special.uploaded.seconds : special.uploaded._seconds * 1000),
+                        image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
+                        status: false,
+                        visited:false,
+                        checkedIn:false,
+                        event: false,
+                        specials:true,
+                    }
+                    friendFeedData.push(obj);
+                });
             }
         }
-        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
-        this.setState({feedData:friendFeedData});
-        
+        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
+        this.setState({ feedData: friendFeedData });
     }
 
     onSave = (updated) => {
-        this.setState({statusModalVisable:false, snackBarVisable: true});
+        this.setState({statusModalVisable: false, snackBarVisable: true});
         if(updated.status){
             this.setState({snackBarText: "status"})
         }
@@ -256,81 +248,82 @@ export default class FriendsFeed extends React.Component  {
             this.setState({snackBarText: "specials"})
         }
     }
-    onDismiss = ()=> {
-        this.setState({statusModalVisable:false});
-        this.setState({eventModalVisable:false});
-        this.setState({specialsModalVisable:false});
+
+    onDismiss = () => {
+        this.setState({statusModalVisable: false});
+        this.setState({eventModalVisable: false});
+        this.setState({specialsModalVisable: false});
     }
-    onDismissUpdate = ()=> {
-        this.setState({modalVisible:false});
+
+    onDismissUpdate = () => {
+        this.setState({modalVisible: false});
     }
+
     onDismissSnackBar = () => {
         this.setState({snackBarVisable: false});
     }
 
-    sortFeed = () => {
-        
-    }
-
     refresh = (userData, friendData, requests, businessData) =>{
-        this.props.refresh(userData, null, null, businessData)
-        // console.log("refresh hit!!!!!!!!!!!!!!!!!!!!!!!!")
-        this.setFriendDataArrays()
+        this.props.refresh(userData, null, null, businessData);
+        this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;
-        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
-        this.setState({feedData:friendFeedData});
-        this.render()
+        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
+        this.setState({ feedData: friendFeedData });
+        this.render();
     }
 
     handleUploadImage = () => {
         let userEmail = firebase.auth().currentUser.email;
         ImagePicker.getCameraRollPermissionsAsync()
-        .then((result)=>{
-          if(result.status == "granted"){
-            this.setState({uploading:true});
-          ImagePicker.launchImageLibraryAsync()
-          .then((image)=>{
-            let uri = image.uri;
-            Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
-                console.log(resUri)
-                      console.log("")
-                this.setState({isVerified:true});
-                Util.business.SendProofEmail(userEmail, resUri);
-                Util.user.UpdateUser(firebase.firestore(), userEmail, {isVerified:true}, ()=>{
+        .then((result) => {
+            if (result.status == "granted") {
+            this.setState({ uploading: true });
+            ImagePicker.launchImageLibraryAsync()
+            .then((image) => {
+                let uri = image.uri;
+                Util.business.UploadAddressProof(uri, userEmail, (resUri) => {
+                    this.setState({ isVerified: true });
+                    Util.business.SendProofEmail(userEmail, resUri);
+                    Util.user.UpdateUser(userEmail, { isVerified: true})
                     let user = this.state.userData;
                     user.isVerified = true;
                     this.setState({userData:user});
                     this.refresh(user, null, null, null);
-                })
-            }, true);
-          });
-          }
-          else {
-            ImagePicker.requestCameraRollPermissionsAsync()
-            .then((result)=>{
-              if(result.status == "granted"){
-                this.setState({uploading:true});
-                ImagePicker.launchImageLibraryAsync()
-                .then((image)=>{
-                  let uri = image.uri
-                  Util.business.UploadAddressProof(uri, userEmail, (resUri) =>{
-                      console.log(resUri)
-                      console.log("")
-                    this.setState({isVerified:true});
-                    Util.business.SendProofEmail(userEmail, resUri);
-                    Util.user.UpdateUser(firebase.firestore(), userEmail, {isVerified:true}, ()=>{
-                        let user = this.state.userData;
-                        user.isVerified = true;
-                        this.setState({userData:user});
-                        this.refresh(user, null, null, null);
-                    })
-                  }, true);
-              });
-              }
+                }, true);
+            })
+            .catch((error) => {
+                Util.basicUtil.Alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
+                Util.basicUtil.consoleLog('HomeScreen/handleUploadImage', false);
             });
-          }
+            }
+            else {
+                ImagePicker.requestCameraRollPermissionsAsync()
+                .then((result)=>{
+                    if(result.status == "granted") {
+                        this.setState({uploading:true});
+                        ImagePicker.launchImageLibraryAsync()
+                        .then((image) => {
+                            let uri = image.uri
+                            Util.business.UploadAddressProof(uri, userEmail, (resUri) => {
+                                this.setState({isVerified:true});
+                                Util.business.SendProofEmail(userEmail, resUri);
+                                Util.user.UpdateUser(firebase.firestore(), userEmail, {isVerified:true}, ()=>{
+                                    let user = this.state.userData;
+                                    user.isVerified = true;
+                                    this.setState({userData:user});
+                                    this.refresh(user, null, null, null);
+                                });
+                            }, true);
+                        })
+                        .catch((error) => {
+                            Util.basicUtil.Alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
+                            Util.basicUtil.consoleLog('HomeScreen/handleUploadImage', false);
+                        });
+                    }
+                });
+            }
         });
-      }
+    }
 
     render() {
         return (
