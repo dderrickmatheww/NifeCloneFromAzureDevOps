@@ -231,10 +231,10 @@ class MapScreen extends React.Component  {
       let baseURL = 'https://api.yelp.com/v3/businesses/search?';
       let params;
       if(boolean) {
-        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 8000, boolean, this.state.searchParam, region);
+        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, boolean, this.state.searchParam, region);
       }
       else {
-        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 8000, boolean, "", region);
+        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, boolean, "", region);
       }
       await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean, autoCompUpdate);
       this.setState({ 

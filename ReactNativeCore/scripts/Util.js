@@ -1209,7 +1209,7 @@ const Util = {
                     let bars = response.businesses;
                     var friendArr = [];
                     var currentlyCheckIn = [];
-                    if(bars.length > 0) {
+                    if(typeof bars !== 'undefined' && bars.length > 0) {
                         bars.forEach(async (bar, index) => {
                             if(friends.length > 0) {
                                 friends.forEach((friend) => {

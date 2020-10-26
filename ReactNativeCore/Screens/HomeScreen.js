@@ -122,10 +122,10 @@ export default class FriendsFeed extends React.Component  {
         }
         
         //get user data
-        if(!user.isBusiness){
-            if(favorites && favorites.length > 0) {
+        if (!user.isBusiness) {
+            if (favorites && favorites.length > 0) {
                 favorites.forEach((place) => {
-                    if(place.events){
+                    if (place.events) {
                         let events = place.events;
                         events.forEach((event) => {
                             let obj = {
@@ -141,7 +141,7 @@ export default class FriendsFeed extends React.Component  {
                             friendFeedData.push(obj);
                         });
                     }
-                    if(place.specials){
+                    if (place.specials) {
                         let specials = place.specials;
                         specials.forEach((special) => {
                             let obj = {
@@ -161,7 +161,7 @@ export default class FriendsFeed extends React.Component  {
                 });
             }
             
-            if(user.checkIn) {
+            if (user.checkIn) {
                 if (
                     (user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && 
                     user.checkIn.checkInTime && 
@@ -180,7 +180,7 @@ export default class FriendsFeed extends React.Component  {
                 }
             }
             
-            if(user.lastVisited) {
+            if (user.lastVisited) {
                 let keys = Object.keys(user.lastVisited);
                 keys.forEach((key) => {
                     let visited = user.lastVisited[key];
@@ -221,7 +221,7 @@ export default class FriendsFeed extends React.Component  {
                 });
            }
 
-           if(business.specials.length > 0) {
+           if (business.specials.length > 0) {
                 let specials = business.specials;
                 specials.forEach((special) => {
                     let obj = {
@@ -245,14 +245,14 @@ export default class FriendsFeed extends React.Component  {
 
     onSave = (updated) => {
         this.setState({statusModalVisable: false, snackBarVisable: true});
-        if(updated.status){
-            this.setState({snackBarText: "status"})
+        if (updated.status){
+            this.setState({snackBarText: "status"});
         }
-        if(updated.events){
-            this.setState({snackBarText: "events"})
+        if (updated.events){
+            this.setState({snackBarText: "events"});
         }
-        if(updated.specials){
-            this.setState({snackBarText: "specials"})
+        if (updated.specials) {
+            this.setState({snackBarText: "specials"});
         }
     }
 
