@@ -38,11 +38,11 @@ export default class FriendsFeed extends React.Component  {
         isVerified: false,
     }
     
-    componentDidMount(){
+    componentDidMount() {
         this.setState({
-            userData:this.props.user,
-            friendData:this.props.friends,
-            businessData:this.props.business,
+            userData: this.props.user,
+            friendData: this.props.friends,
+            businessData: this.props.business,
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
         this.setFriendDataArrays();
@@ -82,15 +82,17 @@ export default class FriendsFeed extends React.Component  {
                     }
                     friendFeedData.push(obj);
                 }
-                if(friend.checkIn){
-                    if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && 
-                    friend.checkIn.checkInTime && 
-                    (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
+                if (friend.checkIn) {
+                    if (
+                        (friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && 
+                        friend.checkIn.checkInTime && 
+                        (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)
+                    ) {
                         let obj = {
                             name: friend.displayName,
-                            text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
+                            text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere! No name provided!"),
                             time: new Date(friend.checkIn.checkInTime.seconds ? friend.checkIn.checkInTime.seconds : friend.checkIn.checkInTime._seconds * 1000),
-                            image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
+                            image: friend.photoSource ? { uri: friend.photoSource} : { defPhoto },
                             status: false,
                             visited:false,
                             checkedIn:true,
@@ -98,14 +100,14 @@ export default class FriendsFeed extends React.Component  {
                         friendFeedData.push(obj);
                     }
                 }
-                if(friend.lastVisited){
+                if (friend.lastVisited) {
                     let keys = Object.keys(friend.lastVisited);
-                    keys.forEach((key)=>{
+                    keys.forEach((key) => {
                         let visited = friend.lastVisited[key];
                         if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)) {
                             let obj = {
                                 name: friend.displayName,
-                                text: "Visited " + (visited.name ? visited.name : "somewhere"),
+                                text: "Visited " + (visited.name ? visited.name : "somewhere! No name provided!"),
                                 time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds : visited.checkInTime._seconds * 1000),
                                 image: friend.photoSource ? { uri: friend.photoSource } : { defPhoto },
                                 status: false,
@@ -130,10 +132,10 @@ export default class FriendsFeed extends React.Component  {
                                 name: place.displayName,
                                 text: "Event: " + event.event,
                                 time: new Date(event.uploaded.seconds ? event.uploaded.seconds : event.uploaded._seconds * 1000),
-                                image: place.photoSource ? {uri:place.photoSource} : {defPhoto},
+                                image: place.photoSource ? { uri: place.photoSource } : { defPhoto },
                                 status: false,
-                                visited:false,
-                                checkedIn:false,
+                                visited: false,
+                                checkedIn: false,
                                 event: true,
                             }
                             friendFeedData.push(obj);
@@ -146,12 +148,12 @@ export default class FriendsFeed extends React.Component  {
                                 name: place.displayName,
                                 text: "Special: " + special,
                                 time: new Date(),
-                                image: place.photoSource ? {uri:place.photoSource} : {defPhoto},
+                                image: place.photoSource ? { uri: place.photoSource } : { defPhoto },
                                 status: false,
-                                visited:false,
-                                checkedIn:false,
+                                visited: false,
+                                checkedIn: false,
                                 event: false,
-                                specials:true,
+                                specials: true,
                             }
                             friendFeedData.push(obj);
                         });
@@ -160,17 +162,19 @@ export default class FriendsFeed extends React.Component  {
             }
             
             if(user.checkIn) {
-                if((user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && 
-                user.checkIn.checkInTime && 
-                (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)){
+                if (
+                    (user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") && 
+                    user.checkIn.checkInTime && 
+                    (!user.privacySettings || !user.privacySettings.checkedInPrivacy)
+                ) {
                     let obj = {
                         name: user.displayName,
-                        text: "Checked in " + (user.checkIn.name ? " at " +  user.checkIn.name : "somewhere"),
+                        text: "Checked into " + (user.checkIn.name ? " at " +  user.checkIn.name : "somewhere! No name provided!"),
                         time: new Date(user.checkIn.checkInTime.seconds ? user.checkIn.checkInTime.seconds : user.checkIn.checkInTime._seconds * 1000),
-                        image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
+                        image: user.photoSource ? { uri: user.photoSource } : { defPhoto },
                         status: false,
-                        visited:false,
-                        checkedIn:true,
+                        visited: false,
+                        checkedIn: true
                     }
                     friendFeedData.push(obj);
                 }
@@ -180,10 +184,13 @@ export default class FriendsFeed extends React.Component  {
                 let keys = Object.keys(user.lastVisited);
                 keys.forEach((key) => {
                     let visited = user.lastVisited[key];
-                    if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
+                    if (
+                        visited.privacy == "Public" || visited.privacy == "Friends" && 
+                        (!user.privacySettings || !user.privacySettings.visitedPrivacy)
+                    ) {
                         let obj = {
                             name: user.displayName,
-                            text: "Visited " + (visited.name ? visited.name : "somewhere"),
+                            text: "Visited " + (visited.name ? visited.name : "somewhere! No name provided!"),
                             time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds: visited.checkInTime._seconds * 1000),
                             image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
                             status: false,
@@ -196,8 +203,8 @@ export default class FriendsFeed extends React.Component  {
             }
         }
         //if its a business
-        if(business){
-           if(business.events.length > 0) {
+        if (business) {
+           if (business.events.length > 0) {
                 let events = business.events;
                 events.forEach((event) => {
                     let obj = {
@@ -206,13 +213,14 @@ export default class FriendsFeed extends React.Component  {
                         time: new Date(event.uploaded.seconds ? event.uploaded.seconds : event.uploaded._seconds   * 1000),
                         image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
                         status: false,
-                        visited:false,
-                        checkedIn:false,
+                        visited: false,
+                        checkedIn:  false,
                         event: true,
                     }
                     friendFeedData.push(obj);
                 });
            }
+
            if(business.specials.length > 0) {
                 let specials = business.specials;
                 specials.forEach((special) => {
@@ -220,12 +228,12 @@ export default class FriendsFeed extends React.Component  {
                         name: business.displayName,
                         text: "Special: " + special.special,
                         time: new Date(special.uploaded.seconds ? special.uploaded.seconds : special.uploaded._seconds * 1000),
-                        image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
+                        image: business.photoSource ? { uri: business.photoSource } : { defPhoto },
                         status: false,
-                        visited:false,
-                        checkedIn:false,
+                        visited: false,
+                        checkedIn: false,
                         event: false,
-                        specials:true,
+                        specials: true,
                     }
                     friendFeedData.push(obj);
                 });
@@ -408,17 +416,17 @@ export default class FriendsFeed extends React.Component  {
                     }
                     {
                          !this.state.isVerified && this.state.userData.isBusiness?
-                        <AddressProof
-                            isVisible={!this.state.userData.isVerified }
-                            user={this.state.userData}
-                            onDismiss={()=>this.onDismiss()}
-                            onSave={()=>this.onSave({status:true})}
-                            refresh={this.refresh}
-                            uploadImage={this.handleUploadImage}
-                        >
-                        </AddressProof> 
+                            <AddressProof
+                                isVisible={!this.state.userData.isVerified }
+                                user={this.state.userData}
+                                onDismiss={()=>this.onDismiss()}
+                                onSave={()=>this.onSave({status:true})}
+                                refresh={this.refresh}
+                                uploadImage={this.handleUploadImage}
+                            >
+                            </AddressProof> 
                         :
-                        null
+                            null
                     }
                     {
                         this.state.statusModalVisable ?
