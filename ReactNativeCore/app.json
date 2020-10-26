@@ -6,7 +6,7 @@
     "slug": "Nife",
     "icon": "./Media/Images/Nife App Logo w BG.png",
     "privacy": "unlisted",
-    "version": "1.0.0.3",
+    "version": "1.0.0.4",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
       "ios",
@@ -23,7 +23,7 @@
     "android": {
       "package": "com.virastar.nife",
       "userInterfaceStyle": "dark",
-      "versionCode": 5,
+      "versionCode": 6,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0"
