@@ -15,17 +15,18 @@ import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 const defPhoto = require('../Media/Images/logoicon.png');
+
 export default class ProfileScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: this.props.user,
     modalVisible: false,
     friendData: this.props.friends,
-    isAddingFriend:false,
+    isAddingFriend: false,
     areFriends: false,
     statusModalVisible: false,
     uploading: false,
-    friendCount:0,
+    friendCount: 0,
   }
 
   
@@ -52,33 +53,35 @@ export default class ProfileScreen extends Component {
       this.setState({userData: this.props.user});
     }
     else {
-      Util.user.GetUserData(this.props.user.email, (user)=>{
+      Util.user.GetUserData(this.props.user.email, (user) => {
         this.setState({userData: user});
       });
     }
   }
 
   setFriendData = async (dataObj) => {
-    if(this.props.isUsersProfile){
+    if (this.props.isUsersProfile) {
       this.setState({friendData: this.props.friends});
     }
-    else{
-      if(this.props.friends){
+    else {
+      if (this.props.friends) {
         let friends = this.props.user.friends;
-        let friendEmails = Object.keys(friends);
         var count = this.state.friendCount;
-        friendEmails.forEach((email)=>{
-          if(friends[email] == true){
-            count += 1;
-          }
-        });
-        this.setState({friendCount:count})
+        if (typeof friends != 'undefined') {
+          let friendEmails = Object.keys(friends);
+          friendEmails.forEach((email) => {
+            if (friends[email] == true) {
+              count += 1;
+            }
+          });
+        }
+        this.setState({friendCount: count}); 
       }
     }
   }
   
   addFriend = () => {
-    this.setState({isAddingFriend:true});
+    this.setState({isAddingFriend: true});
     Util.friends.AddFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
       this.setState({
         isAddingFriend:false, 
@@ -88,11 +91,11 @@ export default class ProfileScreen extends Component {
   }
 
   removeFriend = () => {
-    this.setState({isAddingFriend:true});
+    this.setState({isAddingFriend: true});
     Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, this.state.userData.email, ()=>{
       this.setState({
-        isAddingFriend:false, 
-        areFriends:false,
+        isAddingFriend: false, 
+        areFriends: false,
         friendCount: this.state.friendCount -= 1
       });  
     });
@@ -109,16 +112,17 @@ export default class ProfileScreen extends Component {
     this.setUserData();
     this.setFriendData();
   }
+
   onDismissStatus = ()=> {
     this.setState({statusModalVisible: false});
-}
+  }
 
   componentDidMount() {
     this.getAsyncStorageData();
     this.getBusinessData();
     if(!this.props.isUserProfile){
-      if(this.props.user.friends && this.props.user.friends[firebase.auth().currentUser.email]== true){
-        this.setState({areFriends:true})
+      if(this.props.user.friends && this.props.user.friends[firebase.auth().currentUser.email] == true){
+        this.setState({areFriends: true});
       }
     }
   }
@@ -127,7 +131,7 @@ export default class ProfileScreen extends Component {
     if(this.state.userData.isBusiness){
       Util.business.GetBusinessData(firebase.firestore(), firebase.auth().currentUser.email, (data)=>{
         this.setState({businessData: data})
-      })
+      });
     }
   }
 

@@ -188,9 +188,28 @@ class WhatsPoppin extends React.Component  {
                         <View style={{ height: 120 }} />
                     </ScrollView> :
                     <View style={styles.viewDark}>
-                        <Text style={{color:theme.LIGHT_PINK, fontSize:16}}>
-                            Nothing seems to be happening... Tell your friends about Nife and start checking in to give us more data!
-                        </Text>
+                        <SafeAreaView 
+                            style={styles.safeAreaContainer} 
+                            refreshControl={
+                                <RefreshControl 
+                                    refreshing={this.state.refresh} 
+                                    onRefresh={this.onRefresh}  
+                                    size={22}
+                                    color={[theme.LIGHT_PINK]}
+                                    tintColor={theme.LIGHT_PINK}
+                                    title={'Loading...'}
+                                    titleColor={theme.LIGHT_PINK}
+                                />
+                            }
+                        >
+                            <Text style={localStyles.emptyPoppinFeed}>
+                                Nothing seems to be happening yet! {"\n"}
+                                {"\n"}
+                                Once users start checking in, the resturants that your friends check into will populate here! {"\n"}
+                                {"\n"}
+                                Tell your friends about Nife and start checking in!
+                            </Text>
+                        </SafeAreaView>
                     </View>
                      : 
                      <View style={styles.viewDark}>
@@ -220,6 +239,13 @@ const localStyles = StyleSheet.create({
         textAlign:"center",
         alignItems:"center",
         alignSelf:"center"
+    },
+    emptyPoppinFeed: {
+        color: theme.LIGHT_PINK, 
+        fontSize: 16,
+        padding: 20,
+        textAlign: "center",
+        justifyContent: "center"
     },
     DrawerOverlay: {
         alignSelf:"flex-start",

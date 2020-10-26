@@ -46,7 +46,6 @@ export default class FriendsFeed extends React.Component  {
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
         this.setFriendDataArrays();
-        this.sortFeed();
     }
 
     setFriendDataArrays = () => {
