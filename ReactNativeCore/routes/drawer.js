@@ -37,9 +37,9 @@ function Poppin ({route, navigation}){
 }
 
 function Profile ({route, navigation}){
-  const {user, friends, refresh, business, uploadImage} = route.params;
+  const {user, friends, refresh, business, uploadImage, request } = route.params;
   return(
-    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation} business={business}/>
+    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation} request={request} business={business}/>
   )
 }
 
@@ -269,8 +269,8 @@ class Navigator extends React.Component {
             overlayColor={"rgba(32, 35, 42, 0.50)"}
           >
             <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={Profile} initialParams={{uploadImage:this.handleUploadImage, refresh:this.refreshFromAsync, business:this.state.businessData?this.state.businessData:null}}/>
-            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{uploadImage:this.handleUploadImage, user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync, business:this.state.businessData ?this.state.businessData:null, favorites:this.state.favoritePlaceData}}/>
+            <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, requests: this.state.friendRequests }}/>
+            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>
             <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
             <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
           </Drawer.Navigator>

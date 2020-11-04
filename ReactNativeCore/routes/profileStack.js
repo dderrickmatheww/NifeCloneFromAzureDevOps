@@ -78,7 +78,7 @@ export default class ProfileStack extends React.Component  {
         <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh, business:this.props.business}}/>
         <Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage:this.props.uploadImage, refresh:this.props.refresh, business:this.props.business}}/>
         <Stack.Screen name="BusinessProfile" component={BusinessProfile} options={{title: 'ProfileScreen'}} initialParams={{currentUser:this.props.user, uploadImage:this.props.uploadImage, refresh:this.props.refresh, business:this.props.business}}/>
-        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
+        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{requests: this.props.requests, user: this.props.user, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
         <Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
         <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} initialParams={{currentUser:this.props.user}} />

@@ -136,8 +136,8 @@ export default class ProfileScreen extends Component {
   }
 
   UploadPic = () => {
-    this.setState({uploading:true});
-    this.props.uploadImage((uri)=>{
+    this.setState({ uploading: true });
+    this.props.uploadImage((uri) => {
       let user = this.state.userData;
       user['photoSource'] = uri;
       this.setState({userData: user});
@@ -212,7 +212,7 @@ export default class ProfileScreen extends Component {
                         {
                           this.props.isUserProfile ? 
                           <TouchableOpacity style={{position:"relative", bottom:-125, right:-125}}
-                            onPress={()=> {
+                            onPress={() => {
                               this.UploadPic();
                             }}
                           >
@@ -254,7 +254,7 @@ export default class ProfileScreen extends Component {
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
                       <TouchableOpacity
                        disabled={this.state.isUsersProfile ? false : true}
-                       onPress={() => this.props.navigation.navigate('Profile', {screen:'Friends', params:{user: this.state.userData, friends:this.state.friendData}})}>
+                       onPress={() => this.props.navigation.navigate('Profile', { screen:'Friends', params: { user: this.state.userData, friends:this.state.friendData } })}>
                         <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : this.state.friendCount != 0 ? this.state.friendCount : 0)} Friends</Caption>
                       </TouchableOpacity>
                     </View>
@@ -266,25 +266,26 @@ export default class ProfileScreen extends Component {
                     <View style={{flexDirection:"row"}}>
                       <Title style={localStyles.descTitle}>
                           Status: 
-                          
-                        </Title>
+                      </Title>
                       {
                         this.state.isUsersProfile ?
-                        <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
-                          onPress={() => this.setState({statusModalVisible:true})}
-                        >
-                            <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
-                        </TouchableOpacity> : null
-                        }
+                          <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
+                            onPress={() => this.setState({statusModalVisible:true})}
+                          >
+                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                          </TouchableOpacity> 
+                        : 
+                          null
+                      }
                     </View>
-                    <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
+                    <Caption style={localStyles.caption}>{ this.state.userData.status ? this.state.userData.status.text : "Lookin for what's poppin!" }</Caption>
                   </View>
                   {/* bio */}
                   <View style={localStyles.profRow}> 
                     <Title style={localStyles.descTitle}>
                       Bio: 
                     </Title>
-                    <Caption  style={localStyles.caption}>{this.state.userData.bio ?  this.state.userData.bio : "None"}</Caption>
+                    <Caption  style={localStyles.caption}>{ this.state.userData.bio ?  this.state.userData.bio : "None" }</Caption>
                   </View>
                   {/* fave drinks */}
                   <View style={localStyles.profRow}>
@@ -298,8 +299,7 @@ export default class ProfileScreen extends Component {
                         this.state.userData.favoriteDrinks.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                            }} 
+                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2}} 
                             textStyle={{color:theme.LIGHT_PINK}}>
                               {drink}
                             </Chip>
