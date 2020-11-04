@@ -1239,19 +1239,21 @@ const Util = {
             },
             buildParameters: (lat, long, radius, isQuery, term, region) => {
                 var paramString = "";
+                //Check to see if this is a search or loading map
                 if(isQuery) {
                     paramString += 'term=' + term;
                     paramString += '&location=' + region[0].city + ', ' + region[0].region;
-                    paramString += "&categories=bars,beergardens,musicvenues";
                 }
                 else {
                     //location, lat long
                     paramString += "latitude=" + lat+ "&longitude=" + long + "&";
                     //radius in meters
                     paramString +="radius="+radius+"&";
-                    //type
-                    paramString += "categories=bars,beergardens,musicvenues";
                 }
+                paramString += `&categories=
+                    bars,beergardens,musicvenues,pubs,brewpubs,
+                    irish_pubs,whiskeybars,vermouthbars,sportsbars,
+                    chicken_wings,barcrawl,danceclubs,pianobars,poolhalls`;
                 return paramString;
             } ,
             businessVerification: (name, address, city, state, zip, country, callback) =>{
