@@ -1,18 +1,14 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import DrawerButton from '../../Universal Components/DrawerButton';
 import theme from '../../../Styles/theme';
-import Util from '../../../scripts/Util';
 import 'firebase/firestore';
-import {
-  Searchbar
-} from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
+var defPhoto = require('../../../Media/Images/logoicon.png');
 
-var defPhoto = require('../../../Media/Images/logoicon.png')
 class FriendsList extends React.Component {
+  
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
@@ -21,50 +17,24 @@ class FriendsList extends React.Component {
     searchQuery: null,
     requests:null,
   }
-  //Set login status
-  setLoggedinStatus = async (dataObj) => {
-    this.setState({ isLoggedin: dataObj ? true : false });
-  }
 
-
-  logout = () => {
-    this.setState({ isLoggedin: false });
-    this.setState({ userData: null });
-    firebase.auth().signOut();
-  }
- 
-
-  setUserData = async (dataObj) => {
-    Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
-      this.setState({ userData: JSON.parse(userData) });
-      //console.log('User: ' + this.state.userData);
-    });
-  }
-  setFriendData = async (dataObj) => {
-    Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
-      this.setState({ friends: JSON.parse(friends) });
-      // console.log('Friends: ' + this.state.friendData);
-    });
-  
-  }
-
-  onChangeSearch = (query) => {
-    this.setState({searchQuery: query})
-  }
+  // onChangeSearch = (query) => {
+  //   this.setState({ searchQuery: query })
+  // }
 
   //gets user and friend data
-  getAsyncStorageData = (callback) => {
-    this.setState({friends:this.props.friends});
-    this.setState({requests:this.props.requests});
-    this.setState({userData:this.props.user});
+  setPropData = () => {
+    this.setState({friends: this.props.friends});
+    this.setState({requests: this.props.requests});
+    this.setState({userData: this.props.user});
   }
 
   handleOpenModal = () => {
-    this.setState({modalVisible:true});
+    this.setState({ modalVisible: true });
   }
 
   componentDidMount() {
-    this.getAsyncStorageData();
+    this.setPropData();
   }
 
   filterRequests = (email, didAccept) => {
@@ -87,13 +57,14 @@ class FriendsList extends React.Component {
         }
       });
     }
-    this.setState({friends:friends});
-    this.setState({requests:newRequests});
+    this.setState({ 
+      friends: friends,
+      requests: newRequests 
+    });
   }
 
   handleRefresh = () => {
-    
-    this.setState({modalVisible:false});
+    this.setState( {modalVisible: false });
     this.props.refresh(null, this.state.friends, this.state.requests);
   }
 
@@ -109,7 +80,7 @@ class FriendsList extends React.Component {
               {/* Requests button */}
               {
                 this.state.requests && this.state.requests.length > 0 ?
-                <TouchableOpacity onPress={()=>this.handleOpenModal()} style={localStyles.RequestOverlay}>
+                <TouchableOpacity onPress={() => this.handleOpenModal()} style={localStyles.RequestOverlay}>
                   <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.LIGHT_PINK}/>
                     
                   <Text style={localStyles.Requests}>
@@ -187,7 +158,6 @@ const localStyles = StyleSheet.create({
     maxHeight: "10%",
     // borderBottomColor: theme.LIGHT_PINK,
     // borderBottomWidth: 2,
-
   },
   loggedInContainer: {
     alignItems: "flex-start",

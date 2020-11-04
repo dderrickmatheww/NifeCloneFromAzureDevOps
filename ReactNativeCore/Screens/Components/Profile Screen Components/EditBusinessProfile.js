@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Picker} from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../../Universal Components/DrawerButton';
 import theme from '../../../Styles/theme';
 import * as firebase from 'firebase';
-import { Ionicons } from '@expo/vector-icons'; 
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Ionicons } from '@expo/vector-icons';
 import {
-  TextInput,
-  Surface
+  TextInput
 } from 'react-native-paper';
 
 
 
 export default class EditBusinessProfile extends Component {
   
-
   state = {
     userData:  null,
     dateOfBirth: null,

@@ -107,7 +107,7 @@ export default class ProfileScreen extends Component {
    }
 
    //gets user and friend data
-  getAsyncStorageData = (callback) => {
+   setProps = (callback) => {
     this.setState({isUsersProfile: this.props.isUserProfile});
     this.setUserData();
     this.setFriendData();
@@ -118,7 +118,7 @@ export default class ProfileScreen extends Component {
   }
 
   componentDidMount() {
-    this.getAsyncStorageData();
+    this.setProps();
     this.getBusinessData();
     if(!this.props.isUserProfile){
       if(this.props.user.friends && this.props.user.friends[firebase.auth().currentUser.email] == true){

@@ -7,7 +7,6 @@ import {
   Text
 } from 'react-native-paper';
 import Util from '../../../scripts/Util';
-import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import * as firebase from 'firebase';
@@ -25,29 +24,29 @@ export default class UserSearch extends Component {
   }
 
   componentDidMount(){
-    this.setState({currentUserData:this.props.currentUser});
+    this.setState({ currentUserData: this.props.currentUser });
   }
   
   onChangeSearch = (query) => {
-    this.setState({searchText:query});
+    this.setState({ searchText: query });
   }
 
   onUserQuery = (query) => {
     let queryText = query.nativeEvent.text;
-    let wantedUsers = []
+    let wantedUsers = [];
     this.setState({isSearching:true});
-    Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) =>{
+    Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) => {
       if(users.length > 0){
-        users.forEach((user)=>{wantedUsers.push(user)});
+        users.forEach((user) => { wantedUsers.push(user) });
         this.setState({
-          queriedUsers:wantedUsers,
-          isSearching:false
+          queriedUsers: wantedUsers,
+          isSearching: false
         });
       }
       else{
         this.setState({
-          queriedUsers:null,
-          isSearching:false
+          queriedUsers: null,
+          isSearching: false
         });
       }
       // Util.user.QueryPrivateUsers(firebase.firestore(), queryText,  this.state.take,(privUsers) =>{
@@ -83,30 +82,26 @@ export default class UserSearch extends Component {
                   <ScrollView contentContainerStyle={{justifyContent:"flex-start", alignItems:"center", paddingTop:4, paddingHorizontal:4, paddingBottom:75}} style={localStyles.searchResultCont}>
                   {
                     this.state.queriedUsers ? 
-
-                    this.state.queriedUsers.map((user, i) => (
-                        
-                        <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => !user.isBusiness ? 
-                          this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user, isUsersProfile:false}}) :
-                            this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
-                          }>
-                          <View style={localStyles.friendCont}>
-                            <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
-                          </View>
-                        </TouchableOpacity>
-                        
-                         
+                      this.state.queriedUsers.map((user, i) => (
+                          <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => !user.isBusiness ? 
+                            this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user, isUsersProfile:false}}) :
+                              this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
+                            }>
+                            <View style={localStyles.friendCont}>
+                              <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
+                            </View>
+                          </TouchableOpacity>
+                      )
                     )
-                      
-                    )
-                    : this.state.isSearching ?
-                    <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> : <Paragraph style={localStyles.paragraph}>No Results...</Paragraph> 
+                    : 
+                    this.state.isSearching ?
+                      <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> 
+                    : 
+                      <Paragraph style={localStyles.paragraph}>No Results...</Paragraph> 
                   }
                   </ScrollView>
                 </View>
-                
             </Surface>
-
           </View>
       );
     }

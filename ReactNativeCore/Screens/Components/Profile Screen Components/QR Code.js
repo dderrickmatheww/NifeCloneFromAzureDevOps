@@ -18,12 +18,9 @@ export default class QRCodeScreen extends Component {
   }
 
   //Set user data
-
   componentDidMount(){
-
-    this.setState({userData:firebase.auth().currentUser})
+    this.setState({ userData: firebase.auth().currentUser })
   }
-
 
    render () {
       return ( 

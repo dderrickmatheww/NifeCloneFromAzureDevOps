@@ -63,7 +63,7 @@ export default class ProfileScreen extends Component {
     if(this.state.isUsersProfile){
       this.setState({friendData: this.props.friends});
     }
-    else{
+    else {
       Util.friends.GetFriends(firebase.firestore(), this.props.user.email, (friends)=>{
         this.setState({friendData: friends});
         let userEmail = firebase.auth().currentUser.email
@@ -72,13 +72,9 @@ export default class ProfileScreen extends Component {
             this.setState({areFriends: friend['friends'][this.props.user.email] == true});
           }
         });
-        // console.log(JSON.stringify(this.state.friendData));
       });  
     }
-    
   }
-  
- 
 
   logout = () => {
     this.setState({ isLoggedin: false });
@@ -86,13 +82,12 @@ export default class ProfileScreen extends Component {
    }
 
    //gets user and friend data
-  getAsyncStorageData = (callback) => {
-    this.setState({isUsersProfile:this.props.isUserProfile});
-    
+   setProps = (callback) => {
+    this.setState({ isUsersProfile: this.props.isUserProfile });
     this.setUserData();
     this.setFriendData();
   }
-  onDismissStatus = ()=> {
+  onDismissStatus = () => {
     this.setState({statusModalVisible:false});
   }
 
@@ -110,11 +105,8 @@ export default class ProfileScreen extends Component {
   }
 
   componentDidMount(){
-    this.getAsyncStorageData();
+    this.setProps();
     this.getBusinessData();
-    console.log('User: ' + firebase.auth().currentUser.email); 
-    console.log('Profile Owner: ' + this.state.userData.email);
-    
   }
 
  

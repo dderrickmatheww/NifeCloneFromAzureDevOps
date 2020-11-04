@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Picker} from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
+import Picker from '@react-native-community/picker';
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../../Universal Components/DrawerButton';
@@ -86,18 +87,15 @@ export default class EditProfile extends Component {
   }
 
   onGenderChange = (gender) => {
-    //console.log(gender);
-    this.setState({gender:gender})
+    this.setState({ gender: gender })
   }
 
   onSexualOrientationChange = (orientation) => {
-    //console.log(orientation);
-    this.setState({sexualOrientation:orientation})
+    this.setState({ sexualOrientation: orientation })
   }
 
-  onBioChange = (bio) => {
-    //console.log(bio);
-    this.setState({bio:bio})
+  onBioChange = (bio) => { 
+    this.setState({ bio: bio });
   }
 
   onFavoriteDrinkChange = (drinks) => {
@@ -110,7 +108,7 @@ export default class EditProfile extends Component {
     } else {
       drinkArr = fieldText.split(',');
     }
-    this.setState({favoriteDrinks: drinkArr});
+    this.setState({ favoriteDrinks: drinkArr });
   }
 
   deleteFavBar = (bar, UID) => {
@@ -118,7 +116,7 @@ export default class EditProfile extends Component {
     Util.user.setFavorite(this.state.userData, UID, false, barName, (boolean, boolean2) => {
       let updatedUserData = this.props.user;
       if(boolean2) {
-        this.setState({navModal: true});
+        this.setState({ navModal: true });
       }
       else {
         if(typeof updatedUserData['favoritePlaces'] !== 'undefined') {
@@ -129,9 +127,9 @@ export default class EditProfile extends Component {
           let favorites = this.props.updatedUserData.favoritePlaces;
           let barIds = Object.keys(favorites);
           let actualFavoriteBars = [];
-          barIds.forEach((id)=>{
-            if(favorites[id]['favorited']== true){
-              actualFavoriteBars.push(actualFavoriteBars)
+          barIds.forEach((id) => {
+            if(favorites[id]['favorited'] == true){
+              actualFavoriteBars.push(actualFavoriteBars);
             }
           });
           this.setState({
@@ -155,19 +153,11 @@ export default class EditProfile extends Component {
       favoritePlaces: this.state.favoriteBars,
       displayName: this.state.displayName
     }
-
-    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data)=>{
-        //console.log('saving attempted');
-    });
-
+    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, () => {});
     var user = this.state.userData;
-
     var updatedUser = extend(user, profileInfo);
-    var updatedUserString = JSON.stringify(updatedUser);
     this.props.refresh(updatedUser, null, null);
-
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
-
     function extend(dest, src) {
       for(var key in src) {
           if(key =='dateOfBirth'){
@@ -186,18 +176,15 @@ export default class EditProfile extends Component {
   }
 
   onCancel = () => {
-    //console.log('Canceling Edit')
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
   }
 
   onNameChange = (displayName) => {
-    //console.log(displayName);
     this.setState({displayName:displayName})
   }
 
    render () {
       return ( 
-        ////////////////////////////////////////
           this.state.doneLoading ?
             <View style={styles.loggedInContainer}>
               <View style={localStyles.HeaderCont}>

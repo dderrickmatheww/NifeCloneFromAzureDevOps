@@ -10,67 +10,50 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
 import * as firebase from 'firebase';
-import {Modal, Text, Subheading} from 'react-native-paper';
+import { Modal, Text, Subheading } from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
-
 var defPhoto = require('../../../Media/Images/logoicon.png');
+
 class RequestModal extends React.Component  {
     state = {
       requests: null,
-      requestLoading:false,
+      requestLoading: false,
     };
 
-
     async componentDidMount() {
-      this.setState({requests:this.props.requests});
+      this.setState({requests: this.props.requests});
     }
 
     handleAccept = (friendEmail) => {
       this.props.filter(friendEmail, true);
       this.setState({requestLoading:true});
-      Util.friends.AcceptFriendRequest(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () =>{
-        this.updateRequestList(friendEmail, ()=>{
-          this.setState({requestLoading:false});
-          Util.asyncStorage.GetAsyncStorageVar('User', (user)=>{
-            let userData = JSON.parse(user);
-            userData.friends[friendEmail] = "true";
-            var userAsync = JSON.stringify(userData);
-            Util.asyncStorage.SetAsyncStorageVar('User', userAsync).then(()=>{
-              this.setState({requestLoading:false});
-            });
-          });
-
+      Util.friends.AcceptFriendRequest(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () => {
+        this.updateRequestList(friendEmail, () => {
+          this.setState({requestLoading: false});
         });
       });
     }
 
     handleDeny = (friendEmail) => {
-      this.setState({requestLoading:true});
+      this.setState({ requestLoading: true });
       this.props.filter(friendEmail, false);
-      Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () =>{
-        this.updateRequestList(friendEmail, ()=>{
-          Util.asyncStorage.GetAsyncStorageVar('User', (user)=>{
-            let userData = JSON.parse(user);
-            userData.friends[friendEmail] = "false";
-            var userAsync = JSON.stringify(userData);
-            Util.asyncStorage.SetAsyncStorageVar('User', userAsync).then(()=>{
-              this.setState({requestLoading:false});
-            });
-          });
+      Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () => {
+        this.updateRequestList(friendEmail, () => {
+          this.setState({requestLoading:false});
         });
       });
     }
     
     updateRequestList = (friendEmail, callback) => {
       let requests = this.state.requests;
-      let cleanedRequests = []
-      requests.forEach((request, i)=>{
+      let cleanedRequests = [];
+      requests.forEach((request, i) => {
         if(friendEmail != request.email){
           cleanedRequests.push(request);
         }
       });
-      this.setState({requests:cleanedRequests});
+      this.setState({ requests: cleanedRequests });
       callback();
     }
 
@@ -137,9 +120,7 @@ class RequestModal extends React.Component  {
                     <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
                 </View> 
               }
-
             </Modal>
-            
         )
     }
 }

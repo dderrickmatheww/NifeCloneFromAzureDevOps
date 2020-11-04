@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Image, ScrollView  } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import Util from '../../../scripts/Util';
-import {Modal, Subheading, Caption, TextInput, ActivityIndicator,} from 'react-native-paper';
-import {styles} from '../../../Styles/style';
+import { Modal, Subheading, Caption, TextInput, ActivityIndicator } from 'react-native-paper';
+import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import * as ImagePicker from 'expo-image-picker';
-import * as firebase from 'firebase';
 
 export default class NifeLoginModal extends Component {
     state = {
@@ -15,61 +14,60 @@ export default class NifeLoginModal extends Component {
         password2: "",
         displayName: "",
         signUp: true,
-        bussinessApplication:false,
-        bussinessApplicationPt2:false,
-        businessName:"",
-        ownerName:"",
-        businessEmail:"",
-        businessPhone:"",
-        Address:"",
-        City:"",
-        State:"",
-        zip:"",
-        businessId:"",
-        coordinates:null,
-        proofURI:null,
-        imageLoading:false,
-        verifying:false,
-        
+        bussinessApplication: false,
+        bussinessApplicationPt2: false,
+        businessName: "",
+        ownerName: "",
+        businessEmail: "",
+        businessPhone: "",
+        Address: "",
+        City: "",
+        State: "",
+        zip: "",
+        businessId: "",
+        coordinates: null,
+        proofURI: null,
+        imageLoading: false,
+        verifying: false,
     }
 
     onChangeText = (text, type) => {
         if(type == "email") {
-         this.setState({email: text});
+         this.setState({ email: text });
         }
         else if (type == "password1") {
-         this.setState({password1: text});
+         this.setState({ password1: text });
         }
         else if (type == "password2") {
-         this.setState({password2: text});
+         this.setState({ password2: text });
         }
         else if (type == "displayName"){
-         this.setState({displayName: text});
+         this.setState({ displayName: text });
         }
         else if (type == "businessName"){
-         this.setState({businessName: text});
+         this.setState({ businessName: text });
          this.props.onSignUp(this.state);
         }
         else if (type == "ownerName"){
-         this.setState({ownerName: text});
+         this.setState({ ownerName: text });
         }
         else if (type == "businessPhone"){
-         this.setState({businessPhone: text});
+         this.setState({ businessPhone: text });
         }
         else if (type == "Address"){
-         this.setState({Address: text});
+         this.setState({ Address: text });
         }
         else if (type == "City"){
-         this.setState({City: text});
+         this.setState({ City: text });
         }
         else if (type == "State"){
-         this.setState({State: text});
+         this.setState({ State: text });
         }
         else if (type == "ZIP"){
-         this.setState({zip: text});
+         this.setState({ zip: text });
         }
         else if (type == "Country"){
-            this.setState({businessCountry: text});
+            this.setState({ businessCountry: text });
         }
      }
 
@@ -78,10 +76,10 @@ export default class NifeLoginModal extends Component {
             if(this.state.password1 === this.state.password2) {
                 if(!this.state.businessEmail){
                     if(!this.state.email || !this.state.password1 || !this.state.displayName) {
-                        alert('Please enter correct sign-up information')
+                        alert('Please enter correct sign-up information');
                     }
                     else if (this.state.password1.length < 8) {
-                        alert('Your password must be great than eight characters!')
+                        alert('Your password must be great than eight characters!');
                     }
                     else {
                         this.props.onSignUp(this.state);
@@ -98,10 +96,10 @@ export default class NifeLoginModal extends Component {
                 }
                 else {
                     if(!this.state.businessEmail || !this.state.password1 || !this.state.businessName) {
-                        alert('Please enter correct sign-up information')
+                        alert('Please enter correct sign-up information');
                     }
                     else if (this.state.password1.length < 8) {
-                        alert('Your password must be great than eight characters!')
+                        alert('Your password must be great than eight characters!');
                     }
                     else {
                         this.props.onSignUp(this.state);
@@ -118,12 +116,12 @@ export default class NifeLoginModal extends Component {
                 }
             }
             else {
-                alert("Your passwords do not match. Please try again. :)")
+                alert("Your passwords do not match. Please try again. :)");
             }
         } 
         else {
             if(!this.state.email || !this.state.password1) {
-                alert('Please enter correct sign-up information')
+                alert('Please enter correct sign-up information');
             }
             else {
                 Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
@@ -145,26 +143,26 @@ export default class NifeLoginModal extends Component {
     }
 
     resetPasswordField = () => {
-        this.setState({password1: ""});
-        this.setState({password2: ""});
+        this.setState({ password1: "" });
+        this.setState({ password2: "" });
     }
 
     verifyBusiness = () => {
-        this.setState({verifying:true});
+        this.setState({ verifying: true });
         let address = this.state.Address;
         let city = this.state.City;
         let state = this.state.State;
         let zip = this.state.zip;
         let name = this.state.businessName;
-        let country = this.state.businessCountry;
         if(address != null & city  != null  & state != null  & zip != null  & name != null ){
-            Util.dataCalls.Yelp.businessVerification(name, address, city, state, zip, "US", (data)=>{
-                if(data.businesses.length > 0){
-                    console.log(data);
-                    this.setState({businessId:data.businesses[0].id});
-                    this.setState({coordinates:data.businesses[0].coordinates});
+            Util.dataCalls.Yelp.businessVerification(name, address, city, state, zip, "US", (data) => {
+                if (data.businesses.length > 0) {
+                    this.setState({
+                        businessId: data.businesses[0].id,
+                        coordinates: data.businesses[0].coordinates,
+                        bussinessApplicationPt2: true
+                    });
                     this.props.setBusiness(true, this.state);
-                    this.setState({bussinessApplicationPt2:true});
                 } else {
                     alert('We could not find your business... make sure your contact information matches other online sources...');
                 }
@@ -173,41 +171,37 @@ export default class NifeLoginModal extends Component {
         else {
             alert('Please fill out all forms, make sure your contact information matches other online sources...');
         }
-        
-        // callback();
     }
 
-    uploadProofImage = () =>{
+    uploadProofImage = () => {
         let businessEmail = this.state.businessEmail;
         let busName = this.state.businessName;
         ImagePicker.getCameraRollPermissionsAsync()
-        .then((result)=>{
-            if(result.status == "granted"){
-                
-                this.setState({imageLoading:true});
+        .then((result) => {
+            if(result.status == "granted") {
+                this.setState({ imageLoading: true });
                 ImagePicker.launchImageLibraryAsync()
-                .then((image)=>{
+                .then((image) => {
                     this.setState({uploading:true});
-                let uri = image.uri;
+                    let uri = image.uri;
                     Util.business.UploadAddressProof(uri, busName, businessEmail, (image)=>{
-                        this.setState({proofURI:image});
+                        this.setState({ proofURI: image });
                     });
                 });
             }
             else {
                 ImagePicker.requestCameraRollPermissionsAsync()
-                .then((result)=>{
-                if(result.status == "granted"){
-                    ImagePicker.launchImageLibraryAsync()
-                    .then((image)=>{
-                    let uri = image.uri;
-                    this.setState({uploading:true});
-                        Util.business.UploadAddressProof(uri, busName, businessEmail, (image)=>{
-                            this.setState({proofURI:image});
-                            
+                .then((result) => {
+                    if (result.status == "granted") {
+                        ImagePicker.launchImageLibraryAsync()
+                        .then((image) => {
+                            let uri = image.uri;
+                            this.setState({ uploading: true });
+                            Util.business.UploadAddressProof(uri, busName, businessEmail, (image) => {
+                                this.setState({ proofURI: image });
+                            });
                         });
-                    });
-                }
+                    }
                 });
             }
         });
@@ -312,10 +306,8 @@ export default class NifeLoginModal extends Component {
                                             }}
                                             style={localStyles.signUpBtn}
                                         > 
-                                        
                                             <Caption style={localStyles.Caption}>Next</Caption>
                                         </TouchableOpacity>
-
                                         <Text style={localStyles.loginSwitchText}>Not a business?</Text>
                                         <TouchableOpacity
                                             onPress={() => {
@@ -337,104 +329,89 @@ export default class NifeLoginModal extends Component {
                             
                     </Modal> 
                     : 
-                    // bussiness app PT 2
-                    <Modal
-                        visible={this.props.modalVisible}
-                        dismissable={true}
-                        onDismiss={this.props.onDismiss}
-                        contentContainerStyle={localStyles.Modal}
-                    >
-                        <View style={localStyles.Container}>
-                            <Subheading style={localStyles.Subheading}>Fill out your password and upload a proof of address (bill, bank statement, etc.) to create your account. </Subheading>
-                        </View>
-                        
-                        <ScrollView contentContainerStyle={localStyles.Container}>
-                            
-
-                            {/* <TouchableOpacity style={localStyles.VerificationOption}
-                                onPress={()=>{
-                                    this.uploadProofImage();
-                                }}
-                            > 
-                                {this.state.proofURI ? 
-                                    <Caption style={localStyles.VerificationText}>ImageUploaded</Caption>
-                                    :
-                                    this.state.imageLoading ? 
-                                    <ActivityIndicator color={theme.LIGHT_PINK} size={"small"}></ActivityIndicator>
-                                    :
-                                    <Caption style={localStyles.VerificationText}>Click here to upload proof of address.</Caption>
-                                }
-                            </TouchableOpacity> */}
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}} placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
-
-                            
-                            <View style={{alignSelf:"center"}}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        // if(this.state.proofURI){
-                                            this.props.setBusiness(true, this.state);
-                                        
-                                            this.authenticateUser('sign-up');
-                                        // }
-                                        // else {
-                                        //     alert("Please upload proof of address and fill out all forms.")
-                                        // }
-                                        
-                                    }}
-                                    style={localStyles.signUpBtn}
-                                > 
-                                
-                                    <Caption style={localStyles.Caption}>Sign up</Caption>
-                                </TouchableOpacity>
-
-                                <Text style={localStyles.loginSwitchText}>Not a business?</Text>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.props.setBusiness(false);
-                                        this.setState({signUp: true});
-                                        this.setState({bussinessApplication: false});
-                                        this.setState({bussinessApplicationPt2: false});
-                                    }}
-                                    style={localStyles.notBusiness}
-                                > 
-                                    <Caption style={localStyles.Caption}>Back to Sign Up</Caption>
-                                </TouchableOpacity> 
-                            </View>
-                        </ScrollView> 
-                    </Modal> 
-
-                :
-                // LOGIN WITH NIFE
+                // bussiness app PT 2
                 <Modal
                     visible={this.props.modalVisible}
                     dismissable={true}
                     onDismiss={this.props.onDismiss}
                     contentContainerStyle={localStyles.Modal}
                 >
-                    <Subheading style={localStyles.Subheading}>Please enter your credentials to sign in... </Subheading>
                     <View style={localStyles.Container}>
-                        <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
-                        <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                        
-                        <TouchableOpacity
-                            onPress={() => this.authenticateUser('login')}
-                            style={localStyles.signUpBtn}
-                        > 
-                        
-                            <Caption style={localStyles.Caption}>Log In</Caption>
-                        </TouchableOpacity>
-
-                        <Text style={localStyles.loginSwitchText}>Need to make an account?</Text>
-                        <TouchableOpacity
-                            onPress={() => this.setState({signUp: true})}
-                            style={localStyles.loginSwitch}
-                        > 
-                            <Caption style={localStyles.Caption}>Sign Up</Caption>
-                        </TouchableOpacity>
+                        <Subheading style={localStyles.Subheading}>Fill out your password and upload a proof of address (bill, bank statement, etc.) to create your account. </Subheading>
                     </View>
-                </Modal>
+                    <ScrollView contentContainerStyle={localStyles.Container}>
+                        {/* <TouchableOpacity style={localStyles.VerificationOption}
+                            onPress={()=>{
+                                this.uploadProofImage();
+                            }}
+                        > 
+                            {this.state.proofURI ? 
+                                <Caption style={localStyles.VerificationText}>ImageUploaded</Caption>
+                                :
+                                this.state.imageLoading ? 
+                                <ActivityIndicator color={theme.LIGHT_PINK} size={"small"}></ActivityIndicator>
+                                :
+                                <Caption style={localStyles.VerificationText}>Click here to upload proof of address.</Caption>
+                            }
+                        </TouchableOpacity> */}
+                        <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                        <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}} placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
 
+                        
+                        <View style={{alignSelf:"center"}}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setBusiness(true, this.state);
+                                    this.authenticateUser('sign-up'); 
+                                }}
+                                style={localStyles.signUpBtn}
+                            > 
+                                <Caption style={localStyles.Caption}>Sign up</Caption>
+                            </TouchableOpacity>
+
+                            <Text style={localStyles.loginSwitchText}>Not a business?</Text>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.props.setBusiness(false);
+                                    this.setState({signUp: true});
+                                    this.setState({bussinessApplication: false});
+                                    this.setState({bussinessApplicationPt2: false});
+                                }}
+                                style={localStyles.notBusiness}
+                            > 
+                                <Caption style={localStyles.Caption}>Back to Sign Up</Caption>
+                            </TouchableOpacity> 
+                        </View>
+                    </ScrollView> 
+                </Modal> 
+                :
+            // LOGIN WITH NIFE
+            <Modal
+                visible={this.props.modalVisible}
+                dismissable={true}
+                onDismiss={this.props.onDismiss}
+                contentContainerStyle={localStyles.Modal}
+            >
+                <Subheading style={localStyles.Subheading}>Please enter your credentials to sign in... </Subheading>
+                <View style={localStyles.Container}>
+                    <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                    <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                    
+                    <TouchableOpacity
+                        onPress={() => this.authenticateUser('login')}
+                        style={localStyles.signUpBtn}
+                    > 
+                        <Caption style={localStyles.Caption}>Log In</Caption>
+                    </TouchableOpacity>
+                    <Text style={localStyles.loginSwitchText}>Need to make an account?</Text>
+                    <TouchableOpacity
+                        onPress={() => this.setState({signUp: true})}
+                        style={localStyles.loginSwitch}
+                    > 
+                        <Caption style={localStyles.Caption}>Sign Up</Caption>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         );
     }
 }

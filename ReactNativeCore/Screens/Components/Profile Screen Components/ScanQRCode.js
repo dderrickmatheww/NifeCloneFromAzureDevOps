@@ -42,7 +42,7 @@ export default class ScanQRCodeScreen extends Component {
     if(status == "granted"){
       this.setState({hasPermission:true});
     }
-    this.setState({userData:firebase.auth().currentUser});
+    this.setState({userData: firebase.auth().currentUser});
     this.rerender = this.props.navigation.addListener('focus', () => {
       this.componentDidMount();
     });
@@ -51,7 +51,6 @@ export default class ScanQRCodeScreen extends Component {
   componentWillUnmount() {
     this.rerender();
   }
-
 
    render () {
       return ( 
@@ -82,7 +81,6 @@ export default class ScanQRCodeScreen extends Component {
                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
                 <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View> 
-        
       );
     }
 }
