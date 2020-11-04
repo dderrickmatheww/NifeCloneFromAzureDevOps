@@ -5,7 +5,6 @@ import {
     ActivityIndicator
 } from "react-native";
 import Util from '../../../scripts/Util';
-import * as firebase from 'firebase';
 import {Modal, Button, TextInput, Text} from 'react-native-paper';
 import theme from '../../../Styles/theme';
 
@@ -16,8 +15,7 @@ export default class StatusModal extends React.Component  {
       saving: false,
     };
 
-
-    async componentDidMount() {
+    componentDidMount() {
       this.setState({ userData: this.props.user });
     }
 
@@ -35,7 +33,7 @@ export default class StatusModal extends React.Component  {
         }
       }
       let user = this.state.userData;
-      Util.user.UpdateUser(firebase.firestore(), user.email, obj, () => {
+      Util.user.UpdateUser(user.email, obj, () => {
         this.setState({ saving: false });
         this.props.onSave();
       });

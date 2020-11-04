@@ -2,21 +2,19 @@ import * as React from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import { createDrawerNavigator} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeStack from '../routes/homeStack';
 import MapStack from '../routes/mapStack';
 import SettingsTab from '../Screens/SettingsTab';
 import theme from '../Styles/theme';
-import {styles} from '../Styles/style';
+import { styles } from '../Styles/style';
 import PoppinStack from './poppinStack';
 import TestingStack from './testingStack';
 import ProfileStack from './profileStack';
 import Util from '../scripts/Util';
-import * as firebase from 'firebase';
 import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import Login from '../Screens/Login Screen';
-import {DrawerContent} from '../Screens/Components/Drawer Components/Drawer Content';
-import * as ImagePicker from 'expo-image-picker';
+import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
+
 
 
 
@@ -109,97 +107,53 @@ class Navigator extends React.Component {
 
   refreshFromAsync = (userData, friendData, requests, businessData) => {
     if(userData){
-      this.setState({userData: userData});
+      this.setState({ userData: userData });
     }
     if(friendData){
-      this.setState({friendData: friendData});
+      this.setState({ friendData: friendData });
     }
     if(requests){
-      this.setState({friendRequests: requests});
+      this.setState({ friendRequests: requests });
     }
     if(businessData){
-      this.setState({businessData: businessData});
+      this.setState({ businessData: businessData });
     }
   }
 
 
   firstTimeSignUp = (user) => {
     if(this.state.displayName){
-      user.updateProfile({displayName: this.state.displayName}).then(()=>{
+      user.updateProfile({ displayName: this.state.displayName }).then(()=>{
         this.initializeParams(user);
       });
     }
-
   }
 
   onSignUpStates = (obj) => {
-    if(!this.state.isBusiness){
-      this.setState({displayName:obj.displayName});
+    if (!this.state.isBusiness) {
+      this.setState({ displayName: obj.displayName });
     }
     else {
-      this.setState({displayName: obj.businessName});
+      this.setState({ displayName: obj.businessName });
     }
   }
 
   handleUploadImage = (callback) => {
-    let userEmail = firebase.auth().currentUser.email;
-    ImagePicker.getCameraRollPermissionsAsync()
-    .then((result)=>{
-      if(result.status == "granted"){
-        this.setState({uploading:true});
-      ImagePicker.launchImageLibraryAsync()
-      .then((image)=>{
-        let uri = image.uri;
-        Util.user.UploadImage(uri, userEmail, (resUri) =>{
-          let userData = this.state.userData;
-          userData['photoSource'] = resUri;
-            Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
-              this.setState({userData:userData});
-              this.setState({uploading:false});
-            });
-            if(this.state.userData.isBusiness){
-              Util.business.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
-                
-              });
-            }
-          callback(resUri);
-        });
+    let isBusiness = this.state.isBusiness;
+    let userData = this.state.userData;
+    this.setState({ uploading: true});
+    Util.user.HandleUploadImage(isBusiness, userData, (resUri, userData) => {
+      this.setState({
+        userData: userData,
+        uploading: false
       });
-      }
-      else {
-        ImagePicker.requestCameraRollPermissionsAsync()
-        .then((result)=>{
-          if(result.status == "granted"){
-            this.setState({uploading:true});
-      ImagePicker.launchImageLibraryAsync()
-      .then((image)=>{
-        let uri = image.uri;
-        Util.user.UploadImage(uri, userEmail, (resUri) =>{
-          let userData = this.state.userData;
-          userData['photoSource'] = resUri;
-          Util.user.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
-            this.setState({userData: userData});
-            this.setState({uploading: false});
-          });
-          if(this.state.userData.isBusiness){
-            Util.business.UpdateUser(firebase.firestore(), userEmail, {photoSource:resUri}, ()=>{
-              
-            });
-          }
-          callback(resUri);
-        });
-      });
-          }
-        });
-      }
+      callback(resUri);
     });
-
-    
   }
 
   setIsBusiness = (bool, signUpState) => {
     this.setState({ isBusiness: bool });
-    if(signUpState){
+    if (signUpState) {
       this.setState({ businessState: signUpState });
     }
   }
@@ -217,36 +171,28 @@ class Navigator extends React.Component {
   }
 
   componentDidMount() {
-    try{
-      firebase.auth().onAuthStateChanged((user) =>{
-        //auth done loading
-        this.setState({authLoaded: true});
-        if (user) {
-          this.setState({
+    Util.user.CheckAuthStatus((user) => {
+      this.setState({ authLoaded: true });
+      if (user) {
+        this.setState({
             userExists: true
-          });
-          if(user.displayName){
+        });
+        if(user.displayName) {
             this.initializeParams(user);
-          }
-          else {
+        }
+        else {
             this.firstTimeSignUp(user);
-          }
-        } else {
-          this.setState({
+        }
+      } 
+      else {
+        this.setState({
             authLoaded: true,
             userData: null,
             userExists: false
-          });
-        }
-      });
-    }
-    catch (error) {
-      Util.basicUtil.Alert('Function componentDidMount in Component Navigator - Error message:', error, null);
-      Util.basicUtil.consoleLog('Navigator/componentDidMount', false);
-    }  
+        });
+      }
+    })
   }
-
-  
 
   render() {
     return (

@@ -35,7 +35,7 @@ export default class UserSearch extends Component {
     let queryText = query.nativeEvent.text;
     let wantedUsers = [];
     this.setState({isSearching:true});
-    Util.user.QueryPublicUsers(firebase.firestore(), queryText, this.state.take, (users) => {
+    Util.user.QueryPublicUsers(queryText, this.state.take, (users) => {
       if(users.length > 0){
         users.forEach((user) => { wantedUsers.push(user) });
         this.setState({

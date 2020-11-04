@@ -1,11 +1,34 @@
 import { Alert } from 'react-native';
-import { FACEBOOK_APP_ID, GOOGLE_API_KEY, STAND_ALONE, YELP_PLACE_KEY, TWITTER_CONSUMER_API_KEY, TWITTER_ACCESS_SECRET, TWITTER_CONSUMER_SECERT_API_SECRET, TWITTER_PERSONALIZATION_ID, TWITTER_GUEST_ID, TWITTER_ACCESS_TOKEN, ClientKey, BUNDLE_ID, AndroidClientKey, IOSClientKey, apiKey, authDomain, databaseURL, projectId, storageBucket, messagingSenderId, appId, measurementId } from 'react-native-dotenv';
+import { 
+    FACEBOOK_APP_ID, 
+    GOOGLE_API_KEY, 
+    STAND_ALONE, YELP_PLACE_KEY, 
+    TWITTER_CONSUMER_API_KEY, 
+    TWITTER_ACCESS_SECRET, 
+    TWITTER_CONSUMER_SECERT_API_SECRET, 
+    TWITTER_PERSONALIZATION_ID, 
+    TWITTER_GUEST_ID, 
+    TWITTER_ACCESS_TOKEN, 
+    ClientKey, 
+    BUNDLE_ID, 
+    AndroidClientKey, 
+    IOSClientKey, 
+    apiKey, 
+    authDomain, 
+    databaseURL, 
+    projectId, 
+    storageBucket, 
+    messagingSenderId, 
+    appId, 
+    measurementId 
+} from 'react-native-dotenv';
 import * as firebase from 'firebase';
 //import * as Facebook from 'expo-facebook';
 import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
 import { isPointWithinRadius, getDistance  } from 'geolib';
+import * as ImagePicker from 'expo-image-picker';
 
 const Util = {
     friends: {
@@ -13,6 +36,7 @@ const Util = {
             let obj = {
                 email: email
             }
+            let userEmail = firebase.auth().currentUser.email;
             if(email) {
                 fetch('https://us-central1-nife-75d60.cloudfunctions.net/getFriends', 
                 { 
@@ -21,7 +45,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result, userEmail);
+                    }
                     Util.basicUtil.consoleLog('GetFriends', true);
                 }).catch((error) => {
                     Util.basicUtil.Alert('Function GetFriends - Error message:', error.message, null);
@@ -38,7 +64,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result);
+                    }
                     Util.basicUtil.consoleLog('FilterFriends', true);
                 }).catch((error) => {
                     Util.basicUtil.Alert('Function FilterFriends - Error message:', error.message, null);
@@ -46,60 +74,83 @@ const Util = {
                 }); 
             }
         },
-        AddFriend: function(db, userEmail, friendEmail, callback){
-            let updateUserObj = {
-                friends:{}
-            }
-            // User that requested the friend
-            updateUserObj.friends[friendEmail] = true;
-            Util.user.UpdateUser(db, userEmail, updateUserObj,()=>{
-                Util.basicUtil.consoleLog("AddFriend " + userEmail, true);
-
-                let updateFriendObj = {
-                    friends:{}
-                }
-                // User that will have a friend request
-                updateFriendObj.friends[userEmail] = null;
-                
-                Util.user.UpdateUser(db, friendEmail, updateFriendObj,()=>{
-                    Util.basicUtil.consoleLog("AddFriend " + friendEmail, true);
-                    callback();
-                });
-            });
-        },
-        RemoveFriend: function(db, userEmail, friendEmail, callback){
-            let updateObj = {
-                friends:{}
-            }
-            updateObj.friends[friendEmail] = false;
-            
-            Util.user.UpdateUser(db, userEmail, updateObj,()=>{
-                Util.basicUtil.consoleLog("RemoveFriend " + userEmail, true);
-
-                let friendUpdateObj = {
+        AddFriend: function(friendEmail, callback){
+            try {
+                let userEmail = firebase.auth().currentUser.email;
+                let updateUserObj = {
                     friends: {}
                 }
-                friendUpdateObj.friends[userEmail] = false;
-                Util.user.UpdateUser(db, friendEmail, friendUpdateObj,()=>{
-                    Util.basicUtil.consoleLog("RemoveFriend " + friendEmail, true);
-                    callback();
+                // User that requested the friend
+                updateUserObj.friends[friendEmail] = true;
+                Util.user.UpdateUser(userEmail, updateUserObj,()=>{
+                    Util.basicUtil.consoleLog("AddFriend", true);
+                    let updateFriendObj = {
+                        friends: {}
+                    }
+                    // User that will have a friend request
+                    updateFriendObj.friends[userEmail] = null;
+                    Util.user.UpdateUser(friendEmail, updateFriendObj, () => {
+                        Util.basicUtil.consoleLog("AddFriend", true);
+                    });
                 });
-            });
-        },
-        AcceptFriendRequest: function(db, userEmail, friendEmail, callback){
-            let updateUserObj = {
-                friends: {}
+                if(callback) {
+                    callback();
+                }
             }
-            // User that will have a friend request
-            updateUserObj.friends[friendEmail] = true;
-            Util.user.UpdateUser(db, userEmail, updateUserObj, () => {
-                Util.basicUtil.consoleLog("AddFriend ", true);
-                callback();
-            });
+            catch(error) {
+                Util.basicUtil.consoleLog("AddFriend", false);
+                Util.basicUtil.Alert('Function: AddFriend - Error message: ', error.message, null);
+            }
+        },
+        RemoveFriend: function(friendEmail, callback) {
+            try {
+                let userEmail = firebase.auth().currentUser.email;
+                let updateObj = {
+                    friends: {}
+                }
+                updateObj.friends[friendEmail] = false;
+                Util.user.UpdateUser(userEmail, updateObj, () => {
+                    Util.basicUtil.consoleLog("RemoveFriend", true);
+                    let friendUpdateObj = {
+                        friends: {}
+                    }
+                    friendUpdateObj.friends[userEmail] = false;
+                    Util.user.UpdateUser(friendEmail, friendUpdateObj, () => {
+                        Util.basicUtil.consoleLog("RemoveFriend", true);
+                    });
+                });
+                if(callback) {
+                    callback();
+                }
+            }
+            catch(error) {
+                Util.basicUtil.consoleLog("RemoveFriend", false);
+                Util.basicUtil.Alert('Function: RemoveFriend - Error message: ', error.message, null);
+            }
+        },
+        AcceptFriendRequest: (friendEmail, callback) => {
+            try {
+                let userEmail = firebase.auth().currentUser.email;
+                let updateUserObj = {
+                    friends: {}
+                }
+                // User that will have a friend request
+                updateUserObj.friends[friendEmail] = true;
+                Util.user.UpdateUser(userEmail, updateUserObj, () => {
+                    Util.basicUtil.consoleLog("AcceptFriendRequest", true);
+                });
+                if (callback) {
+                    callback();
+                }
+            }
+            catch(error) {
+                Util.basicUtil.consoleLog("AcceptFriendRequest", false);
+                Util.basicUtil.Alert('Function: AcceptFriendRequest - Error message: ', error.message, null);
+            }
         },
     },
     user: {
-        VerifyUser: function(user, email, callback){
+        VerifyUser: (user, email, callback) => {
             let obj = {
                 user: user,
                 email: email
@@ -122,31 +173,86 @@ const Util = {
                 }); 
             }
         },
-        BuildUserSchema: (obj) => {
-            userObj = {};
-            userObj['displayName'] = obj.displayName;
-            userObj['email'] = obj.email;
-            userObj['phoneNumber'] = obj.phoneNumber;
-            userObj['photoSource'] = obj.photoURL;
-            userObj['providerId'] = obj.providerId;
-            userObj['uid'] = obj.uid;
-            userObj['providerData'] = {
-                displayName : obj.displayName,
-                email : obj.email,
-                phoneNumber : obj.phoneNumber,
-                photoSource : obj.photoURL,
-                providerId : obj.providerId,
-                uid : obj.uid,
+        IsFriend: (friends, callback) => {
+            let boolean;
+            if(friends[firebase.auth().currentUser.email] == true) {
+                boolean = true;
             }
-            userObj['privacySettings'] = { public: true };
-            return userObj;
+            else {
+                boolean = false;
+            }
+            if(callback) {
+                callback(boolean);
+            }
         },
-        GetUserData: function(email, callback){
+        CheckLoginStatus: (callback) => {
+            let isLoggedIn = firebase.auth().currentUser ? true : false;
+            if(callback) {
+                callback(isLoggedIn);
+            }
+        },
+        HandleUploadImage: (isBusiness, userData, callback) => {
+            let userEmail = firebase.auth().currentUser.email;
+            ImagePicker.getCameraRollPermissionsAsync()
+            .then((result) => {
+                if(result.status == "granted"){
+                    ImagePicker.launchImageLibraryAsync()
+                    .then((image) => {
+                        let uri = image.uri;
+                        Util.user.UploadImage(uri, userEmail, (resUri) => {
+                            userData['photoSource'] = resUri;
+                            Util.user.UpdateUser(userEmail, { photoSource: resUri });
+                            if(isBusiness){
+                                Util.business.UpdateUser(userEmail, { photoSource: resUri });
+                            }
+                            if(callback) {
+                                callback(resUri, userData);
+                            }
+                        });
+                    });
+                }
+                else {
+                    ImagePicker.requestCameraRollPermissionsAsync()
+                    .then((result) => {
+                    if(result.status == "granted") {
+                        ImagePicker.launchImageLibraryAsync()
+                        .then((image) => {
+                                let uri = image.uri;
+                                Util.user.UploadImage(uri, userEmail, (resUri) =>{
+                                    let userData = this.state.userData;
+                                    userData['photoSource'] = resUri;
+                                    Util.user.UpdateUser(userEmail, { photoSource:resUri });
+                                    if(this.state.userData.isBusiness){
+                                        Util.business.UpdateUser(userEmail, { photoSource: resUri });
+                                    }
+                                    if(callback) {
+                                        callback(resUri);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        },
+        CheckAuthStatus: (callback) => {
+            try{
+                firebase.auth().onAuthStateChanged((user) => {
+                    if(callback) {
+                        callback(user);
+                    }
+                });
+            }
+            catch (error) {
+                Util.basicUtil.Alert('Function componentDidMount in Component Navigator - Error message:', error, null);
+                Util.basicUtil.consoleLog('Navigator/componentDidMount', false);
+            }
+        },
+        GetUserData: (email, callback) => {
             let obj = {
                 email: email
             };
             let seen = [];
-
             if(email && typeof obj.email !== 'undefined') {
                 fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
@@ -163,7 +269,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result);
+                    }
                     Util.basicUtil.consoleLog('GetUserData', true);
                 })
                 .catch((error) => {
@@ -172,12 +280,16 @@ const Util = {
                 });
             }
         },
-        UpdateUser: function(db, email, updateObject){
+        UpdateUser: (email, updateObject, callback) => {
+            let db = Util.dataCalls.Firebase.databaseInstance();
             let userRef = db.collection('users').doc(email);
             if(typeof updateObject !== 'undefined') {
                 userRef.set(updateObject, { merge: true })
                 .then(() => {
                     Util.basicUtil.consoleLog('UpdateUser', true);
+                    if(callback) {
+                        callback();
+                    }
                 })
                 .catch((error) => {
                     Util.basicUtil.consoleLog('UpdateUser', false);
@@ -185,9 +297,9 @@ const Util = {
                 });
             }
         },
-        CheckIn: async (checkInObj, returnData) => {
-            let db = firebase.firestore();
-            let setLoc = await db.collection('users').doc(checkInObj.email);
+        CheckIn: (checkInObj, callback) => {
+            let db = Util.dataCalls.Firebase.databaseInstance();
+            let setLoc = db.collection('users').doc(checkInObj.email);
             let lastVisited = {};
             lastVisited[checkInObj.buisnessUID] = {
                 checkInTime: new Date(),
@@ -216,52 +328,62 @@ const Util = {
             })
             .then(() => {
                 Util.basicUtil.consoleLog('CheckIn', true);
-                returnData('true');
+                if(callback) {
+                    callback('true');
+                }
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('CheckIn', false);
                 Util.basicUtil.Alert('Function CheckIn - Error message:', error.message, null);
             });
         },
-        CheckOut: async (email, returnData) => {
-            let db = firebase.firestore();
+        CheckOut: async (email, callback) => {
+            let db = Util.dataCalls.Firebase.databaseInstance();
             let setLoc = await db.collection('users').doc(email);
             setLoc.set({
-            checkIn: {
-                buisnessUID: "",
-                checkInTime: "",
-                privacy: "",
-                latAndLong: "",
-                name: "",
-                phone: "",
-                address: "",
-                barPhoto: "",
-            }},
+                checkIn: {
+                    buisnessUID: "",
+                    checkInTime: "",
+                    privacy: "",
+                    latAndLong: "",
+                    name: "",
+                    phone: "",
+                    address: "",
+                    barPhoto: "",
+                }
+            },
             {
                 merge: true
             })
             .then(() => {
                 Util.basicUtil.consoleLog('CheckOut', true);
-                returnData('false');
+                if(callback) {
+                    callback('false');
+                }
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('CheckOut', false);
                 Util.basicUtil.Alert('Function CheckOut - Error message:', error.message, null);
             });
         },
-        IsUserCheckedIn: (email, buisnessUID, returnData) => {
-            let db = firebase.firestore();
+        IsUserCheckedIn: (email, buisnessUID, callback) => {
             try {
                 Util.user.GetUserData(email, (userData) => {
                     let user = userData;
                     if(!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
-                        returnData("false");
+                        if(callback) {
+                            callback("false");
+                        }
                     }
                     else if (user.checkIn.buisnessUID && user.checkIn.buisnessUID == buisnessUID) {
-                        returnData("true");
+                        if(callback) {
+                            callback("true");
+                        }
                     }
                     else {
-                        returnData("true");
+                        if(callback) {
+                            callback("true");
+                        }
                     }
                 });
                 Util.basicUtil.consoleLog('IsUserCheckedIn', true);
@@ -272,88 +394,103 @@ const Util = {
             }
         },
         setFavorite: async (user, buisnessUID, boolean, buisnessName, callback) => {
-            let db = firebase.firestore();
+            let db = Util.dataCalls.Firebase.databaseInstance();
             let setLoc = db.collection('users').doc(user.email);
-            let userData = await db.collection('users').doc(user.email).get();
+            let userData = await setLoc.get();
             let oldFavorites = user.favoritePlaces ? user.favoritePlaces : {};
             let userObj = userData.data();
-            if(typeof userObj.favoritePlaces != 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
-                callback(false, true);
+            if (typeof userObj.favoritePlaces !== 'undefined' && Object.keys(userData.data().favoritePlaces).length > 10 ) {
+                if(callback) {
+                    callback(false, true);
+                }
             }
             else {
                 if (boolean) {
                     let favoritePlaces = oldFavorites;
                     favoritePlaces[buisnessUID] = {
-                           favorited: true,
-                           name: buisnessName
-                       }
-                   
-                   setLoc.set({
-                       favoritePlaces: favoritePlaces
-                   },
-                   {
-                       merge: true
-                   })
-                   .then(() => {
-                       Util.basicUtil.consoleLog('setFavorite', true);
-                       callback(true, false);
-                   })
-                   .catch((error) => {
-                       Util.basicUtil.consoleLog('setFavorite', false);
-                       Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
-                   });
+                        favorited: true,
+                        name: buisnessName
+                    }
+                    setLoc.set({
+                        favoritePlaces: favoritePlaces
+                    },
+                    {
+                        merge: true
+                    })
+                    .then(() => {
+                        Util.basicUtil.consoleLog('setFavorite', true);
+                        if(callback) {
+                            callback(true, false);
+                        }
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.consoleLog('setFavorite', false);
+                        Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
+                    });
                }
                else {
-                   // Remove the 'capital' field from the document
-                   let favoritePlaces = oldFavorites;
-                   favoritePlaces[buisnessUID] = {
-                    favorited: false,
-                   }
-                   setLoc.update({
-                    favoritePlaces:favoritePlaces
-                   })
-                   .then(() => {
-                       Util.basicUtil.consoleLog('setFavorite', true);
-                       callback(false, false);
-                   })
-                   .catch((error) => {
-                       Util.basicUtil.consoleLog('setFavorite', false);
-                       Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
-                   });
+                    // Remove the 'capital' field from the document
+                    let favoritePlaces = oldFavorites;
+                    favoritePlaces[buisnessUID] = {
+                        favorited: false,
+                    }
+                    setLoc.update({
+                        favoritePlaces:favoritePlaces
+                    })
+                    .then(() => {
+                        Util.basicUtil.consoleLog('setFavorite', true);
+                        if (callback) {
+                            callback(false, false);
+                        }
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.consoleLog('setFavorite', false);
+                        Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
+                    });
                }
             }
         },
-        isFavorited: async (buisnessUID, userData, returnData) => {
-            if(userData){
-                if(userData.favoritePlaces) {
+        isFavorited: async (buisnessUID, userData, callback) => {
+            if (userData) {
+                if (userData.favoritePlaces) {
                     let favorites = userData.favoritePlaces;
-                    if(favorites[buisnessUID]){
-                        returnData(favorites[buisnessUID].favorited);
-                    } else {
-                        returnData(false);
+                    if (favorites[buisnessUID]) {
+                        if(callback) {
+                            callback(favorites[buisnessUID].favorited);
+                        }
+                    } 
+                    else {
+                        if(callback) {
+                            callback(false);
+                        }
                     }
-                } else {
-                    returnData(false);
+                } 
+                else {
+                    if(callback) {
+                        callback(false);
+                    }
                 }
             } 
             else {
                 Util.basicUtil.Alert('Function isFavorited - Error message:', 'No User Data Found', null);
-                returnData(false);
+                if(callback) {
+                    callback(false);    
+                }
             }
         },
-        QueryPublicUsers: function(db, query, take, callback){
-            let newQuery=  query.toLowerCase();
+        QueryPublicUsers: function(query, take, callback){
+            let newQuery = query.toLowerCase();
             var path = new firebase.firestore.FieldPath('privacySettings', "searchPrivacy");
-            let usersRef = db.collection('users').where(path, '==', false)
+            let db = Util.dataCalls.Firebase.databaseInstance();
+            let usersRef = db.collection('users').where(path, '==', false);
             usersRef.get()
             .then((data) => {
-              if(data){
+              if (data) {
                 let queriedUsers = [];
                 let wantedUsers = [];
                 data.forEach((user)=>{
                     queriedUsers.push(user.data());
                 });
-                
                 if(queriedUsers.length > 0){
                     queriedUsers.forEach((user)=>{
                         let qUserEmail = user.email.toLowerCase();
@@ -364,17 +501,20 @@ const Util = {
                         }
                     });
                     Util.basicUtil.consoleLog('QueryUsers', true);
-                    callback(wantedUsers);
+                    if(callback) {
+                        callback(wantedUsers);
+                    }
                 }
                 else {
                     Util.basicUtil.consoleLog('QueryUsers just no users', true);
-                    callback([]);
+                    if(callback) {
+                        callback([]);
+                    }
                 }
-               
-              }
-              else {
+            }
+            else {
                 Util.basicUtil.consoleLog('QueryUsers', false);
-              }
+            }
           })
           .catch((error) => {
                 Util.basicUtil.consoleLog('QueryUsers', false);
@@ -407,10 +547,12 @@ const Util = {
             // We're done with the blob, close and release it
             blob.close();
             let image = await snapshot.ref.getDownloadURL();
-            callback(image);
+            if(callback) {
+                callback(image);
+            }
         }
     },
-    business:{
+    business: {
         UploadAddressProof: async (uri, email, callback) => {
             const blob = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
@@ -424,41 +566,47 @@ const Util = {
                 xhr.responseType = 'blob';
                 xhr.open('GET', uri, true);
                 xhr.send(null);
-              });
-            
-              const ref = firebase
-                .storage()
-                .ref()
-                .child(email + " address proof");
-              const snapshot = await ref.put(blob);
-            
-              // We're done with the blob, close and release it
-              blob.close();
-              let image = await snapshot.ref.getDownloadURL();
-              callback(image)
+            });
+        
+            const ref = firebase
+            .storage()
+            .ref()
+            .child(email + " address proof");
+            const snapshot = await ref.put(blob);
+        
+            // We're done with the blob, close and release it
+            blob.close();
+            let image = await snapshot.ref.getDownloadURL();
+            if(callback) {
+                callback(image);
+            }
         },
-        VerifyUser: function(user, email, signUpState, callback){
-            let db = firebase.firestore();
+        VerifyUser: (user, email, signUpState, callback) => {
+            let db = Util.dataCalls.Firebase.databaseInstance();
             db.collection('users').doc(email).get()
             .then((data) => {
                 if(data.data()){
                     let dbUser = data.data();
                     Util.basicUtil.consoleLog('businessesVerifyUser', true);
-                    callback(dbUser);
+                    if (callback) {
+                        callback(dbUser);
+                    }
                 }
                 else {
                     if(user != undefined || user != null) {
                         let userObj = Util.business.BuildBusinessSchema(user.providerData[0], signUpState, false);
-                        db.collection('users').doc(email).set(userObj, { merge:true });
+                        db.collection('users').doc(email).set(userObj, { merge: true });
                         let businessObj = Util.business.BuildBusinessSchema(user.providerData[0], signUpState, true);
-                        db.collection('businesses').doc(email).set(businessObj, { merge:true });
-                        callback(userObj);
+                        db.collection('businesses').doc(email).set(businessObj, { merge: true });
+                        if (callback) {
+                            callback(userObj);
+                        }
                     }
                 }
             })
             .catch((err) => {
-                Util.basicUtil.consoleLog('businessesVerifyUser', false);
-                Util.basicUtil.Alert('Function businessesVerifyUser - Error message:', err.message, null);
+                Util.basicUtil.consoleLog('Businesses - VerifyUser', false);
+                Util.basicUtil.Alert('Function Businesses - VerifyUser - Error message:', err.message, null);
             })
         },
         BuildBusinessSchema: (obj, signUpState, isBusinessTable) => {
@@ -480,8 +628,7 @@ const Util = {
                 providerId : obj.providerId,
                 uid : obj.uid,
             }
-            if(isBusinessTable){
-                
+            if (isBusinessTable) {
                 userObj['state'] = signUpState.State; 
                 userObj['zip'] = signUpState.zip; 
                 userObj['city'] = signUpState.City;
@@ -494,14 +641,12 @@ const Util = {
                 userObj['specials'] = [];
                 userObj['coordinates'] = signUpState.coordinates;
             }
-            
-            userObj['privacySettings'] = {public:true};
-
+            userObj['privacySettings'] = { public: true };
             return userObj;
         },
-        GetBusinessData: function(email, callback){
+        GetBusinessData: (callback) => {
             let obj = {
-                email: email
+                email: firebase.auth().currentUser.email
             };
             if(email) {
                 fetch('https://us-central1-nife-75d60.cloudfunctions.net/getBusinessData', 
@@ -511,7 +656,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result);
+                    }
                     Util.basicUtil.consoleLog('GetBusinessData', true);
                 }).catch((error) => {
                     Util.basicUtil.consoleLog('GetBusinessData', false);
@@ -519,19 +666,22 @@ const Util = {
                 }); 
             }
         },
-        UpdateUser: function(db, email, updateObject, callback){
+        UpdateUser: (email, updateObject, callback) => {
+            let db = Util.dataCalls.Firebase.databaseInstance();
             let userRef = db.collection('businesses').doc(email);
             userRef.set(updateObject, { merge: true })
             .then(() => {
                 Util.basicUtil.consoleLog('Updatebusinesses', true);
-                callback()
+                if(callback) {
+                    callback();
+                }
             })
             .catch((error) => {
                 Util.basicUtil.consoleLog('Updatebusinesses', false);
                 Util.basicUtil.Alert('Function Updatebusinesses - Error message:', error.message, null);
             });
         },
-        GetBusinessesByUserFavorites: function(favArr, callback){
+        GetBusinessesByUserFavorites: (favArr, callback) => {
             let obj = {
                 favArr: favArr
             };
@@ -543,7 +693,9 @@ const Util = {
                 })
                 .then(response => response.json())
                 .then(async data => {
-                    callback(data.result);
+                    if(callback) {
+                        callback(data.result);
+                    }
                     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
                 }).catch((error) => {
                     Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
@@ -552,49 +704,59 @@ const Util = {
             }
         },
         GetBusinessByUID: async (uid, callback) => {
-            let busRef = firebase.firestore().collection('businesses')
             try {
+                let busRef = firebase.firestore().collection('businesses');
                 const snapshot = await busRef.where('businessId', "==", uid).get();
                 if(!snapshot.empty) {
                     let tempArr = [];
                     snapshot.forEach((doc) =>{
                         tempArr.push(doc.data())
                     })
-                    callback(tempArr[0]);
+                    if (callback) {
+                        callback(tempArr[0]);
+                    }
+                    
                 } else {
-                    callback(false);
+                    if (callback) {
+                        callback(false);
+                    }
                 }
                 Util.basicUtil.consoleLog("GetBusinessByUID", true);
             }
             catch (error) {
                 Util.basicUtil.Alert('Function GetBusinessByUID - Error message:', error.message, null);
                 Util.basicUtil.consoleLog("GetBusinessByUID", false);
-                callback(false);
+                if (callback) {
+                    callback(false);
+                }
             }
-            
         },
-        GetFavoriteCount: async(uid, callback)=>{
-            var db = firebase.firestore();
+        GetFavoriteCount: (uid, callback) => {
             var path = new firebase.firestore.FieldPath('favoritePlaces', uid, 'favorited');
-            var usersRef = db.collection('users').where(path, '==', true).get()
-            .then((data)=>{
-                if(data){
-                    Util.basicUtil.consoleLog("Favorite Count ", true)
-                    var tempArr = []
-                    data.forEach((item)=>{
+            let db = Util.dataCalls.Firebase.databaseInstance();
+            db.collection('users').where(path, '==', true).get()
+            .then((data) => {
+                if (data) {
+                    var tempArr = [];
+                    data.forEach((item) => {
                         tempArr.push(item.data());
                     });
-                    callback(tempArr.length);
+                    if (callback) {
+                        callback(tempArr.length);
+                    }
+                    Util.basicUtil.consoleLog("Favorite Count ", true);
                 }
-                else{
-                    Util.basicUtil.consoleLog("Favorite Count ", true)
-                    callback(0)
+                else {
+                    if (callback) {
+                        callback(0);
+                    }
+                    Util.basicUtil.consoleLog("Favorite Count ", true);
                 }
             })
-            .catch((error)=>{
+            .catch((error) => {
                 Util.basicUtil.Alert('Function GetFavoriteCount - Error message:', error.message, null);
                 Util.basicUtil.consoleLog("Favorite Count ", false);
-            })
+            });
         },
         SendProofEmail: async(email, image) =>{
             let obj = {
@@ -608,8 +770,12 @@ const Util = {
                     body: JSON.stringify(obj)
                 })
                 .then(response => response.json())
-                .then(async data => {
+                .then(() => {
                     Util.basicUtil.consoleLog('SendProofEmail', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.Alert('Function SendProofEmail - Error message:', error.message, null);
+                    Util.basicUtil.consoleLog("SendProofEmail", false);
                 })
             }
         }
@@ -1060,46 +1226,49 @@ const Util = {
         //     } 
         // },
         Google: {
-            placeData: async (boolean, query, returnData) => {
-                let dataObj = {};
-                let token, lat, long;
-                try {
-                    // Get the Whats Poppin feed using Google's Map API for user query
-                    if(boolean) {
-                        fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="+ query +"&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=" + GOOGLE_API_KEY)
-                        .then(response => response.json())
-                        .then(async data => {
-                            dataObj = data['data'];
-                            //Grabs post from Google based on query
-                            Util.basicUtil.consoleLog("Google's placeData", true);
-                            returnData(dataObj);
-                        })
-                        .catch((e) => {
-                            Util.basicUtil.consoleLog("Google's placeData", false);
-                            Util.basicUtil.Alert('Google Map Query API Error:', e.message, null);
-                        });
-                    }
-                    // Get the Whats Poppin feed using Google's Map API for default
-                    else {
-                        fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=bars&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry,user_ratings_total,place_id&locationbias=circle:8000&key=" + GOOGLE_API_KEY)
-                        .then(response => response.json())
-                        .then(async data => {
-                            dataObj['data'] = data;
-                            //Grabs post from Google based for default
-                            Util.basicUtil.consoleLog("Google's placeData", true);
-                            returnData(dataObj);
-                        })
-                        .catch((e) => {
-                            Util.basicUtil.Alert('Google Map Default API Error:', e.message, null);
-                            Util.basicUtil.consoleLog("Google's placeData", false);
-                        });
-                    }
-                } catch ({ message }) {
-                    Util.basicUtil.consoleLog("Google's placeData", false);
-                    alert(`Google placeData Error: ${message}`);
-                }
-            },
-            login: async function (callBack) {
+            // placeData: async (boolean, query, callback) => {
+            //     let dataObj = {};
+            //     try {
+            //         // Get the Whats Poppin feed using Google's Map API for user query
+            //         if(boolean) {
+            //             fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="+ query +"&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=" + GOOGLE_API_KEY)
+            //             .then(response => response.json())
+            //             .then(async data => {
+            //                 dataObj = data['data'];
+            //                 //Grabs post from Google based on query
+            //                 Util.basicUtil.consoleLog("Google's placeData", true);
+            //                 if(callback) {
+            //                     callback(dataObj);
+            //                 }
+            //             })
+            //             .catch((e) => {
+            //                 Util.basicUtil.consoleLog("Google's placeData", false);
+            //                 Util.basicUtil.Alert('Google Map Query API Error:', e.message, null);
+            //             });
+            //         }
+            //         // Get the Whats Poppin feed using Google's Map API for default
+            //         else {
+            //             fetch("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=bars&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry,user_ratings_total,place_id&locationbias=circle:8000&key=" + GOOGLE_API_KEY)
+            //             .then(response => response.json())
+            //             .then(async data => {
+            //                 dataObj['data'] = data;
+            //                 //Grabs post from Google based for default
+            //                 Util.basicUtil.consoleLog("Google's placeData", true);
+            //                 if(callback) {
+            //                     callback(dataObj);
+            //                 }
+            //             })
+            //             .catch((e) => {
+            //                 Util.basicUtil.Alert('Google Map Default API Error:', e.message, null);
+            //                 Util.basicUtil.consoleLog("Google's placeData", false);
+            //             });
+            //         }
+            //     } catch ({ message }) {
+            //         Util.basicUtil.consoleLog("Google's placeData", false);
+            //         alert(`Google placeData Error: ${message}`);
+            //     }
+            // },
+            login: async function (callback) {
                 let dataObj = {};
                 try {
                     let result = await Google.logInAsync({
@@ -1119,7 +1288,9 @@ const Util = {
                         dataObj['user'] = firebase.auth().currentUser;
                         dataObj['data'] = firebase.auth();
                         Util.basicUtil.consoleLog("Google's login", true);
-                        callBack(dataObj);
+                        if(callback) {
+                            callback(dataObj);
+                        }
                     }
                     else{
                         //Handles cancel
@@ -1132,7 +1303,7 @@ const Util = {
             }
         },
         Nife: {
-            login: async function (signUpInfo, loginInfo, callBack) {
+            login: async function (signUpInfo, loginInfo, callback) {
                 let dataObj = {};
                 // Listen for authentication state to change.
                 if(signUpInfo) {
@@ -1149,7 +1320,9 @@ const Util = {
                             dataObj['token'] = null;
                             dataObj['user'] = firebase.auth().currentUser;
                             Util.basicUtil.consoleLog("Nife's Business sign-up", true);
-                            callBack(dataObj);
+                            if(callback) {
+                                callback(dataObj);
+                            }
                         } catch ({ message }) {
                             Util.basicUtil.consoleLog("Nife's Business sign-up", false);
                             Util.basicUtil.Alert('Nife Business Sign-Up Error', message, null);
@@ -1168,7 +1341,9 @@ const Util = {
                             dataObj['token'] = null;
                             dataObj['user'] = firebase.auth().currentUser;
                             Util.basicUtil.consoleLog("Nife's User sign-up", true);
-                            callBack(dataObj);
+                            if(callback) {
+                                callback(dataObj);
+                            }
                         } catch ({ message }) {
                             Util.basicUtil.consoleLog("Nife's User sign-up", false);
                             Util.basicUtil.Alert('Nife Sign-Up Error', message, null);
@@ -1188,7 +1363,9 @@ const Util = {
                         dataObj['token'] = null;
                         dataObj['user'] = firebase.auth().currentUser;
                         Util.basicUtil.consoleLog("Nife's login", true);
-                        callBack(dataObj);
+                        if(callback) {
+                            callback(dataObj);
+                        }
                     } catch ({ message }) {
                         Util.basicUtil.consoleLog("Nife's login", false);
                         Util.basicUtil.Alert('Nife Login Error', message, null);
@@ -1263,7 +1440,9 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     Util.basicUtil.consoleLog("businessPhoneVerification", true);
-                    callback(response);
+                    if(callback) {
+                        callback(response);
+                    }
                 })
                 .catch((err) => {
                     Util.basicUtil.consoleLog("businessPhoneVerification", false);
@@ -1281,6 +1460,9 @@ const Util = {
                 messagingSenderId: messagingSenderId,
                 appId: appId,
                 measurementId: measurementId
+            },
+            databaseInstance: () => {
+                return firebase.firestore();
             },
             signOut: async()=>{
                 firebase.auth().signOut();
@@ -1368,14 +1550,16 @@ const Util = {
             }
             return obj1;
         },
-        grabCurrentDeviceInfo: (returnData) => {
+        grabCurrentDeviceInfo: (callback) => {
             let dataObj = {};
             dataObj['simulator'] = Device.isDevice;
             dataObj['modelName'] = Device.modelName;
             dataObj['userGivenDeviceName'] = Device.deviceName;
             dataObj['osName'] = Device.osName;
             dataObj['totalMemory'] = Device.totalMemory;
-            returnData(dataObj);
+            if(callback) {
+                callback(dataObj);
+            }
         },
         consoleLog: (fucnName, type) => {
             if(type == true) {

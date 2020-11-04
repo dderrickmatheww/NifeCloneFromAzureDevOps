@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
-import * as firebase from 'firebase';
 import { Modal, Text, Subheading } from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
@@ -22,15 +21,15 @@ class RequestModal extends React.Component  {
     };
 
     async componentDidMount() {
-      this.setState({requests: this.props.requests});
+      this.setState({ requests: this.props.requests });
     }
 
     handleAccept = (friendEmail) => {
       this.props.filter(friendEmail, true);
-      this.setState({requestLoading:true});
-      Util.friends.AcceptFriendRequest(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () => {
+      this.setState({ requestLoading: true });
+      Util.friends.AcceptFriendRequest(friendEmail, () => {
         this.updateRequestList(friendEmail, () => {
-          this.setState({requestLoading: false});
+          this.setState({ requestLoading: false });
         });
       });
     }
@@ -38,9 +37,9 @@ class RequestModal extends React.Component  {
     handleDeny = (friendEmail) => {
       this.setState({ requestLoading: true });
       this.props.filter(friendEmail, false);
-      Util.friends.RemoveFriend(firebase.firestore(), firebase.auth().currentUser.email, friendEmail, () => {
+      Util.friends.RemoveFriend(friendEmail, () => {
         this.updateRequestList(friendEmail, () => {
-          this.setState({requestLoading:false});
+          this.setState({ requestLoading: false });
         });
       });
     }
@@ -54,7 +53,9 @@ class RequestModal extends React.Component  {
         }
       });
       this.setState({ requests: cleanedRequests });
-      callback();
+      if(callback) {
+        callback();
+      }
     }
 
     render(){     
@@ -80,7 +81,7 @@ class RequestModal extends React.Component  {
                           
                           <View style={{ flexDirection:"row"}}>
                             <TouchableOpacity style={localStyles.DenyFriendOverlay}
-                              onPress={!this.state.requestLoading ? ()=> this.handleDeny(friend.email) : null}
+                              onPress={!this.state.requestLoading ? () => this.handleDeny(friend.email) : null}
                             >
                               { this.state.requestLoading ?
                                 <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>

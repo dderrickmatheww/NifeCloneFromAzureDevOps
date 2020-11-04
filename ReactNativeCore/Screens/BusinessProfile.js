@@ -10,31 +10,23 @@ import {
 import Util from '../scripts/Util';
 import { styles } from '../Styles/style';
 import theme from '../Styles/theme';
-import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 import Favorite from './Universal Components/Favorite'
 
 export default class ProfileScreen extends Component {
   state = {
-    isLoggedin: firebase.auth().currentUser ? true : false,
+    isLoggedin: false,
     userData: this.props.user,
     modalVisible: false,
     friendData:null,
-    isUsersProfile: this.props.user.email == firebase.auth().currentUser.email,
     isAddingFriend:false,
     areFriends: false,
-    statusModalVisible:false,
-    uploading:false,
+    statusModalVisible: false,
+    uploading: false,
     businessData: null,
-    followerCount:0,
+    followerCount: 0,
   }
-
-  
-  //Set login status
-  setLoggedinStatus = async (dataObj) => {
-    this.setState({ isLoggedin: dataObj.data ? true : false });
-  }  
 
   calculateAge = (birthday) => { // birthday is a date
     var bDay = new Date(birthday);
@@ -49,58 +41,55 @@ export default class ProfileScreen extends Component {
 
   //Set user data
   setUserData = async () => {
-    if(this.state.isUsersProfile){
-      this.setState({userData:this.props.user});
+    if(this.props.isUsersProfile){
+      this.setState({ userData: this.props.user });
     }
     else {
       Util.user.GetUserData(this.props.user.email, (user) => {
-        this.setState({userData: user});
+        Util.user.CheckLoginStatus((boolean) => {
+          this.setState({
+            isLoggedin: boolean,
+            userData: user
+          });
+        });
       });
     }
   }
 
-  setFriendData = async (dataObj) => {
-    if(this.state.isUsersProfile){
-      this.setState({friendData: this.props.friends});
+  setFriendData = async () => {
+    if (this.props.isUsersProfile) {
+      this.setState({ friendData: this.props.friends });
     }
     else {
-      Util.friends.GetFriends(firebase.firestore(), this.props.user.email, (friends)=>{
-        this.setState({friendData: friends});
-        let userEmail = firebase.auth().currentUser.email
+      Util.friends.GetFriends(this.props.user.email, (friends, userEmail) => {
+        this.setState({ friendData: friends });
         friends.forEach((friend) => {
           if(friend.email == userEmail){
-            this.setState({areFriends: friend['friends'][this.props.user.email] == true});
+            this.setState({ areFriends: friend['friends'][this.props.user.email] == true });
           }
         });
       });  
     }
   }
 
-  logout = () => {
-    this.setState({ isLoggedin: false });
-    firebase.auth().signOut();
-   }
-
    //gets user and friend data
-   setProps = (callback) => {
-    this.setState({ isUsersProfile: this.props.isUserProfile });
+   setProps = () => {
     this.setUserData();
     this.setFriendData();
   }
+
   onDismissStatus = () => {
-    this.setState({statusModalVisible:false});
+    this.setState({ statusModalVisible: false });
   }
 
   getBusinessData = () => {
     if(this.state.userData.isBusiness){
-      Util.business.GetBusinessByUID(this.state.userData.businessId, (data)=>{
-        this.setState({businessData: data})
-        console.log(JSON.stringify(data))
-      })
-      Util.business.GetFavoriteCount(this.state.userData.businessId, (count)=>{
-        console.log("COUNT MOTHER FUCKER: " + count)
-        this.setState({followerCount:count});
-      })
+      Util.business.GetBusinessByUID(this.state.userData.businessId, (data) => {
+        this.setState({ businessData: data });
+      });
+      Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
+        this.setState({ followerCount: count });
+      });
     }
   }
 
@@ -109,11 +98,10 @@ export default class ProfileScreen extends Component {
     this.getBusinessData();
   }
 
- 
   favoriteABar = async (buisnessUID, boolean) => {
     let updatedUserData = this.props.currentUser;
     await Util.user.setFavorite(updatedUserData, buisnessUID, boolean, this.state.userData.displayName, (boolean, boolean2) => {
-      if(!boolean2){
+      if (!boolean2) {
         updatedUserData['favoritePlaces'][buisnessUID] = {
           favorited: boolean,
           name: this.state.userData.displayName
@@ -121,11 +109,11 @@ export default class ProfileScreen extends Component {
         this.props.refresh(updatedUserData, null, null, null);
         this.setState({
           followerCount: boolean ? this.state.followerCount += 1 : this.state.followerCount > 0 ?  this.state.followerCount -=1 : 0
-        })
-      } else {
-        alert("You already have 10 favorites! Remove some to add more.")
+        });
+      } 
+      else {
+        alert("You already have 10 favorites. Go to edit profile to remove some!");
       }
-      
     });
   }
 
@@ -134,7 +122,7 @@ export default class ProfileScreen extends Component {
     this.props.uploadImage((uri)=>{
       let user = this.state.userData;
       user['photoSource'] = uri;
-      this.setState({userData: user});
+      this.setState({ userData: user });
     });
   }
 
@@ -151,7 +139,8 @@ export default class ProfileScreen extends Component {
 
               {/* Add Friend */}
               
-                {this.state.businessData.email == firebase.auth().currentUser.email ? null: 
+                {
+                this.state.businessData.email == this.state.userData.email ? null: 
                 <View style={{marginRight:15}}>
                   <Favorite
                     favoriteTrigg={(buisnessUID, bool) => this.favoriteABar(buisnessUID, bool)} user={this.props.currentUser} buisnessUID={this.state.userData.businessId} 
@@ -162,10 +151,10 @@ export default class ProfileScreen extends Component {
               
 
               {/* Edit Button */}
-              {this.state.userData.email == firebase.auth().currentUser.email ? 
+              {this.state.userData.email == this.state.userData.email ? 
               <TouchableOpacity style={{
                 position:"relative",
-                left: this.state.businessData.email != firebase.auth().currentUser.email ? 220 : 275,
+                left: this.state.businessData.email != this.state.userData.email ? 220 : 275,
                 alignSelf:"flex-end",
                 opacity: 0.75,
                 backgroundColor: theme.DARK,
@@ -247,12 +236,14 @@ export default class ProfileScreen extends Component {
                           
                         </Title>
                       {
-                        this.state.isUsersProfile ?
-                        <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
-                          onPress={() => this.setState({statusModalVisible:true})}
-                        >
-                            <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
-                        </TouchableOpacity> : null
+                        this.props.isUsersProfile ?
+                          <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
+                            onPress={() => this.setState({statusModalVisible:true})}
+                          >
+                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                          </TouchableOpacity> 
+                        : 
+                          null
                         }
                     </View>
                     <Caption style={localStyles.caption}>{this.state.userData.status ?  this.state.userData.status.text : "Lookin for what's poppin!"}</Caption>
