@@ -248,13 +248,13 @@ const Util = {
                 Util.basicUtil.consoleLog('Navigator/componentDidMount', false);
             }
         },
-        GetUserData: (email, callback) => {
+        GetUserData: async (email, callback) => {
             let obj = {
                 email: email
             };
             let seen = [];
             if(email && typeof obj.email !== 'undefined') {
-                fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
+               await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
                     method: 'POST',
                     body: JSON.stringify(obj, function(key, val) {

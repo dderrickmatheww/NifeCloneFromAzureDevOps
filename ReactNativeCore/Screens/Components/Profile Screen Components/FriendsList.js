@@ -15,13 +15,9 @@ class FriendsList extends React.Component {
     modalVisible: false,
     friends: null,
     searchQuery: null,
-    requests:null,
+    requests: null,
   }
-
-  // onChangeSearch = (query) => {
-  //   this.setState({ searchQuery: query })
-  // }
-
+  
   //gets user and friend data
   setPropData = () => {
     this.setState({friends: this.props.friends});

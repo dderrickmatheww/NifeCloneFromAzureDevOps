@@ -74,11 +74,11 @@ class Navigator extends React.Component {
     favoritePlaceData: null,
   }
 
-  getNeededData = (currentUser) => {
+  getNeededData = async (currentUser) => {
     //if user exits get user data, get friend data set to async
     if (currentUser) {
         //load user
-        Util.user.GetUserData(currentUser.email, (userData) => {
+        await Util.user.GetUserData(currentUser.email, (userData) => {
           if(userData) {
             //user data set in filterfriends
             if(userData.isBusiness) {
@@ -88,12 +88,14 @@ class Navigator extends React.Component {
                 });
             }
             else {
+              if(userData.friendData) {
                 this.setState({
-                  friendData: userData.friendData.length > 0 && userData.friendData.acceptedFriends ? userData.friendData.acceptedFriends : [],
-                  friendRequests: userData.friendData.length > 0 && userData.friendData.requests ? userData.friendData.requests : [],
+                  friendData: userData.friendData.acceptedFriends,
+                  friendRequests: userData.friendData.requests,
                   userChecked: true,
                   userData: userData
                 });
+              }
             }
           }
           else {
