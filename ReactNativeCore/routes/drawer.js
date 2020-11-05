@@ -74,11 +74,11 @@ class Navigator extends React.Component {
     favoritePlaceData: null,
   }
 
-  getNeededData = async (currentUser) => {
+  getNeededData = (currentUser) => {
     //if user exits get user data, get friend data set to async
     if (currentUser) {
         //load user
-        await Util.user.GetUserData(currentUser.email, (userData) => {
+        Util.user.GetUserData(currentUser.email, (userData) => {
           if(userData) {
             //user data set in filterfriends
             if(userData.isBusiness) {
@@ -124,8 +124,9 @@ class Navigator extends React.Component {
 
 
   firstTimeSignUp = (user) => {
-    if(this.state.displayName){
-      user.updateProfile({ displayName: this.state.displayName }).then(()=>{
+    if(this.state.displayName) {
+      user.updateProfile({ displayName: this.state.displayName })
+      .then(() => {
         this.initializeParams(user);
       });
     }

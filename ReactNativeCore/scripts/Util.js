@@ -187,7 +187,7 @@ const Util = {
         },
         CheckLoginStatus: (callback) => {
             let isLoggedIn = firebase.auth().currentUser ? true : false;
-            if(callback) {
+            if (callback) {
                 callback(isLoggedIn);
             }
         },
@@ -202,10 +202,10 @@ const Util = {
                         Util.user.UploadImage(uri, userEmail, (resUri) => {
                             userData['photoSource'] = resUri;
                             Util.user.UpdateUser(userEmail, { photoSource: resUri });
-                            if(isBusiness){
+                            if (isBusiness){
                                 Util.business.UpdateUser(userEmail, { photoSource: resUri });
                             }
-                            if(callback) {
+                            if (callback) {
                                 callback(resUri, userData);
                             }
                         });
@@ -244,17 +244,17 @@ const Util = {
                 });
             }
             catch (error) {
-                Util.basicUtil.Alert('Function componentDidMount in Component Navigator - Error message:', error, null);
-                Util.basicUtil.consoleLog('Navigator/componentDidMount', false);
+                Util.basicUtil.Alert('Function CheckAuthStatus - Error message:', error, null);
+                Util.basicUtil.consoleLog('CheckAuthStatus', false);
             }
         },
-        GetUserData: async (email, callback) => {
+        GetUserData: (email, callback) => {
             let obj = {
                 email: email
             };
             let seen = [];
             if(email && typeof obj.email !== 'undefined') {
-               await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
                     method: 'POST',
                     body: JSON.stringify(obj, function(key, val) {
@@ -268,7 +268,7 @@ const Util = {
                      })
                 })
                 .then(response => response.json())
-                .then(async data => {
+                .then(data => {
                     if(callback) {
                         callback(data.result);
                     }
@@ -281,7 +281,7 @@ const Util = {
             }
         },
         UpdateUser: (email, updateObject, callback) => {
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             let userRef = db.collection('users').doc(email);
             if(typeof updateObject !== 'undefined') {
                 userRef.set(updateObject, { merge: true })
@@ -298,7 +298,7 @@ const Util = {
             }
         },
         CheckIn: (checkInObj, callback) => {
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             let setLoc = db.collection('users').doc(checkInObj.email);
             let lastVisited = {};
             lastVisited[checkInObj.buisnessUID] = {
@@ -338,7 +338,7 @@ const Util = {
             });
         },
         CheckOut: async (email, callback) => {
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             let setLoc = await db.collection('users').doc(email);
             setLoc.set({
                 checkIn: {
@@ -394,7 +394,7 @@ const Util = {
             }
         },
         setFavorite: async (user, buisnessUID, boolean, buisnessName, callback) => {
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             let setLoc = db.collection('users').doc(user.email);
             let userData = await setLoc.get();
             let oldFavorites = user.favoritePlaces ? user.favoritePlaces : {};
@@ -481,7 +481,7 @@ const Util = {
         QueryPublicUsers: function(query, take, callback){
             let newQuery = query.toLowerCase();
             var path = new firebase.firestore.FieldPath('privacySettings', "searchPrivacy");
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             let usersRef = db.collection('users').where(path, '==', false);
             usersRef.get()
             .then((data) => {
@@ -518,7 +518,7 @@ const Util = {
           })
           .catch((error) => {
                 Util.basicUtil.consoleLog('QueryUsers', false);
-                Util.basicUtil.Alert('Function UploadImage - Error message:', error.message, null);
+                Util.basicUtil.Alert('Function QueryPublicUsers - Error message:', error.message, null);
           });
         },
         GenerateQRCode: (userEmail) => {
@@ -582,7 +582,7 @@ const Util = {
             }
         },
         VerifyUser: (user, email, signUpState, callback) => {
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             db.collection('users').doc(email).get()
             .then((data) => {
                 if(data.data()){
@@ -667,7 +667,7 @@ const Util = {
             }
         },
         UpdateUser: (email, updateObject, callback) => {
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             let userRef = db.collection('businesses').doc(email);
             userRef.set(updateObject, { merge: true })
             .then(() => {
@@ -733,7 +733,7 @@ const Util = {
         },
         GetFavoriteCount: (uid, callback) => {
             var path = new firebase.firestore.FieldPath('favoritePlaces', uid, 'favorited');
-            let db = Util.dataCalls.Firebase.databaseInstance();
+            let db = firebase.firestore();
             db.collection('users').where(path, '==', true).get()
             .then((data) => {
                 if (data) {
@@ -1462,7 +1462,7 @@ const Util = {
                 measurementId: measurementId
             },
             databaseInstance: () => {
-                return firebase.firestore();
+                return 
             },
             signOut: async()=>{
                 firebase.auth().signOut();
