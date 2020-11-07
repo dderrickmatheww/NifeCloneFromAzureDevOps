@@ -1,8 +1,7 @@
 import React from 'react';
-import * as firebase from 'firebase';
+import Util from '../../../scripts/Util';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import theme from '../../../Styles/theme';
-import 'firebase/firestore';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
 var defPhoto = require('../../../Media/Images/logoicon.png');
@@ -10,8 +9,8 @@ var defPhoto = require('../../../Media/Images/logoicon.png');
 class FriendsList extends React.Component {
   
   state = {
-    isLoggedin: firebase.auth().currentUser ? true : false,
-    userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
+    isLoggedin: false,
+    userData: this.props.user,
     modalVisible: false,
     friends: null,
     searchQuery: null,
@@ -20,9 +19,14 @@ class FriendsList extends React.Component {
   
   //gets user and friend data
   setPropData = () => {
-    this.setState({friends: this.props.friends});
-    this.setState({requests: this.props.requests});
-    this.setState({userData: this.props.user});
+    Util.user.CheckLoginStatus((loggedIn) => {
+      this.setState({
+        friends: this.props.friends,
+        requests: this.props.requests,
+        userData: this.props.user,
+        isLoggedin: loggedIn
+      });
+    });
   }
 
   handleOpenModal = () => {
@@ -37,16 +41,17 @@ class FriendsList extends React.Component {
     let friends = this.state.friends;
     let requests = this.state.requests;
     let newRequests = [];
-
     if(didAccept){
       requests.forEach((req)=>{
         if(req.email == email){
           friends.push(req);
-        }else {
+        }
+        else {
           newRequests.push(req)
         }
       });
-    } else {
+    } 
+    else {
       requests.forEach((req)=>{
         if(req.email != email){
           newRequests.push(req)
@@ -60,7 +65,7 @@ class FriendsList extends React.Component {
   }
 
   handleRefresh = () => {
-    this.setState( {modalVisible: false });
+    this.setState({ modalVisible: false });
     this.props.refresh(null, this.state.friends, this.state.requests);
   }
 
@@ -88,7 +93,7 @@ class FriendsList extends React.Component {
 
             </View>
           <View style={localStyles.HeaderCont}>
-            <Image style={localStyles.profilePic} source={ this.state.userData.photoSource  ? {uri:this.state.userDataphotoSource}  : defPhoto} />
+            <Image style={localStyles.profilePic} source={ this.state.userData.photoSource ? { uri: this.state.userData.photoSource }  : defPhoto } />
             <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
             <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
             <View style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, marginBottom:2, width:"98%"}}>
@@ -107,7 +112,8 @@ class FriendsList extends React.Component {
             {this.state.friends.map((friend, i) => (
               <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', { screen:"OtherProfile", params: { user:friend, isUserProfile: false }})}>
               <View style={localStyles.friendCont}>
-                <Image style={localStyles.friendPic} source={ friend.photoSource  ? { uri:friend.photoSource }  : defPhoto } /><Text style={localStyles.name}>{friend.displayName}</Text>
+                <Image style={localStyles.friendPic} source={ friend.photoSource  ? { uri:friend.photoSource }  : defPhoto } />
+                <Text style={localStyles.name}>{friend.displayName}</Text>
               </View>
             </TouchableOpacity>
             ))}
@@ -174,36 +180,43 @@ const localStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.DARK,
     width: "100%",
-    maxHeight:"10%",
+    maxHeight:"15%",
     justifyContent: "flex-end",
     alignItems: "center",
     borderBottomColor: theme.LIGHT_PINK,
     borderBottomWidth: 2,
-    paddingBottom:2
+    paddingBottom: 2
   },
   profilePic: {
     width: 75,
     height: 75,
     borderRadius: 50,
-    marginBottom: "5%"
+    marginBottom: "5%",
   },
   friendPic: {
     width: 50,
     height: 50,
     borderRadius: 50,
+    marginLeft: '20%'
   },
   friendCont: {
     flexDirection: "row",
-    borderBottomColor: theme.LIGHT_PINK,
-    borderBottomWidth: 1,
+    borderColor: theme.LIGHT_PINK,
+    borderRadius: 50,
+    width: '100%',
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '5%',
+    padding: '3%',
+    paddingBottom: '5%'
+
   },
   name: {
     fontSize: 18,
     color: theme.LIGHT_PINK,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginVertical: '.5%',
-    marginLeft: '2.5%',
+    marginLeft: '5%',
     width: "100%"
   },
   FriendCount: {
@@ -233,10 +246,6 @@ const localStyles = StyleSheet.create({
   ScrollView: {
     flex: 1,
     width: "100%",
-    borderLeftWidth: 2,
-    borderLeftColor: theme.LIGHT_PINK,
-    borderRightWidth: 2,
-    borderRightColor: theme.LIGHT_PINK,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
   }

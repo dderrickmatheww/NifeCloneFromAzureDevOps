@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 
 export const styles = StyleSheet.create({
   calloutText:{
-    color:theme.LIGHT_PINK
+    color: theme.LIGHT_PINK
   },
   center: {
     flex: 1,
@@ -111,7 +111,6 @@ export const styles = StyleSheet.create({
     margin: 25,
     justifyContent: 'center',
     alignContent: 'center',
-    maxWidth: '65%',
     borderRadius: 20,
     borderColor: theme.LIGHT_PINK,
     borderWidth: 2,
