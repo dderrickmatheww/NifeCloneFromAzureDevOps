@@ -6,7 +6,7 @@
     "slug": "Nife",
     "icon": "./Media/Images/Nife App Logo w BG.png",
     "privacy": "unlisted",
-    "version": "1.0.0.5",
+    "version": "1.0.0.7",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
       "ios",
@@ -17,13 +17,13 @@
       "image": "./Media/Images/Splash.png"
     },
     "ios": {
-      "bundleIdentifier": "com.virastar.nife",
+      "bundleIdentifier": "com.virastarllc.nife",
       "buildNumber": "1.0.0.0"
     },
     "android": {
-      "package": "com.virastar.nife",
+      "package": "com.virastarllc.nife",
       "userInterfaceStyle": "dark",
-      "versionCode": 7,
+      "versionCode": 9,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0"
