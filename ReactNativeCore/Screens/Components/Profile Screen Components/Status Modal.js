@@ -13,10 +13,13 @@ export default class StatusModal extends React.Component  {
       statusText: null,
       userData: null,
       saving: false,
+      refresh: null
     };
 
     componentDidMount() {
-      this.setState({ userData: this.props.user });
+      this.setState({ 
+        userData: this.props.user
+      });
     }
 
     onStatusChange = (text) => {
@@ -32,7 +35,10 @@ export default class StatusModal extends React.Component  {
           timestamp: new Date()
         }
       }
-      let user = this.state.userData;
+      let user = this.props.user;
+      user['status'] = obj.status;
+      let updatedUserData = user;
+      this.props.refresh(updatedUserData, null, null, null);
       Util.user.UpdateUser(user.email, obj, () => {
         this.setState({ saving: false });
         this.props.onSave();
@@ -51,9 +57,10 @@ export default class StatusModal extends React.Component  {
               <TextInput
                 mode={"outlined"}
                 label=""
-                placeholder={"What're you feelin' tonight?"}
+                placeholder={"Type here..."}
                 onChangeText={text => this.onStatusChange(text)}
                 style={localStyles.textInput}
+                selectionColor={theme.DARK_PINK}
                 value={this.state.statusText}
                 multiline={true}
                 > 
@@ -81,8 +88,8 @@ export default class StatusModal extends React.Component  {
 const localStyles = StyleSheet.create({
   textInput:{
     flex:1,
-    backgroundColor:theme.LIGHT,
-    color:theme.DARK,
+    backgroundColor: theme.DARK,
+    color: theme.GREY,
     width:"90%", 
     height:"80%", 
     alignSelf:"center", 
@@ -99,7 +106,7 @@ const localStyles = StyleSheet.create({
     borderRadius:10,
     borderWidth:1,
     width:"50%",
-    marginBottom:10
+    marginBottom: 20
   },
   viewDark:{
     flex:1,

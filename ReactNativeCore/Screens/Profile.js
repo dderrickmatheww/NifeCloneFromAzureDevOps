@@ -359,9 +359,10 @@ export default class ProfileScreen extends Component {
                     refresh={this.props.refresh}
                     onSave={()=> this.onDismissStatus()}
                   >
-                  </StatusModal> :null
+                  </StatusModal> 
+                  :
+                  null
               }
-
             </ScrollView>
             </Surface>
             :

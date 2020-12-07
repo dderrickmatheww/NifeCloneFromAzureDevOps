@@ -162,8 +162,8 @@ class Navigator extends React.Component {
   }
 
   initializeParams = async (user) => {
-    await Util.user.VerifyUser(user, user.email);
-    await this.getNeededData(user);
+    Util.user.VerifyUser(user, user.email);
+    this.getNeededData(user);
     Permissions.askAsync(Permissions.LOCATION).then((status) => {
       if (status.status === 'granted') {
         Util.location.GetUserLocation(null, user);
@@ -173,8 +173,8 @@ class Navigator extends React.Component {
     });
   }
 
-  componentDidMount() {
-    Util.user.CheckAuthStatus((user) => {
+  async componentDidMount() {
+    await Util.user.CheckAuthStatus((user) => {
       this.setState({ authLoaded: true });
       if (user) {
         this.setState({

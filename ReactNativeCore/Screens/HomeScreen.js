@@ -270,7 +270,7 @@ export default class FriendsFeed extends React.Component  {
         this.setState({snackBarVisable: false});
     }
 
-    refresh = (userData, friendData, requests, businessData) =>{
+    refresh = (userData, friendData, requests, businessData) => {
         this.props.refresh(userData, null, null, businessData);
         this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;

@@ -150,13 +150,13 @@ const Util = {
         },
     },
     user: {
-        VerifyUser: (user, email, callback) => {
+        VerifyUser: async (user, email, callback) => {
             let obj = {
                 user: user,
                 email: email
             };
             if (user && email) {
-                fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser', 
+                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser', 
                 { 
                     method: 'POST',
                     body: JSON.stringify(obj)
@@ -235,9 +235,10 @@ const Util = {
                 }
             });
         },
-        CheckAuthStatus: (callback) => {
+        CheckAuthStatus: async (callback) => {
             try{
-                firebase.auth().onAuthStateChanged((user) => {
+                await firebase.auth().onAuthStateChanged((user) => {
+                    console.log(user);
                     if(callback) {
                         callback(user);
                     }
@@ -248,13 +249,13 @@ const Util = {
                 Util.basicUtil.consoleLog('CheckAuthStatus', false);
             }
         },
-        GetUserData: (email, callback) => {
+        GetUserData: async (email, callback) => {
             let obj = {
                 email: email
             };
             let seen = [];
             if(email && typeof obj.email !== 'undefined') {
-                fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
+                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
                     method: 'POST',
                     body: JSON.stringify(obj, function(key, val) {
@@ -1609,7 +1610,21 @@ const Util = {
         },
         getMiles: (i) => {
             return i*0.000621371192;
-       }
+       },
+       extend: (dest, src) => {
+        for(var key in src) {
+            if(key =='dateOfBirth'){
+              dest[key] = { seconds: new Date(src[key]).getTime()/1000};
+            }
+            else if(typeof(src[key]) == "string" ){
+              dest[key] = src[key].replace(String.fromCharCode(92), '').replace('"',"");
+            }
+            else {
+              dest[key] = src[key];
+            }   
+        }
+        return dest;
+      }
     }
 }
 

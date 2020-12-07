@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
-import Picker from '@react-native-community/picker';
+import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Picker } from 'react-native';
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../../Universal Components/DrawerButton';
 import theme from '../../../Styles/theme';
-import * as firebase from 'firebase';
 import { Ionicons } from '@expo/vector-icons'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
@@ -19,12 +17,12 @@ export default class EditProfile extends Component {
   
   state = {
     userData:  this.props.user,
-    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds ? this.props.user.dateOfBirth._seconds : this.props.user.dateOfBirth.seconds * 1000) : null,
+    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds * 1000 ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : new Date(),
     maxDateValue: null,
-    gender: this.props.user.gender ? this.props.user.gender : 'other',
-    sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'other',
-    bio: this.props.user.bio ? this.props.user.bio : "",
-    favoriteDrinks: this.props.user.favoriteDrinks && this.props.user.favoriteDrinks >0 ? this.props.user.favoriteDrinks : null,
+    gender: this.props.user.gender ? this.props.user.gender : 'Other',
+    sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'Other',
+    bio: this.props.user.bio ? this.props.user.bio : "This user has no bio!",
+    favoriteDrinks: this.props.user.favoriteDrinks && this.props.user.favoriteDrinks > 0 ? this.props.user.favoriteDrinks : [],
     showDatePicker: false,
     doneLoading: false,
     favoriteBars: null,
@@ -40,58 +38,64 @@ export default class EditProfile extends Component {
   //Set user data
   setUserData = async () => {
       var user = this.props.user;
-      let favorites = this.props.user.favoritePlaces;
+      let favorites = this.props.user.favoritePlaces ? this.props.user.favoritePlaces : {};
       let actualFavoriteBars = [];
-      if(favorites){
+      if (favorites) {
         let barIds = Object.keys(favorites);
-        
-        barIds.forEach((id)=>{
-          if(favorites[id]['favorited']== true){
-            actualFavoriteBars.push(actualFavoriteBars)
-          }
-        });
+        if(barIds.length > 0) {
+          barIds.forEach((id) => {
+            if(favorites[id]['favorited'] == true) {
+              actualFavoriteBars.push(actualFavoriteBars);
+            }
+          });
+        }
       }
-      
-      //console.log(user.dateOfBirth)
-      this.setState({
-        userData: user,
-        dateOfBirth:  user.dateOfBirth ? new Date(user.dateOfBirth._seconds ? user.dateOfBirth._seconds : user.dateOfBirth.seconds * 1000) : this.setMaxDate(),
-        gender: user.gender ? user.gender : "other",
-        sexualOrientation: user.sexualOrientation ? user.sexualOrientation : 'other',
-        bio: user.bio ? user.bio : "",
-        favoriteDrinks: user.favoriteDrinks ? user.favoriteDrinks : [],
-        doneLoading: true,
-        favoriteBars: user.favoritePlaces ? user.favoritePlaces : {},
-        displayName: user.displayName,
-        faveCount: actualFavoriteBars.length,
-      });
 
+      console.log(user.displayName, user.dateOfBirth, user.gender, user.sexualOrientation,)
+    
+      this.setState({
+        userData: typeof user !== 'undefined' ? user : {},
+        dateOfBirth:  typeof user.dateOfBirth !== 'undefined' ? new Date(user.dateOfBirth._seconds ? user.dateOfBirth._seconds * 1000 : user.dateOfBirth.seconds * 1000) : this.setMaxDate(),
+        gender: typeof user.gender !== 'undefined' ? user.gender : "Other",
+        sexualOrientation: typeof user.sexualOrientation !== 'undefined' ? user.sexualOrientation : 'Other',
+        bio: typeof user.bio !== 'undefined' ? user.bio : "This user has no bio!",
+        favoriteDrinks: typeof user.favoriteDrinks !== 'undefined' ? user.favoriteDrinks : [],
+        doneLoading: true,
+        favoriteBars: typeof user.favoritePlaces !== 'undefined' ? user.favoritePlaces : {},
+        displayName: typeof user.displayName !== 'undefined' ? user.displayName : 'Anonymous',
+        faveCount: typeof actualFavoriteBars !== 'undefined' ? actualFavoriteBars.length : 0
+      });
   }
 
   //gets user and friend data
-  componentDidMount(){
-    //console.log(this.state)
+  async componentDidMount() {
     this.setMaxDate();
     this.setUserData();
   }
 
-  onDOBChange = async (event, selectedDate) => {
-    if(selectedDate){
+  onDOBChange = (event, selectedDate) => {
+    if (selectedDate) {
       var date = new Date(selectedDate);
-      await this.setState({dateOfBirth: date});
-      this.setState({showDatePicker: false});
+      this.setState({ 
+        dateOfBirth: date,
+        showDatePicker: false
+      });
     }
     else {
-      this.setState({showDatePicker: false});
+      this.setState({ showDatePicker: false });
     }
   }
 
   onGenderChange = (gender) => {
-    this.setState({ gender: gender })
+    this.setState({ gender: gender });
   }
 
   onSexualOrientationChange = (orientation) => {
-    this.setState({ sexualOrientation: orientation })
+    this.setState({ sexualOrientation: orientation });
+  }
+
+  onNameChange = (displayName) => {
+    this.setState({ displayName: displayName });
   }
 
   onBioChange = (bio) => { 
@@ -102,10 +106,10 @@ export default class EditProfile extends Component {
     var fieldText = drinks;
     fieldText = fieldText.toString();
     var drinkArr = [];
-    if(fieldText.indexOf(',') == -1){
-
+    if(fieldText.indexOf(',') == -1) {
       drinkArr.push(fieldText);
-    } else {
+    } 
+    else {
       drinkArr = fieldText.split(',');
     }
     this.setState({ favoriteDrinks: drinkArr });
@@ -153,34 +157,15 @@ export default class EditProfile extends Component {
       favoritePlaces: this.state.favoriteBars,
       displayName: this.state.displayName
     }
-    Util.user.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, () => {});
     var user = this.state.userData;
-    var updatedUser = extend(user, profileInfo);
+    Util.user.UpdateUser(user.email, profileInfo);
+    var updatedUser = Util.basicUtil.extend(user, profileInfo);
     this.props.refresh(updatedUser, null, null);
-    this.props.navigation.navigate("Profile", {screen:"ProfileScreen"})
-    function extend(dest, src) {
-      for(var key in src) {
-          if(key =='dateOfBirth'){
-            dest[key] = { seconds: new Date(src[key]).getTime()/1000};
-          }
-          else if(typeof(src[key]) == "string" ){
-            dest[key] = src[key].replace(String.fromCharCode(92), '').replace('"',"");
-          }
-          else {
-            dest[key] = src[key];
-          }   
-      }
-      return dest;
-    }
-      
+    this.props.navigation.navigate("Profile", { screen: "ProfileScreen" });
   }
 
   onCancel = () => {
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
-  }
-
-  onNameChange = (displayName) => {
-    this.setState({displayName:displayName})
   }
 
    render () {
@@ -217,7 +202,7 @@ export default class EditProfile extends Component {
                       <Text style={localStyles.fieldLabel}>
                         Date of Birth:  
                       </Text>
-                      <Text style={{color:theme.LIGHT_PINK, fontSize:18, marginBottom:5, marginLeft:20}}>
+                      <Text style={{color:theme.LIGHT_PINK, fontSize: 18, marginBottom: 5, marginLeft: 20}}>
                         {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: 50, paddingBottom: 5}}
@@ -231,8 +216,8 @@ export default class EditProfile extends Component {
                       this.state.showDatePicker && (
                         <DateTimePicker
                           mode={"date"}
-                          value={this.state.dateOfBirth ? this.state.dateOfBirth :this.state.maxDateValue}
-                          maximumDate={ this.setMaxDate()}
+                          value={ this.state.dateOfBirth ? this.state.dateOfBirth : new Date() }
+                          maximumDate={ this.setMaxDate() }
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
                         />
@@ -248,7 +233,7 @@ export default class EditProfile extends Component {
                       <Picker 
                         mode={"dropdown"}
                         style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
-                        selectedValue={this.state.gender ? this.state.gender : "other"}
+                        selectedValue={this.state.gender ? this.state.gender : "Other"}
                         onValueChange={(value) => this.onGenderChange(value)}
                       >
                         <Picker.Item color={theme.LIGHT_PINK} label="Male" value="male"/>
@@ -266,7 +251,7 @@ export default class EditProfile extends Component {
                     <Surface style={localStyles.surface}>
                       <Picker
                         mode={"dropdown"}
-                        selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "other"}
+                        selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "Other"}
                         style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
                         onValueChange={(value) => this.onSexualOrientationChange(value)}
                       >
@@ -285,7 +270,6 @@ export default class EditProfile extends Component {
                       {
                           this.state.userData.favoritePlaces ?  
                           Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
-                            
                             this.state.userData.favoritePlaces[Object.keys(this.state.userData.favoritePlaces)[i]]['favorited'] == true ? 
                             <Chip mode={"outlined"}  
                                 key={i}
@@ -320,7 +304,7 @@ export default class EditProfile extends Component {
                     label=""
                     placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
-                    value={this.state.bio}
+                    value={this.state.bio ? this.state.bio : 'None'}
                     style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
                     
                     </TextInput>
@@ -337,7 +321,7 @@ export default class EditProfile extends Component {
                     placeholder={"What're you drinkin'?"}
                     onChangeText={text => this.onFavoriteDrinkChange(text)}
                     style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
-                    value={this.state.favoriteDrinks.toString()}
+                    value={this.state.favoriteDrinks ? this.state.favoriteDrinks.toString() : 'None'}
                     >
                     </TextInput>
                     

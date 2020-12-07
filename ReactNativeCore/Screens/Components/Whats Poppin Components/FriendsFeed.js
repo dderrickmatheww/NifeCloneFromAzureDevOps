@@ -153,9 +153,9 @@ export default class FriendsFeed extends React.Component  {
                   <StatusModal
                     isVisible={this.state.modalVisable}
                     user={this.state.userData}
-                    onDismiss={()=>this.onDismiss()}
-                    onSave={()=>this.onSave()}
-                    refresh={this.refresh}
+                    refresh={this.refresh()}
+                    onDismiss={() => this.onDismiss()}
+                    onSave={()=> this.onSave()}
                   >
                   </StatusModal> 
                   :

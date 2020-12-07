@@ -161,7 +161,7 @@ export default class ProfileScreen extends Component {
                 borderRadius: 10,
                 marginBottom:5,
               }}
-                onPress={() => this.props.navigation.navigate('Profile', {screen:'EditBusiness', params:{user: this.state.userData, business:this.state.businessData}})}
+                onPress={() => this.props.navigation.navigate('Profile', {screen:'EditBusiness', params:{user: this.state.userData, business: this.state.businessData}})}
               >
                 <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
               </TouchableOpacity> : null
@@ -238,7 +238,7 @@ export default class ProfileScreen extends Component {
                       {
                         this.props.isUsersProfile ?
                           <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
-                            onPress={() => this.setState({statusModalVisible:true})}
+                            onPress={() => this.setState({statusModalVisible: true})}
                           >
                               <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
                           </TouchableOpacity> 
@@ -318,6 +318,7 @@ export default class ProfileScreen extends Component {
                     onDismiss={()=>this.onDismissStatus()}
                     refresh={this.props.refresh}
                     onSave={()=> this.onDismissStatus()}
+                    refresh={this.props.refresh()}
                   >
                   </StatusModal> :null
               }
