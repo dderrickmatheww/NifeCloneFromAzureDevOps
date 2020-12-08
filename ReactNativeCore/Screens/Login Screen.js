@@ -9,7 +9,8 @@ export default class LoginScreen extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
-    modalVisible: false
+    modalVisible: false,
+    isReset: false
   }
   //Set login status
   setLoggedinStatus = async (dataObj) => {
@@ -28,7 +29,6 @@ export default class LoginScreen extends Component {
       return ( 
        
         <View style={styles.loginContainer}>
-          
           <View style={styles.headerContainer}>
             <Text style={styles.headerText}>{this.props.text}</Text>
           </View>
@@ -57,7 +57,7 @@ export default class LoginScreen extends Component {
             </TouchableOpacity>
           </View>
           <View style={styles.nifeButtonContainer}>
-            <TouchableOpacity style={styles.nifeLoginBtn} onPress={() => this.setState({modalVisible: true}) }>
+            <TouchableOpacity style={styles.nifeLoginBtn} onPress={() => { this.setState({isReset: false}); this.setState({modalVisible: true}); }}>
               <Text style={styles.loggedOutText}>Create account with Nife</Text>
               <Image
                 style={styles.Logo}
@@ -68,7 +68,12 @@ export default class LoginScreen extends Component {
           <Text style={{color:"#FFCC00", fontWeight:"bold", top: 25, }}>
             If you are a business, please sign in with Nife!
           </Text>
-          <NifeLoginModal  setBusiness={this.props.setBusiness} onDismiss={()=>this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} modalVisible={this.state.modalVisible} callback={() => {
+          <View style={styles.forgotButtonContainer}>
+            <TouchableOpacity style={styles.nifeLoginBtn} onPress={() =>  { this.setState({isReset: true}); this.setState({ modalVisible: true}); }}>
+              <Text style={styles.loggedOutText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
+          <NifeLoginModal  setBusiness={this.props.setBusiness} onDismiss={() => this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} isReset={this.state.isReset} modalVisible={this.state.modalVisible} callback={() => {
               console.log('callback nifeloginmodal')
             }}
           />

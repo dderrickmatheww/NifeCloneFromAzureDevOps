@@ -1467,6 +1467,17 @@ const Util = {
             },
             signOut: async()=>{
                 firebase.auth().signOut();
+            },
+            passwordReset: async (email) => {
+                var auth = firebase.auth();
+                console.log(email)
+                auth.sendPasswordResetEmail(email).then(function() {
+                    Util.basicUtil.consoleLog("Firebase's Reset Password", true);
+                    Util.basicUtil.Alert('Nife - Reset Password', 'Email was sent! Please check your email for further directions!', null);
+                }).catch(function(error) {
+                    Util.basicUtil.consoleLog("Firebase's Reset Password", false);
+                    Util.basicUtil.Alert('Firebase Reset Password', error.message, null);
+                });
             }
         },
         // OAuth: {
