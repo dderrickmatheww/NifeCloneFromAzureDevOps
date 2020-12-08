@@ -33,51 +33,15 @@ export default class NifeLoginModal extends Component {
     }
 
     onChangeText = (text, type) => {
-        if(type == "email") {
-         this.setState({ email: text });
-        }
-        else if (type == "password1") {
-         this.setState({ password1: text });
-        }
-        else if (type == "password2") {
-         this.setState({ password2: text });
-        }
-        else if (type == "displayName"){
-         this.setState({ displayName: text });
-        }
-        else if (type == "businessName"){
-         this.setState({ businessName: text });
-         this.props.onSignUp(this.state);
-        }
-        else if (type == "ownerName"){
-         this.setState({ ownerName: text });
-        }
-        else if (type == "businessPhone"){
-         this.setState({ businessPhone: text });
-        }
-        else if (type == "Address"){
-         this.setState({ Address: text });
-        }
-        else if (type == "City"){
-         this.setState({ City: text });
-        }
-        else if (type == "State"){
-         this.setState({ State: text });
-        }
-        else if (type == "ZIP"){
-         this.setState({ zip: text });
-        }
-        else if (type == "Country"){
-            this.setState({ businessCountry: text });
-        }
-     }
+        this.setState({[type]: text});
+    }
 
     authenticateUser = (event) => {
         if (event == 'sign-up') {
             if(this.state.password1 === this.state.password2) {
-                if(!this.state.businessEmail){
+                if (!this.state.businessEmail) {
                     if(!this.state.email || !this.state.password1 || !this.state.displayName) {
-                        alert('Please enter correct sign-up information');
+                        alert('Please make sure all fields are filled out!');
                     }
                     else if (this.state.password1.length < 8) {
                         alert('Your password must be great than eight characters!');
@@ -97,7 +61,7 @@ export default class NifeLoginModal extends Component {
                 }
                 else {
                     if(!this.state.businessEmail || !this.state.password1 || !this.state.businessName) {
-                        alert('Please enter correct sign-up information');
+                        alert('Please enter correct sign-up information for buisnesses');
                     }
                     else if (this.state.password1.length < 8) {
                         alert('Your password must be great than eight characters!');
@@ -157,7 +121,7 @@ export default class NifeLoginModal extends Component {
         let name = this.state.businessName;
         if(address != null & city  != null  & state != null  & zip != null  & name != null ){
             Util.dataCalls.Yelp.businessVerification(name, address, city, state, zip, "US", (data) => {
-                if (data.businesses.length > 0) {
+                if (data.businesses && data.businesses.length > 0) {
                     this.setState({
                         businessId: data.businesses[0].id,
                         coordinates: data.businesses[0].coordinates,
@@ -278,7 +242,7 @@ export default class NifeLoginModal extends Component {
                                             style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
 
                                             <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} 
-                                            placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                                            placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "businessEmail")} />
 
                                             <TextInput  keyboardType={"phone-pad"} theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
                                             style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />

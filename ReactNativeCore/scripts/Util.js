@@ -1435,12 +1435,13 @@ const Util = {
                 return paramString;
             } ,
             businessVerification: (name, address, city, state, zip, country, callback) =>{
-                fetch("https://api.yelp.com/v3/businesses/matches?match_threshold=default&name="+name+"&address1=" + address + "&city="+ city + "&state=" + state + "&zip=" + zip + "&country="+ country, 
+                fetch("https://api.yelp.com/v3/businesses/matches?match_threshold=default&name="+name+"&address1=" + address + "&city="+ city + "&state=" + state + "&country="+ country, 
                     {headers: new Headers({'Authorization':"Bearer "+ YELP_PLACE_KEY})
                 })
                 .then((data) => data.json())
                 .then((response) => {
                     Util.basicUtil.consoleLog("businessPhoneVerification", true);
+                    console.log(response);
                     if(callback) {
                         callback(response);
                     }
