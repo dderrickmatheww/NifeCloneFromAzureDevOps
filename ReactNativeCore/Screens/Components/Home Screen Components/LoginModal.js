@@ -71,7 +71,7 @@ export default class NifeLoginModal extends Component {
                         this.props.onSignUp(this.state);
                         Util.dataCalls.Nife.login(this.state, null, (dataObj, error) => {
                             if(error) {
-                                alert(error);
+                                Util.basicUtil.Alert('Nife Error Message', error.message, null);
                                 this.resetPasswordField();
                             } 
                             else {
@@ -346,11 +346,10 @@ export default class NifeLoginModal extends Component {
                                             signUp: false,
                                             bussinessApplication: false
                                         });
-                                        this.props.onDismiss();
                                     }}
                                     style={localStyles.nextBtn}
                                 > 
-                                    <Caption style={localStyles.Caption}>Close</Caption>
+                                    <Caption style={localStyles.Caption}>Back</Caption>
                                 </TouchableOpacity> 
                                 <TouchableOpacity
                                     onPress={() => {
