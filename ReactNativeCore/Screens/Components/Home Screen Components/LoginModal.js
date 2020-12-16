@@ -7,6 +7,7 @@ import theme from '../../../Styles/theme';
 import * as ImagePicker from 'expo-image-picker';
 
 export default class NifeLoginModal extends Component {
+
     state = {
         modalVisible: false,
         email: "",
@@ -127,7 +128,7 @@ export default class NifeLoginModal extends Component {
                         coordinates: data.businesses[0].coordinates,
                         bussinessApplicationPt2: true
                     });
-                    this.props.setBusiness(true, this.state);
+                    this.props.setIsBusiness(true, this.state);
                 } else {
                     alert('We could not find your business... make sure your contact information matches other online sources...');
                 }
@@ -302,7 +303,7 @@ export default class NifeLoginModal extends Component {
                         contentContainerStyle={localStyles.Modal}
                     >
                         <View style={localStyles.Container}>
-                            <Subheading style={localStyles.Subheading}>Fill out your password and upload a proof of address (bill, bank statement, etc.) to create your account. </Subheading>
+                            <Subheading style={localStyles.Subheading}>Fill out your password to create your account. </Subheading>
                         </View>
                         <ScrollView contentContainerStyle={localStyles.Container}>
                             {/* <TouchableOpacity style={localStyles.VerificationOption}

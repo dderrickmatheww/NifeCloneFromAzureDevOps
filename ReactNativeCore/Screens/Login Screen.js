@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image } from 'react-native';
+import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import Util from '../scripts/Util';
+import theme from '../Styles/theme';
 import NifeLoginModal from './Components/Home Screen Components/LoginModal'
-import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
 
 export default class LoginScreen extends Component {
@@ -20,19 +20,21 @@ export default class LoginScreen extends Component {
   setUserData = async (dataObj) => {
     this.setState({ userData: dataObj.user });
   }
+
   logout = () => {
     this.setState({ isLoggedin: false });
     firebase.auth().signOut();
-   }
+  }
 
-   render () {
-      return ( 
-       
-        <View style={styles.loginContainer}>
-          <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>{this.props.text}</Text>
-          </View>
-          {/* <View style={styles.facebookButtonContainer}>
+  render () {
+    return ( 
+      <View style={localStyles.loginContainer}>
+        <View style={localStyles.headerContainer}>
+          <Text style={localStyles.headerText}>{this.props.text}</Text>
+        </View>
+        {/* 
+          Facebook Login Button
+          <View style={styles.facebookButtonContainer}>
             <TouchableOpacity style={styles.facebookLoginBtn} onPress={() => Util.dataCalls.Facebook.login((dataObj) => {
               this.setUserData(dataObj);
               this.setLoggedinStatus(dataObj);
@@ -43,41 +45,183 @@ export default class LoginScreen extends Component {
                   source={require("../Media/Images/fblogo.png")}
                 />
             </TouchableOpacity>
-          </View> */}
-          <View style={styles.googleButtonContainer}>
-            <TouchableOpacity style={styles.googleLoginBtn} onPress={() => Util.dataCalls.Google.login((dataObj) => {
-              this.setUserData(dataObj.user);
-              this.setLoggedinStatus(dataObj);
-            })}>
-              <Text style={styles.loggedOutText}>Login with Google</Text>
-              <Image
-                  style={styles.Logo}
-                  source={require("../Media/Images/googlelogo.png")}
-                />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.nifeButtonContainer}>
-            <TouchableOpacity style={styles.nifeLoginBtn} onPress={() => { this.setState({isReset: false}); this.setState({modalVisible: true}); }}>
-              <Text style={styles.loggedOutText}>Create account with Nife</Text>
-              <Image
-                style={styles.Logo}
-                source={require("../Media/Images/logoicon.png")}
-              />
-            </TouchableOpacity>
-          </View>
-          <Text style={{color:"#FFCC00", fontWeight:"bold", top: 25, }}>
-            If you are a business, please sign in with Nife!
+          </View> 
+        */}
+        <View style={localStyles.subHeaderContainer}>
+          <Text style={localStyles.subHeaderText}>
+            Users
           </Text>
-          <View style={styles.forgotButtonContainer}>
-            <TouchableOpacity style={styles.nifeLoginBtn} onPress={() =>  { this.setState({isReset: true}); this.setState({ modalVisible: true}); }}>
-              <Text style={styles.loggedOutText}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
-          <NifeLoginModal  setBusiness={this.props.setBusiness} onDismiss={() => this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} isReset={this.state.isReset} modalVisible={this.state.modalVisible} callback={() => {
-              console.log('callback nifeloginmodal')
-            }}
-          />
         </View>
-      );
-    }
+        <View style={localStyles.googleButtonContainer}>
+          <TouchableOpacity style={localStyles.googleLoginBtn} onPress={() => Util.dataCalls.Google.login((dataObj) => {
+            this.setUserData(dataObj.user);
+            this.setLoggedinStatus(dataObj);
+          })}>
+            <Text style={localStyles.loggedOutText}>Login with Google</Text>
+            <Image
+                style={localStyles.Logo}
+                source={require("../Media/Images/googlelogo.png")}
+              />
+          </TouchableOpacity>
+        </View>
+        <View style={localStyles.btnContainer}>
+          <TouchableOpacity style={localStyles.nifeLoginBtn} onPress={() => { 
+            this.setState({
+              isReset: false,
+              isBusiness: false,
+              modalVisible: true
+            });
+          }}>
+            <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
+            <Image
+              style={localStyles.Logo}
+              source={require("../Media/Images/nife.png")}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={localStyles.subHeaderContainer}>
+          <Text style={localStyles.subHeaderText}>
+            Businesses
+          </Text>
+        </View>
+        <View style={localStyles.nifeBuisButtonContainer}>
+          <TouchableOpacity style={localStyles.nifeBusLoginBtn} onPress={() => { 
+            this.setState({
+              isReset: false,
+              isBusiness: true,
+              modalVisible: true
+            }); 
+          }}>
+            <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
+            <Image
+              style={localStyles.Logo}
+              source={require("../Media/Images/nife.png")}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={localStyles.forgotButtonContainer}>
+          <TouchableOpacity style={localStyles.nifeForgotBtn} onPress={() =>  { 
+            this.setState({
+              isReset: true,
+              isBusiness: false,
+              modalVisible: true
+            }); 
+          }}>
+            <Text style={localStyles.loggedOutText}>Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
+        <NifeLoginModal  setIsBusiness={this.props.setIsBusiness} onDismiss={() => this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} isReset={this.state.isReset} modalVisible={this.state.modalVisible} callback={() => {
+            console.log('callback nifeloginmodal')
+          }}
+        />
+      </View>
+    );
+  }
 }
+
+const localStyles = StyleSheet.create({
+  loginContainer: {
+    top: 0,
+    flex: 1,
+    backgroundColor: '#e9ebee',
+    alignItems: 'center',
+    backgroundColor: '#20232A'
+  },
+  subHeaderContainer: {
+    top: '15%',
+    width: '50%',
+    borderBottomWidth: 1,
+    paddingBottom: 10,
+    borderColor: 'grey',
+    borderRadius: 20
+  },
+  subHeaderText: {
+    textAlign:"center",
+    fontSize: 18,
+    color: theme.LIGHT_PINK,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    textShadowColor: '#000',
+    color:"#FFCC00"
+  },
+  headerContainer: {
+    top: '8%',
+    width: '80%',
+    paddingBottom: 10,
+  },
+  headerText: {
+    textAlign:"center",
+    fontSize: 30,
+    color: theme.LIGHT_PINK,
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    textShadowColor: '#000',
+    color:"#FFCC00"
+  },
+  googleLoginBtn: {
+    backgroundColor: '#228B22',
+    paddingHorizontal: 20,
+    marginTop: '40%',
+    borderRadius: 20,
+    height: 60,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderColor: 'red',
+    borderWidth: 1
+  },
+  nifeLoginBtn: {
+    backgroundColor: 'black',
+    borderColor: '#FF69B4',
+    borderWidth: 1,
+    marginTop: '10%',
+    borderRadius: 20,
+    height: 60,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  nifeBusLoginBtn: {
+    backgroundColor: 'black',
+    borderColor: '#FF69B4',
+    borderWidth: 1,
+    marginTop: '40%%',
+    borderRadius: 20,
+    height: 60,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  nifeForgotBtn: {
+    backgroundColor: 'black',
+    borderColor: '#FF69B4',
+    borderWidth: .5,
+    marginTop: '30%%',
+    borderRadius: 20,
+    height: 35,
+    width: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  loggedOutText: {
+    color: "#fff",
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  btnContainer: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  Logo: {
+    width: 25, 
+    height: 25,
+    left: 2,
+    borderColor: "#fff",
+    borderWidth: .2,
+    borderRadius: 5
+  },
+})

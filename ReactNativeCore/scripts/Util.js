@@ -237,8 +237,7 @@ const Util = {
         },
         CheckAuthStatus: async (callback) => {
             try{
-                await firebase.auth().onAuthStateChanged((user) => {
-                    console.log(user);
+                firebase.auth().onAuthStateChanged((user) => {
                     if(callback) {
                         callback(user);
                     }
@@ -252,25 +251,18 @@ const Util = {
         GetUserData: async (email, callback) => {
             let obj = {
                 email: email
-            };
-            let seen = [];
+            }
             if(email && typeof obj.email !== 'undefined') {
+                console.log(obj)
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
                     method: 'POST',
-                    body: JSON.stringify(obj, function(key, val) {
-                        if (val != null && typeof val == "object") {
-                             if (seen.indexOf(val) >= 0) {
-                                 return;
-                             }
-                             seen.push(val);
-                         }
-                         return val;
-                     })
+                    body: JSON.stringify(obj)
                 })
                 .then(response => response.json())
                 .then(data => {
                     if(callback) {
+                        console.log(data, data.result);
                         callback(data.result);
                     }
                     Util.basicUtil.consoleLog('GetUserData', true);
@@ -1312,6 +1304,7 @@ const Util = {
                        try {
                             let email = signUpInfo.email;
                             let password = signUpInfo.password1
+                            console.log(email, password)
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                             .catch(function(error) {
                                 Util.basicUtil.consoleLog("Nife's sign-up", false);

@@ -12,7 +12,7 @@ import ProfileStack from './profileStack';
 import Util from '../scripts/Util';
 import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
-import Login from '../Screens/Login Screen';
+import LoginScreen from '../Screens/Login Screen';
 import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
 
 
@@ -125,6 +125,7 @@ class Navigator extends React.Component {
 
   firstTimeSignUp = (user) => {
     if(this.state.displayName) {
+      console.log(this.state.displayName);
       user.updateProfile({ displayName: this.state.displayName })
       .then(() => {
         this.initializeParams(user);
@@ -157,24 +158,32 @@ class Navigator extends React.Component {
   setIsBusiness = (bool, signUpState) => {
     this.setState({ isBusiness: bool });
     if (signUpState) {
-      this.setState({ businessState: signUpState });
+      this.setState({ 
+        businessState: signUpState,
+        authLoaded: true
+      });
     }
   }
 
   initializeParams = async (user) => {
-    Util.user.VerifyUser(user, user.email);
-    this.getNeededData(user);
-    Permissions.askAsync(Permissions.LOCATION).then((status) => {
-      if (status.status === 'granted') {
-        Util.location.GetUserLocation(null, user);
-      } else {
-        throw new Error('Location permission not granted');
-      }
+    await Util.user.VerifyUser(user, user.email, (userObj) => {
+      console.log(userObj);
+      let user = userObj;
+      this.getNeededData(user);
+      Permissions.askAsync(Permissions.LOCATION).then((status) => {
+        if (status.status === 'granted') {
+          Util.location.GetUserLocation(null, user);
+        } 
+        else {
+          Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
+        }
+      });
     });
   }
 
   async componentDidMount() {
     await Util.user.CheckAuthStatus((user) => {
+      console.log(user);
       this.setState({ authLoaded: true });
       if (user) {
         this.setState({
@@ -230,7 +239,7 @@ class Navigator extends React.Component {
             <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
           </View> 
           :
-          <Login setBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></Login>  
+          <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
         :
         <Loading></Loading>
     );

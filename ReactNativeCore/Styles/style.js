@@ -84,13 +84,7 @@ export const styles = StyleSheet.create({
     opacity: 0.75,
     backgroundColor: theme.DARK,
   }, 
-  loginContainer: {
-    top: 0,
-    flex: 1,
-    backgroundColor: '#e9ebee',
-    alignItems: 'center',
-    backgroundColor: '#20232A'
-  },
+  
   friendVisitedBy: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -171,32 +165,8 @@ export const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1
   },
-  googleLoginBtn: {
-    backgroundColor: '#228B22',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginTop: '33%',
-    borderRadius: 20,
-    height: 60,
-    width: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderColor: 'red',
-    borderWidth: 1
-  },
-  nifeLoginBtn: {
-    backgroundColor: 'black',
-    borderColor: '#FF69B4',
-    borderWidth: 1,
-    marginTop: '33%',
-    borderRadius: 20,
-    height: 60,
-    width: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row'
-  },
+  
+  
   logoutBtn: {
     backgroundColor: 'grey',
     paddingVertical: 10,
@@ -248,14 +218,7 @@ export const styles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 10
   },
-  Logo: {
-    width: 25, 
-    height: 25,
-    left: 2,
-    borderColor: "#fff",
-    borderWidth: .2,
-    borderRadius: 5
-  },
+  
   LogoData: {
     width: 90,
     height: 90,
@@ -272,11 +235,7 @@ export const styles = StyleSheet.create({
     textAlign:"center",
     alignItems:"center",
   },
-  loggedOutText: {
-    color: "#fff",
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
+  
   facebookDataText: {
     color: theme.LIGHT_PINK,
     fontSize: 11,
@@ -353,22 +312,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     top: 200
   },
-  headerText: {
-    textAlign:"center",
-    fontSize: 26,
-    color: theme.LIGHT_PINK,
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 1,
-    textShadowColor: '#000',
-    color:"#FFCC00"
-  },
-  headerContainer: {
-    top: 60,
-    width: '80%',
-    borderBottomWidth: 1,
-    paddingBottom: 10,
-    borderColor: 'grey'
-  },
+ 
   textInput: {
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
