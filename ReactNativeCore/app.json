@@ -4,7 +4,7 @@
   "expo": {
     "name": "Nife",
     "slug": "Nife",
-    "icon": "./Media/Images/Nife App Logo w BG.png",
+    "icon": "https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed",
     "privacy": "unlisted",
     "version": "1.0.0.7",
     "entryPoint": "node_modules/expo/AppEntry.js",
@@ -14,7 +14,7 @@
       "web"
     ],
     "splash": {
-      "image": "./Media/Images/Splash.jpg"
+      "image": "./Media/Images/Splash.png"
     },
     "ios": {
       "bundleIdentifier": "com.virastarllc.nife",

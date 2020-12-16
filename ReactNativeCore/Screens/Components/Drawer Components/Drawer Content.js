@@ -22,7 +22,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../../Universal Components/IconWithBadge"
-const defPhoto = require('../../../Media/Images/logoicon.png');
+const defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 export function DrawerContent(props) {
 

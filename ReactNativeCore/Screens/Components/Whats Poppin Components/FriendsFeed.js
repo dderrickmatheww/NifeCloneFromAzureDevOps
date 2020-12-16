@@ -13,8 +13,8 @@ import  theme  from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import Util from '../../../scripts/Util';
 import StatusModal from '../Profile Screen Components/Status Modal';
+var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
-var defPhoto = require('../../../Media/Images/logoicon.png')
 export default class FriendsFeed extends React.Component  {
     state = {
         modalVisable: false,

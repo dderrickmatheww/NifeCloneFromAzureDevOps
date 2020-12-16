@@ -60,7 +60,7 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Login with Google</Text>
             <Image
                 style={localStyles.Logo}
-                source={require("../Media/Images/googlelogo.png")}
+                source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Fgooglelogo.png?alt=media&token=df5a838d-8167-41bb-a102-d9ea4690b4c6' }}
               />
           </TouchableOpacity>
         </View>
@@ -75,7 +75,7 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
             <Image
               style={localStyles.Logo}
-              source={require("../Media/Images/nife.png")}
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' }}
             />
           </TouchableOpacity>
         </View>
@@ -95,7 +95,7 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
             <Image
               style={localStyles.Logo}
-              source={require("../Media/Images/nife.png")}
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' }}
             />
           </TouchableOpacity>
         </View>
@@ -110,7 +110,7 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-        <NifeLoginModal  setIsBusiness={this.props.setIsBusiness} onDismiss={() => this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} isReset={this.state.isReset} modalVisible={this.state.modalVisible} callback={() => {
+        <NifeLoginModal  setIsBusiness={this.props.setIsBusiness} isBusiness={this.state.isBusiness} onDismiss={() => this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} isReset={this.state.isReset} modalVisible={this.state.modalVisible} callback={() => {
             console.log('callback nifeloginmodal')
           }}
         />
@@ -138,11 +138,10 @@ const localStyles = StyleSheet.create({
   subHeaderText: {
     textAlign:"center",
     fontSize: 18,
-    color: theme.LIGHT_PINK,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textShadowColor: '#000',
-    color:"#FFCC00"
+    color: theme.LIGHT_PINK,
   },
   headerContainer: {
     top: '8%',
@@ -152,11 +151,10 @@ const localStyles = StyleSheet.create({
   headerText: {
     textAlign:"center",
     fontSize: 30,
-    color: theme.LIGHT_PINK,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textShadowColor: '#000',
-    color:"#FFCC00"
+    color: theme.LIGHT_PINK,
   },
   googleLoginBtn: {
     backgroundColor: '#228B22',
@@ -173,7 +171,7 @@ const localStyles = StyleSheet.create({
   },
   nifeLoginBtn: {
     backgroundColor: 'black',
-    borderColor: '#FF69B4',
+    borderColor: theme.LIGHT_PINK,
     borderWidth: 1,
     marginTop: '10%',
     borderRadius: 20,
@@ -185,7 +183,7 @@ const localStyles = StyleSheet.create({
   },
   nifeBusLoginBtn: {
     backgroundColor: 'black',
-    borderColor: '#FF69B4',
+    borderColor: theme.LIGHT_PINK,
     borderWidth: 1,
     marginTop: '40%%',
     borderRadius: 20,
@@ -197,7 +195,7 @@ const localStyles = StyleSheet.create({
   },
   nifeForgotBtn: {
     backgroundColor: 'black',
-    borderColor: '#FF69B4',
+    borderColor: theme.LIGHT_PINK,
     borderWidth: .5,
     marginTop: '30%%',
     borderRadius: 20,

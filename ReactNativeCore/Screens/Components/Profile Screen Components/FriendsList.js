@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Touchable
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
-var defPhoto = require('../../../Media/Images/logoicon.png');
+var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 class FriendsList extends React.Component {
   

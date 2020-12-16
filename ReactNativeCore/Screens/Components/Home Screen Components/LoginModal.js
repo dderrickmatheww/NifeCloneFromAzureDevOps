@@ -42,10 +42,10 @@ export default class NifeLoginModal extends Component {
             if(this.state.password1 === this.state.password2) {
                 if (!this.state.businessEmail) {
                     if(!this.state.email || !this.state.password1 || !this.state.displayName) {
-                        alert('Please make sure all fields are filled out!');
+                        Util.basicUtil.Alert('Nife Message', "Please make sure all fields are filled out!", null);
                     }
                     else if (this.state.password1.length < 8) {
-                        alert('Your password must be great than eight characters!');
+                        Util.basicUtil.Alert('Nife Message', "Your password must be great than eight characters!", null);
                     }
                     else {
                         this.props.onSignUp(this.state);
@@ -62,10 +62,10 @@ export default class NifeLoginModal extends Component {
                 }
                 else {
                     if(!this.state.businessEmail || !this.state.password1 || !this.state.businessName) {
-                        alert('Please enter correct sign-up information for buisnesses');
+                        Util.basicUtil.Alert('Nife Message', "Please enter correct sign-up information!", null);
                     }
                     else if (this.state.password1.length < 8) {
-                        alert('Your password must be great than eight characters!');
+                        Util.basicUtil.Alert('Nife Message', "Your password must be great than eight characters!", null);
                     }
                     else {
                         this.props.onSignUp(this.state);
@@ -82,17 +82,17 @@ export default class NifeLoginModal extends Component {
                 }
             }
             else {
-                alert("Your passwords do not match. Please try again. :)");
+                Util.basicUtil.Alert('Nife Message', "Your passwords do not match. Please try again. :)", null);
             }
         } 
         else {
             if(!this.state.email || !this.state.password1) {
-                alert('Please enter correct sign-up information');
+                Util.basicUtil.Alert('Nife Message', "Please enter correct sign-up information!", null);
             }
             else {
                 Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
                     if(error) {
-                        alert(error);
+                        Util.basicUtil.Alert('Nife Error Message', error.message, null);
                         this.resetPasswordField();
                     } 
                     else {
@@ -115,13 +115,12 @@ export default class NifeLoginModal extends Component {
 
     verifyBusiness = () => {
         this.setState({ verifying: true });
-        let address = this.state.Address;
-        let city = this.state.City;
-        let state = this.state.State;
-        let zip = this.state.zip;
-        let name = this.state.businessName;
-        if(address != null & city  != null  & state != null  & zip != null  & name != null ){
-            Util.dataCalls.Yelp.businessVerification(name, address, city, state, zip, "US", (data) => {
+        let address = this.state.Address ? this.state.Address : null;
+        let city = this.state.City ? this.state.City : null;
+        let state = this.state.State ? this.state.State : null;
+        let name = this.state.businessName ? this.state.businessName : null;
+        if(address !== null & city  !== null  & state !== null & name !== null ){
+            Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US", (data) => {
                 if (data.businesses && data.businesses.length > 0) {
                     this.setState({
                         businessId: data.businesses[0].id,
@@ -130,12 +129,14 @@ export default class NifeLoginModal extends Component {
                     });
                     this.props.setIsBusiness(true, this.state);
                 } else {
-                    alert('We could not find your business... make sure your contact information matches other online sources...');
+                    this.setState({ verifying: false });
+                    Util.basicUtil.Alert('Nife Message', "We could not find your business! Make sure your contact information matches other online sources! For more information contact admin@nife.app.", null);
                 }
             });
         }
         else {
-            alert('Please fill out all forms, make sure your contact information matches other online sources...');
+            this.setState({ verifying: false });
+            Util.basicUtil.Alert('Nife Message', "Please fill out all required feilds (Address, City, State, and Name) in this form!", null);
         }
     }
 
@@ -176,134 +177,149 @@ export default class NifeLoginModal extends Component {
     render () {
         return (
             !this.props.isReset ?
-                this.state.signUp ?
-                    <Modal
+                !this.props.isBusiness ? 
+                    this.state.signUp ?
+                        //Sign-up with Nife
+                        <Modal
                         visible={this.props.modalVisible}
                         dismissable={true}
                         onDismiss={this.props.onDismiss}
                         contentContainerStyle={localStyles.Modal}
-                    >
-                        <Subheading style={localStyles.Subheading}>Please fill out this form so we can get a pulse on the night for you. </Subheading>
-                        <View style={localStyles.Container}>
-                            <TextInput textContentType={"none"} theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Display Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "displayName")} />
-                            <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}} placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
-                            
-                            <TouchableOpacity
-                                onPress={() => this.authenticateUser('sign-up')}
-                                style={localStyles.signUpBtn}
-                            > 
-                            
-                                <Caption style={localStyles.Caption}>Sign up</Caption>
-                            </TouchableOpacity>
-
-                            <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
-                            <TouchableOpacity
-                                onPress={() => this.setState({signUp: false})}
-                                style={localStyles.loginSwitch}
-                            > 
-                                <Caption style={localStyles.Caption}>Login</Caption>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({signUp: false});
-                                    this.setState({bussinessApplication: true});
-                                }}
+                        >
+                            <Subheading style={localStyles.Subheading}>Please fill out this form! </Subheading>
+                            <View style={localStyles.Container}>
+                                <TextInput textContentType={"none"} theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Display Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "displayName")} />
+                                <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                                <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                                <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}} placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
                                 
-                            > 
-                                <Caption style={localStyles.business}>Click here if you want to apply for a business account</Caption>
-                            </TouchableOpacity>
-                        </View>
-                    </Modal>
-                    
-                    : 
-                    // Businesss side
-                    this.state.bussinessApplication ?
-                        this.state.bussinessApplicationPt2  == false?
+                                <TouchableOpacity
+                                    onPress={() => this.authenticateUser('sign-up')}
+                                    style={localStyles.signUpBtn}
+                                > 
+                                
+                                    <Caption style={localStyles.Caption}>Sign up</Caption>
+                                </TouchableOpacity>
+                                <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
+                                <TouchableOpacity
+                                    onPress={() => this.setState({signUp: false})}
+                                    style={localStyles.loginSwitch}
+                                > 
+                                    <Caption style={localStyles.Caption}>Login</Caption>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
+                        : 
+                        // LOGIN WITH NIFE
+                        <Modal
+                            visible={this.props.modalVisible}
+                            dismissable={true}
+                            onDismiss={this.props.onDismiss}
+                            contentContainerStyle={localStyles.Modal}
+                        >
+                            <Subheading style={localStyles.Subheading}>Please enter your credentials to login!</Subheading>
+                            <View style={localStyles.Container}>
+                                <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                                <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                                
+                                <TouchableOpacity
+                                    onPress={() => this.authenticateUser('login')}
+                                    style={localStyles.LoginBtn}
+                                > 
+                                    <Caption style={localStyles.Caption}>Log In</Caption>
+                                </TouchableOpacity>
+                                <Text style={localStyles.loginLoginSwitchText}>Need to make an account?</Text>
+                                <TouchableOpacity
+                                    onPress={() => this.setState({signUp: true})}
+                                    style={localStyles.LoginBtn}
+                                > 
+                                    <Caption style={localStyles.Caption}>Sign Up</Caption>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
+                :
+                     this.state.bussinessApplicationPt2  == false ?
                         //businiess app pt 1
-                            <Modal
-                                visible={this.props.modalVisible}
-                                dismissable={true}
-                                onDismiss={this.props.onDismiss}
-                                contentContainerStyle={localStyles.Modal}
-                            >
-                                {
-                                    !this.state.verifying ?
-                                    <View>
-                                        <View style={localStyles.Container}>
-                                            <Subheading style={localStyles.Subheading}>Choose an option to verify your account... </Subheading>
-                                        </View>
-                                
-                                        <ScrollView contentContainerStyle={localStyles.Container}>
-                                            <TextInput   theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
+                        <Modal
+                            visible={this.props.modalVisible}
+                            dismissable={true}
+                            onDismiss={this.props.onDismiss}
+                            contentContainerStyle={localStyles.Modal}
+                        >
+                            {
+                                !this.state.verifying ?
+                                <View>
+                                    <View style={localStyles.Container}>
+                                        <Subheading style={localStyles.Subheading}>Please fill out the information to verify your business!</Subheading>
+                                    </View>
+                            
+                                    <ScrollView contentContainerStyle={localStyles.Container}>
+                                        <TextInput   theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
+                                        style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
 
-                                            <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
+                                        <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
+                                        style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
 
-                                            <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} 
-                                            placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "businessEmail")} />
+                                        <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} 
+                                        placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "businessEmail")} />
 
-                                            <TextInput  keyboardType={"phone-pad"} theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />
+                                        <TextInput  keyboardType={"phone-pad"} theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
+                                        style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />
 
-                                            <TextInput   theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'Address'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "Address")} />
+                                        <TextInput   theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
+                                        style={localStyles.textInput} placeholder={'Address'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "Address")} />
 
-                                            <TextInput theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'City'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "City")} />
+                                        <TextInput theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
+                                        style={localStyles.textInput} placeholder={'City'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "City")} />
 
-                                            <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "State")} />
-
-                                            <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
-                                            style={localStyles.textInput} placeholder={'ZIP'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "ZIP")} />
-
-                                            
-
+                                        <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} 
+                                        style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "State")} />
+                                        
+                                        <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
                                             <TouchableOpacity
                                                 onPress={() => {
-                                                    this.verifyBusiness(()=>{
-                                                        this.setState({verifying:false});
-                                                        
-                                                        this.setState({bussinessApplicationPt2: true});
+                                                    this.setState({
+                                                        signUp: false,
+                                                        bussinessApplication: false
+                                                    });
+                                                    this.props.onDismiss();
+                                                }}
+                                                style={localStyles.nextBtn}
+                                            > 
+                                                <Caption style={localStyles.Caption}>Back</Caption>
+                                            </TouchableOpacity> 
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    this.verifyBusiness(() => {
+                                                        this.setState({ 
+                                                            verifying: false,
+                                                            bussinessApplicationPt2: true
+                                                        });
                                                     });
                                                 }}
-                                                style={localStyles.signUpBtn}
+                                                style={localStyles.nextBtn}
                                             > 
                                                 <Caption style={localStyles.Caption}>Next</Caption>
                                             </TouchableOpacity>
-                                            <Text style={localStyles.loginSwitchText}>Not a business?</Text>
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    this.setState({signUp: true});
-                                                    this.setState({bussinessApplication: false});
-                                                }}
-                                                style={localStyles.notBusiness}
-                                            > 
-                                                <Caption style={localStyles.Caption}>Back to Sign Up</Caption>
-                                            </TouchableOpacity> 
-                                        </ScrollView> 
+                                        </View>
+                                    </ScrollView> 
                                 </View>
                                 :
                                 <View style={styles.viewDark}>
                                     <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
                                 </View>
-                                
-                                }
-                                
-                        </Modal> 
-                        : 
+                            }
+                    </Modal> 
+                    : 
                     // bussiness app PT 2
                     <Modal
                         visible={this.props.modalVisible}
                         dismissable={true}
                         onDismiss={this.props.onDismiss}
-                        contentContainerStyle={localStyles.Modal}
+                        contentContainerStyle={localStyles.ModalBusiness}
                     >
                         <View style={localStyles.Container}>
-                            <Subheading style={localStyles.Subheading}>Fill out your password to create your account. </Subheading>
+                            <Subheading style={localStyles.Subheading}>Fill out your password please!</Subheading>
                         </View>
                         <ScrollView contentContainerStyle={localStyles.Container}>
                             {/* <TouchableOpacity style={localStyles.VerificationOption}
@@ -323,61 +339,31 @@ export default class NifeLoginModal extends Component {
                             <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
                             <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}} placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
 
-                            
-                            <View style={{alignSelf:"center"}}>
+                            <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        this.props.setBusiness(true, this.state);
+                                        this.setState({
+                                            signUp: false,
+                                            bussinessApplication: false
+                                        });
+                                        this.props.onDismiss();
+                                    }}
+                                    style={localStyles.nextBtn}
+                                > 
+                                    <Caption style={localStyles.Caption}>Close</Caption>
+                                </TouchableOpacity> 
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        this.props.setIsBusiness(true, this.state);
                                         this.authenticateUser('sign-up'); 
                                     }}
-                                    style={localStyles.signUpBtn}
+                                    style={localStyles.nextBtn}
                                 > 
                                     <Caption style={localStyles.Caption}>Sign up</Caption>
                                 </TouchableOpacity>
-
-                                <Text style={localStyles.loginSwitchText}>Not a business?</Text>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.props.setBusiness(false);
-                                        this.setState({signUp: true});
-                                        this.setState({bussinessApplication: false});
-                                        this.setState({bussinessApplicationPt2: false});
-                                    }}
-                                    style={localStyles.notBusiness}
-                                > 
-                                    <Caption style={localStyles.Caption}>Back to Sign Up</Caption>
-                                </TouchableOpacity> 
                             </View>
                         </ScrollView> 
                     </Modal> 
-                    :
-                    // LOGIN WITH NIFE
-                    <Modal
-                        visible={this.props.modalVisible}
-                        dismissable={true}
-                        onDismiss={this.props.onDismiss}
-                        contentContainerStyle={localStyles.Modal}
-                    >
-                        <Subheading style={localStyles.Subheading}>Please enter your credentials to sign in... </Subheading>
-                        <View style={localStyles.Container}>
-                            <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                            
-                            <TouchableOpacity
-                                onPress={() => this.authenticateUser('login')}
-                                style={localStyles.signUpBtn}
-                            > 
-                                <Caption style={localStyles.Caption}>Log In</Caption>
-                            </TouchableOpacity>
-                            <Text style={localStyles.loginSwitchText}>Need to make an account?</Text>
-                            <TouchableOpacity
-                                onPress={() => this.setState({signUp: true})}
-                                style={localStyles.loginSwitch}
-                            > 
-                                <Caption style={localStyles.Caption}>Sign Up</Caption>
-                            </TouchableOpacity>
-                        </View>
-                    </Modal>
             :
             <Modal
                 visible={this.props.modalVisible}
@@ -416,10 +402,15 @@ const localStyles = StyleSheet.create({
     },
     loginSwitchText:{
         color:theme.LIGHT_PINK, 
-        fontSize:15,
-        marginTop:50,
-        textAlign:"center",
-        marginBottom: 10
+        fontSize: 15,
+        marginTop: '25%',
+        textAlign:"center"
+    },
+    loginLoginSwitchText:{
+        color:theme.LIGHT_PINK, 
+        fontSize: 15,
+        marginTop: '50%',
+        textAlign:"center"
     },
     loginSwitch:{
         borderColor:theme.LIGHT_PINK,
@@ -428,7 +419,9 @@ const localStyles = StyleSheet.create({
         borderWidth: 1,
         paddingHorizontal:5,
         paddingVertical:2,
-        marginTop: 10
+        marginTop: '5%',
+        width: '40%',
+        height: '7%',
     },
     notBusiness:{
         borderColor:theme.LIGHT_PINK,
@@ -441,23 +434,50 @@ const localStyles = StyleSheet.create({
     },
     signUpBtn:{
         borderColor:theme.LIGHT_PINK,
-        borderRadius:10,
+        borderRadius: 10,
         alignSelf:"center",
         borderWidth: 1,
         paddingHorizontal:5,
-        paddingVertical:2,
-        marginTop:7,
-
+        paddingVertical: 2,
+        width: '40%',
+        height: '7%',
+        marginTop: '10%',
+        textAlign:"center",
     },
-    Caption:{
-        color:theme.LIGHT_PINK, 
-        fontSize:15
+    nextBtn: {
+        borderColor:theme.LIGHT_PINK,
+        borderRadius: 10,
+        alignSelf:"center",
+        borderWidth: 1,
+        paddingHorizontal:5,
+        paddingVertical: 2,
+        width: '30%',
+        margin: '2%',
+        textAlign:"center",
+    },
+    LoginBtn: {
+        borderColor:theme.LIGHT_PINK,
+        borderRadius: 10,
+        alignSelf:"center",
+        borderWidth: 1,
+        paddingHorizontal:5,
+        paddingVertical: 2,
+        width: '40%',
+        height: '8%',
+        marginTop: '10%',
+        textAlign:"center",
+    },
+    Caption: {
+        color: theme.LIGHT_PINK, 
+        fontSize: 15,
+        textAlign:"center",
+        padding: '2%'
     },
     business:{
-        color:theme.LIGHT_PINK, 
-        fontSize:12,
-        textAlign:"center",
-        marginTop:15
+        color: theme.LIGHT_PINK, 
+        fontSize: 12,
+        textAlign: "center",
+        marginTop: 15
     },
     textInput:{
         width:"90%",
@@ -473,8 +493,21 @@ const localStyles = StyleSheet.create({
         height:"85%",
         alignSelf:"center",
         justifyContent:"flex-start",
-        borderRadius:10,
-        color:theme.LIGHT_PINK
+        borderRadius: 10,
+        borderColor: theme.LIGHT_PINK,
+        borderWidth: 1,
+        color: theme.LIGHT_PINK
+    },
+    ModalBusiness: {
+        backgroundColor:theme.DARK,
+        width:"90%",
+        height:"50%",
+        alignSelf:"center",
+        justifyContent:"flex-start",
+        borderRadius: 10,
+        borderColor: theme.LIGHT_PINK,
+        borderWidth: 1,
+        color: theme.LIGHT_PINK
     },
     ModalReset:{
         backgroundColor:theme.DARK,
@@ -497,6 +530,7 @@ const localStyles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:"center",
         alignContent:"center",
-        textAlign:"center"
+        textAlign:"center",
+        borderRadius:10,
     },
 })

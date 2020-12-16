@@ -12,7 +12,7 @@ import Util from '../../../scripts/Util';
 import { Modal, Text, Subheading } from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
-var defPhoto = require('../../../Media/Images/logoicon.png');
+var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 class RequestModal extends React.Component  {
     state = {

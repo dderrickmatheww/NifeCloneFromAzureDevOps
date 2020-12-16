@@ -13,7 +13,7 @@ import { styles } from '../Styles/style';
 import theme from '../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
-const defPhoto = require('../Media/Images/logoicon.png');
+const defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 export default class ProfileScreen extends Component {
   state = {
