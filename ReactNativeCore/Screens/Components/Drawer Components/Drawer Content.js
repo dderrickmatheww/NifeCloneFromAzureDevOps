@@ -18,14 +18,13 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import theme from '../../../Styles/theme';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../../Universal Components/IconWithBadge"
 const defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 export function DrawerContent(props) {
-
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -206,7 +205,7 @@ export function DrawerContent(props) {
                                 <DrawerItem 
                                         icon={() => (
                                             <Ionicons 
-                                            name="md-qr-scanner" 
+                                            name="md-qr-code" 
                                             color={theme.LIGHT_PINK}
                                             size={20}
                                             />

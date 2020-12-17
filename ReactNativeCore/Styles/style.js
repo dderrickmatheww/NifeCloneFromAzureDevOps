@@ -239,18 +239,18 @@ export const styles = StyleSheet.create({
   facebookDataText: {
     color: theme.LIGHT_PINK,
     fontSize: 11,
-    fontFamily: theme.fontFamily,
+    //fontFamily: theme.fontFamily,
     alignSelf:"center"
   },
   checkedInDataText: {
     color: theme.LIGHT_PINK,
     fontSize: 17,
-    fontFamily: theme.fontFamily,
+    //fontFamily: theme.fontFamily,
   },
   facebookScrollText: {
     color: "black",
     fontSize: 16,
-    fontFamily: theme.fontFamily
+   // fontFamily: theme.fontFamily
   },
   dataRowDescription: {
     justifyContent: 'center', 
@@ -259,19 +259,19 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     top: 20,
     right: '10%',
-    fontFamily: theme.fontFamily
+    //fontFamily: theme.fontFamily
   },
   dataRowSpecialties: {
     top: 30,
     width: '80%',
     right: '10%',
-    fontFamily: theme.fontFamily
+    //fontFamily: theme.fontFamily
   },
   dataRowLinks: {
     top: 40,
     width: '80%',
     right: '10%',
-    fontFamily: theme.fontFamily
+   // fontFamily: theme.fontFamily
   },
   twitterDataRowSection: {
     borderRadius: 20,

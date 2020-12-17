@@ -3,9 +3,10 @@ import { Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons'; 
+import { AntDesign } from '@expo/vector-icons';
 
 export default function IconWithBadge({ name, badgeCount, color, size, type , isDrawer}) {
+  
     return (
       <View style={{ width: 30, height: size, marginLeft:isDrawer?12:0}}>
         {
