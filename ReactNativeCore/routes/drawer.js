@@ -13,7 +13,6 @@ import Util from '../scripts/Util';
 import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import LoginScreen from '../Screens/Login Screen';
-import * as SplashScreen from 'expo-splash-screen';
 import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
 import * as Font from 'expo-font';
 
@@ -180,11 +179,6 @@ class Navigator extends React.Component {
   }
 
   async componentDidMount() {
-    try {
-      await SplashScreen.preventAutoHideAsync();
-    } catch (e) {
-      console.warn(e);
-    }
     await Font.loadAsync({
       antDesign: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf'),
       fontAwesome: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf'),
@@ -192,7 +186,6 @@ class Navigator extends React.Component {
     });
     await Util.user.CheckAuthStatus((user) => {
       this.setState({ authLoaded: true });
-      
       if (user) {
         this.setState({
             userExists: true
@@ -211,8 +204,7 @@ class Navigator extends React.Component {
             userExists: false
         });
       }
-    });
-    await SplashScreen.hideAsync();
+    })
   }
 
   render() {
