@@ -254,7 +254,6 @@ const Util = {
                 email: email
             }
             if(email && typeof obj.email !== 'undefined') {
-                console.log(obj)
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserData', 
                 { 
                     method: 'POST',
@@ -1304,8 +1303,7 @@ const Util = {
                     if(!signUpInfo.businessEmail){
                        try {
                             let email = signUpInfo.email;
-                            let password = signUpInfo.password1
-                            console.log(email, password)
+                            let password = signUpInfo.password1;
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                             .catch(function(error) {
                                 Util.basicUtil.consoleLog("Nife's sign-up", false);
@@ -1435,7 +1433,6 @@ const Util = {
                 .then((data) => data.json())
                 .then((response) => {
                     Util.basicUtil.consoleLog("businessPhoneVerification", true);
-                    console.log(response);
                     if(callback) {
                         callback(response);
                     }
@@ -1465,7 +1462,6 @@ const Util = {
             },
             passwordReset: async (email) => {
                 var auth = firebase.auth();
-                console.log(email)
                 auth.sendPasswordResetEmail(email).then(function() {
                     Util.basicUtil.consoleLog("Firebase's Reset Password", true);
                     Util.basicUtil.Alert('Nife - Reset Password', 'Email was sent! Please check your email for further directions!', null);

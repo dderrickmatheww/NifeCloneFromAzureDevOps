@@ -110,10 +110,15 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>
-        <NifeLoginModal  setIsBusiness={this.props.setIsBusiness} isBusiness={this.state.isBusiness} onDismiss={() => this.setState({modalVisible:false})} onSignUp={this.props.onSignUp} isReset={this.state.isReset} modalVisible={this.state.modalVisible} callback={() => {
-            console.log('callback nifeloginmodal')
-          }}
-        />
+        <NifeLoginModal  
+        setIsBusiness={this.props.setIsBusiness} 
+        isBusiness={this.state.isBusiness} 
+        onDismiss={() => this.setState({modalVisible:false})} 
+        onSignUp={this.props.onSignUp} 
+        isReset={this.state.isReset} 
+        modalVisible={this.state.modalVisible} 
+        callback={() => {}
+        }/>
       </View>
     );
   }

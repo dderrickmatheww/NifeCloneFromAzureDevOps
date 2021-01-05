@@ -18,7 +18,7 @@ import {
     DrawerItem
 } from '@react-navigation/drawer';
 import theme from '../../../Styles/theme';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../../Universal Components/IconWithBadge"
@@ -33,25 +33,29 @@ export function DrawerContent(props) {
                         <View style={{flexDirection:'row',marginTop: 15}}>
                             
                             {
-                                props.user.photoSource  ?
+                                props.user.photoSource !== "Unknown"  ?
                                     <Avatar.Image 
                                         source={props.user.providerData ? {
                                             uri:  props.user.photoSource  
-                                        }: defPhoto}
+                                        } : defPhoto}
                                         size={100}
                                     />
                                     :
                                     <TouchableOpacity style={styles.NoAvatarButton}
-                                        onPress={()=> props.uploadImage(()=>null)}
+                                        onPress={()=> props.uploadImage(() => null)}
                                     >
                                         {
                                             props.uploading ?
-                                            <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                                                <View style={{alignItems:"center", padding: '2%'}}>
+                                                    <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                                                </View>
                                             :
-                                            <View style={{alignItems:"center"}}>
-                                                <Ionicons size={50} color={theme.LIGHT_PINK} name="ios-person"></Ionicons>
-                                                <Caption style={styles.caption}>Add Picture!</Caption>
-                                            </View>
+                                                <View style={{alignItems:"center"}}>
+                                                    <Avatar.Image 
+                                                        source={defPhoto}
+                                                        size={100}
+                                                    />
+                                                </View>
                                         }
                                     </TouchableOpacity>
                             }
@@ -232,8 +236,8 @@ export function DrawerContent(props) {
                         
                         <DrawerItem 
                             icon={() => (
-                                <MaterialCommunityIcons 
-                                name="settings" 
+                                <FontAwesome 
+                                name="gears" 
                                 color={theme.LIGHT_PINK}
                                 size={20}
                                 />

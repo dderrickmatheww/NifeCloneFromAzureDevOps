@@ -13,9 +13,9 @@ import Util from '../scripts/Util';
 import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import LoginScreen from '../Screens/Login Screen';
+import * as SplashScreen from 'expo-splash-screen';
 import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
 import * as Font from 'expo-font';
-import { Ionicons, FontAwesome, AntDesign } from '@expo/vector-icons';
 
 const Drawer = createDrawerNavigator();
 
@@ -180,14 +180,19 @@ class Navigator extends React.Component {
   }
 
   async componentDidMount() {
+    try {
+      await SplashScreen.preventAutoHideAsync();
+    } catch (e) {
+      console.warn(e);
+    }
     await Font.loadAsync({
       antDesign: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf'),
       fontAwesome: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf'),
       ionicons: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf') // and here is what changes so that the font loads
     });
     await Util.user.CheckAuthStatus((user) => {
-      console.log(user);
       this.setState({ authLoaded: true });
+      
       if (user) {
         this.setState({
             userExists: true
@@ -206,7 +211,8 @@ class Navigator extends React.Component {
             userExists: false
         });
       }
-    })
+    });
+    await SplashScreen.hideAsync();
   }
 
   render() {
@@ -232,8 +238,8 @@ class Navigator extends React.Component {
             <Drawer.Screen name="Test" component={TestingStack} />
             <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, requests: this.state.friendRequests }}/>
             <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>
-            <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
-            <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh:this.refreshFromAsync}}/>
+            <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
+            <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
           </Drawer.Navigator>
         </NavigationContainer>
         : 

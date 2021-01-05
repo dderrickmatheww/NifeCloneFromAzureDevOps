@@ -4,6 +4,7 @@ import {
   Surface,
   Paragraph,
   Searchbar,
+  Avatar,
   Text
 } from 'react-native-paper';
 import Util from '../../../scripts/Util';
@@ -20,6 +21,7 @@ export default class UserSearch extends Component {
     searchText:null,
     isSearching: false,
     currentUserData:false,
+    userData: this.props.currentUser
   }
 
   componentDidMount(){
@@ -60,10 +62,14 @@ export default class UserSearch extends Component {
       return ( 
           <View style={localStyles.mainCont}>
             <Surface style={localStyles.navHeader}>
-              {/* Drawer Button */}
-              <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
-              </TouchableOpacity> 
+            <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                <Avatar.Image 
+                    source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                        uri:  this.state.userData.photoSource  
+                    } : defPhoto}
+                    size={50}
+                />
+            </TouchableOpacity> 
             </Surface>
             <Surface style={localStyles.surface}>
                 <View  style={localStyles.mainCont}>
@@ -175,6 +181,14 @@ const localStyles = StyleSheet.create({
     borderBottomWidth:1,
     width:"95%",
     backgroundColor: theme.DARK,
+  },
+  drawerBtn: {
+    marginTop: '5%',
+    marginLeft: '1%',
+    marginBottom: '3%',
+    borderWidth: 1,
+    borderColor: theme.LIGHT_PINK,
+    borderRadius: 70
   },
 });
 

@@ -4,6 +4,9 @@ import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Touchable
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
+import { 
+  Avatar,
+} from 'react-native-paper';
 var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 class FriendsList extends React.Component {
@@ -74,9 +77,13 @@ class FriendsList extends React.Component {
       (this.state.friends != null && this.state.friends != undefined) ?
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.navHeader}>
-              {/* Drawer Button */}
-              <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
+              <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                  <Avatar.Image 
+                      source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                          uri:  this.state.userData.photoSource  
+                      } : defPhoto}
+                      size={50}
+                  />
               </TouchableOpacity> 
               {/* Requests button */}
               {
@@ -248,7 +255,15 @@ const localStyles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: "5%",
     paddingBottom: "1%"
-  }
+  },
+  drawerBtn: {
+    marginTop: '5%',
+    marginLeft: '1%',
+    marginBottom: '3%',
+    borderWidth: 1,
+    borderColor: theme.LIGHT_PINK,
+    borderRadius: 70
+  },
 });
 
 export default FriendsList;

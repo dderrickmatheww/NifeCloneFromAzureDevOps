@@ -11,7 +11,6 @@ import {
 } from 'react-native-paper';
 import { styles } from '../Styles/style';
 import  theme  from '../Styles/theme';
-import { Ionicons } from '@expo/vector-icons'; 
 import Util from '../scripts/Util';
 import StatusModal from '../Screens/Components/Profile Screen Components/Status Modal';
 import AddressProof from '../Screens/Universal Components/AddressProof';
@@ -337,25 +336,29 @@ export default class FriendsFeed extends React.Component  {
             
                 <View style={styles.viewDark}>
                     <View style={localStyles.navHeader}>
-                            {/* Drawer Button */}
-                            <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                                <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
-                            </TouchableOpacity> 
-                            <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                                <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Your Feed</Headline>
-                            </View>
-                            {
-                                !this.state.userData.isBusiness ?
-                                <TouchableOpacity onPress={()=>this.setState({statusModalVisable:true})} style={localStyles.StatusOverlay}>
-                                    <Text style={localStyles.statusButton}>Update Status</Text>
-                                </TouchableOpacity> 
-                                : 
-                                
-                                <TouchableOpacity onPress={()=>this.setState({modalVisible:true})} style={localStyles.StatusOverlay}>
-                                    <Text style={localStyles.statusButton}>Update. . .</Text>
-                                </TouchableOpacity>
-                            }
+                        <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                            <Avatar.Image 
+                                source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                                    uri:  this.state.userData.photoSource  
+                                } : defPhoto}
+                                size={50}
+                            />
+                        </TouchableOpacity>  
+                        <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
+                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Your Feed</Headline>
                         </View>
+                        {
+                            !this.state.userData.isBusiness ?
+                            <TouchableOpacity onPress={()=>this.setState({statusModalVisable:true})} style={localStyles.StatusOverlay}>
+                                <Text style={localStyles.statusButton}>Update Status</Text>
+                            </TouchableOpacity> 
+                            : 
+                            
+                            <TouchableOpacity onPress={()=>this.setState({modalVisible:true})} style={localStyles.StatusOverlay}>
+                                <Text style={localStyles.statusButton}>Update. . .</Text>
+                            </TouchableOpacity>
+                        }
+                    </View>
                         
                     {this.state.feedData ?
                      <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
@@ -517,7 +520,7 @@ const localStyles = StyleSheet.create({
     StatusOverlay: {
         position:"relative",
         top:2.5,
-        right:125,
+        right:145,
         backgroundColor: theme.DARK,
         borderRadius: 10,
         paddingVertical:0,
@@ -592,6 +595,14 @@ const localStyles = StyleSheet.create({
         paddingHorizontal: "5%",
         paddingBottom: 10,
         paddingTop: 10
-      }
+      },
+      drawerBtn: {
+        marginTop: '3%',
+        marginLeft: '1%',
+        marginBottom: '3%',
+        borderWidth: 1,
+        borderColor: theme.LIGHT_PINK,
+        borderRadius: 70
+    },
   });
   

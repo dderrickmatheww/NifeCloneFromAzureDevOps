@@ -1,16 +1,17 @@
 import React from 'react';
 import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import theme from '../Styles/theme';
-import { Ionicons } from '@expo/vector-icons'; 
 import { styles } from '../Styles/style';
 import getFeedData from './Components/Whats Poppin Components/GetFeedData';
 import DataRow from './Components/Whats Poppin Components/DataRow';
 import * as firebase from 'firebase';
 import PleaseLogin from './Universal Components/PleaseLogin';
 import {
-    Headline
+    Headline,
+    Avatar
 } from 'react-native-paper';
 import Util from '../scripts/Util';
+var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 
 class WhatsPoppin extends React.Component  {
@@ -18,6 +19,7 @@ class WhatsPoppin extends React.Component  {
     state = {
         isLoggedIn: firebase.auth().currentUser ? true : false,
         user: firebase.auth().currentUser ? firebase.auth().currentUser : this.props.user,
+        userData: this.props.user,
         query: null,
         feedData: null,
         DataRoWKey: 0,
@@ -139,9 +141,13 @@ class WhatsPoppin extends React.Component  {
                 
                 <SafeAreaView style={styles.safeAreaContainer} >
                     <View style={localStyles.navHeader}>
-                        {/* Drawer Button */}
-                        <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                            <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
+                        <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                            <Avatar.Image 
+                                source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                                    uri:  this.state.userData.photoSource  
+                                } : defPhoto}
+                                size={50}
+                            />
                         </TouchableOpacity> 
                         <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
                             <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
@@ -270,6 +276,14 @@ const localStyles = StyleSheet.create({
         borderRadius:5,
         paddingVertical:2,
         paddingHorizontal:5
+    },
+    drawerBtn: {
+        marginTop: '1%',
+        marginLeft: '1%',
+        marginBottom: '3%',
+        borderWidth: 1,
+        borderColor: theme.LIGHT_PINK,
+        borderRadius: 70
     },
 })
 export default WhatsPoppin;

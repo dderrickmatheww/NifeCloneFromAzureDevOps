@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Image, Modal, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { 
     Text, 
     Headline,
@@ -10,7 +10,6 @@ import {
 } from 'react-native-paper';
 import { styles } from '../../../Styles/style';
 import  theme  from '../../../Styles/theme';
-import { Ionicons } from '@expo/vector-icons'; 
 import Util from '../../../scripts/Util';
 import StatusModal from '../Profile Screen Components/Status Modal';
 var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
@@ -18,17 +17,16 @@ var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.ap
 export default class FriendsFeed extends React.Component  {
     state = {
         modalVisable: false,
-        userData:null,
-        friendData:null,
+        userData: null,
+        friendData: null,
         feedData: null,
         snackBarVisable:false,
     }
     
     componentDidMount(){
-        this.setState({userData:this.props.user});
-        this.setState({friendData:this.props.friends});
+        this.setState({userData: this.props.user});
+        this.setState({friendData: this.props.friends});
         this.setFriendDataArrays();
-        //console.log("friendData: " + JSON.stringify(this.props.friends));
     }
 
     setFriendDataArrays = () => {
@@ -111,9 +109,13 @@ export default class FriendsFeed extends React.Component  {
             
            <View style={styles.viewDark}>
                <View style={localStyles.navHeader}>
-                    {/* Drawer Button */}
-                    <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                        <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
+                    <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                        <Avatar.Image 
+                            source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                                uri:  this.state.userData.photoSource  
+                            } : defPhoto}
+                            size={50}
+                        />
                     </TouchableOpacity> 
                     <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
                         <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Friend's Feed</Headline>
@@ -182,7 +184,7 @@ const localStyles = StyleSheet.create({
     StatusOverlay: {
         position:"relative",
         top:2.5,
-        right:125,
+        right: 150,
         backgroundColor: theme.DARK,
         borderRadius: 10,
         paddingVertical:0,
@@ -191,7 +193,15 @@ const localStyles = StyleSheet.create({
         borderRadius:5,
         paddingVertical:2,
         paddingHorizontal:5
-      },
+    },
+    drawerBtn: {
+        marginTop: '3%',
+        marginLeft: '1%',
+        marginBottom: '3%',
+        borderWidth: 1,
+        borderColor: theme.LIGHT_PINK,
+        borderRadius: 70
+    },
     Caption: {
         color:theme.LIGHT_PINK,
         opacity: 0.60

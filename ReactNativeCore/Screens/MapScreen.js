@@ -336,6 +336,7 @@ class MapScreen extends React.Component  {
   }
 
   setInitialState = () => {
+    console.log(this.props.user)
     this.setState({
       userData: this.props.user,
       friendData: this.props.friends
@@ -438,8 +439,7 @@ class MapScreen extends React.Component  {
             > 
             </BarModal> : null
           }       
-          <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} />  
-          
+          <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} />  
         </View>
       ) 
       :
@@ -449,7 +449,7 @@ class MapScreen extends React.Component  {
                 size={'large'}
                 color={"#D4DE24"}
             />
-            <DrawerButton drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress}/>
+            <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress}/>
       </View>
   ) 
   }
@@ -463,7 +463,7 @@ const localStyles = StyleSheet.create({
   autoCompContainer: {
     maxHeight: '30%',
     zIndex: 1000,
-    marginTop: '25%'
+    marginTop: '30%'
   },
   container: {
     flex: 1,

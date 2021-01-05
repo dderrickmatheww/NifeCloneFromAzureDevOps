@@ -375,7 +375,7 @@ export default class NifeLoginModal extends Component {
                     <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.LIGHT_PINK}}}  placeholderTextColor={theme.LIGHT_PINK_OPAC} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
                     <TouchableOpacity
                         onPress={() => Util.dataCalls.Firebase.passwordReset(this.state.email)}
-                        style={localStyles.loginSwitch}
+                        style={localStyles.nextBtn}
                     > 
                         <Caption style={localStyles.Caption}>Reset</Caption>
                     </TouchableOpacity>

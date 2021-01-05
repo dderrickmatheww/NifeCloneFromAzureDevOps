@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator, StyleSheet, Image} from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../../Universal Components/DrawerButton';
@@ -57,7 +57,7 @@ export default class ScanQRCodeScreen extends Component {
        this.state.userData ?
             <View style={styles.viewDark}>
               <BarCodeScanner
-                onBarCodeScanned={({type, data}) => this.state.scanned? null: this.handleBarCodeScanned({type, data})}
+                onBarCodeScanned={({type, data}) => this.state.scanned ? null : this.handleBarCodeScanned({type, data})}
                 style={StyleSheet.absoluteFillObject}
               />
               <Snackbar

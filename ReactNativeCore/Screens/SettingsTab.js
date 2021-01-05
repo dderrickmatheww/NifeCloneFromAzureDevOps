@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Util from '../scripts/Util';
 import theme from '../Styles/theme';
 import { Ionicons } from '@expo/vector-icons';
 import * as firebase from 'firebase';
+import { 
+  Avatar,
+} from 'react-native-paper';
 import{
   Switch
-} from 'react-native-paper'
+} from 'react-native-paper';
+var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 export default class SettingsTab extends Component {
   state = {
@@ -27,7 +31,7 @@ export default class SettingsTab extends Component {
     this.setState({ isLoggedin: dataObj.data ? true : false });
   }  
   //Set user data
-  setUserData = async (dataObj) => {
+  setUserData = async () => {
     this.setState({ userData: this.props.user});
     if (this.props.user.privacySettings) {
       this.setState({
@@ -182,14 +186,17 @@ export default class SettingsTab extends Component {
    render () {
       return ( 
           this.state.userData ?
-
-              
              <View style={localStyles.mainCont}>
                <View style={localStyles.navHeader}>
-                  <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                      <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
-                  </TouchableOpacity> 
-                  <Text style={localStyles.headerText}>Settings</Text>
+               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                    <Avatar.Image 
+                        source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                            uri:  this.state.userData.photoSource  
+                        } : defPhoto}
+                        size={50}
+                    />
+                </TouchableOpacity> 
+                <Text style={localStyles.headerText}>Settings</Text>
                </View>
                <View style={localStyles.bodyCont}>
                   
@@ -306,5 +313,13 @@ const localStyles = StyleSheet.create({
     textAlign:"center",
     width:"80%",
     fontSize:25
-  }
+  },
+  drawerBtn: {
+    marginTop: '3%',
+    marginLeft: '1%',
+    marginBottom: '3%',
+    borderWidth: 1,
+    borderColor: theme.LIGHT_PINK,
+    borderRadius: 70
+},
 });

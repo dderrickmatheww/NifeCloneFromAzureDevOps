@@ -1,14 +1,21 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import {
+    Avatar
+} from 'react-native-paper';
 import theme from '../../Styles/theme';
+const defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
 class DrawerButton extends React.Component  {
-    render(){
-
+    render() {
         return(
             <TouchableOpacity onPress={this.props.onPress} style={styles.overlay}>
-                <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={this.props.drawerButtonColor}/>
+                <Avatar.Image 
+                    source={this.props.userPhoto && this.props.userPhoto !== "Unknown" ? {
+                        uri:  this.props.userPhoto  
+                    } : defPhoto}
+                    size={50}
+                />
             </TouchableOpacity> 
         );
     }
@@ -29,10 +36,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top:"5%",
         left: "5%",
-        opacity: 0.75,
+        opacity: .95,
         backgroundColor: theme.DARK,
         borderRadius: 10,
         paddingVertical:0,
+        borderWidth: .5,
+        borderColor: theme.LIGHT_PINK
       },
 });
 

@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, Image, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
 import {
   Title,
   Caption,
   Text,
   Headline,
+  Avatar,
   Chip,
   Surface
 } from 'react-native-paper';
 import Util from '../scripts/Util';
 import { styles } from '../Styles/style';
 import theme from '../Styles/theme';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 const defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
 
@@ -151,10 +152,14 @@ export default class ProfileScreen extends Component {
           this.state.userData ? 
           <Surface style={styles.loggedInContainer}>
             <View style={localStyles.navHeader}>
-              {/* Drawer Button */}
-              <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
-              </TouchableOpacity> 
+            <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+                <Avatar.Image 
+                    source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                        uri:  this.state.userData.photoSource  
+                    } : defPhoto}
+                    size={50}
+                />
+            </TouchableOpacity>  
 
               {/* Add Friend */}
               {!this.state.isUsersProfile ? !this.state.areFriends ? 
@@ -190,7 +195,7 @@ export default class ProfileScreen extends Component {
                 opacity: 0.75,
                 backgroundColor: theme.DARK,
                 borderRadius: 10,
-                marginBottom:5,
+                marginBottom: '5%',
               }}
                 onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
               >
@@ -205,14 +210,14 @@ export default class ProfileScreen extends Component {
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
-                      {this.genderUpperCase(this.state.userData.gender ? this.state.userData.gender + ", " : "")} 
-                      {this.genderUpperCase(this.state.userData.sexualOrientation ? this.state.userData.sexualOrientation +" -": "")}  {this.props.user.dateOfBirth ? this.calculateAge(this.props.user.dateOfBirth._seconds ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : ""}
+                      {this.genderUpperCase(this.state.userData.gender && this.state.userData.gender !== 'Unknown' ? this.state.userData.gender + ", " : "")} 
+                      {this.genderUpperCase(this.state.userData.sexualOrientation && this.state.userData.sexualOrientation !== 'Unknown' ? this.state.userData.sexualOrientation +" -": "")}  {this.props.user.dateOfBirth && this.props.user.dateOfBirth !== 'Unknown' ? this.calculateAge(this.props.user.dateOfBirth._seconds ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : ""}
                     </Title>
                 </View>
                 {
                   this.state.userData.photoSource ? 
                     <View>
-                      <ImageBackground style={localStyles.profilePic} source={{ uri: this.state.userData.photoSource}}>
+                      <ImageBackground style={localStyles.profilePic} source={{ uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                         {
                           this.props.isUserProfile ? 
                           <TouchableOpacity style={{position:"relative", bottom:-125, right:-125}}
@@ -276,13 +281,13 @@ export default class ProfileScreen extends Component {
                           <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
                             onPress={() => this.setState({statusModalVisible:true})}
                           >
-                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                              <Ionicons size={25} color={theme.LIGHT_PINK} name="ios-add-circle"></Ionicons>
                           </TouchableOpacity> 
                         : 
                           null
                       }
                     </View>
-                    <Caption style={localStyles.caption}>{ this.state.userData.status ? this.state.userData.status.text : "Lookin for what's poppin!" }</Caption>
+                    <Caption style={localStyles.caption}>{ this.state.userData.status ? this.state.userData.status.text : "None" }</Caption>
                   </View>
                   {/* bio */}
                   <View style={localStyles.profRow}> 
@@ -327,7 +332,9 @@ export default class ProfileScreen extends Component {
                       Favorite Bars: 
                     </Title>
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:0}}>
-                     { this.state.userData.favoritePlaces ? 
+                     { this.state.userData.favoritePlaces 
+                     && this.state.userData.favoritePlaces !== 'Unknown' 
+                     && this.state.userData.favoritePlaces.length > 0 ? 
                         Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
                           bar.favorited ?
                           <Chip mode={"outlined"}
@@ -336,15 +343,17 @@ export default class ProfileScreen extends Component {
                               }} 
                               textStyle={{color:theme.LIGHT_PINK}}>
                               {bar.name ? bar.name : 'None'}
-                          </Chip> : null
+                          </Chip> 
+                          : 
+                          null
                         ))
                       :
                       <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
-                            }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
-                          None
-                        </Chip>
+                          style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                          }} 
+                          textStyle={{color:theme.LIGHT_PINK}}>
+                        None
+                      </Chip>
                     }
                     </ScrollView>
                   </View>
@@ -536,6 +545,14 @@ const localStyles = StyleSheet.create({
     borderRightColor: theme.LIGHT_PINK,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
-  }
+  },
+  drawerBtn: {
+    marginTop: '5%',
+    marginLeft: '1%',
+    marginBottom: '3%',
+    borderWidth: 1,
+    borderColor: theme.LIGHT_PINK,
+    borderRadius: 70
+},
 });
 
