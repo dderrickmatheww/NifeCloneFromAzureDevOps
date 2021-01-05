@@ -122,7 +122,6 @@ class Navigator extends React.Component {
 
   firstTimeSignUp = (user) => {
     if(this.state.displayName) {
-      console.log(this.state.displayName);
       user.updateProfile({ displayName: this.state.displayName })
       .then(() => {
         this.initializeParams(user);
@@ -164,7 +163,6 @@ class Navigator extends React.Component {
 
   initializeParams = async (user) => {
     await Util.user.VerifyUser(user, user.email, (userObj) => {
-      console.log(userObj);
       let user = userObj;
       this.getNeededData(user);
       Permissions.askAsync(Permissions.LOCATION).then((status) => {

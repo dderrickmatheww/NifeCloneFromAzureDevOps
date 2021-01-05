@@ -336,7 +336,6 @@ class MapScreen extends React.Component  {
   }
 
   setInitialState = () => {
-    console.log(this.props.user)
     this.setState({
       userData: this.props.user,
       friendData: this.props.friends
