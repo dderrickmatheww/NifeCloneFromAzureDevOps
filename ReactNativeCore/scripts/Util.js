@@ -194,7 +194,7 @@ const Util = {
         },
         HandleUploadImage: (isBusiness, userData, callback) => {
             let userEmail = firebase.auth().currentUser.email;
-            ImagePicker.getCameraRollPermissionsAsync()
+            ImagePicker.getMediaLibraryPermissionsAsync()
             .then((result) => {
                 if(result.status == "granted"){
                     ImagePicker.launchImageLibraryAsync()
@@ -213,16 +213,17 @@ const Util = {
                     });
                 }
                 else {
-                    ImagePicker.requestCameraRollPermissionsAsync()
+                    ImagePicker.getMediaLibraryPermissionsAsync()
                     .then((result) => {
                     if(result.status == "granted") {
                         ImagePicker.launchImageLibraryAsync()
                         .then((image) => {
                                 let uri = image.uri;
+                                console.log(uri);
                                 Util.user.UploadImage(uri, userEmail, (resUri) =>{
                                     let userData = this.state.userData;
                                     userData['photoSource'] = resUri;
-                                    Util.user.UpdateUser(userEmail, { photoSource:resUri });
+                                    Util.user.UpdateUser(userEmail, { photoSource: resUri });
                                     if(this.state.userData.isBusiness){
                                         Util.business.UpdateUser(userEmail, { photoSource: resUri });
                                     }
@@ -532,7 +533,7 @@ const Util = {
                 xhr.open('GET', uri, true);
                 xhr.send(null);
             });
-            const ref = firebase
+            let ref = firebase
             .storage()
             .ref()
             .child(!isProof ? email : email);

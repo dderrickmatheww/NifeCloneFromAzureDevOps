@@ -59,9 +59,6 @@ export function DrawerContent(props) {
                                         }
                                     </TouchableOpacity>
                             }
-                            
-                            
-                            
                             <View style={{marginLeft:15, flexDirection:'column'}}>
                                 {/* display name */}
                                 <Title style={styles.title}>

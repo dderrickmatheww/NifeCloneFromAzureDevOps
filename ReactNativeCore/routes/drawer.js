@@ -208,38 +208,38 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-      this.state.userData ? 
-        <NavigationContainer>
-          <Drawer.Navigator 
-            drawerContentOptions={{
-              activeTintColor: theme.LIGHT_PINK,
-              inactiveTintColor: theme.LIGHT_PINK
-            }}
-            drawerStyle={{
-              backgroundColor: theme.DARK
-            }}
-            initialRouteName='My Feed'
+        this.state.userData ? 
+          <NavigationContainer>
+            <Drawer.Navigator 
+              drawerContentOptions={{
+                activeTintColor: theme.LIGHT_PINK,
+                inactiveTintColor: theme.LIGHT_PINK
+              }}
+              drawerStyle={{
+                backgroundColor: theme.DARK
+              }}
+              initialRouteName='My Feed'
 
-            overlayColor="#20232A"
-            drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
-            drawerType={"front"}
-            overlayColor={"rgba(32, 35, 42, 0.50)"}
-          >
-            <Drawer.Screen name="Test" component={TestingStack} />
-            <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, requests: this.state.friendRequests }}/>
-            <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>
-            <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
-            <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
-          </Drawer.Navigator>
-        </NavigationContainer>
+              overlayColor="#20232A"
+              drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
+              drawerType={"front"}
+              overlayColor={"rgba(32, 35, 42, 0.50)"}
+            >
+              <Drawer.Screen name="Test" component={TestingStack} />
+              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, requests: this.state.friendRequests }}/>
+              <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>
+              <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
+              <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
+            </Drawer.Navigator>
+          </NavigationContainer>
         : 
-         this.state.userExists ? 
-          <View style={styles.viewDark}>
-            <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-          </View> 
-          :
-          <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
-        :
+            this.state.userExists ? 
+              <View style={styles.viewDark}>
+                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+              </View> 
+            :
+              <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
+      :
         <Loading></Loading>
     );
   }

@@ -14,7 +14,9 @@
       "web"
     ],
     "splash": {
-      "image": "./Media/Images/Splash.png"
+      "image": "./Media/Images/Splash2.png",
+      "backgroundColor": "#20232A",
+      "resizeMode": "contain"
     },
     "ios": {
       "bundleIdentifier": "com.virastarllc.nife",
