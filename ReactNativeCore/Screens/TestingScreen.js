@@ -20,7 +20,6 @@ class TestingScreen extends React.Component  {
     }
 
     FriendsVisitedItems = (friend) => {
-        console.log(friend);
         return(
             <Text style={{color:theme.LIGHT_PINK}}>{friend.displayName}</Text>
         )

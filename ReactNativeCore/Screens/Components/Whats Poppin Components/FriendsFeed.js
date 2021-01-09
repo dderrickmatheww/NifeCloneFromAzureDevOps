@@ -84,7 +84,6 @@ export default class FriendsFeed extends React.Component  {
         
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
         this.setState({feedData:friendFeedData});
-        console.log('Feed Data: ' + this.state.feedData)
     }
 
     onSave = () => {

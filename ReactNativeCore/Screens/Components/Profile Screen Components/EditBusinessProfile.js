@@ -43,7 +43,6 @@ export default class EditBusinessProfile extends Component {
     
       var user = this.props.user;
       this.setState({userData: user});
-      //console.log("User: " + JSON.stringify(user));
       let specials = this.props.business.specials;
       let events =  this.props.business.events;
       let specialsValue = ""
@@ -104,8 +103,6 @@ export default class EditBusinessProfile extends Component {
         
       })
     }
-
-    //console.log("result text: " + drinkArr);
     this.setState({specials:drinkArr, specialsText:specialsValue});
   }
 
@@ -125,13 +122,10 @@ export default class EditBusinessProfile extends Component {
         i != events.length -1 ? eventsValue += event + "&" : eventsValue += event
       })
     }
-
-    //console.log("result text: " + drinkArr);
     this.setState({events:drinkArr, eventsText:eventsValue});
   }
 
   onSave = () => {
-    //console.log('Saving attempted');
     var profileInfo = {
       events:this.state.events,
       specials:this.state.specials,
@@ -141,9 +135,7 @@ export default class EditBusinessProfile extends Component {
       }
     }
 
-    Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data)=>{
-        //console.log('saving attempted');
-    });
+    Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data) => {});
 
     var user = this.props.business;
 
@@ -170,7 +162,6 @@ export default class EditBusinessProfile extends Component {
   }
 
   onCancel = () => {
-    //console.log('Canceling Edit')
     this.props.navigation.navigate("Profile", {screen:"ProfileScreen"});
   }
 

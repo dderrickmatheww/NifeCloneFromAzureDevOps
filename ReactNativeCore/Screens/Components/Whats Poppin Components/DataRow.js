@@ -22,7 +22,6 @@ export default class DataRow extends React.Component  {
     componentDidMount(){
         this.setState({loadingBusiness: true});
         Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-        // console.log("business - " + JSON.stringify(data))
         this.setState({businessData: data});
         this.setState({loadingBusiness: false});
         });

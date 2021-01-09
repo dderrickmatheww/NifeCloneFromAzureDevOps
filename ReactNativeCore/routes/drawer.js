@@ -14,7 +14,6 @@ import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import LoginScreen from '../Screens/Login Screen';
 import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
-import * as Font from 'expo-font';
 
 const Drawer = createDrawerNavigator();
 
@@ -177,11 +176,6 @@ class Navigator extends React.Component {
   }
 
   async componentDidMount() {
-    await Font.loadAsync({
-      antDesign: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf'),
-      fontAwesome: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf'),
-      ionicons: require('../node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf') // and here is what changes so that the font loads
-    });
     await Util.user.CheckAuthStatus((user) => {
       this.setState({ authLoaded: true });
       if (user) {

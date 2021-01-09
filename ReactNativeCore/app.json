@@ -25,7 +25,7 @@
     "android": {
       "package": "com.virastarllc.nife",
       "userInterfaceStyle": "dark",
-      "versionCode": 10,
+      "versionCode": 11,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0"

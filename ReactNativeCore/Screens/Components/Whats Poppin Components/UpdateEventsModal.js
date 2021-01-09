@@ -39,7 +39,6 @@ export default class StatusModal extends React.Component  {
     }
 
     onEventChange = (text) => {
-      // console.log(text);
       this.setState({eventText: text});
     }
     
@@ -61,9 +60,6 @@ export default class StatusModal extends React.Component  {
         })
         let business = this.state.business;
         Util.business.UpdateUser(firebase.firestore(), user.email, obj, ()=>{
-          console.log('Updating events');
-          
-         
           this.updateUserAsync(business, obj);
           this.setState({saving:false});
           this.props.onSave();

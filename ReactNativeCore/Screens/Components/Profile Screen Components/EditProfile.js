@@ -50,8 +50,6 @@ export default class EditProfile extends Component {
           });
         }
       }
-
-      console.log(user.displayName, user.dateOfBirth, user.gender, user.sexualOrientation,)
     
       this.setState({
         userData: typeof user !== 'undefined' ? user : {},

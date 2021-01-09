@@ -27,7 +27,6 @@ export default class StatusModal extends React.Component  {
       let specials = this.props.business.specials;
       let text = ""
       specials.forEach((special, i)=>{
-        console.log("how many specials: " + specials.length)
         if(i != specials.length - 1){
           text += special.special + ", "
         }
@@ -40,7 +39,6 @@ export default class StatusModal extends React.Component  {
     }
 
     onEventChange = (text) => {
-      // console.log(text);
       this.setState({specialText: text});
     }
     
@@ -62,9 +60,6 @@ export default class StatusModal extends React.Component  {
         })
         let business = this.state.business;
         Util.business.UpdateUser(firebase.firestore(), user.email, obj, ()=>{
-          console.log('Updating specials');
-          
-         
           this.updateUserAsync(business, obj);
           this.setState({saving:false});
           this.props.onSave();

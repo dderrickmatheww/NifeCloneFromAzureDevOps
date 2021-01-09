@@ -51,7 +51,6 @@ export default class UserSearch extends Component {
         });
       }
       // Util.user.QueryPrivateUsers(firebase.firestore(), queryText,  this.state.take,(privUsers) =>{
-      //   console.log("Private Users: \n" + JSON.stringify(privUsers));
       //   users.forEach((privUsers)=>{wantedUsers.push(privUsers)});
       //   this.setState({queriedUsers:wantedUsers});
       // });
