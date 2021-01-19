@@ -192,6 +192,7 @@ const localStyles = StyleSheet.create({
     borderColor: theme.LIGHT_PINK,
     borderWidth: 1,
     marginTop: 10,
+
     borderRadius: 20,
     height: 60,
     width: 300,
