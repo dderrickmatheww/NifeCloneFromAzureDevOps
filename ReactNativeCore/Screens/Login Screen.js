@@ -92,7 +92,7 @@ export default class LoginScreen extends Component {
               modalVisible: true
             }); 
           }}>
-            <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
+            <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife as a business</Text>
             <Image
               style={localStyles.Logo}
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' }}
@@ -130,15 +130,16 @@ const localStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e9ebee',
     alignItems: 'center',
-    backgroundColor: '#20232A'
+    backgroundColor: '#20232A',
+    flexDirection:'column'
   },
   subHeaderContainer: {
-    top: '15%',
     width: '50%',
     borderBottomWidth: 1,
     paddingBottom: 10,
     borderColor: 'grey',
-    borderRadius: 20
+    borderRadius: 20,
+    marginVertical: '5%'
   },
   subHeaderText: {
     textAlign:"center",
@@ -149,7 +150,7 @@ const localStyles = StyleSheet.create({
     color: theme.LIGHT_PINK,
   },
   headerContainer: {
-    top: '8%',
+    marginTop:'10%',
     width: '80%',
     paddingBottom: 10,
   },
@@ -164,7 +165,7 @@ const localStyles = StyleSheet.create({
   googleLoginBtn: {
     backgroundColor: '#228B22',
     paddingHorizontal: 20,
-    marginTop: '40%',
+    marginTop: 10,
     borderRadius: 20,
     height: 60,
     width: 300,
@@ -190,7 +191,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'black',
     borderColor: theme.LIGHT_PINK,
     borderWidth: 1,
-    marginTop: '40%%',
+    marginTop: 10,
     borderRadius: 20,
     height: 60,
     width: 300,
@@ -202,7 +203,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: 'black',
     borderColor: theme.LIGHT_PINK,
     borderWidth: .5,
-    marginTop: '30%%',
+    marginTop: '30%',
     borderRadius: 20,
     height: 35,
     width: 200,

@@ -66,7 +66,7 @@ export default class UserSearch extends Component {
                     source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
                         uri:  this.state.userData.photoSource  
                     } : defPhoto}
-                    size={50}
+                    size={35}
                 />
             </TouchableOpacity> 
             </Surface>

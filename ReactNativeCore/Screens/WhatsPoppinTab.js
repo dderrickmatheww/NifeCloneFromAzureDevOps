@@ -146,11 +146,11 @@ class WhatsPoppin extends React.Component  {
                                 source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
                                     uri:  this.state.userData.photoSource  
                                 } : defPhoto}
-                                size={50}
+                                size={35}
                             />
                         </TouchableOpacity> 
                         <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>What's Poppin'?</Headline>
+                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:"15%"}}>What's Poppin'?</Headline>
                         </View>
                     </View>
                     {/* <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/> */}
@@ -237,14 +237,13 @@ class WhatsPoppin extends React.Component  {
 }
 const localStyles = StyleSheet.create({ 
     navHeader: {
-        marginTop:5,
+        marginTop:12.5,
         flexDirection:"row",
         borderBottomColor:theme.LIGHT_PINK,
         borderBottomWidth:1,
         width:"98%",
         textAlign:"center",
         alignItems:"center",
-        alignSelf:"center"
     },
     emptyPoppinFeed: {
         color: theme.LIGHT_PINK, 

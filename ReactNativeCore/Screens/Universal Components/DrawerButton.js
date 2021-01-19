@@ -14,7 +14,7 @@ class DrawerButton extends React.Component  {
                     source={this.props.userPhoto && this.props.userPhoto !== "Unknown" ? {
                         uri:  this.props.userPhoto  
                     } : defPhoto}
-                    size={50}
+                    size={35}
                 />
             </TouchableOpacity> 
         );

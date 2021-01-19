@@ -341,11 +341,11 @@ export default class FriendsFeed extends React.Component  {
                                 source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
                                     uri:  this.state.userData.photoSource  
                                 } : defPhoto}
-                                size={50}
+                                size={35}
                             />
                         </TouchableOpacity>  
                         <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:75}}>Your Feed</Headline>
+                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:"15%"}}>Your Feed</Headline>
                         </View>
                         {
                             !this.state.userData.isBusiness ?

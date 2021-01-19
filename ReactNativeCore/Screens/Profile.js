@@ -157,7 +157,7 @@ export default class ProfileScreen extends Component {
                     source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
                         uri:  this.state.userData.photoSource  
                     } : defPhoto}
-                    size={50}
+                    size={35}
                 />
             </TouchableOpacity>  
 
@@ -190,7 +190,7 @@ export default class ProfileScreen extends Component {
               {this.state.isUsersProfile ? 
               <TouchableOpacity style={{
                 position:"relative",
-                left: 285,
+                left: 250,
                 alignSelf:"flex-end",
                 opacity: 0.75,
                 backgroundColor: theme.DARK,
@@ -547,7 +547,7 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   },
   drawerBtn: {
-    marginTop: '5%',
+    marginTop: '3%',
     marginLeft: '1%',
     marginBottom: '3%',
     borderWidth: 1,
