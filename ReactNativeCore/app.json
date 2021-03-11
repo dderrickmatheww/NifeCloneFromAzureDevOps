@@ -14,8 +14,8 @@
       "web"
     ],
     "splash": {
-      "image": "./Media/Images/Splash2.png",
-      "backgroundColor": "#20232A",
+      "image": "./Media/Images/updatedLogo.png",
+      "backgroundColor": "#4E4CBB",
       "resizeMode": "contain"
     },
     "ios": {

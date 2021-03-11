@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { createDrawerNavigator} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import MapStack from '../routes/mapStack';
@@ -206,15 +206,17 @@ class Navigator extends React.Component {
           <NavigationContainer>
             <Drawer.Navigator 
               drawerContentOptions={{
-                activeTintColor: theme.LIGHT_PINK,
-                inactiveTintColor: theme.LIGHT_PINK
+                activeTintColor: theme.DARK,
+                inactiveTintColor: theme.GOLD,
+                labelStyle: {
+                  color: theme.DARK
+                }
               }}
               drawerStyle={{
-                backgroundColor: theme.DARK
+                backgroundColor: theme.LIGHT_PINK
               }}
               initialRouteName='My Feed'
-
-              overlayColor="#20232A"
+              //overlayColor="#20232A"
               drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
               drawerType={"front"}
               overlayColor={"rgba(32, 35, 42, 0.50)"}
@@ -228,8 +230,8 @@ class Navigator extends React.Component {
           </NavigationContainer>
         : 
             this.state.userExists ? 
-              <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+              <View style={localStyles.viewDark}>
+                <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
               </View> 
             :
               <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
@@ -238,5 +240,12 @@ class Navigator extends React.Component {
     );
   }
 }
-
+const localStyles = StyleSheet.create({ 
+  viewDark: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: theme.DARK
+  }
+})
 export default Navigator;

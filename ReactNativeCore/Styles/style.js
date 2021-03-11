@@ -218,7 +218,6 @@ export const styles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 10
   },
-  
   LogoData: {
     width: 90,
     height: 90,

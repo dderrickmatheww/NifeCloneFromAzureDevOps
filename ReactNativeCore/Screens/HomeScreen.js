@@ -334,7 +334,7 @@ export default class FriendsFeed extends React.Component  {
     render() {
         return (
             
-                <View style={styles.viewDark}>
+                <View style={localStyles.safeAreaContainer}>
                     <View style={localStyles.navHeader}>
                         <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                             <Avatar.Image 
@@ -344,19 +344,18 @@ export default class FriendsFeed extends React.Component  {
                                 size={35}
                             />
                         </TouchableOpacity>  
-                        <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:"15%"}}>Your Feed</Headline>
+                        <View style={{width:"100%"}}>
+                            <Headline style={{ color: theme.TEXT_COLOR, marginLeft: '5%', marginBottom: '2%'}}>Your Feed</Headline>
                         </View>
                         {
                             !this.state.userData.isBusiness ?
-                            <TouchableOpacity onPress={()=>this.setState({statusModalVisable:true})} style={localStyles.StatusOverlay}>
-                                <Text style={localStyles.statusButton}>Update Status</Text>
-                            </TouchableOpacity> 
+                                <TouchableOpacity onPress={() => this.setState({ statusModalVisable: true })} style={localStyles.StatusOverlay}>
+                                    <Text style={localStyles.statusButton}>Update Status</Text>
+                                </TouchableOpacity> 
                             : 
-                            
-                            <TouchableOpacity onPress={()=>this.setState({modalVisible:true})} style={localStyles.StatusOverlay}>
-                                <Text style={localStyles.statusButton}>Update. . .</Text>
-                            </TouchableOpacity>
+                                <TouchableOpacity onPress={()=>this.setState({modalVisible:true})} style={localStyles.StatusOverlay}>
+                                    <Text style={localStyles.statusButton}>Update...</Text>
+                                </TouchableOpacity>
                         }
                     </View>
                         
@@ -382,14 +381,14 @@ export default class FriendsFeed extends React.Component  {
                                     )) 
                                     : 
                                     
-                                        <Text style={{color:theme.LIGHT_PINK}}>Nothing to show here, add some friends and favorite spots if you haven't already!</Text>
+                                        <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends and favorite spots if you haven't already!</Text>
                                     
                             }
                             
                     </ScrollView>
                     :
                     <View style={styles.viewDark}>
-                        <ActivityIndicator size="large" color="#eca6c4"></ActivityIndicator>
+                        <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
                     </View>
                     }
                     {
@@ -519,24 +518,22 @@ const localStyles = StyleSheet.create({
     },
     StatusOverlay: {
         position:"relative",
-        top:2.5,
-        right:145,
+        right: 150,
         backgroundColor: theme.DARK,
         borderRadius: 10,
-        paddingVertical:0,
-        borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
-        borderRadius:5,
-        paddingVertical:2,
-        paddingHorizontal:5,
-      },
+        borderWidth: .5,
+        borderColor: theme.TEXT_COLOR,
+        borderRadius: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 8
+    },
     Caption: {
         color:theme.LIGHT_PINK,
         opacity: 0.60
     },
     statusButton: {
-        color:theme.LIGHT_PINK,
-        fontSize:10,
+        color: theme.TEXT_COLOR,
+        fontSize: 11,
     },
     Paragraph:{
         color:theme.LIGHT_PINK,
@@ -571,18 +568,23 @@ const localStyles = StyleSheet.create({
         marginVertical:2,
         width:"100%",
     },
-    navHeader:{
-      marginTop:30,
-      flexDirection:"row",
-      borderBottomColor:theme.LIGHT_PINK,
-      borderBottomWidth:1,
-      width:"98%",
-      textAlign:"center",
-      alignItems:"center",
+    emptyPoppinFeed: {
+        color: theme.TEXT_COLOR, 
+        fontSize: 16,
+        padding: 20,
+        textAlign: "center",
+        justifyContent: "center"
     },
-
+    navHeader: {
+        marginTop: 12.5,
+        flexDirection:"row",
+        borderBottomColor: theme.LIGHT_PINK,
+        borderBottomWidth:1,
+        width:"98%",
+        textAlign:"center",
+        alignItems:"center",
+    },
     DrawerOverlay: {
-        
       alignSelf:"flex-start",
       opacity: 0.75,
       backgroundColor: theme.DARK,
@@ -597,12 +599,15 @@ const localStyles = StyleSheet.create({
         paddingTop: 10
       },
       drawerBtn: {
-        marginTop: '3%',
-        marginLeft: '1%',
+        marginTop: '1%',
+        marginLeft: '3%',
         marginBottom: '3%',
-        borderWidth: 1,
-        borderColor: theme.LIGHT_PINK,
         borderRadius: 70
+    },
+    safeAreaContainer: {
+        flex: 1,
+        paddingTop:"7%",
+        backgroundColor: theme.DARK,
     },
   });
   

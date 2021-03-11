@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import {styles} from '../Styles/style';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import WhatsPoppin from '../Screens/WhatsPoppinTab';
@@ -66,9 +66,13 @@ class PoppinStack extends React.Component {
           })}
           tabBarOptions={{
             activeTintColor: theme.LIGHT_PINK,
-            inactiveTintColor: theme.LIGHT_PINK_OPAC,
+            inactiveTintColor: theme.GOLD,
             style: {
-              backgroundColor: theme.DARK
+              backgroundColor: 'transparent',
+              borderTopWidth: 0,
+              position: 'absolute',
+              bottom: 20,
+              height: 100
             }
           }}
           initialRouteName="My Feed"
@@ -78,13 +82,20 @@ class PoppinStack extends React.Component {
           <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
         </Tab.Navigator> 
         :
-        <View style={styles.viewDark}>
-          <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+        <View style={localStyles.viewDark}>
+          <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
         </View> 
     )
-    
-  
   }
 };
+
+const localStyles = StyleSheet.create({ 
+  viewDark: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: theme.DARK
+  },
+})
 
 export default PoppinStack;

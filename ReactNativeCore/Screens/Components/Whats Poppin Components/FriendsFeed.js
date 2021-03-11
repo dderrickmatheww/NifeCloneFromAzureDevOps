@@ -105,8 +105,7 @@ export default class FriendsFeed extends React.Component  {
 
     render() {
         return (
-            
-           <View style={styles.viewDark}>
+           <View style={localStyles.safeAreaContainer}>
                <View style={localStyles.navHeader}>
                     <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                         <Avatar.Image 
@@ -116,8 +115,8 @@ export default class FriendsFeed extends React.Component  {
                             size={35}
                         />
                     </TouchableOpacity> 
-                    <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                        <Headline style={{color:theme.LIGHT_PINK, paddingLeft:"15%"}}>Friend's Feed</Headline>
+                    <View style={{width:"100%"}}>
+                        <Headline style={{ color: theme.TEXT_COLOR, marginLeft: '5%', marginBottom: '2%'}}>Friend's Feed</Headline>
                     </View>
                     <TouchableOpacity onPress={()=>this.setState({modalVisable:true})} style={localStyles.StatusOverlay}>
                         <Text style={localStyles.statusButton}>Update Status</Text>
@@ -126,41 +125,39 @@ export default class FriendsFeed extends React.Component  {
                 
                {
                 this.state.feedData ?
-                <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
-                    {
-                        this.state.feedData && this.state.feedData.length > 0 ?
-                            this.state.feedData.map((data, i)=>(
-                                <View key={i} style={localStyles.feedDataRow}>
-                                    <Avatar.Image source={data.image} size={50}/>
-                                    <Text style={localStyles.displayName}>{data.name}</Text>
-                                    <Caption style={localStyles.feedType}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
-                                    <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
-                                    <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
-                                </View> 
-                            )) 
+                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
+                        {
+                            this.state.feedData && this.state.feedData.length > 0 ?
+                                this.state.feedData.map((data, i)=>(
+                                    <View key={i} style={localStyles.feedDataRow}>
+                                        <Avatar.Image source={data.image} size={50}/>
+                                        <Text style={localStyles.displayName}>{data.name}</Text>
+                                        <Caption style={localStyles.feedType}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
+                                        <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
+                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
+                                    </View> 
+                                )) 
                             : 
-                            
-                                <Text style={{color:theme.LIGHT_PINK}}>Nothing to show here, add some friends if you haven't already!</Text>
-                            
-                    }
-                    
-               </ScrollView> :
-                <View style={styles.viewDark}>
-                    <ActivityIndicator size="large" color="#eca6c4"></ActivityIndicator>
-                </View>
+                                <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends if you haven't already!</Text>
+                                
+                        }
+                    </ScrollView> 
+                :
+                    <View style={localStyles.viewDark}>
+                        <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
+                    </View>
                }
                {
                    this.state.modalVisable ?
-                  <StatusModal
-                    isVisible={this.state.modalVisable}
-                    user={this.state.userData}
-                    refresh={this.refresh()}
-                    onDismiss={() => this.onDismiss()}
-                    onSave={()=> this.onSave()}
-                  >
-                  </StatusModal> 
+                    <StatusModal
+                        isVisible={this.state.modalVisable}
+                        user={this.state.userData}
+                        refresh={this.refresh()}
+                        onDismiss={() => this.onDismiss()}
+                        onSave={()=> this.onSave()}
+                    />
                   :
-                  null
+                    null
                }
                <Snackbar
                     visible={this.state.snackBarVisable}
@@ -182,23 +179,19 @@ export default class FriendsFeed extends React.Component  {
 const localStyles = StyleSheet.create({
     StatusOverlay: {
         position:"relative",
-        top:2.5,
         right: 150,
         backgroundColor: theme.DARK,
         borderRadius: 10,
-        paddingVertical:0,
-        borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
-        borderRadius:5,
-        paddingVertical:2,
-        paddingHorizontal:5
+        borderWidth: .5,
+        borderColor: theme.TEXT_COLOR,
+        borderRadius: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 8
     },
     drawerBtn: {
-        marginTop: '3%',
-        marginLeft: '1%',
+        marginTop: '1%',
+        marginLeft: '3%',
         marginBottom: '3%',
-        borderWidth: 1,
-        borderColor: theme.LIGHT_PINK,
         borderRadius: 70
     },
     Caption: {
@@ -206,8 +199,8 @@ const localStyles = StyleSheet.create({
         opacity: 0.60
     },
     statusButton: {
-        color:theme.LIGHT_PINK,
-        fontSize:10,
+        color: theme.TEXT_COLOR,
+        fontSize: 11,
     },
     Paragraph:{
         color:theme.LIGHT_PINK,
@@ -247,18 +240,21 @@ const localStyles = StyleSheet.create({
         borderColor:theme.LIGHT_PINK,
         width:"100%",
     },
-    navHeader:{
-      marginTop:30,
-      flexDirection:"row",
-      borderBottomColor:theme.LIGHT_PINK,
-      borderBottomWidth:1,
-      width:"98%",
-      textAlign:"center",
-      alignItems:"center",
+    navHeader: {
+        marginTop: 12.5,
+        flexDirection:"row",
+        borderBottomColor: theme.LIGHT_PINK,
+        borderBottomWidth:1,
+        width:"98%",
+        textAlign:"center",
+        alignItems:"center",
     },
-
+    safeAreaContainer: {
+        flex: 1,
+        paddingTop:"7%",
+        backgroundColor: theme.DARK,
+    },
     DrawerOverlay: {
-        
       alignSelf:"flex-start",
       opacity: 0.75,
       backgroundColor: theme.DARK,
@@ -271,6 +267,19 @@ const localStyles = StyleSheet.create({
         paddingHorizontal: "5%",
         paddingBottom: 30,
         paddingTop: 10
-      }
+    },
+    emptyPoppinFeed: {
+        color: theme.TEXT_COLOR, 
+        fontSize: 16,
+        padding: 20,
+        textAlign: "center",
+        justifyContent: "center"
+    },
+    viewDark: {
+        flex: 1,
+        justifyContent: 'center', 
+        alignItems: 'center' ,
+        backgroundColor: theme.DARK
+    },
   });
   

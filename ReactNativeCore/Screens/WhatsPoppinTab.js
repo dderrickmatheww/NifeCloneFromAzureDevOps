@@ -138,8 +138,7 @@ class WhatsPoppin extends React.Component  {
     render() {
         return (
             this.state.isLoggedIn ? 
-                
-                <SafeAreaView style={styles.safeAreaContainer} >
+                <SafeAreaView style={localStyles.safeAreaContainer}>
                     <View style={localStyles.navHeader}>
                         <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                             <Avatar.Image 
@@ -149,24 +148,24 @@ class WhatsPoppin extends React.Component  {
                                 size={35}
                             />
                         </TouchableOpacity> 
-                        <View style={{width:"100%", textAlign:"center", alignSelf:"center"}}>
-                            <Headline style={{color:theme.LIGHT_PINK, paddingLeft:"15%"}}>What's Poppin'?</Headline>
+                        <View style={{width:"100%"}}>
+                            <Headline style={{ color: theme.TEXT_COLOR, marginLeft: '5%', marginBottom: '2%'}}>What's Poppin'</Headline>
                         </View>
                     </View>
                     {/* <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/> */}
                     {this.state.feedData ?
                     this.state.feedData.countData && this.state.feedData.countData.length > 0 ?
                     <ScrollView 
-                        style={styles.dataRowScrollView}
+                        style={localStyles.dataRowScrollView}
                         refreshControl={
                             <RefreshControl 
                                 refreshing={this.state.refresh} 
                                 onRefresh={this.onRefresh}  
                                 size={22}
-                                color={[theme.LIGHT_PINK]}
-                                tintColor={theme.LIGHT_PINK}
+                                color={[theme.GOLD]}
+                                tintColor={theme.GOLD}
                                 title={'Loading...'}
-                                titleColor={theme.LIGHT_PINK}
+                                titleColor={theme.GOLD}
                             />
                         }
                     >
@@ -192,19 +191,20 @@ class WhatsPoppin extends React.Component  {
                             ))
                         }
                         <View style={{ height: 120 }} />
-                    </ScrollView> :
-                    <View style={styles.viewDark}>
-                        <SafeAreaView 
-                            style={styles.safeAreaContainer} 
+                    </ScrollView> 
+                    :
+                    <View style={localStyles.viewDark}>
+                        <ScrollView 
+                            style={localStyles.safeAreaContainer} 
                             refreshControl={
                                 <RefreshControl 
                                     refreshing={this.state.refresh} 
                                     onRefresh={this.onRefresh}  
                                     size={22}
-                                    color={[theme.LIGHT_PINK]}
-                                    tintColor={theme.LIGHT_PINK}
+                                    color={[theme.GOLD]}
+                                    tintColor={theme.GOLD}
                                     title={'Loading...'}
-                                    titleColor={theme.LIGHT_PINK}
+                                    titleColor={theme.GOLD}
                                 />
                             }
                         >
@@ -215,18 +215,17 @@ class WhatsPoppin extends React.Component  {
                                 {"\n"}
                                 Tell your friends about Nife and start checking in!
                             </Text>
-                        </SafeAreaView>
+                        </ScrollView>
                     </View>
                      : 
-                     <View style={styles.viewDark}>
+                     <View style={localStyles.viewDark}>
                          <ActivityIndicator 
                              size={'large'}
-                             color={theme.LIGHT_PINK}
+                             color={theme.GOLD}
                          />
                      </View>
                     }
                 </SafeAreaView>
-               
             : 
             <PleaseLogin 
                 navigation={this.props.navigation}
@@ -237,16 +236,16 @@ class WhatsPoppin extends React.Component  {
 }
 const localStyles = StyleSheet.create({ 
     navHeader: {
-        marginTop:12.5,
+        marginTop: 12.5,
         flexDirection:"row",
-        borderBottomColor:theme.LIGHT_PINK,
+        borderBottomColor: theme.LIGHT_PINK,
         borderBottomWidth:1,
         width:"98%",
         textAlign:"center",
         alignItems:"center",
     },
     emptyPoppinFeed: {
-        color: theme.LIGHT_PINK, 
+        color: theme.TEXT_COLOR, 
         fontSize: 16,
         padding: 20,
         textAlign: "center",
@@ -278,11 +277,27 @@ const localStyles = StyleSheet.create({
     },
     drawerBtn: {
         marginTop: '1%',
-        marginLeft: '1%',
+        marginLeft: '3%',
         marginBottom: '3%',
-        borderWidth: 1,
-        borderColor: theme.LIGHT_PINK,
         borderRadius: 70
+    },
+    safeAreaContainer: {
+        flex: 1,
+        paddingTop:"7%",
+        backgroundColor: theme.DARK,
+    },
+    viewDark: {
+        flex: 1,
+        justifyContent: 'center', 
+        alignItems: 'center' ,
+        backgroundColor: theme.DARK
+    },
+    dataRowScrollView: {
+        flex: 1,
+        width: "100%",
+        paddingHorizontal: "5%",
+        paddingBottom: 10,
+        paddingTop: 10
     },
 })
 export default WhatsPoppin;

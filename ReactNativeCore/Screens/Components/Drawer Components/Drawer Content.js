@@ -47,7 +47,7 @@ export function DrawerContent(props) {
                                         {
                                             props.uploading ?
                                                 <View style={{alignItems:"center", padding: '2%'}}>
-                                                    <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                                                    <ActivityIndicator color={theme.GOLD} size={"large"}></ActivityIndicator>
                                                 </View>
                                             :
                                                 <View style={{alignItems:"center"}}>
@@ -98,7 +98,7 @@ export function DrawerContent(props) {
                                         size={30}
                                         icon="qrcode-scan"
                                         color={theme.LIGHT_PINK}
-                                        style={{position: "relative",backgroundColor:theme.DARK, color:theme.LIGHT_PINK}}/>
+                                        style={{position: "relative",backgroundColor:theme.DARK, color:theme.DARK}}/>
                                     </TouchableOpacity>
                                 </View> 
                             : null}
@@ -110,7 +110,7 @@ export function DrawerContent(props) {
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="home" 
-                                color={theme.LIGHT_PINK}
+                                color={theme.GOLD}
                                 size={20}
                                 />
                             )}
@@ -123,7 +123,7 @@ export function DrawerContent(props) {
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="glass-mug" 
-                                color={theme.LIGHT_PINK}
+                                color={theme.GOLD}
                                 size={20}
                                 />
                             )}
@@ -134,7 +134,7 @@ export function DrawerContent(props) {
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="map-outline" 
-                                color={theme.LIGHT_PINK}
+                                color={theme.GOLD}
                                 size={20}
                                 />
                             )}
@@ -143,24 +143,24 @@ export function DrawerContent(props) {
                         />
                        { !props.user.isBusiness ? 
                             <List.Accordion
-                                titleStyle={{color:theme.LIGHT_PINK}}
+                                titleStyle={{color:theme.DARK}}
                                 
                                 title="      You"
                                 left={() => <IconWithBadge
                                     name={'ios-person'}
-                                    color={theme.LIGHT_PINK}
+                                    color={theme.GOLD}
                                     size={20}
                                     type="Ionicons"
                                     isDrawer={true}
                                     badgeCount={props.requests ? props.requests.length : 0}
                                 ></IconWithBadge>}
-                                theme={{colors:{text : theme.LIGHT_PINK}}}
+                                theme={{colors:{text : theme.DARK}}}
                             >
                                <DrawerItem 
                                     icon={() => (
                                         <MaterialCommunityIcons 
                                         name="account-box-outline" 
-                                        color={theme.LIGHT_PINK}
+                                        color={theme.GOLD}
                                         size={20}
                                         />
                                     )}
@@ -175,7 +175,7 @@ export function DrawerContent(props) {
                                         icon={() => (
                                             <IconWithBadge
                                                 name={'ios-people'}
-                                                color={theme.LIGHT_PINK}
+                                                color={theme.GOLD}
                                                 size={20}
                                                 type="Ionicons"
                                                 badgeCount={props.requests ? props.requests.length : 0}
@@ -194,7 +194,7 @@ export function DrawerContent(props) {
                                         icon={() => (
                                             <Ionicons 
                                             name="md-search" 
-                                            color={theme.LIGHT_PINK}
+                                            color={theme.GOLD}
                                             size={20}
                                             />
                                         )}
@@ -207,7 +207,7 @@ export function DrawerContent(props) {
                                         icon={() => (
                                             <Ionicons 
                                             name="md-qr-code" 
-                                            color={theme.LIGHT_PINK}
+                                            color={theme.GOLD}
                                             size={20}
                                             />
                                         )}
@@ -219,7 +219,7 @@ export function DrawerContent(props) {
                                     icon={() => (
                                         <MaterialCommunityIcons 
                                         name="account-box-outline" 
-                                        color={theme.LIGHT_PINK}
+                                        color={theme.GOLD}
                                         size={20}
                                         />
                                     )}
@@ -235,7 +235,7 @@ export function DrawerContent(props) {
                             icon={() => (
                                 <FontAwesome 
                                 name="gears" 
-                                color={theme.LIGHT_PINK}
+                                color={theme.GOLD}
                                 size={20}
                                 />
                             )}
@@ -288,8 +288,6 @@ const styles = StyleSheet.create({
     NoAvatarButton:{
         padding:10,
         borderRadius:10,
-        borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
         justifyContent:'center',
         alignItems:"center"
     },
@@ -298,16 +296,16 @@ const styles = StyleSheet.create({
     },
     userInfoSection: {
       paddingLeft: 20,
-      borderBottomColor:theme.LIGHT_PINK,
+      borderBottomColor:theme.DARK,
       borderBottomWidth:1,
-      paddingBottom:4
+      paddingBottom: 10
     },
     title: {
       fontSize: 16,
       marginTop: 3,
       fontWeight: 'bold',
       lineHeight: 16,
-      color: theme.LIGHT_PINK,
+      color: theme.DARK,
       flexWrap: "wrap",
         maxWidth: '80%'
     },
@@ -315,14 +313,14 @@ const styles = StyleSheet.create({
         marginTop: 3,
         fontSize: 12,
         lineHeight: 14,
-        color:theme.LIGHT_PINK,
+        color:theme.DARK,
         flexWrap: "wrap",
         maxWidth: '78%'
       },
     caption: {
       fontSize: 12,
       lineHeight: 14,
-      color:theme.LIGHT_PINK
+      color:theme.DARK
     },
     row: {
       marginTop: 20,
@@ -337,17 +335,17 @@ const styles = StyleSheet.create({
     paragraph: {
       fontWeight: 'bold',
       marginRight: 3,
-      color: theme.LIGHT_PINK
+      color: theme.DARK
     },
     text:{
-      color:theme.LIGHT_PINK
+      color:theme.DARK
     },
     drawerSection: {
       marginTop: 15,
     },
     bottomDrawerSection: {
         marginBottom: 15,
-        borderTopColor: theme.LIGHT_PINK,
+        borderTopColor: theme.DARK,
         borderTopWidth: 1
     },
     preference: {
