@@ -216,7 +216,6 @@ class Navigator extends React.Component {
                 backgroundColor: theme.LIGHT_PINK
               }}
               initialRouteName='My Feed'
-              //overlayColor="#20232A"
               drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
               drawerType={"front"}
               overlayColor={"rgba(32, 35, 42, 0.50)"}

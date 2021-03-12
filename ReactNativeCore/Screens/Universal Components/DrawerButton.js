@@ -4,7 +4,8 @@ import {
     Avatar
 } from 'react-native-paper';
 import theme from '../../Styles/theme';
-const defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
+import Util from '../../scripts/Util';
+const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class DrawerButton extends React.Component  {
     render() {

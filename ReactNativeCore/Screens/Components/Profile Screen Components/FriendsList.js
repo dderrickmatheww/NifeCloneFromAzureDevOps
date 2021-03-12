@@ -7,7 +7,7 @@ import RequestModal from './Request Modal';
 import { 
   Avatar,
 } from 'react-native-paper';
-var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
+const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class FriendsList extends React.Component {
   

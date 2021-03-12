@@ -21,7 +21,8 @@ import {
     storageBucket, 
     messagingSenderId, 
     appId, 
-    measurementId 
+    measurementId,
+    photoUrlToken 
 } from 'react-native-dotenv';
 import * as firebase from 'firebase';
 //import * as Facebook from 'expo-facebook';
@@ -1627,7 +1628,8 @@ const Util = {
             }   
         }
         return dest;
-      }
+      },
+      defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken
     }
 }
 

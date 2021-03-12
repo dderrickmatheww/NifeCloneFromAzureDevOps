@@ -18,7 +18,7 @@ import EventsModal from '../Screens/Components/Whats Poppin Components/UpdateEve
 import SpecialsModal from '../Screens/Components/Whats Poppin Components/UpdateSpecialsModal';
 import * as firebase from 'firebase';
 import * as ImagePicker from 'expo-image-picker';
-var defPhoto = { uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' };
+const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 export default class FriendsFeed extends React.Component  {
 

@@ -149,7 +149,7 @@ export default class InputWithIcon extends React.Component {
                     <ActivityIndicator 
                         style={localStyles.autoCompLoader}
                         size={'large'}
-                        color={"#D4DE24"}
+                        color={theme.GOLD}
                     />
                   }
               </View>
@@ -160,12 +160,13 @@ export default class InputWithIcon extends React.Component {
       :
         <View style={{ width: '100%', height: 24, margin: 10 }}>
           <TextInput
-            style={this.props.styles}
+            style={localStyles.font}
             placeholder={this.props.placeHolderText}
             placeholderTextColor={this.props.color}
             returnKeyType={this.props.returnKey}
             secureTextEntry={this.props.secureText}
             keyboardType={this.props.keyboardType}
+            selectionColor={this.props.color}
             value={this.props.value}
             onChangeText={(text) => this.props.onChangeText(text, type)}
             onSubmitEditing={(text, eventCount, target) => this.props.onSubmit(text, eventCount, target)}
@@ -181,9 +182,18 @@ export default class InputWithIcon extends React.Component {
       justifyContent:"center",
       width: '100%'
   },
+  font: {
+    textShadowColor: 'black',
+    textShadowOffset: {
+        width: 20, 
+        height: 20
+    },
+    textShadowRadius: 20,
+    color: theme.GOLD
+  },
   searchBar: {
       borderBottomWidth: 3,
-      borderBottomColor: 'lightgrey',
+      borderBottomColor: theme.GOLD,
       width: '90%',
       marginHorizontal: 10,
       alignItems: 'center',

@@ -58,7 +58,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#D4DE24"
+          "color": theme.GOLD
         }
       ]
     },
@@ -75,7 +75,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#D4DE24"
+          "color": theme.GOLD
         }
       ]
     },
@@ -103,7 +103,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#6b9a76",
+          "color": theme.GOLD,
           "visibility":"off"
         }
       ]
@@ -113,7 +113,7 @@ class MapScreen extends React.Component  {
       "elementType": "geometry",
       "stylers": [
         {
-          "color": theme.LIGHT
+          "color": theme.LIGHT_PINK
         }
       ]
     },
@@ -122,7 +122,7 @@ class MapScreen extends React.Component  {
       "elementType": "geometry.stroke",
       "stylers": [
         {
-          "color": theme.LIGHT
+          "color": "#242f3e"
         }
       ]
     },
@@ -131,7 +131,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#D4DE24"
+          "color": theme.GOLD
         }
       ]
     },
@@ -149,7 +149,7 @@ class MapScreen extends React.Component  {
       "elementType": "geometry.stroke",
       "stylers": [
         {
-          "color": theme.LIGHT
+          "color": "#242f3e"
         }
       ]
     },
@@ -158,7 +158,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#f3d19c"
+          "color": theme.GOLD
         }
       ]
     },
@@ -176,7 +176,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#d59563"
+          "color": theme.GOLD
         }
       ]
     },
@@ -185,7 +185,7 @@ class MapScreen extends React.Component  {
       "elementType": "geometry",
       "stylers": [
         {
-          "color": theme.BLUE
+          "color": theme.LIGHT_PINK
         }
       ]
     },
@@ -194,7 +194,7 @@ class MapScreen extends React.Component  {
       "elementType": "geometry.stroke",
       "stylers": [
         {
-          "color": theme.TURQUOISE
+          "color": "#242f3e"
         }
       ]
     },
@@ -203,7 +203,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.fill",
       "stylers": [
         {
-          "color": "#515c6d"
+          "color": theme.GOLD
         }
       ]
     },
@@ -212,7 +212,7 @@ class MapScreen extends React.Component  {
       "elementType": "labels.text.stroke",
       "stylers": [
         {
-          "color": "#17263c"
+          "color": "#242f3e"
         }
       ]
     }
@@ -365,8 +365,10 @@ class MapScreen extends React.Component  {
           <View style={localStyles.autoCompContainer}>
             <InputWithIcon 
               name={'ios-mail'} 
-              color={theme.LIGHT_PINK} 
-              size={12} placeHolderText={'Search...'} 
+              color={theme.GOLD} 
+              styles={localStyles.font}
+              size={12} 
+              placeHolderText={'Search...'} 
               returnKey={'search'} 
               secureText={false} 
               onChangeText={(text, type) => this.OnSearchInputChange(text, type)} 
@@ -393,7 +395,7 @@ class MapScreen extends React.Component  {
               minZoomLevel={14}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
-              loadingBackgroundColor={'#20232a'}
+              loadingBackgroundColor={theme.DARK}
             >
             
             {this.state.markers.map(marker => (
@@ -401,7 +403,7 @@ class MapScreen extends React.Component  {
                 <Marker
                   coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
                   key={marker.id}
-                  pinColor={"#5fcae7"}
+                  pinColor={theme.GOLD}
                   calloutOffset={{x: 0.5, y: 0.25}}
                   calloutAnchor={{x: 0.5, y: 0.25}}
                 > 
@@ -446,7 +448,7 @@ class MapScreen extends React.Component  {
       <View style={localStyles.activityIndicator}>
             <ActivityIndicator 
                 size={'large'}
-                color={"#D4DE24"}
+                color={theme.GOLD}
             />
             <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress}/>
       </View>
@@ -464,9 +466,18 @@ const localStyles = StyleSheet.create({
     zIndex: 1000,
     marginTop: '30%'
   },
+  font: {
+    textShadowColor: 'black',
+    textShadowOffset: {
+        width: 20, 
+        height: 20
+    },
+    textShadowRadius: 20,
+    color: theme.GOLD
+  },
   container: {
     flex: 1,
-    backgroundColor: '#20232a'
+    backgroundColor: theme.DARK
   },
   friendPic:{
     position:"relative",
@@ -481,7 +492,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: '#20232a'
+    backgroundColor: theme.DARK
   },
   callOutMarker: {
     flex: 1,
