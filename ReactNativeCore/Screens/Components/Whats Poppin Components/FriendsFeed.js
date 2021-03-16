@@ -144,7 +144,7 @@ export default class FriendsFeed extends React.Component  {
                     </ScrollView> 
                 :
                     <View style={localStyles.viewDark}>
-                        <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
+                        <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                     </View>
                }
                {
@@ -180,10 +180,10 @@ const localStyles = StyleSheet.create({
     StatusOverlay: {
         position:"relative",
         right: 150,
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         borderWidth: .5,
-        borderColor: theme.TEXT_COLOR,
+        borderColor: theme.generalLayout.secondaryColor,
         borderRadius: 5,
         paddingVertical: 8,
         paddingHorizontal: 8
@@ -195,20 +195,20 @@ const localStyles = StyleSheet.create({
         borderRadius: 70
     },
     Caption: {
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.textColor,
         opacity: 0.60
     },
     statusButton: {
-        color: theme.TEXT_COLOR,
+        color:  theme.generalLayout.textColor,
         fontSize: 11,
     },
     Paragraph:{
-        color:theme.LIGHT_PINK,
+        color:  theme.generalLayout.textColor,
         fontSize:12,
         marginTop:-10
     },
     displayName:{
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.textColor,
         left:60,
         top:-45,
         position:"relative",
@@ -216,7 +216,7 @@ const localStyles = StyleSheet.create({
         fontWeight:"bold"
     },
     feedType:{
-        color:theme.LIGHT_PINK,
+        color:  theme.generalLayout.textColor,
         left:60,
         top:-50,
         position:"relative",
@@ -225,8 +225,8 @@ const localStyles = StyleSheet.create({
     },
     feedDataRow:{
         flex:1,
-        backgroundColor:theme.DARK,
-        borderColor:theme.LIGHT_PINK,
+        backgroundColor:  theme.generalLayout.backgroundColor,
+        borderColor:theme.generalLayout.secondaryColor,
         borderRadius:10,
         borderWidth:1,
         paddingVertical:5,
@@ -236,14 +236,14 @@ const localStyles = StyleSheet.create({
     },
     noFeedData:{
         flex:1,
-        backgroundColor:theme.DARK,
-        borderColor:theme.LIGHT_PINK,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderColor: theme.generalLayout.secondaryColor,
         width:"100%",
     },
     navHeader: {
         marginTop: 12.5,
         flexDirection:"row",
-        borderBottomColor: theme.LIGHT_PINK,
+        borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth:1,
         width:"98%",
         textAlign:"center",
@@ -252,12 +252,12 @@ const localStyles = StyleSheet.create({
     safeAreaContainer: {
         flex: 1,
         paddingTop:"7%",
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
     },
     DrawerOverlay: {
       alignSelf:"flex-start",
       opacity: 0.75,
-      backgroundColor: theme.DARK,
+      backgroundColor: theme.generalLayout.backgroundColor,
       borderRadius: 10,
       paddingVertical:0,
     },
@@ -269,7 +269,7 @@ const localStyles = StyleSheet.create({
         paddingTop: 10
     },
     emptyPoppinFeed: {
-        color: theme.TEXT_COLOR, 
+        color: theme.generalLayout.textColor, 
         fontSize: 16,
         padding: 20,
         textAlign: "center",
@@ -279,7 +279,7 @@ const localStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center', 
         alignItems: 'center' ,
-        backgroundColor: theme.DARK
+        backgroundColor: theme.generalLayout.secondaryColor
     },
   });
   

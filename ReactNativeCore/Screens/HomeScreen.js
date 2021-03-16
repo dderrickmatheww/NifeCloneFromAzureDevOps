@@ -388,7 +388,7 @@ export default class FriendsFeed extends React.Component  {
                     </ScrollView>
                     :
                     <View style={styles.viewDark}>
-                        <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
+                        <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                     </View>
                     }
                     {
@@ -519,16 +519,16 @@ const localStyles = StyleSheet.create({
     StatusOverlay: {
         position:"relative",
         right: 150,
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         borderWidth: .5,
-        borderColor: theme.TEXT_COLOR,
+        borderColor: theme.generalLayout.secondaryColor,
         borderRadius: 5,
         paddingVertical: 8,
         paddingHorizontal: 8
     },
     Caption: {
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.textColor,
         opacity: 0.60
     },
     statusButton: {

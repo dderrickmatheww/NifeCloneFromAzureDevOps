@@ -220,7 +220,7 @@ class WhatsPoppin extends React.Component  {
                      <View style={localStyles.viewDark}>
                          <ActivityIndicator 
                              size={'large'}
-                             color={theme.GOLD}
+                             color={theme.loadingIcon.color}
                          />
                      </View>
                     }

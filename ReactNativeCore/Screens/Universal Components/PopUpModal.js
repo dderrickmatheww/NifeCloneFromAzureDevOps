@@ -41,7 +41,7 @@ export default class PopUpModal extends React.Component  {
                                 this.toggleModal(false);
                             }}
                         >
-                        <Ionicons name="ios-close" size={32} color="#E2E4E3"/>
+                        <Ionicons name="ios-close" size={32} color={theme.icons.color}/>
                     </TouchableHighlight>
                     <View style={localStyles.titleCont}>
                         <Text style={localStyles.modalTitle}>Opps, it looks like you've hit your favorite limit! (Max: 10)</Text>

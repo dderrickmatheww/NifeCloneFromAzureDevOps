@@ -39,7 +39,7 @@ export default class QRCodeScreen extends Component {
             </View>
                 :
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                 <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
             </View> 
         

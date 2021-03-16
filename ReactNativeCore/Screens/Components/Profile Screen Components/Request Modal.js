@@ -84,12 +84,11 @@ class RequestModal extends React.Component  {
                               onPress={!this.state.requestLoading ? () => this.handleDeny(friend.email) : null}
                             >
                               { this.state.requestLoading ?
-                                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                                 :
                                 <View style={{flexDirection:"row"}}>
-                                  <Ionicons name="ios-close" size={30} color={theme.LIGHT_PINK}></Ionicons>
+                                  <Ionicons name="ios-close" size={30} color={theme.icons.color}></Ionicons>
                                     <Text style={localStyles.buttonText}>
-                                      
                                       Deny 
                                     </Text>
                                 </View>
@@ -100,12 +99,11 @@ class RequestModal extends React.Component  {
                               onPress={!this.state.requestLoading ? ()=> this.handleAccept(friend.email) : null}
                             >
                             { this.state.requestLoading ?
-                                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                                 :
                                 <View style={{flexDirection:"row"}}>
-                                  <Ionicons name="ios-checkmark" size={30} color={theme.LIGHT_PINK}></Ionicons>
+                                  <Ionicons name="ios-checkmark" size={30} color={theme.icons.color}></Ionicons>
                                   <Text style={localStyles.buttonText}>
-                                    
                                     Accept
                                   </Text>
                                 </View>
@@ -118,7 +116,7 @@ class RequestModal extends React.Component  {
                 </View> 
                 :
                 <View style={styles.viewDark}>
-                    <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                    <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                 </View> 
               }
             </Modal>

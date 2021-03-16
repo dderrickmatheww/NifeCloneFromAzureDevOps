@@ -255,7 +255,7 @@ export default class SettingsTab extends Component {
                   <TouchableOpacity 
                   onPress={()=>Util.dataCalls.Firebase.signOut()}
                   style={{marginRight:20}}>
-                    <Ionicons name="ios-log-out" size={24} color={theme.LIGHT_PINK}/>
+                    <Ionicons name="ios-log-out" size={24} color={theme.icons.color}/>
                   </TouchableOpacity>
                 </View>
              </View>

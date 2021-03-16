@@ -9,7 +9,6 @@ import {
 } from 'react-native-paper';
 import Util from '../../../scripts/Util';
 import theme from '../../../Styles/theme';
-import { Ionicons } from '@expo/vector-icons'; 
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 export default class UserSearch extends Component {
@@ -99,7 +98,7 @@ export default class UserSearch extends Component {
                     )
                     : 
                     this.state.isSearching ?
-                      <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator> 
+                      <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator> 
                     : 
                       <Paragraph style={localStyles.paragraph}>No Results...</Paragraph> 
                   }

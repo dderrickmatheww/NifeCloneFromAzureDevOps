@@ -48,7 +48,7 @@ export default class Favorite extends React.Component  {
                     <View style={styles.viewDark}>
                         <ActivityIndicator 
                             size={'small'}
-                            color={theme.LIGHT_PINK}
+                            color={theme.loadingIcon.color}
                         />
                     </View>
                 }

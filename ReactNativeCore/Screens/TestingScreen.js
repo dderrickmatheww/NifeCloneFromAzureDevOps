@@ -120,7 +120,7 @@ class TestingScreen extends React.Component  {
             
             : 
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
             </View> 
             
         )

@@ -6,7 +6,7 @@ class AppLoading extends React.Component  {
     render(){
         return(
           <View style={{flex:1, justifyContent:"center", backgroundColor: theme.DARK, width: "100%", height: "100%"}}>
-            <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+            <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
           </View>
         )
     }

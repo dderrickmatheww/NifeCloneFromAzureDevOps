@@ -225,7 +225,7 @@ export default class EditBusinessProfile extends Component {
                   </View>
 
                   <View style={localStyles.fieldCont}>
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text style={{ fontSize: 18, color: theme.generalTEXT_COLOR, marginBottom:5}}>
                       Events (seperate with '&'): 
                     </Text>
                     {/* index one to on change */}
@@ -246,20 +246,20 @@ export default class EditBusinessProfile extends Component {
               <TouchableOpacity style={localStyles.SaveOverlay}
                 onPress={()=> this.onSave()}
               >
-                <Ionicons name="ios-checkmark-circle-outline" size={30} color={theme.LIGHT_PINK} />
+                <Ionicons name="ios-checkmark-circle-outline" size={30} color={theme.icons.color} />
               </TouchableOpacity>
 
               <TouchableOpacity style={localStyles.CancelOverlay}
                 onPress={()=> this.onCancel()}
               >
-                <Ionicons name="ios-close-circle-outline" size={30} color={theme.LIGHT_PINK} />
+                <Ionicons name="ios-close-circle-outline" size={30} color={theme.icons.color} />
               </TouchableOpacity>
               <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View>
             :
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                 <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View> 
         

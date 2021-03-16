@@ -40,7 +40,7 @@ export default class StatusModal extends React.Component  {
                   </Text>
                   {
                     this.state.saving ?
-                    <ActivityIndicator style={{marginVertical:5}} color={theme.LIGHT_PINK} size="large" />
+                    <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
                     :
                     <Button 
                       labelStyle={{color:theme.LIGHT_PINK}} 

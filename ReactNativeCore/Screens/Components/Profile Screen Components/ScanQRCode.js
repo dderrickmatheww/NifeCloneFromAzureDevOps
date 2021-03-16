@@ -78,7 +78,7 @@ export default class ScanQRCodeScreen extends Component {
             </View>
                 :
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                 <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
             </View> 
       );

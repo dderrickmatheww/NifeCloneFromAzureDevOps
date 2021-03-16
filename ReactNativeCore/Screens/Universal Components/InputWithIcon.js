@@ -149,7 +149,7 @@ export default class InputWithIcon extends React.Component {
                     <ActivityIndicator 
                         style={localStyles.autoCompLoader}
                         size={'large'}
-                        color={theme.GOLD}
+                        color={theme.loadingIcon.color}
                     />
                   }
               </View>

@@ -65,12 +65,13 @@ class PoppinStack extends React.Component {
             }
           })}
           tabBarOptions={{
-            activeTintColor: theme.LIGHT_PINK,
-            inactiveTintColor: theme.GOLD,
+            activeTintColor: theme.icons.tabIcon.activeTintColor,
+            inactiveTintColor:  theme.icons.color,
             style: {
               backgroundColor: 'transparent',
               borderTopWidth: 0,
               position: 'absolute',
+              color: theme.icons.tabIcon.textColor,
               bottom: 20,
               height: 100
             }
@@ -83,7 +84,7 @@ class PoppinStack extends React.Component {
         </Tab.Navigator> 
         :
         <View style={localStyles.viewDark}>
-          <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
+          <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
         </View> 
     )
   }
@@ -94,7 +95,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: theme.DARK
+    backgroundColor: theme.generalLayout.backgroundColor
   },
 })
 

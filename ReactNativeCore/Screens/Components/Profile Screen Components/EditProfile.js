@@ -206,7 +206,7 @@ export default class EditProfile extends Component {
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: 50, paddingBottom: 5}}
                         onPress={() => this.setState({showDatePicker: true})}
                       >
-                          <Ionicons name="md-calendar" size={24} color={theme.LIGHT_PINK} />
+                          <Ionicons name="md-calendar" size={24} color={theme.icons.color} />
                       </TouchableOpacity>
                     </View>
                     
@@ -329,21 +329,21 @@ export default class EditProfile extends Component {
               <TouchableOpacity style={localStyles.SaveOverlay}
                 onPress={()=> this.onSave()}
               >
-                <Ionicons name="ios-checkmark-circle-outline" size={30} color={theme.LIGHT_PINK} />
+                <Ionicons name="ios-checkmark-circle-outline" size={30} color={theme.icons.color} />
               </TouchableOpacity>
 
               <TouchableOpacity style={localStyles.CancelOverlay}
                 onPress={()=> this.onCancel()}
               >
-                <Ionicons name="ios-close-circle-outline" size={30} color={theme.LIGHT_PINK} />
+                <Ionicons name="ios-close-circle-outline" size={30} color={theme.icons.color} />
               </TouchableOpacity>
-              <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
+              <DrawerButton drawerButtonColor={theme.icons.color} onPress={this.props.onDrawerPress} /> 
             </View>
             :
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
-                <DrawerButton drawerButtonColor="#eca6c4" onPress={this.props.onDrawerPress} /> 
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
+                <DrawerButton drawerButtonColor={theme.icons.color} onPress={this.props.onDrawerPress} /> 
             </View> 
         
       );
@@ -387,7 +387,6 @@ const localStyles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical:0,
   },
-
   AddFriendOverlay: {
     position: 'absolute',
     top:"6%",

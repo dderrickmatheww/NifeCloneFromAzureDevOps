@@ -170,7 +170,7 @@ export default class CheckInOutButtons extends React.Component  {
             <View style={localStyles.checkOutContainer}>
                 <ActivityIndicator 
                     size={'large'}
-                    color={theme.LIGHT_PINK}
+                    color={theme.loadingIcon.color}
                 />
             </View>
         )

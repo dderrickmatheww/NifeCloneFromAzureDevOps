@@ -448,7 +448,7 @@ class MapScreen extends React.Component  {
       <View style={localStyles.activityIndicator}>
             <ActivityIndicator 
                 size={'large'}
-                color={theme.GOLD}
+                color={theme.loadingIcon.color}
             />
             <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress}/>
       </View>

@@ -306,7 +306,7 @@ export default class NifeLoginModal extends Component {
                                 </View>
                                 :
                                 <View style={styles.viewDark}>
-                                    <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                                    <ActivityIndicator color={theme.loadingIcon.color} size={"large"}></ActivityIndicator>
                                 </View>
                             }
                     </Modal> 

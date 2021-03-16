@@ -169,9 +169,9 @@ export default class ProfileScreen extends Component {
                 >
                   { 
                     this.state.isAddingFriend ?
-                      <ActivityIndicator size="small" color={theme.LIGHT_PINK}></ActivityIndicator> 
+                      <ActivityIndicator size="small" color={theme.loadingIcon.color}></ActivityIndicator> 
                     :
-                      <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Add Friend</Text>
+                      <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.TEXT_COLOR}}>Add Friend</Text>
                   }
                 </TouchableOpacity> 
               :
@@ -180,32 +180,32 @@ export default class ProfileScreen extends Component {
                 style={localStyles.AddFriendOverlay}>
                   { 
                   this.state.isAddingFriend ?
-                    <ActivityIndicator size="small" color={theme.LIGHT_PINK}></ActivityIndicator> :
-                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.LIGHT_PINK}}>Remove Friend</Text>
+                    <ActivityIndicator size="small" color={theme.loadingIcon.color}></ActivityIndicator> :
+                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.TEXT_COLOR}}>Remove Friend</Text>
                   }
                 </TouchableOpacity> : null
               }
 
               {/* Edit Button */}
               {this.state.isUsersProfile ? 
-              <TouchableOpacity style={{
-                position:"relative",
-                left: 250,
-                alignSelf:"flex-end",
-                opacity: 0.75,
-                backgroundColor: theme.DARK,
-                borderRadius: 10,
-                marginBottom: '5%',
-              }}
-                onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
-              >
-                <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
-              </TouchableOpacity> : null
+                <TouchableOpacity style={{
+                  position:"relative",
+                  left: 250,
+                  alignSelf:"flex-end",
+                  opacity: 0.75,
+                  backgroundColor: theme.DARK,
+                  borderRadius: 10,
+                  marginBottom: '5%',
+                }}
+                  onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
+                >
+                  <Ionicons name="md-create" size={24} color={theme.icons.color} />
+                </TouchableOpacity> 
+              :
+                null
               }   
             </View>
-
             <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
-              
               <View style={localStyles.HeaderCont}>
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
                     <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
@@ -225,7 +225,7 @@ export default class ProfileScreen extends Component {
                               this.UploadPic();
                             }}
                           >
-                            <Ionicons size={25} color={theme.LIGHT_PINK} name="ios-add-circle"></Ionicons>
+                            <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
                           </TouchableOpacity> : null
                         }
                       </ImageBackground>
@@ -238,12 +238,12 @@ export default class ProfileScreen extends Component {
                     >
                         {
                             this.state.uploading ?
-                            <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                              <ActivityIndicator color={theme.loadingIcon.color} size={"large"}></ActivityIndicator>
                             :
-                            <View style={{alignItems:"center"}}>
-                                <Ionicons size={50} color={theme.LIGHT_PINK} name="ios-person"></Ionicons>
-                                <Caption style={{color:theme.LIGHT_PINK, textAlign:"center"}}>Click Me To Add Picture!</Caption>
-                            </View>
+                              <View style={{alignItems:"center"}}>
+                                  <Ionicons size={50} color={theme.icons.color} name="ios-person"></Ionicons>
+                                  <Caption style={{color:theme.icons.textColor, textAlign:"center"}}>Click Me To Add Picture!</Caption>
+                              </View>
                         }
                     </TouchableOpacity>
                 }
@@ -281,7 +281,7 @@ export default class ProfileScreen extends Component {
                           <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
                             onPress={() => this.setState({statusModalVisible:true})}
                           >
-                              <Ionicons size={25} color={theme.LIGHT_PINK} name="ios-add-circle"></Ionicons>
+                              <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
                           </TouchableOpacity> 
                         : 
                           null
@@ -309,7 +309,7 @@ export default class ProfileScreen extends Component {
                           
                             <Chip mode={"outlined"}  key={i}
                             style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2}} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
+                            textStyle={{color:theme.TEXT_COLOR}}>
                               {drink}
                             </Chip>
                           
@@ -318,7 +318,7 @@ export default class ProfileScreen extends Component {
                         <Chip mode={"outlined"}  
                             style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
+                            textStyle={{color:theme.TEXT_COLOR}}>
                           None
                         </Chip>
                       }
@@ -378,7 +378,7 @@ export default class ProfileScreen extends Component {
            
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
             </View> 
         
       );

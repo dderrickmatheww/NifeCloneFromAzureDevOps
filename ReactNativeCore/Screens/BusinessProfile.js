@@ -134,11 +134,9 @@ export default class ProfileScreen extends Component {
             <View style={localStyles.navHeader}>
               {/* Drawer Button */}
               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.DrawerOverlay}>
-                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.LIGHT_PINK}/>
+                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-menu" size={40} color={theme.icons.color}/>
               </TouchableOpacity> 
-
               {/* Add Friend */}
-              
                 {
                 this.state.businessData.email == this.state.userData.email ? null: 
                 <View style={{marginRight:15}}>
@@ -163,7 +161,7 @@ export default class ProfileScreen extends Component {
               }}
                 onPress={() => this.props.navigation.navigate('Profile', {screen:'EditBusiness', params:{user: this.state.userData, business: this.state.businessData}})}
               >
-                <Ionicons name="md-create" size={24} color={theme.LIGHT_PINK} />
+                <Ionicons name="md-create" size={24} color={theme.icons.color} />
               </TouchableOpacity> : null
               }   
             </View>
@@ -188,7 +186,7 @@ export default class ProfileScreen extends Component {
                               this.UploadPic();
                             }}
                           >
-                            <Ionicons size={25} color={theme.LIGHT_PINK} name="ios-add-circle"></Ionicons>
+                            <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
                           </TouchableOpacity> : null
                         }
                       </ImageBackground>
@@ -201,11 +199,11 @@ export default class ProfileScreen extends Component {
                     >
                         {
                             this.state.uploading ?
-                            <ActivityIndicator color={theme.LIGHT_PINK} size={"large"}></ActivityIndicator>
+                            <ActivityIndicator color={theme.loadingIcon.color} size={"large"}></ActivityIndicator>
                             :
                             <View style={{alignItems:"center"}}>
-                                <Ionicons size={50} color={theme.LIGHT_PINK} name="ios-person"></Ionicons>
-                                <Caption style={{color:theme.LIGHT_PINK, textAlign:"center"}}>Click Me To Add Picture!</Caption>
+                                <Ionicons size={50} color={theme.icons.color} name="ios-person"></Ionicons>
+                                <Caption style={{color:theme.icons.textColor, textAlign:"center"}}>Click Me To Add Picture!</Caption>
                             </View>
                         }
                     </TouchableOpacity>
@@ -240,7 +238,7 @@ export default class ProfileScreen extends Component {
                           <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
                             onPress={() => this.setState({statusModalVisible: true})}
                           >
-                              <Ionicons name="ios-chatboxes" size={24} color={theme.LIGHT_PINK} />
+                              <Ionicons name="ios-chatboxes" size={24} color={theme.icons.color} />
                           </TouchableOpacity> 
                         : 
                           null
@@ -261,18 +259,18 @@ export default class ProfileScreen extends Component {
                         this.state.businessData.specials.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                              style={{backgroundColor: theme.DARK, borderColor: theme.LIGHT_PINK, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
+                            textStyle={{color:theme.GOLD}}>
                               {drink.special}
                             </Chip>
                           
                         ))
                         :
                         <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            style={{backgroundColor:theme.DARK, borderColor: theme.GOLD, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
+                            textStyle={{color:theme.GOLD}}>
                           None
                         </Chip>
                       }
@@ -291,18 +289,18 @@ export default class ProfileScreen extends Component {
                         this.state.businessData.events.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            style={{backgroundColor:theme.DARK, borderColor:theme.GOLD, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
+                            textStyle={{color:theme.GOLD}}>
                               {drink.event}
                             </Chip>
                           
                         ))
                         :
                         <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            style={{backgroundColor:theme.DARK, borderColor:theme.GOLD, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.LIGHT_PINK}}>
+                            textStyle={{color:theme.GOLD}}>
                           None
                         </Chip>
                       }
@@ -326,11 +324,9 @@ export default class ProfileScreen extends Component {
             </ScrollView>
             </Surface>
             :
-        ///////////////////////////////////////////
             <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.LIGHT_PINK}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
             </View> 
-        
       );
     }
 }

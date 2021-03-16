@@ -170,7 +170,7 @@ class BarModal extends React.Component  {
                         </View>
                   :
                   this.state.loadingBusiness ?
-                  <ActivityIndicator color={theme.LIGHT_PINK} size="large"></ActivityIndicator> : 
+                  <ActivityIndicator color={theme.loadingIcon.color} size="large"></ActivityIndicator> : 
                   <View style={styles.noEventsCont}>
                     <Text style={styles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
                   </View>
@@ -197,7 +197,7 @@ class BarModal extends React.Component  {
                         </View>
                   :
                   this.state.loadingBusiness ?
-                  <ActivityIndicator color={theme.LIGHT_PINK} size="large"></ActivityIndicator> : 
+                  <ActivityIndicator color={theme.loadingIcon.color} size="large"></ActivityIndicator> : 
                   <View style={styles.noEventsCont}>
                     <Text style={styles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
                   </View>
@@ -236,7 +236,7 @@ class BarModal extends React.Component  {
                 <View style={styles.activityIndicator}>
                   <ActivityIndicator 
                       size={'large'}
-                      color={theme.LIGHT_PINK}
+                      color={theme.loadingIcon.color}
                   />
                 </View>
               }

@@ -144,10 +144,11 @@ export default class DataRow extends React.Component  {
                                 </View>
                             :
                             this.state.loadingBusiness ?
-                            <ActivityIndicator color={theme.LIGHT_PINK} size="large"></ActivityIndicator> : 
-                            <View style={localStyles.noEventsCont}>
-                                <Text style={localStyles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
-                            </View>
+                              <ActivityIndicator color={theme.loadingIcon.color} size="large"></ActivityIndicator> 
+                            : 
+                              <View style={localStyles.noEventsCont}>
+                                  <Text style={localStyles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
+                              </View>
                         }
                         </ScrollView>
                     </View>
@@ -172,10 +173,11 @@ export default class DataRow extends React.Component  {
                                 </View>
                             :
                             this.state.loadingBusiness ?
-                            <ActivityIndicator color={theme.LIGHT_PINK} size="large"></ActivityIndicator> : 
-                            <View style={localStyles.noEventsCont}>
-                                <Text style={localStyles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
-                            </View>
+                              <ActivityIndicator color={theme.loadingIcon.color} size="large"></ActivityIndicator> 
+                            : 
+                              <View style={localStyles.noEventsCont}>
+                                  <Text style={localStyles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
+                              </View>
                         }
                         </ScrollView>
                     </View>

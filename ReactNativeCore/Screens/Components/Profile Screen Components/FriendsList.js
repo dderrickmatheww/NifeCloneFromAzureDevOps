@@ -89,7 +89,7 @@ class FriendsList extends React.Component {
               {
                 this.state.requests && this.state.requests.length > 0 ?
                 <TouchableOpacity onPress={() => this.handleOpenModal()} style={localStyles.RequestOverlay}>
-                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.LIGHT_PINK}/>
+                  <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.icons.color}/>
                     
                   <Text style={localStyles.Requests}>
                     {this.state.requests.length} Requests
@@ -135,7 +135,7 @@ class FriendsList extends React.Component {
             <Text style={localStyles.FriendCount}>Loading Friends...</Text>
           </View>
           <View style={localStyles.loggedInSubView}>
-            <ActivityIndicator size="large" color="#eca6c4"></ActivityIndicator>
+            <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
           </View>
           {/* keep this button at the bottom */}
           

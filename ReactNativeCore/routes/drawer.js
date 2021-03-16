@@ -230,7 +230,7 @@ class Navigator extends React.Component {
         : 
             this.state.userExists ? 
               <View style={localStyles.viewDark}>
-                <ActivityIndicator size="large" color={theme.GOLD}></ActivityIndicator>
+                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
               </View> 
             :
               <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
@@ -244,7 +244,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: theme.DARK
+    backgroundColor: theme.generalLayout.backgroundColor
   }
 })
 export default Navigator;

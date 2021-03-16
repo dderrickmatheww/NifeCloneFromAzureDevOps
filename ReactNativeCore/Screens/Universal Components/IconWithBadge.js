@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import theme from '../../Styles/theme';
 
 export default function IconWithBadge({ name, badgeCount, color, size, type , isDrawer}) {
   
@@ -34,7 +35,7 @@ export default function IconWithBadge({ name, badgeCount, color, size, type , is
               alignItems: 'center',
             }}
           >
-            <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
+            <Text style={{ color: theme.generalLayout.textColor, fontSize: 10, fontWeight: 'bold' }}>
               {badgeCount}
             </Text>
           </View>

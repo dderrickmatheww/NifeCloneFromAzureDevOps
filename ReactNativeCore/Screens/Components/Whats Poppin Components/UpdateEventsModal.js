@@ -101,7 +101,7 @@ export default class StatusModal extends React.Component  {
                   <Text style={{color:theme.LIGHT_PINK, alignSelf:"center", marginBottom:10}}>Seperate events with '&'{"\n"} ( Ex: July 4th - BeerFest & {"\n"} July 10th - Live Music! )</Text>
                   {
                     this.state.saving ?
-                    <ActivityIndicator style={{marginVertical:5}} color={theme.LIGHT_PINK} size="large" />
+                    <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
                     :
                     <Button 
                       labelStyle={{color:theme.LIGHT_PINK}} 
