@@ -169,13 +169,10 @@ export default class EditProfile extends Component {
    render () {
       return ( 
           this.state.doneLoading ?
-            <View style={styles.loggedInContainer}>
-              <View style={localStyles.HeaderCont}>
-                  
-              </View>
-              <ScrollView contentContainerStyle={{justifyContent:"flex-start",  width:"90%"}} style={localStyles.mainCont}> 
+            <View style={localStyles.loggedInContainer}>
+              <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}} style={localStyles.mainCont}> 
               {/* Input Area */}
-                  <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom: 15}}>
+                  <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, marginBottom: 15}}>
                     All information is optional and can be hidden via privacy settings! 
                   </Text>
                   {/* Display name */}
@@ -183,27 +180,27 @@ export default class EditProfile extends Component {
                     <Text style={localStyles.fieldLabel}>
                       Display Name: 
                     </Text>
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
-                    mode={"flat"}
-                    label=""
-                    placeholder={"What should we call you?"}
-                    onChangeText={text => this.onNameChange(text)}
-                    value={this.state.displayName}
-                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
-                    
+                    <TextInput  theme={{ colors: { text:theme.generalLayout.textColor } }}  numberOfLines={2}
+                      mode={"flat"}
+                      label=""
+                      placeholder={"What should we call you?"}
+                      onChangeText={text => this.onNameChange(text)}
+                      placeholderTextColor={{color: theme.generalLayout.textColor}}
+                      value={this.state.displayName}
+                      style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, width:"100%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
                     </TextInput>
                   </View>
                     
                     {/* DOB */}
                   <View style={localStyles.fieldCont}> 
-                    <View style={{flexDirection:"row", width:"90%"}}>
+                    <View style={{flexDirection:"row", width:"100%", alignItems: 'center'}}>
                       <Text style={localStyles.fieldLabel}>
                         Date of Birth:  
                       </Text>
-                      <Text style={{color:theme.LIGHT_PINK, fontSize: 18, marginBottom: 5, marginLeft: 20}}>
+                      <Text style={{ color: theme.generalLayout.textColor, fontSize: 18, marginBottom: 5, marginLeft: '15.5%' }}>
                         {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
-                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: 50, paddingBottom: 5}}
+                      <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: '16.5%', paddingBottom: 5}}
                         onPress={() => this.setState({showDatePicker: true})}
                       >
                           <Ionicons name="md-calendar" size={24} color={theme.icons.color} />
@@ -230,13 +227,13 @@ export default class EditProfile extends Component {
                     <Surface style={localStyles.surface}>
                       <Picker 
                         mode={"dropdown"}
-                        style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
+                        style={{backgroundColor: theme.generalLayout.backgroundColor, width:"100%", alignSelf:"center"}}
                         selectedValue={this.state.gender ? this.state.gender : "Other"}
                         onValueChange={(value) => this.onGenderChange(value)}
                       >
-                        <Picker.Item color={theme.LIGHT_PINK} label="Male" value="male"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Female" value="female"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Male" value="male"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Female" value="female"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Other" value="other"/>
                       </Picker>
                     </Surface>
                       
@@ -253,10 +250,10 @@ export default class EditProfile extends Component {
                         style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
                         onValueChange={(value) => this.onSexualOrientationChange(value)}
                       >
-                        <Picker.Item color={theme.LIGHT_PINK} label="Straight" value="straight"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Homosexual/Gay/Lesbian" value="homosexual"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Bi-sexual/Fluid" value="bi-sexual"/>
-                        <Picker.Item color={theme.LIGHT_PINK} label="Other" value="other"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Straight" value="straight"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Homosexual/Gay/Lesbian" value="homosexual"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Bi-sexual/Fluid" value="bi-sexual"/>
+                        <Picker.Item color={theme.generalLayout.textColor} label="Other" value="other"/>
                       </Picker>
                     </Surface>
                   </View>
@@ -271,10 +268,10 @@ export default class EditProfile extends Component {
                             this.state.userData.favoritePlaces[Object.keys(this.state.userData.favoritePlaces)[i]]['favorited'] == true ? 
                             <Chip mode={"outlined"}  
                                 key={i}
-                                style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2, marginVertical:2
+                                style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2, marginVertical:2
                                 }} 
                                 bar={bar}
-                                textStyle={{color:theme.LIGHT_PINK}}
+                                textStyle={{color: theme.generalLayout.textColor}}
                                 onPress={(e) => {
                                   let UID = Object.keys(this.state.userData.favoritePlaces)[i];
                                   this.deleteFavBar(bar, UID);
@@ -285,9 +282,9 @@ export default class EditProfile extends Component {
                           )) 
                           :
                           <Chip mode={"outlined"}  
-                              style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                              style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                               }} 
-                              textStyle={{color:theme.LIGHT_PINK}}>
+                              textStyle={{color: theme.generalLayout.textColor}}>
                             You have no favorites!
                           </Chip>
                       }
@@ -297,14 +294,13 @@ export default class EditProfile extends Component {
                     <Text style={localStyles.fieldLabel}>
                       Bio: 
                     </Text>
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    <TextInput  theme={{colors:{text: theme.generalLayout.textColor}}}  numberOfLines={2}
                     mode={"flat"}
                     label=""
                     placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
                     value={this.state.bio ? this.state.bio : 'None'}
-                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
-                    
+                    style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, width:"100%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
                     </TextInput>
                   </View>
 
@@ -313,12 +309,13 @@ export default class EditProfile extends Component {
                       Favorite Drinks (comma seperated): 
                     </Text>
                     {/* index one to on change */}
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}} 
+                    <TextInput  theme={{colors: { text: theme.generalLayout.textColor }}} 
                     mode={"flat"}
                     label=""
                     placeholder={"What're you drinkin'?"}
+                    placeholderTextColor={{color: theme.generalLayout.textColor}}
                     onChangeText={text => this.onFavoriteDrinkChange(text)}
-                    style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
+                    style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, width:"100%", alignSelf:"center", borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}
                     value={this.state.favoriteDrinks ? this.state.favoriteDrinks.toString() : 'None'}
                     >
                     </TextInput>
@@ -353,29 +350,37 @@ export default class EditProfile extends Component {
 const localStyles = StyleSheet.create({
   fieldLabel:{ 
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     marginBottom:5,
-    textDecorationLine:"underline",
     fontWeight:"bold"
   },
   surface: {
     width:"auto",
     elevation: 10,
+    borderColor: theme.generalLayout.secondaryColor,
+    borderWidth: 1,
+    borderRadius: 3
   },
   fieldCont:{
-    marginVertical:5
+    width: '100%',
+    margin: '5%'
   },
   mainCont:{
     width:"95%",
-    flex:1,
-    flexDirection:"column",
+    marginTop: '30%',
+    marginBottom: '10%'
   },
-
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: theme.generalLayout.backgroundColor,
+    elevation:4
+  },
   SaveOverlay: {
     position: 'absolute',
     top:"6%",
     left: "90.5%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -383,7 +388,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top:"6%",
     left: "80%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -392,7 +397,7 @@ const localStyles = StyleSheet.create({
     top:"6%",
     left: "70%",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -404,16 +409,13 @@ const localStyles = StyleSheet.create({
     width:"90%"
   },
   loggedInContainer:{
-    alignItems:"flex-start", 
-    flex: 1, 
-    flexDirection: "column",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems:"center",
-    justifyContent:"space-evenly"
+    justifyContent:"space-evenly",
   },
   loggedInSubView:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     justifyContent:"center",
     marginBottom:"10%",
@@ -421,12 +423,12 @@ const localStyles = StyleSheet.create({
   },
   HeaderCont:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     maxHeight:"12%",
     justifyContent:"flex-end",
     alignItems:"center",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
 
   },
@@ -443,12 +445,12 @@ const localStyles = StyleSheet.create({
   },
   friendCont:{
     flexDirection: "row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 1,
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
@@ -459,14 +461,14 @@ const localStyles = StyleSheet.create({
     fontSize: 15,
     marginTop: "2%",
     marginBottom: "1%",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center'
   },
   Header: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center'
     
@@ -475,9 +477,9 @@ const localStyles = StyleSheet.create({
     flex: 1,
     width:"100%",
     borderLeftWidth:2,
-    borderLeftColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.generalLayout.secondaryColor,
     borderRightWidth:2,
-    borderRightColor: theme.LIGHT_PINK,
+    borderRightColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
   }

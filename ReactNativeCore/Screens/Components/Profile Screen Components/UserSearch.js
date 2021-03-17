@@ -77,9 +77,9 @@ export default class UserSearch extends Component {
                       onChangeText={(query) => this.onChangeSearch(query)}
                       onEndEditing={(query) => this.onUserQuery(query)}
                       value={this.state.searchText}
-                      inputStyle={{color:theme.LIGHT_PINK, }}
-                      style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, alignSelf:"flex-start"}}
-                      iconColor={theme.LIGHT_PINK}
+                      inputStyle={{ color: theme.generalLayout.textColor}}
+                      style={{color:theme.generalLayout.textColor, backgroundColor:theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor:theme.generalLayout.secondaryColor, borderRadius:25, alignSelf:"flex-start"}}
+                      iconColor={theme.icons.color}
                     /> 
                   </View>
                   <ScrollView contentContainerStyle={{justifyContent:"flex-start", alignItems:"center", paddingTop:4, paddingHorizontal:4, paddingBottom:75}} style={localStyles.searchResultCont}>
@@ -91,7 +91,8 @@ export default class UserSearch extends Component {
                               this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
                             }>
                             <View style={localStyles.friendCont}>
-                              <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} /><Text style={localStyles.name}>{user.displayName}</Text>
+                              <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} />
+                              <Text style={localStyles.name}>{user.displayName}</Text>
                             </View>
                           </TouchableOpacity>
                       )
@@ -118,13 +119,13 @@ const localStyles = StyleSheet.create({
   },
   friendCont: {
     flexDirection: "row",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 1,
     alignSelf:"center"
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: '.5%',
@@ -137,25 +138,22 @@ const localStyles = StyleSheet.create({
     justifyContent:"center",
     maxHeight:"10%",
     height:"10%",
-
   },
   searchResultCont:{
     flex:3,
     flexDirection:"column",
-    borderWidth:1,
-    borderColor:theme.LIGHT_PINK,
     height:"100%",
     width: "100%",
   },
   mainCont:{
     flex:1,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems:"center",
     flexDirection:'column',
     justifyContent:"flex-start"
   },
   paragraph:{
-    color:theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     fontSize:18
   },
   surface:{
@@ -163,29 +161,29 @@ const localStyles = StyleSheet.create({
     width: "95%",
     height:"100%",
     elevation: 10,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
   },
   DrawerOverlay: {
     alignSelf:"flex-start",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
   navHeader:{
     flexDirection:"row",
     marginTop:30,
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth:1,
     width:"95%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
   },
   drawerBtn: {
     marginTop: '5%',
     marginLeft: '1%',
     marginBottom: '3%',
     borderWidth: 1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 70
   },
 });

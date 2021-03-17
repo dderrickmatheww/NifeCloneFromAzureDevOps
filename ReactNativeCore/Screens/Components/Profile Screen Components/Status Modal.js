@@ -48,7 +48,7 @@ export default class StatusModal extends React.Component  {
     render(){     
         return(         
           <Modal 
-            contentContainerStyle={{width:"90%", height:"40%", borderRadius:50, alignSelf:"center"}}
+            contentContainerStyle={{width:"90%", height:"60%", borderRadius:50, alignSelf:"center"}}
             visible={this.props.isVisible}
             dismissable={true}
             onDismiss={() => this.props.onDismiss()}
@@ -58,9 +58,10 @@ export default class StatusModal extends React.Component  {
                 mode={"outlined"}
                 label=""
                 placeholder={"Type here..."}
+                placeholderTextColor={{color: theme.generalLayout.textColor}}
                 onChangeText={text => this.onStatusChange(text)}
                 style={localStyles.textInput}
-                selectionColor={theme.DARK_PINK}
+                selectionColor={theme.generalLayout.secondaryColor}
                 value={this.state.statusText}
                 multiline={true}
                 > 
@@ -70,13 +71,13 @@ export default class StatusModal extends React.Component  {
                 <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
                 :
                 <Button 
-                  labelStyle={{color:theme.LIGHT_PINK}} 
+                  labelStyle={{color: theme.generalLayout.textColor}} 
                   style={localStyles.button} 
                   icon={"check"}
                   mode="contained" 
                   onPress={() => this.onSaveStatus()}
                 >
-                  <Text style={{color:theme.LIGHT_PINK}}>Update Status</Text>
+                  <Text style={{color: theme.generalLayout.textColor}}>Update Status</Text>
                 </Button>
               }
             </View> 
@@ -88,8 +89,8 @@ export default class StatusModal extends React.Component  {
 const localStyles = StyleSheet.create({
   textInput:{
     flex:1,
-    backgroundColor: theme.DARK,
-    color: theme.GREY,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    color: theme.generalLayout.textColor,
     width:"90%", 
     height:"80%", 
     alignSelf:"center", 
@@ -97,12 +98,12 @@ const localStyles = StyleSheet.create({
     marginTop:5,
   },
   buttonText:{
-    color:theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     alignSelf:"center",
     paddingHorizontal:5,
   },
   button:{
-    borderColor:theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius:10,
     borderWidth:1,
     width:"50%",
@@ -110,7 +111,7 @@ const localStyles = StyleSheet.create({
   },
   viewDark:{
     flex:1,
-    backgroundColor:theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     flexDirection:"column",
     justifyContent:"center",
     alignContent:"center",

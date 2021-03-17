@@ -103,7 +103,7 @@ class FriendsList extends React.Component {
             <Image style={localStyles.profilePic} source={ this.state.userData.photoSource ? { uri: this.state.userData.photoSource }  : defPhoto } />
             <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
             <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
-            <View style={{color:theme.LIGHT_PINK, backgroundColor:theme.DARK, borderWitdth: 1, borderColor:theme.LIGHT_PINK, borderRadius:25, marginBottom:2, width:"98%"}}>
+            <View style={{color: theme.generalLayout.textColor, backgroundColor: theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor: theme.generalLayout.secondaryColor, borderRadius:25, marginBottom:2, width:"98%"}}>
               {/* <Searchbar
                   placeholder=""
                   onChangeText={(query) => this.onChangeSearch(query)}
@@ -150,11 +150,11 @@ const localStyles = StyleSheet.create({
     left: 195,
     alignSelf:"flex-end",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 5,
     marginBottom:7.5,
     borderWidth:1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     justifyContent:"center",
     alignContent:"center",
     padding:3,
@@ -172,12 +172,12 @@ const localStyles = StyleSheet.create({
     alignItems: "flex-start",
     flex: 1,
     flexDirection: "column",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems: "center",
   },
   loggedInSubView: {
     flex: 1,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     justifyContent: "center",
     marginBottom: "10%",
@@ -185,12 +185,12 @@ const localStyles = StyleSheet.create({
   },
   HeaderCont: {
     flex: 1,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     maxHeight:"15%",
     justifyContent: "flex-end",
     alignItems: "center",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
     paddingBottom: 2
   },
@@ -208,7 +208,7 @@ const localStyles = StyleSheet.create({
   },
   friendCont: {
     flexDirection: "row",
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 50,
     width: '100%',
     borderWidth: 1,
@@ -221,7 +221,7 @@ const localStyles = StyleSheet.create({
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     marginVertical: '.5%',
     marginLeft: '5%',
     width: "100%"
@@ -229,7 +229,7 @@ const localStyles = StyleSheet.create({
   FriendCount: {
     fontSize: 15,
     marginVertical:5,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -237,7 +237,7 @@ const localStyles = StyleSheet.create({
     fontSize: 15,
     marginTop: "2%",
     marginBottom: "1%",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal:2
@@ -245,7 +245,7 @@ const localStyles = StyleSheet.create({
   Header: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center'
 
@@ -257,11 +257,11 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   },
   drawerBtn: {
-    marginTop: '5%',
-    marginLeft: '1%',
+    marginTop: '8%',
+    marginLeft: '3%',
     marginBottom: '3%',
     borderWidth: 1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 70
   },
 });

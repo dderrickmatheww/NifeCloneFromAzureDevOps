@@ -67,7 +67,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj)
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({searchPrivacy:!this.state.searchPrivacy})
     }
     if(obj.favoritingPrivacy){
@@ -82,7 +82,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({favoritingPrivacy:!this.state.favoritingPrivacy})
     }
 
@@ -98,7 +98,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({checkInPrivacy:!this.state.checkInPrivacy})
     }
 
@@ -114,7 +114,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({visitedPrivacy:!this.state.visitedPrivacy}) 
     }
 
@@ -130,7 +130,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({orientationPrivacy:!this.state.orientationPrivacy})
     }
 
@@ -146,7 +146,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({DOBPrivacy:!this.state.DOBPrivacy})
     }
 
@@ -162,7 +162,7 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email, updateObj);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({genderPrivacy:!this.state.genderPrivacy})
     }
     if(obj.locationPrivacy){
@@ -177,11 +177,10 @@ export default class SettingsTab extends Component {
          }
        }
        this.props.refresh(user);
-       Util.user.UpdateUser(firebase.firestore(), user.email);
+       Util.user.UpdateUser(user.email, updateObj);
       this.setState({locationPrivacy:!this.state.locationPrivacy})
     }
    }
-
 
    render () {
       return ( 
@@ -193,7 +192,7 @@ export default class SettingsTab extends Component {
                         source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
                             uri:  this.state.userData.photoSource  
                         } : defPhoto}
-                        size={50}
+                        size={35}
                     />
                 </TouchableOpacity> 
                 <Text style={localStyles.headerText}>Settings</Text>
@@ -250,7 +249,7 @@ export default class SettingsTab extends Component {
                 
                 
                </View>
-               <View style={[localStyles.switchCont, {borderTopColor:theme.LIGHT_PINK, borderTopWidth:1}]}>
+               <View style={[localStyles.switchCont, {borderTopColor: theme.generalLayout.secondaryColor, borderTopWidth:1}]}>
                   <Text style={localStyles.switchText}>Sign Out</Text>
                   <TouchableOpacity 
                   onPress={()=>Util.dataCalls.Firebase.signOut()}
@@ -270,13 +269,13 @@ const localStyles = StyleSheet.create({
   
   switchText:{
     alignSelf:"flex-start",
-    color:theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     paddingLeft:10,
     fontSize:14
   },
   switchCont:{
     flexDirection:"row",
-    borderColor:theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderBottomWidth:1,
     justifyContent:"space-between",
     paddingVertical:10
@@ -288,12 +287,12 @@ const localStyles = StyleSheet.create({
   mainCont:{
     flex:1,
     flexDirection:"column",
-    backgroundColor:theme.DARK
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   navHeader:{
     marginTop:25,
     flexDirection:"row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth:1,
     width:"100%",
     textAlign:"center"
@@ -301,25 +300,24 @@ const localStyles = StyleSheet.create({
   DrawerOverlay: {
     alignSelf:"flex-start",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
     alignContent:"center",
     width:"10%"
   },
   headerText:{
-    color:theme.LIGHT_PINK,
-    alignSelf:"center",
-    textAlign:"center",
-    width:"80%",
-    fontSize:25
+    color: theme.generalLayout.textColor,
+    marginTop: '9%',
+    marginLeft: '5%',
+    fontSize: 25
   },
   drawerBtn: {
-    marginTop: '3%',
-    marginLeft: '1%',
+    marginTop: '8%',
+    marginLeft: '3%',
     marginBottom: '3%',
     borderWidth: 1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 70
 },
 });

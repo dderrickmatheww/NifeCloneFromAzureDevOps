@@ -15,7 +15,7 @@
     ],
     "splash": {
       "image": "./Media/Images/updatedLogo.png",
-      "backgroundColor": "#4E4CBB",
+      "backgroundColor": "#301E48",
       "resizeMode": "contain"
     },
     "ios": {

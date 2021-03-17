@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 
 export const styles = StyleSheet.create({
   calloutText:{
-    color: theme.LIGHT_PINK
+    color: theme.generalLayout.textColor
   },
   center: {
     flex: 1,
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   titleVice: {
     fontSize: 36,
     marginBottom: 16,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -31,10 +31,10 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: '#20232a'
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   tabDark: {
-    backgroundColor: '#20232a'
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   title: {
     fontSize: 36,
@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
     top:"5%",
     left: "5%",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
   }, 
   
   friendVisitedBy: {
@@ -98,15 +98,15 @@ export const styles = StyleSheet.create({
   },
   callOutMarker: {
     flex: 1,
-    backgroundColor: theme.DARK,
-    color:theme.LIGHT_PINK,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    color: theme.generalLayout.textColor,
     borderRadius: 3,
     padding: 30,
     margin: 25,
     justifyContent: 'center',
     alignContent: 'center',
     borderRadius: 20,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 2,
     flexDirection:"column"
   },
@@ -121,16 +121,9 @@ export const styles = StyleSheet.create({
     alignContent: 'center',
   },
   friendText: {
-    color:theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     margin: 10,
     marginTop: 30
-  },
-  
-  loggedInContainer: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: '#20232A',
-    elevation:4
   },
   facebookLoginBtn: {
     backgroundColor: '#4267b2',
@@ -165,8 +158,6 @@ export const styles = StyleSheet.create({
     borderColor: 'white',
     borderWidth: 1
   },
-  
-  
   logoutBtn: {
     backgroundColor: 'grey',
     paddingVertical: 10,

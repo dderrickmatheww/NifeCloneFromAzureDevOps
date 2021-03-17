@@ -128,16 +128,15 @@ const localStyles = StyleSheet.create({
   loginContainer: {
     top: 0,
     flex: 1,
-    backgroundColor: '#e9ebee',
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems: 'center',
-    backgroundColor: '#20232A',
     flexDirection:'column'
   },
   subHeaderContainer: {
     width: '50%',
     borderBottomWidth: 1,
     paddingBottom: 10,
-    borderColor: 'grey',
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 20,
     marginVertical: '5%'
   },
@@ -147,7 +146,7 @@ const localStyles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textShadowColor: '#000',
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
   },
   headerContainer: {
     marginTop:'10%',
@@ -160,7 +159,7 @@ const localStyles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
     textShadowColor: '#000',
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
   },
   googleLoginBtn: {
     backgroundColor: '#228B22',
@@ -176,8 +175,8 @@ const localStyles = StyleSheet.create({
     borderWidth: 1
   },
   nifeLoginBtn: {
-    backgroundColor: 'black',
-    borderColor: theme.LIGHT_PINK,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 1,
     marginTop: '10%',
     borderRadius: 20,
@@ -188,11 +187,10 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row'
   },
   nifeBusLoginBtn: {
-    backgroundColor: 'black',
-    borderColor: theme.LIGHT_PINK,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 1,
     marginTop: 10,
-
     borderRadius: 20,
     height: 60,
     width: 300,
@@ -201,8 +199,8 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row'
   },
   nifeForgotBtn: {
-    backgroundColor: 'black',
-    borderColor: theme.LIGHT_PINK,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: .5,
     marginTop: '30%',
     borderRadius: 20,
@@ -213,7 +211,7 @@ const localStyles = StyleSheet.create({
     flexDirection: 'row'
   },
   loggedOutText: {
-    color: "#fff",
+    color: theme.generalLayout.textColor,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -225,7 +223,7 @@ const localStyles = StyleSheet.create({
     width: 25, 
     height: 25,
     left: 2,
-    borderColor: "#fff",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: .2,
     borderRadius: 5
   },

@@ -150,7 +150,7 @@ export default class ProfileScreen extends Component {
       return ( 
         ////////////////////////////////////////
           this.state.userData ? 
-          <Surface style={styles.loggedInContainer}>
+          <Surface style={localStyles.container}>
             <View style={localStyles.navHeader}>
             <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                 <Avatar.Image 
@@ -171,7 +171,7 @@ export default class ProfileScreen extends Component {
                     this.state.isAddingFriend ?
                       <ActivityIndicator size="small" color={theme.loadingIcon.color}></ActivityIndicator> 
                     :
-                      <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.TEXT_COLOR}}>Add Friend</Text>
+                      <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.generalLayout.textColor}}>Add Friend</Text>
                   }
                 </TouchableOpacity> 
               :
@@ -181,7 +181,7 @@ export default class ProfileScreen extends Component {
                   { 
                   this.state.isAddingFriend ?
                     <ActivityIndicator size="small" color={theme.loadingIcon.color}></ActivityIndicator> :
-                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.TEXT_COLOR}}>Remove Friend</Text>
+                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.generalLayout.textColor}}>Remove Friend</Text>
                   }
                 </TouchableOpacity> : null
               }
@@ -193,7 +193,7 @@ export default class ProfileScreen extends Component {
                   left: 250,
                   alignSelf:"flex-end",
                   opacity: 0.75,
-                  backgroundColor: theme.DARK,
+                  backgroundColor: theme.generalLayout.backgroundColor,
                   borderRadius: 10,
                   marginBottom: '5%',
                 }}
@@ -220,13 +220,15 @@ export default class ProfileScreen extends Component {
                       <ImageBackground style={localStyles.profilePic} source={{ uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                         {
                           this.props.isUserProfile ? 
-                          <TouchableOpacity style={{position:"relative", bottom:-125, right:-125}}
-                            onPress={() => {
-                              this.UploadPic();
-                            }}
-                          >
-                            <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
-                          </TouchableOpacity> : null
+                            <TouchableOpacity style={{position:"relative", bottom:-125, right:-125}}
+                              onPress={() => {
+                                this.UploadPic();
+                              }}
+                            >
+                              <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
+                            </TouchableOpacity> 
+                          : 
+                            null
                         }
                       </ImageBackground>
                     </View>
@@ -242,7 +244,7 @@ export default class ProfileScreen extends Component {
                             :
                               <View style={{alignItems:"center"}}>
                                   <Ionicons size={50} color={theme.icons.color} name="ios-person"></Ionicons>
-                                  <Caption style={{color:theme.icons.textColor, textAlign:"center"}}>Click Me To Add Picture!</Caption>
+                                  <Caption style={{color: theme.icons.textColor, textAlign:"center"}}>Click Me To Add Picture!</Caption>
                               </View>
                         }
                     </TouchableOpacity>
@@ -278,8 +280,8 @@ export default class ProfileScreen extends Component {
                       </Title>
                       {
                         this.state.isUsersProfile ?
-                          <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
-                            onPress={() => this.setState({statusModalVisible:true})}
+                          <TouchableOpacity style={{backgroundColor: theme.generalLayout.backgroundColor, position:"relative", top: 10, left: 235, opacity: .75 }}
+                            onPress={() => this.setState({statusModalVisible: true})}
                           >
                               <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
                           </TouchableOpacity> 
@@ -308,23 +310,21 @@ export default class ProfileScreen extends Component {
                         this.state.userData.favoriteDrinks.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2}} 
-                            textStyle={{color:theme.TEXT_COLOR}}>
+                            style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2}} 
+                            textStyle={{color: theme.generalLayout.textColor}}>
                               {drink}
                             </Chip>
                           
                         ))
                         :
                         <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                            style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.TEXT_COLOR}}>
+                            textStyle={{color: theme.generalLayout.textColor}}>
                           None
                         </Chip>
                       }
                     </ScrollView>
-                      
-                    
                   </View>
                   {/* favorite bars */}
                   <View style={localStyles.profRow}>
@@ -339,9 +339,9 @@ export default class ProfileScreen extends Component {
                           bar.favorited ?
                           <Chip mode={"outlined"}
                               key={i}  
-                              style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                              style={{backgroundColor: theme.generalLayout.secondaryColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                               }} 
-                              textStyle={{color:theme.LIGHT_PINK}}>
+                              textStyle={{color: theme.generalLayout.textColor}}>
                               {bar.name ? bar.name : 'None'}
                           </Chip> 
                           : 
@@ -349,9 +349,9 @@ export default class ProfileScreen extends Component {
                         ))
                       :
                       <Chip mode={"outlined"}  
-                          style={{backgroundColor:theme.DARK, borderColor:theme.LIGHT_PINK, marginHorizontal:2
+                          style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                           }} 
-                          textStyle={{color:theme.LIGHT_PINK}}>
+                          textStyle={{color: theme.generalLayout.textColor}}>
                         None
                       </Chip>
                     }
@@ -392,10 +392,16 @@ const localStyles = StyleSheet.create({
     padding:10,
     borderRadius:10,
     borderWidth:1,
-    borderColor:theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.backgroundColor,
     justifyContent:'center',
     alignItems:"center"
-},
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: theme.generalLayout.backgroundColor,
+    elevation:4
+  },
   drinksChipCont:{
     flex:1,
     flexDirection:"row",
@@ -404,7 +410,7 @@ const localStyles = StyleSheet.create({
   navHeader:{
     marginTop:25,
     flexDirection:"row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth:1,
     width:"98%"
   },
@@ -413,14 +419,14 @@ const localStyles = StyleSheet.create({
     left: 215,
     alignSelf:"flex-end",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     marginBottom:5,
   },
   DrawerOverlay: {
     alignSelf:"flex-start",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -430,22 +436,22 @@ const localStyles = StyleSheet.create({
     left: 195,
     alignSelf:"flex-end",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 5,
     marginBottom:7.5,
     borderWidth:1,
-    borderColor: theme.LIGHT_PINK
+    borderColor: theme.generalLayout.secondaryColor
   },
   profRow:{
     marginVertical: 10
   },
   descTitle:{
     fontSize: 18, 
-    color: theme.LIGHT_PINK
+    color: theme.generalLayout.textColor
   },
   caption:{
     fontSize: 14, 
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     marginLeft: 15
   },
   mainCont:{
@@ -468,7 +474,7 @@ const localStyles = StyleSheet.create({
   },
   loggedInSubView:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     justifyContent:"center",
     marginBottom:"10%",
@@ -476,12 +482,12 @@ const localStyles = StyleSheet.create({
   },
   HeaderCont:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     maxHeight:"30%",
     justifyContent:"flex-end",
     alignItems:"center",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
     marginTop:90
 
@@ -499,12 +505,12 @@ const localStyles = StyleSheet.create({
   },
   friendCont:{
     flexDirection: "row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 1,
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
@@ -515,14 +521,14 @@ const localStyles = StyleSheet.create({
     fontSize: 12,
     marginTop: "2%",
     marginBottom: "1%",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center'
   },
   headerName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     textAlign:"center"
@@ -530,7 +536,7 @@ const localStyles = StyleSheet.create({
   headerAgeGender: {
     fontSize: 14,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     textAlign:"center",
@@ -540,18 +546,18 @@ const localStyles = StyleSheet.create({
     flex: 1,
     width:"100%",
     borderLeftWidth:2,
-    borderLeftColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.generalLayout.secondaryColor,
     borderRightWidth:2,
-    borderRightColor: theme.LIGHT_PINK,
+    borderRightColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
   },
   drawerBtn: {
-    marginTop: '3%',
-    marginLeft: '1%',
+    marginTop: '8%',
+    marginLeft: '3%',
     marginBottom: '3%',
     borderWidth: 1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 70
 },
 });
