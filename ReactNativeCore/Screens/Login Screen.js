@@ -4,6 +4,7 @@ import Util from '../scripts/Util';
 import theme from '../Styles/theme';
 import NifeLoginModal from './Components/Home Screen Components/LoginModal'
 import * as firebase from 'firebase';
+const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 export default class LoginScreen extends Component {
   state = {
@@ -75,7 +76,7 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
             <Image
               style={localStyles.Logo}
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' }}
+              source={defPhoto}
             />
           </TouchableOpacity>
         </View>
@@ -95,7 +96,7 @@ export default class LoginScreen extends Component {
             <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife as a business</Text>
             <Image
               style={localStyles.Logo}
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed' }}
+              source={defPhoto}
             />
           </TouchableOpacity>
         </View>
@@ -117,8 +118,7 @@ export default class LoginScreen extends Component {
         onSignUp={this.props.onSignUp} 
         isReset={this.state.isReset} 
         modalVisible={this.state.modalVisible} 
-        callback={() => {}
-        }/>
+        callback={() => {}}/>
       </View>
     );
   }

@@ -1422,10 +1422,10 @@ const Util = {
                     //radius in meters
                     paramString +="radius="+radius+"&";
                 }
-                paramString += `&categories=
-                    bars,beergardens,musicvenues,pubs,brewpubs,
-                    irish_pubs,whiskeybars,vermouthbars,sportsbars,
-                    chicken_wings,barcrawl,danceclubs,pianobars,poolhalls`;
+            //    paramString += `&categories=
+            //         bars,beergardens,musicvenues,pubs,brewpubs,
+            //         irish_pubs,whiskeybars,vermouthbars,sportsbars,
+            //         chicken_wings,barcrawl,danceclubs,pianobars,poolhalls`;
                 return paramString;
             } ,
             businessVerification: (name, address, city, state, country, callback) =>{
