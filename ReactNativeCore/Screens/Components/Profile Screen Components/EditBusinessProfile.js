@@ -135,7 +135,7 @@ export default class EditBusinessProfile extends Component {
       }
     }
 
-    Util.business.UpdateUser(firebase.firestore(), firebase.auth().currentUser.email, profileInfo, (data) => {});
+    Util.business.UpdateUser(firebase.auth().currentUser.email, profileInfo, (data) => {});
 
     var user = this.props.business;
 
@@ -180,61 +180,61 @@ export default class EditBusinessProfile extends Component {
               {/* Input Area */}
 
                   <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, marginBottom:5}}>
                       Open (ex: 12:00PM): 
                     </Text>
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    <TextInput  theme={{colors:{ text: theme.generalLayout.textColor }}}  numberOfLines={2}
                     mode={"flat"}
                     label=""
                     placeholder={"12:00PM"}
                     onChangeText={text => this.onOpenChange(text)}
                     value={this.state.open}
-                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
+                    style={{backgroundColor:theme.generalLayout.backgroundColor, color:theme.generalLayout.textColor, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.generalLayout.secondaryColor, borderWidth:1}}>
                     
                     </TextInput>
                   </View>
 
                   <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, marginBottom:5}}>
                     Open (ex: 2:00AM): 
                     </Text>
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    <TextInput  theme={{colors:{text: theme.generalLayout.textColor}}}  numberOfLines={2}
                     mode={"flat"}
                     label=""
                     placeholder={"12:00AM"}
                     onChangeText={text => this.onCloseChange(text)}
                     value={this.state.close}
-                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
+                    style={{backgroundColor:theme.generalLayout.backgroundColor, color:theme.generalLayout.textColor, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.generalLayout.secondaryColor, fontFamily: theme.generalLayout.font, borderWidth:1}}>
                     
                     </TextInput>
                   </View>
 
                   <View style={localStyles.fieldCont}> 
-                    <Text style={{ fontSize: 18, color: theme.LIGHT_PINK, marginBottom:5}}>
+                    <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, marginBottom:5}}>
                       Specials (comma seperated): 
                     </Text>
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}}  numberOfLines={2}
+                    <TextInput  theme={{colors:{ text: theme.generalLayout.textColor }}}  numberOfLines={2}
                     mode={"flat"}
                     label=""
                     placeholder={"What specials are you offering?"}
                     onChangeText={text => this.onSpecialsChange(text)}
                     value={this.state.specialsText}
-                    style={{backgroundColor:theme.DARK, color:theme.DARK, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}>
+                    style={{backgroundColor: theme.generalLayout.backgroundColor, color:theme.generalLayout.textColor, width:"90%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, fontFamily: theme.generalLayout.font, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
                     
                     </TextInput>
                   </View>
 
                   <View style={localStyles.fieldCont}>
-                    <Text style={{ fontSize: 18, color: theme.generalTEXT_COLOR, marginBottom:5}}>
+                    <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, marginBottom:5}}>
                       Events (seperate with '&'): 
                     </Text>
                     {/* index one to on change */}
-                    <TextInput  theme={{colors:{text:theme.LIGHT_PINK}}} 
+                    <TextInput  theme={{colors:{text: theme.generalLayout.textColor}}} 
                     mode={"flat"}
                     label=""
                     placeholder={"Anything going on soon?"}
                     onChangeText={text => this.onEventsChange(text)}
-                    style={{backgroundColor:theme.DARK,color:theme.DARK,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.LIGHT_PINK_OPAC, borderWidth:1}}
+                    style={{backgroundColor:theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor,width:"90%", alignSelf:"center", borderRadius: 5, borderColor:theme.generalLayout.secondaryColor, borderWidth:1}}
                     value={this.state.eventsText}
                     >
                       
@@ -285,7 +285,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top:"6%",
     left: "90.5%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -293,7 +293,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top:"6%",
     left: "80%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -303,7 +303,7 @@ const localStyles = StyleSheet.create({
     top:"6%",
     left: "70%",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -318,13 +318,13 @@ const localStyles = StyleSheet.create({
     alignItems:"flex-start", 
     flex: 1, 
     flexDirection: "column",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems:"center",
     justifyContent:"space-evenly"
   },
   loggedInSubView:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     justifyContent:"center",
     marginBottom:"10%",
@@ -332,12 +332,12 @@ const localStyles = StyleSheet.create({
   },
   HeaderCont:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     maxHeight:"15%",
     justifyContent:"flex-end",
     alignItems:"center",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
 
   },
@@ -354,41 +354,43 @@ const localStyles = StyleSheet.create({
   },
   friendCont:{
     flexDirection: "row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor:theme.generalLayout.secondaryColor,
     borderBottomWidth: 1,
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
     marginLeft:'2.5%',
-    width: "100%"
+    width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   FriendCount: {
     fontSize: 15,
     marginTop: "2%",
     marginBottom: "1%",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   Header: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
-    
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   ScrollView: {
     flex: 1,
     width:"100%",
     borderLeftWidth:2,
-    borderLeftColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.generalLayout.secondaryColor,
     borderRightWidth:2,
-    borderRightColor: theme.LIGHT_PINK,
+    borderRightColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
   }

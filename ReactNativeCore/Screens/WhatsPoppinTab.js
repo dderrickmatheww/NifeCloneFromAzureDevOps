@@ -148,7 +148,7 @@ class WhatsPoppin extends React.Component  {
                             />
                         </TouchableOpacity> 
                         <View style={{width:"100%"}}>
-                            <Headline style={{ color: theme.TEXT_COLOR, marginLeft: '5%', marginBottom: '2%'}}>What's Poppin'</Headline>
+                            <Headline style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.fontBold, marginLeft: '5%', marginBottom: '2%'}}>What's Poppin'</Headline>
                         </View>
                     </View>
                     {/* <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/> */}
@@ -161,10 +161,10 @@ class WhatsPoppin extends React.Component  {
                                 refreshing={this.state.refresh} 
                                 onRefresh={this.onRefresh}  
                                 size={22}
-                                color={[theme.GOLD]}
-                                tintColor={theme.GOLD}
+                                color={[theme.loadingIcon.color]}
+                                tintColor={theme.loadingIcon.color}
                                 title={'Loading...'}
-                                titleColor={theme.GOLD}
+                                titleColor={theme.loadingIcon.textColor}
                             />
                         }
                     >
@@ -200,10 +200,10 @@ class WhatsPoppin extends React.Component  {
                                     refreshing={this.state.refresh} 
                                     onRefresh={this.onRefresh}  
                                     size={22}
-                                    color={[theme.GOLD]}
-                                    tintColor={theme.GOLD}
+                                    color={[theme.loadingIcon.color]}
+                                    tintColor={theme.loadingIcon.color}
                                     title={'Loading...'}
-                                    titleColor={theme.GOLD}
+                                    titleColor={theme.loadingIcon.textColor}
                                 />
                             }
                         >
@@ -237,39 +237,41 @@ const localStyles = StyleSheet.create({
     navHeader: {
         marginTop: 12.5,
         flexDirection:"row",
-        borderBottomColor: theme.LIGHT_PINK,
+        borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth:1,
         width:"98%",
         textAlign:"center",
         alignItems:"center",
     },
     emptyPoppinFeed: {
-        color: theme.TEXT_COLOR, 
+        color: theme.generalLayout.textColor, 
         fontSize: 16,
         padding: 20,
         textAlign: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        fontFamily: theme.generalLayout.font
     },
     DrawerOverlay: {
         alignSelf:"flex-start",
         opacity: 0.75,
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         paddingVertical:0,
     },
     statusButton: {
-        color:theme.LIGHT_PINK,
-        fontSize:10,
+        color: theme.generalLayout.textColor,
+        fontSize: 10,
+        fontFamily: theme.generalLayout.font
     },
     StatusOverlay: {
         position:"relative",
         top:2.5,
         right:125,
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         paddingVertical:0,
         borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
+        borderColor: theme.generalLayout.secondaryColor,
         borderRadius:5,
         paddingVertical:2,
         paddingHorizontal:5
@@ -283,13 +285,13 @@ const localStyles = StyleSheet.create({
     safeAreaContainer: {
         flex: 1,
         paddingTop:"7%",
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
     },
     viewDark: {
         flex: 1,
         justifyContent: 'center', 
         alignItems: 'center' ,
-        backgroundColor: theme.DARK
+        backgroundColor: theme.generalLayout.backgroundColor
     },
     dataRowScrollView: {
         flex: 1,

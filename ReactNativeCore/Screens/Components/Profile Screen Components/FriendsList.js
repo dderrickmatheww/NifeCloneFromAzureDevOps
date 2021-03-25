@@ -103,7 +103,7 @@ class FriendsList extends React.Component {
             <Image style={localStyles.profilePic} source={ this.state.userData.photoSource ? { uri: this.state.userData.photoSource }  : defPhoto } />
             <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
             <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
-            <View style={{color: theme.generalLayout.textColor, backgroundColor: theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor: theme.generalLayout.secondaryColor, borderRadius:25, marginBottom:2, width:"98%"}}>
+            <View style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, backgroundColor: theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor: theme.generalLayout.secondaryColor, borderRadius:25, marginBottom:2, width:"98%"}}>
               {/* <Searchbar
                   placeholder=""
                   onChangeText={(query) => this.onChangeSearch(query)}
@@ -224,14 +224,16 @@ const localStyles = StyleSheet.create({
     color: theme.generalLayout.textColor,
     marginVertical: '.5%',
     marginLeft: '5%',
-    width: "100%"
+    width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   FriendCount: {
     fontSize: 15,
     marginVertical:5,
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   Requests: {
     fontSize: 15,
@@ -240,15 +242,16 @@ const localStyles = StyleSheet.create({
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal:2
+    paddingHorizontal:2,
+    fontFamily: theme.generalLayout.font
   },
   Header: {
     fontSize: 20,
     fontWeight: "bold",
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
-
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   ScrollView: {
     flex: 1,

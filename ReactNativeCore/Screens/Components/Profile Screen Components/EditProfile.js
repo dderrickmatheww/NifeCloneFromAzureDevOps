@@ -172,7 +172,7 @@ export default class EditProfile extends Component {
             <View style={localStyles.loggedInContainer}>
               <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}} style={localStyles.mainCont}> 
               {/* Input Area */}
-                  <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, marginBottom: 15}}>
+                  <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, marginBottom: 15, fontFamily: theme.generalLayout.font}}>
                     All information is optional and can be hidden via privacy settings! 
                   </Text>
                   {/* Display name */}
@@ -197,7 +197,7 @@ export default class EditProfile extends Component {
                       <Text style={localStyles.fieldLabel}>
                         Date of Birth:  
                       </Text>
-                      <Text style={{ color: theme.generalLayout.textColor, fontSize: 18, marginBottom: 5, marginLeft: '15.5%' }}>
+                      <Text style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 18, marginBottom: 5, marginLeft: '15.5%' }}>
                         {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: '16.5%', paddingBottom: 5}}
@@ -284,7 +284,7 @@ export default class EditProfile extends Component {
                           <Chip mode={"outlined"}  
                               style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                               }} 
-                              textStyle={{color: theme.generalLayout.textColor}}>
+                              textStyle={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                             You have no favorites!
                           </Chip>
                       }
@@ -300,7 +300,7 @@ export default class EditProfile extends Component {
                     placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
                     value={this.state.bio ? this.state.bio : 'None'}
-                    style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, width:"100%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
+                    style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, width:"100%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
                     </TextInput>
                   </View>
 
@@ -315,7 +315,7 @@ export default class EditProfile extends Component {
                     placeholder={"What're you drinkin'?"}
                     placeholderTextColor={{color: theme.generalLayout.textColor}}
                     onChangeText={text => this.onFavoriteDrinkChange(text)}
-                    style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, width:"100%", alignSelf:"center", borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}
+                    style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, width:"100%", alignSelf:"center", borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}
                     value={this.state.favoriteDrinks ? this.state.favoriteDrinks.toString() : 'None'}
                     >
                     </TextInput>
@@ -352,7 +352,8 @@ const localStyles = StyleSheet.create({
     fontSize: 18,
     color: theme.generalLayout.textColor,
     marginBottom:5,
-    fontWeight:"bold"
+    fontWeight:"bold",
+    fontFamily: theme.generalLayout.font
   },
   surface: {
     width:"auto",
@@ -451,6 +452,7 @@ const localStyles = StyleSheet.create({
   name: {
     fontSize: 18,
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
@@ -462,6 +464,7 @@ const localStyles = StyleSheet.create({
     marginTop: "2%",
     marginBottom: "1%",
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -470,8 +473,8 @@ const localStyles = StyleSheet.create({
     fontWeight: "bold",
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
-    
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   ScrollView: {
     flex: 1,

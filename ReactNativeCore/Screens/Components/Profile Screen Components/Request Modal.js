@@ -70,7 +70,7 @@ class RequestModal extends React.Component  {
                 this.state.requests ? 
                 <View style={styles.viewDark}>
                   <View style={{justifyContent:"center", alignItems:"center", marginBottom:15, borderBottomColor:theme.LIGHT_PINK, borderBottomWidth:1}}>
-                    <Subheading style={{color:theme.LIGHT_PINK}}>Your Friend Requests</Subheading>
+                    <Subheading style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Your Friend Requests</Subheading>
                   </View>
                   <ScrollView  contentContainerStyle={{paddingTop:20, paddingBottom:25, justifyContent:"center", alignItems:"center"}}>
                     {this.state.requests.map((friend, i) => (
@@ -126,18 +126,19 @@ class RequestModal extends React.Component  {
 
 const localStyles = StyleSheet.create({
   buttonText:{
-    color:theme.LIGHT_PINK,
+    color:theme.generalLayout.textColor,
     alignSelf:"center",
     paddingHorizontal:5,
+    fontFamily: theme.generalLayout.font
   },
   AddFriendOverlay: {
     flexDirection:"row",
     alignSelf:"flex-start",
     justifyContent:"center",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 5,
     borderWidth:1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: 4,
     right:-50,
   },
@@ -145,10 +146,10 @@ const localStyles = StyleSheet.create({
     flexDirection:"row",
     alignSelf:"flex-end",
     justifyContent:"center",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 5,
     borderWidth:1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: 4,
     left:-50,
   },
@@ -162,7 +163,7 @@ const localStyles = StyleSheet.create({
     flexDirection:"row",
     justifyContent:"center",
     alignItems:"center",
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 1,
     paddingHorizontal:50,
     paddingVertical:5,
@@ -173,9 +174,10 @@ const localStyles = StyleSheet.create({
   name: {
     fontSize: 18,
     textAlign:"center",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     marginVertical: '.5%',
     width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   closeButton:{
     left: "55%",
@@ -186,7 +188,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: '#20232a'
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   centeredView: {
     flex: 1,
@@ -199,10 +201,10 @@ const localStyles = StyleSheet.create({
     marginBottom:"15%",
     marginTop:"20%",
     marginHorizontal: "2.5%",
-    backgroundColor: "#20232a",
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#ff1493",
+    borderColor: theme.generalLayout.secondaryColor,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
@@ -219,11 +221,10 @@ const localStyles = StyleSheet.create({
 
   imgCont: {
     flex: 1,
-    backgroundColor: '#5D5E60',
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems: 'center',
     justifyContent: 'center',
-    
-    borderColor:"#5D5E60",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 10,
     borderRadius: 20,
     width:'100%',
@@ -231,32 +232,33 @@ const localStyles = StyleSheet.create({
   modalImage:{
     width: '100%',
     height: '100%',
-    borderColor:"#BEB2C8",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 10,
     borderRadius: 20,
   },
   textCont:{
     margin:"10%",
     width:"100%",
-    backgroundColor: "#5D5E60",
+    backgroundColor: theme.generalLayout.secondaryColor,
     borderRadius:20,
   },
   descCont: {
     borderRadius: 20,
-    borderColor: "black",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 1,
-    backgroundColor:"#BEB2C8",
+    backgroundColor: theme.generalLayout.backgroundColor,
     margin:"1%",
   },
   modalText:{
-    color: "#20232a",
+    color: theme.generalLayout.textColor,
     padding: 5,
     marginLeft:"1%",
     fontWeight:"bold",
+    fontFamily: theme.generalLayout.font
   },
 
   titleCont: {
-    backgroundColor:"#5D5E60",
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: '100%',
     borderRadius: 20,
     alignItems: 'center',
@@ -264,28 +266,28 @@ const localStyles = StyleSheet.create({
     top: "-7.5%"
   },
   modalTitle:{
-    color: "#20232a",
+    color: theme.generalLayout.textColor,
     padding: 5,
     fontSize:24,
     borderRadius: 20,
     textAlign:"center",
     fontWeight:'bold',
-    backgroundColor:"#BEB2C8",
+    backgroundColor: theme.generalLayout.secondaryColor,
     marginVertical:"2%",
     width:"90%",
-
+    fontFamily: theme.generalLayout.font
   },
   ratingText:{
-    color: "#20232a",
+    color: theme.generalLayout.textColor,
     padding: 5,
     fontWeight:"bold",
-    textAlign:"center"
+    textAlign:"center",
+    fontFamily: theme.generalLayout.font
   },
   rating:{
     marginTop:"2%",
     marginBottom:"1%",
   }
-
 });
   
   export default RequestModal;

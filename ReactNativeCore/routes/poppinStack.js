@@ -67,6 +67,9 @@ class PoppinStack extends React.Component {
           tabBarOptions={{
             activeTintColor: theme.icons.tabIcon.activeTintColor,
             inactiveTintColor:  theme.icons.color,
+            labelStyle: {
+              fontFamily: theme.generalLayout.font
+            },
             style: {
               backgroundColor: 'transparent',
               borderTopWidth: 0,

@@ -333,7 +333,6 @@ export default class FriendsFeed extends React.Component  {
 
     render() {
         return (
-            
                 <View style={localStyles.safeAreaContainer}>
                     <View style={localStyles.navHeader}>
                         <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
@@ -345,7 +344,7 @@ export default class FriendsFeed extends React.Component  {
                             />
                         </TouchableOpacity>  
                         <View style={{width:"100%"}}>
-                            <Headline style={{ color: theme.TEXT_COLOR, marginLeft: '5%', marginBottom: '2%'}}>Your Feed</Headline>
+                            <Headline style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.fontBold, marginLeft: '5%', marginBottom: '2%'}}>Your Feed</Headline>
                         </View>
                         {
                             !this.state.userData.isBusiness ?
@@ -395,7 +394,7 @@ export default class FriendsFeed extends React.Component  {
                         this.state.modalVisible ?
                         <Modal 
                             contentContainerStyle={{width:"50%", height:"25%", borderRadius:10, alignSelf:"center", flexDirection:"column",
-                            alignItems:"center", backgroundColor:theme.DARK}}
+                            alignItems:"center", backgroundColor: theme.generalLayout.backgroundColor}}
                             visible={this.state.modalVisible}
                             dismissable={true}
                             onDismiss={() => this.onDismissUpdate()}
@@ -484,10 +483,6 @@ export default class FriendsFeed extends React.Component  {
                             Updated your {this.state.snackBarText}!
                         </Snackbar>
                 </View>
-            
-            
-           
-           
         )
     }
 }
@@ -496,25 +491,27 @@ const localStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center', 
         alignItems: 'center' ,
-        backgroundColor: '#20232a',
+        backgroundColor: theme.generalLayout.backgroundColor,
         paddingBottom:10
       },
     modalButton: {
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         paddingVertical:0,
         borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
+        borderColor: theme.generalLayout.secondaryColor,
         borderRadius:5,
         paddingVertical:2,
         paddingHorizontal:5,
         textAlign:"center",
-        marginVertical:5
+        marginVertical:5,
+        fontFamily: theme.generalLayout.font
       },
       modalButtonText: {
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.secondaryColor,
         fontSize:20,
-        textAlign:"center"
+        textAlign:"center",
+        fontFamily: theme.generalLayout.font
     },
     StatusOverlay: {
         position:"relative",
@@ -529,27 +526,31 @@ const localStyles = StyleSheet.create({
     },
     Caption: {
         color: theme.generalLayout.textColor,
-        opacity: 0.60
+        opacity: 0.60,
+        fontFamily: theme.generalLayout.font
     },
     statusButton: {
-        color: theme.TEXT_COLOR,
+        color: theme.generalLayout.textColor,
         fontSize: 11,
+        fontFamily: theme.generalLayout.font
     },
     Paragraph:{
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.secondaryColor,
         fontSize:12,
-        marginTop:-10
+        marginTop:-10,
+        fontFamily: theme.generalLayout.font
     },
     displayName:{
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.secondaryColor,
         left:60,
         top:-45,
         position:"relative",
         fontSize:15,
-        fontWeight:"bold"
+        fontWeight:"bold",
+        fontFamily: theme.generalLayout.fontBold
     },
     feedType:{
-        color:theme.LIGHT_PINK,
+        color: theme.generalLayout.secondaryColor,
         left:60,
         top:-50,
         position:"relative",
@@ -558,8 +559,8 @@ const localStyles = StyleSheet.create({
     },
     feedDataRow:{
         flex:1,
-        backgroundColor:theme.DARK,
-        borderColor:theme.LIGHT_PINK,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderColor: theme.generalLayout.secondaryColor,
         borderRadius:10,
         borderWidth:1,
         marginVertical:2,
@@ -569,16 +570,17 @@ const localStyles = StyleSheet.create({
         width:"100%",
     },
     emptyPoppinFeed: {
-        color: theme.TEXT_COLOR, 
+        color: theme.generalLayout.textColor, 
         fontSize: 16,
         padding: 20,
         textAlign: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        fontFamily: theme.generalLayout.font
     },
     navHeader: {
         marginTop: 12.5,
         flexDirection:"row",
-        borderBottomColor: theme.LIGHT_PINK,
+        borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth:1,
         width:"98%",
         textAlign:"center",
@@ -587,7 +589,7 @@ const localStyles = StyleSheet.create({
     DrawerOverlay: {
       alignSelf:"flex-start",
       opacity: 0.75,
-      backgroundColor: theme.DARK,
+      backgroundColor: theme.generalLayout.backgroundColor,
       borderRadius: 10,
       paddingVertical:0,
     },
@@ -607,7 +609,7 @@ const localStyles = StyleSheet.create({
     safeAreaContainer: {
         flex: 1,
         paddingTop:"7%",
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
     },
   });
   

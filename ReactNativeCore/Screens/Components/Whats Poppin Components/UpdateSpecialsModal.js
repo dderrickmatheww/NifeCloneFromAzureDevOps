@@ -84,7 +84,7 @@ export default class StatusModal extends React.Component  {
               visible={this.props.isVisible}
               dismissable={true}
               onDismiss={() => this.props.onDismiss()}
-              theme={{colors:{placeholder:theme.LIGHT_GREY}}}
+              theme={{colors:{placeholder: theme.generalLayout.textColor}}}
             >
               
                 <View style={localStyles.viewDark}>
@@ -98,19 +98,19 @@ export default class StatusModal extends React.Component  {
                     multiline={true}
                     > 
                   </TextInput>
-        <Text style={{color:theme.LIGHT_PINK, alignSelf:"center", marginBottom:10}}>Seperate specials with commas {"\n"}(Ex: $1 Beer, $6 Vodka)</Text>
+                  <Text style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, alignSelf:"center", marginBottom:10}}>Seperate specials with commas {"\n"}(Ex: $1 Beer, $6 Vodka)</Text>
                   {
                     this.state.saving ?
                     <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
                     :
                     <Button 
-                      labelStyle={{color:theme.LIGHT_PINK}} 
+                      labelStyle={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}} 
                       style={localStyles.button} 
                       icon={"check"}
                       mode="contained" 
                       onPress={() => this.onSaveStatus()}
                     >
-                      <Text style={{color:theme.LIGHT_PINK}}>Update Specials</Text>
+                      <Text style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Update Specials</Text>
                     </Button>
                   }
                   
@@ -127,21 +127,23 @@ export default class StatusModal extends React.Component  {
 const localStyles = StyleSheet.create({
   textInput:{
     flex:1,
-    backgroundColor:theme.LIGHT,
-    color:theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    color: theme.generalLayout.textColor,
     width:"90%", 
     height:"80%", 
     alignSelf:"center", 
     borderRadius: 5,
     marginTop:5,
+    fontFamily: theme.generalLayout.font
   },
   buttonText:{
-    color:theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     alignSelf:"center",
     paddingHorizontal:5,
+    fontFamily: theme.generalLayout.font
   },
   button:{
-    borderColor:theme.LIGHT_PINK,
+    borderColor:theme.generalLayout.secondaryColor,
     borderRadius:10,
     borderWidth:1,
     width:"60%",
@@ -150,7 +152,7 @@ const localStyles = StyleSheet.create({
 
   viewDark:{
     flex:1,
-    backgroundColor:theme.DARK,
+    backgroundColor:theme.generalLayout.backgroundColor,
     flexDirection:"column",
     justifyContent:"center",
     alignContent:"center",

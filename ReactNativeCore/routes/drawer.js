@@ -5,7 +5,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import MapStack from '../routes/mapStack';
 import SettingsTab from '../Screens/SettingsTab';
 import theme from '../Styles/theme';
-import { styles } from '../Styles/style';
 import PoppinStack from './poppinStack';
 import TestingStack from './testingStack';
 import ProfileStack from './profileStack';
@@ -14,6 +13,7 @@ import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import LoginScreen from '../Screens/Login Screen';
 import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
+import * as Font from 'expo-font';
 
 const Drawer = createDrawerNavigator();
 
@@ -176,6 +176,17 @@ class Navigator extends React.Component {
   }
 
   async componentDidMount() {
+    try {
+      await Font.loadAsync({
+        Comfortaa: require('../Media/Fonts/Comfortaa/static/Comfortaa-Regular.ttf'),
+        ComfortaaLight: require('../Media/Fonts/Comfortaa/static/Comfortaa-Light.ttf'),
+        ComfortaaBold: require('../Media/Fonts/Comfortaa/static/Comfortaa-Bold.ttf')
+      });
+    }
+    catch (error) {
+      console.log(error);
+    }
+   
     await Util.user.CheckAuthStatus((user) => {
       this.setState({ authLoaded: true });
       if (user) {
@@ -206,14 +217,14 @@ class Navigator extends React.Component {
           <NavigationContainer>
             <Drawer.Navigator 
               drawerContentOptions={{
-                activeTintColor: theme.DARK,
-                inactiveTintColor: theme.GOLD,
+                activeTintColor: theme.generalLayout.backgroundColor,
+                inactiveTintColor: theme.loadingIcon.color,
                 labelStyle: {
-                  color: theme.DARK
+                  color: theme.generalLayout.backgroundColor
                 }
               }}
               drawerStyle={{
-                backgroundColor: theme.LIGHT_PINK
+                backgroundColor: theme.generalLayout.backgroundColor
               }}
               initialRouteName='My Feed'
               drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}

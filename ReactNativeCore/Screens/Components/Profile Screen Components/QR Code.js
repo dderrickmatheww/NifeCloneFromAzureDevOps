@@ -27,20 +27,20 @@ export default class QRCodeScreen extends Component {
        this.state.userData ?
             <View style={styles.viewDark}>
               <View style={{justifyContent:"center", alignContent:"center"}}>
-                <Headline style={{justifyContent:"center", alignContent:"center", color:theme.LIGHT_PINK}}>Your QR Code</Headline>
-                <Caption style={{justifyContent:"center", alignContent:"center", color:theme.LIGHT_PINK}}>Let friends scan this to add you to their friends list!</Caption>
+                <Headline style={{justifyContent:"center", alignContent:"center", color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Your QR Code</Headline>
+                <Caption style={{justifyContent:"center", alignContent:"center", color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Let friends scan this to add you to their friends list!</Caption>
               </View>
               
               <Image
                 source={{uri:Util.user.GenerateQRCode(firebase.auth().currentUser.email)}}
                 style={{width:300,height:300, marginTop:30}}
               />
-              <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
+              <DrawerButton drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress} /> 
             </View>
                 :
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-                <DrawerButton drawerButtonColor={theme.LIGHT_PINK} onPress={this.props.onDrawerPress} /> 
+                <DrawerButton drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress} /> 
             </View> 
         
       );
@@ -61,7 +61,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top:"6%",
     left: "90.5%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -69,7 +69,7 @@ const localStyles = StyleSheet.create({
     position: 'absolute',
     top:"6%",
     left: "80%",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -79,7 +79,7 @@ const localStyles = StyleSheet.create({
     top:"6%",
     left: "70%",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -94,13 +94,13 @@ const localStyles = StyleSheet.create({
     alignItems:"flex-start", 
     flex: 1, 
     flexDirection: "column",
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems:"center",
     justifyContent:"space-evenly"
   },
   loggedInSubView:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     justifyContent:"center",
     marginBottom:"10%",
@@ -108,12 +108,12 @@ const localStyles = StyleSheet.create({
   },
   HeaderCont:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     maxHeight:"15%",
     justifyContent:"flex-end",
     alignItems:"center",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
 
   },
@@ -130,41 +130,44 @@ const localStyles = StyleSheet.create({
   },
   friendCont:{
     flexDirection: "row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor:theme.generalLayout.secondaryColor,
     borderBottomWidth: 1,
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
     marginLeft:'2.5%',
-    width: "100%"
+    width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   FriendCount: {
     fontSize: 15,
     marginTop: "2%",
     marginBottom: "1%",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   Header: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
     
   },
   ScrollView: {
     flex: 1,
     width:"100%",
     borderLeftWidth:2,
-    borderLeftColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.generalLayout.secondaryColor,
     borderRightWidth:2,
-    borderRightColor: theme.LIGHT_PINK,
+    borderRightColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
   }

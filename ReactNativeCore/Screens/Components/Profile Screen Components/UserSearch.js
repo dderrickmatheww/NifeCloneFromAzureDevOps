@@ -78,7 +78,7 @@ export default class UserSearch extends Component {
                       onEndEditing={(query) => this.onUserQuery(query)}
                       value={this.state.searchText}
                       inputStyle={{ color: theme.generalLayout.textColor}}
-                      style={{color:theme.generalLayout.textColor, backgroundColor:theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor:theme.generalLayout.secondaryColor, borderRadius:25, alignSelf:"flex-start"}}
+                      style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, backgroundColor:theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor:theme.generalLayout.secondaryColor, borderRadius:25, alignSelf:"flex-start"}}
                       iconColor={theme.icons.color}
                     /> 
                   </View>
@@ -130,7 +130,8 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: '.5%',
     marginLeft: '2.5%',
-    width: "100%"
+    width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   searchBarCont:{
     flex:1,
@@ -154,7 +155,8 @@ const localStyles = StyleSheet.create({
   },
   paragraph:{
     color: theme.generalLayout.textColor,
-    fontSize:18
+    fontSize:18,
+    fontFamily: theme.generalLayout.font
   },
   surface:{
     alignSelf:"center",

@@ -387,7 +387,8 @@ export default class NifeLoginModal extends Component {
 const localStyles = StyleSheet.create({
     VerificationText:{
         color: theme.generalLayout.textColor, 
-        fontSize:20
+        fontSize:20,
+        fontFamily: theme.generalLayout.font
     },
     VerificationOption:{
         borderColor:theme.generalLayout.secondaryColor,
@@ -403,13 +404,15 @@ const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor, 
         fontSize: 15,
         marginTop: '25%',
-        textAlign:"center"
+        textAlign:"center",
+        fontFamily: theme.generalLayout.font
     },
     loginLoginSwitchText:{
         color: theme.generalLayout.textColor, 
         fontSize: 15,
         marginTop: '50%',
-        textAlign:"center"
+        textAlign:"center",
+        fontFamily: theme.generalLayout.font
     },
     loginSwitch:{
         borderColor: theme.generalLayout.secondaryColor,
@@ -470,13 +473,15 @@ const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor, 
         fontSize: 15,
         textAlign:"center",
-        padding: '2%'
+        padding: '2%',
+        fontFamily: theme.generalLayout.font
     },
     business:{
         color: theme.generalLayout.textColor, 
         fontSize: 12,
         textAlign: "center",
-        marginTop: 15
+        marginTop: 15,
+        fontFamily: theme.generalLayout.font
     },
     textInput:{
         width:"90%",
@@ -484,7 +489,8 @@ const localStyles = StyleSheet.create({
         marginVertical:2,
         color: theme.generalLayout.textColor,
         fontSize:15,
-        shadowOffset:{width:-5, height:-5}
+        shadowOffset:{width:-5, height:-5},
+        fontFamily: theme.generalLayout.font
     },
     Modal:{
         backgroundColor: theme.generalLayout.backgroundColor,
@@ -495,7 +501,8 @@ const localStyles = StyleSheet.create({
         borderRadius: 10,
         borderColor: theme.generalLayout.secondaryColor,
         borderWidth: 1,
-        color: theme.generalLayout.textColor
+        color: theme.generalLayout.textColor,
+        fontFamily: theme.generalLayout.font
     },
     ModalBusiness: {
         backgroundColor: theme.generalLayout.backgroundColor,
@@ -506,7 +513,8 @@ const localStyles = StyleSheet.create({
         borderRadius: 10,
         borderColor: theme.generalLayout.secondaryColor,
         borderWidth: 1,
-        color: theme.generalLayout.textColor
+        color: theme.generalLayout.textColor,
+        fontFamily: theme.generalLayout.font
     },
     ModalReset:{
         backgroundColor: theme.generalLayout.backgroundColor,
@@ -515,7 +523,8 @@ const localStyles = StyleSheet.create({
         alignSelf:"center",
         justifyContent:"flex-start",
         borderRadius:10,
-        color:theme.generalLayout.textColor
+        color:theme.generalLayout.textColor,
+        fontFamily: theme.generalLayout.font
     },
     Subheading:{
         color:theme.generalLayout.textColor,
@@ -523,7 +532,8 @@ const localStyles = StyleSheet.create({
         alignSelf:"center",
         marginBottom:40,
         marginTop:30,
-        width:"90%"
+        width:"90%",
+        fontFamily: theme.generalLayout.font
     },
     Container:{
         flexDirection:'column',

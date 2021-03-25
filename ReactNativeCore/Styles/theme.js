@@ -7,6 +7,9 @@ var theme = function () {
   this.LIGHT_PINK = "#7286F6";
   this.GOLD = '#F1BF42';
   this.TEXT_COLOR = '#FFFFFF';
+  this.mainFont = 'Comfortaa';
+  this.mainFontLight = 'ComfortaaLight';
+  this.mainFontBold = 'ComfortaaBold';
   this.loadingIcon = {
     color: this.GOLD,
     textColor: this.TEXT_COLOR
@@ -23,7 +26,10 @@ var theme = function () {
   this.generalLayout = {
     backgroundColor: this.DARK,
     textColor: this.TEXT_COLOR,
-    secondaryColor: this.LIGHT_PINK
+    secondaryColor: this.LIGHT_PINK,
+    font: this.mainFont,
+    fontLight: this.mainFontLight,
+    fontBold: this.mainFontBold
   }
 };
 var AppTheme = new theme();

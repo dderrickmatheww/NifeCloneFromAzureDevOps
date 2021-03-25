@@ -116,7 +116,7 @@ export default class FriendsFeed extends React.Component  {
                         />
                     </TouchableOpacity> 
                     <View style={{width:"100%"}}>
-                        <Headline style={{ color: theme.TEXT_COLOR, marginLeft: '5%', marginBottom: '2%'}}>Friend's Feed</Headline>
+                        <Headline style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.fontBold, marginLeft: '5%', marginBottom: '2%'}}>Friend's Feed</Headline>
                     </View>
                     <TouchableOpacity onPress={()=>this.setState({modalVisable:true})} style={localStyles.StatusOverlay}>
                         <Text style={localStyles.statusButton}>Update Status</Text>
@@ -186,7 +186,8 @@ const localStyles = StyleSheet.create({
         borderColor: theme.generalLayout.secondaryColor,
         borderRadius: 5,
         paddingVertical: 8,
-        paddingHorizontal: 8
+        paddingHorizontal: 8,
+        fontFamily: theme.generalLayout.font
     },
     drawerBtn: {
         marginTop: '1%',
@@ -196,16 +197,19 @@ const localStyles = StyleSheet.create({
     },
     Caption: {
         color: theme.generalLayout.textColor,
-        opacity: 0.60
+        opacity: 0.60,
+        fontFamily: theme.generalLayout.font
     },
     statusButton: {
         color:  theme.generalLayout.textColor,
         fontSize: 11,
+        fontFamily: theme.generalLayout.font
     },
     Paragraph:{
         color:  theme.generalLayout.textColor,
         fontSize:12,
-        marginTop:-10
+        marginTop:-10,
+        fontFamily: theme.generalLayout.font
     },
     displayName:{
         color: theme.generalLayout.textColor,
@@ -213,7 +217,8 @@ const localStyles = StyleSheet.create({
         top:-45,
         position:"relative",
         fontSize:15,
-        fontWeight:"bold"
+        fontWeight:"bold",
+        fontFamily: theme.generalLayout.font
     },
     feedType:{
         color:  theme.generalLayout.textColor,
@@ -221,12 +226,13 @@ const localStyles = StyleSheet.create({
         top:-50,
         position:"relative",
         fontSize:12,
-        opacity: 0.60
+        opacity: 0.60,
+        fontFamily: theme.generalLayout.font
     },
     feedDataRow:{
         flex:1,
-        backgroundColor:  theme.generalLayout.backgroundColor,
-        borderColor:theme.generalLayout.secondaryColor,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderColor: theme.generalLayout.secondaryColor,
         borderRadius:10,
         borderWidth:1,
         paddingVertical:5,
@@ -273,7 +279,8 @@ const localStyles = StyleSheet.create({
         fontSize: 16,
         padding: 20,
         textAlign: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        fontFamily: theme.generalLayout.font
     },
     viewDark: {
         flex: 1,

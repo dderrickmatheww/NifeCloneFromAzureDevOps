@@ -6,7 +6,7 @@
     "slug": "Nife",
     "icon": "https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed",
     "privacy": "unlisted",
-    "version": "1.0.0.8",
+    "version": "1.0.0.9",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
       "ios",
@@ -25,7 +25,7 @@
     "android": {
       "package": "com.virastarllc.nife",
       "userInterfaceStyle": "dark",
-      "versionCode": 12,
+      "versionCode": 13,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0"

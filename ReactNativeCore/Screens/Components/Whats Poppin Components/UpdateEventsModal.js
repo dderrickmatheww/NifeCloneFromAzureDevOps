@@ -8,24 +8,20 @@ import Util from '../../../scripts/Util';
 import * as firebase from 'firebase';
 import {Modal, Button, TextInput, Text} from 'react-native-paper';
 import theme from '../../../Styles/theme';
-import { styles } from '../../../Styles/style';
-import { event } from "react-native-reanimated";
 
 export default class StatusModal extends React.Component  {
     state = {
       eventText: null,
-      userData:null,
-      saving:false,
+      userData: null,
+      saving: false,
     };
 
-
     async componentDidMount() {
-      this.setState({userData:this.props.user});
-      this.setState({business:this.props.business});
-      this.setState({events:this.props.business.events});
-
+      this.setState({userData: this.props.user});
+      this.setState({business: this.props.business});
+      this.setState({events: this.props.business.events});
       let events = this.props.business.events;
-      let text = ""
+      let text = "";
       events.forEach((event, i)=>{
         if(i != events.length - 1){
           text += event.event + " & "
@@ -33,8 +29,7 @@ export default class StatusModal extends React.Component  {
         else {
           text += event.event
         }
-        
-      })
+      });
       this.setState({eventText:text})
     }
 
@@ -42,10 +37,7 @@ export default class StatusModal extends React.Component  {
       this.setState({eventText: text});
     }
     
-
     onSaveStatus = () => {
-      
-      
       let eventText = this.state.eventText;
       let user = this.state.userData
       if(eventText){
@@ -59,15 +51,15 @@ export default class StatusModal extends React.Component  {
           })
         })
         let business = this.state.business;
-        Util.business.UpdateUser(firebase.firestore(), user.email, obj, ()=>{
+        Util.business.UpdateUser(user.email, obj, ()=>{
           this.updateUserAsync(business, obj);
           this.setState({saving:false});
           this.props.onSave();
-          this.props.onDismiss()
+          this.props.onDismiss();
         });
       }
       else{
-        alert('Please enter events if you wish to update them')
+        Util.basicUtil.Alert('Nife Error Message', 'Please enter events if you wish to update them!');
       }
     }
 
@@ -84,7 +76,7 @@ export default class StatusModal extends React.Component  {
               visible={this.props.isVisible}
               dismissable={true}
               onDismiss={() => this.props.onDismiss()}
-              theme={{colors:{placeholder:theme.LIGHT_GREY}}}
+              theme={{colors:{placeholder: theme.generalLayout.textColor}}}
             >
               
                 <View style={localStyles.viewDark}>
@@ -98,27 +90,24 @@ export default class StatusModal extends React.Component  {
                     multiline={true}
                     > 
                   </TextInput>
-                  <Text style={{color:theme.LIGHT_PINK, alignSelf:"center", marginBottom:10}}>Seperate events with '&'{"\n"} ( Ex: July 4th - BeerFest & {"\n"} July 10th - Live Music! )</Text>
+                  <Text style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, alignSelf:"center", marginBottom:10}}>Seperate events with '&'{"\n"} ( Ex: July 4th - BeerFest & {"\n"} July 10th - Live Music! )</Text>
                   {
                     this.state.saving ?
                     <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
                     :
                     <Button 
-                      labelStyle={{color:theme.LIGHT_PINK}} 
+                      labelStyle={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}} 
                       style={localStyles.button} 
                       icon={"check"}
                       mode="contained" 
                       onPress={() => this.onSaveStatus()}
                     >
-                      <Text style={{color:theme.LIGHT_PINK}}>Update Events</Text>
+                      <Text style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Update Events</Text>
                     </Button>
                   }
                   
                 </View> 
-                
-
             </Modal>
-            
         )
     }
 }
@@ -127,21 +116,23 @@ export default class StatusModal extends React.Component  {
 const localStyles = StyleSheet.create({
   textInput:{
     flex:1,
-    backgroundColor:theme.LIGHT,
-    color:theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    color: theme.generalLayout.textColor,
     width:"90%", 
     height:"80%", 
     alignSelf:"center", 
     borderRadius: 5,
     marginTop:5,
+    fontFamily: theme.generalLayout.font
   },
   buttonText:{
-    color:theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     alignSelf:"center",
     paddingHorizontal:5,
+    fontFamily: theme.generalLayout.font
   },
   button:{
-    borderColor:theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius:10,
     borderWidth:1,
     width:"50%",
@@ -150,12 +141,11 @@ const localStyles = StyleSheet.create({
 
   viewDark:{
     flex:1,
-    backgroundColor:theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     flexDirection:"column",
     justifyContent:"center",
     alignContent:"center",
     alignItems:"center"
   }
-
 });
   

@@ -139,7 +139,7 @@ class BarModal extends React.Component  {
               Details
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.toggleTab({events:true}) } style={[styles.tab, {borderRightWidth:1, borderLeftWidth:1, borderRightColor: !this.state.SpecialsTab ? theme.LIGHT_PINK : "gray", borderLeftColor:!this.state.DetailsTab ? theme.LIGHT_PINK : "gray"}]}>
+          <TouchableOpacity onPress={() => this.toggleTab({events:true}) } style={[styles.tab, {borderRightWidth:1, borderLeftWidth:1, borderRightColor: !this.state.SpecialsTab ? theme.generalLayout.secondaryColor : "gray", borderLeftColor:!this.state.DetailsTab ? theme.generalLayout.secondaryColor : "gray"}]}>
             <Text style={this.state.EventsTab ? styles.tabOff : styles.tabOn}>
               Events
             </Text>
@@ -302,11 +302,12 @@ const styles = StyleSheet.create({
   panelTitle: {
     fontSize: 25,
     height: 35,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     textAlign:"center",
     fontWeight:"bold",
     marginRight:10,
-    marginLeft:15
+    marginLeft:15,
+    fontFamily: theme.generalLayout.font
   },
   titleHeader:{
     marginTop:-20,
@@ -314,20 +315,22 @@ const styles = StyleSheet.create({
     justifyContent:"center",
   },
   eventText:{
-    color:theme.LIGHT_PINK,
+    color:theme.generalLayout.textColor,
     paddingVertical:10,
     paddingHorizontal:10,
     width:"90%",
-    textAlign:"left"
+    textAlign:"left",
+    fontFamily: theme.generalLayout.font
   },
   noEventsText:{
-    color:theme.LIGHT_PINK,
+    color:theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   eventCont:{
     justifyContent:"center",
     borderRadius:5,
     borderWidth:1,
-    borderColor:theme.LIGHT_PINK,
+    borderColor:theme.generalLayout.secondaryColor,
     marginVertical:5,
     paddingHorizontal:10,
     width:"95%",
@@ -341,7 +344,7 @@ const styles = StyleSheet.create({
   },
   tab:{
     width:"100%",
-    borderColor:theme.LIGHT_PINK,
+    borderColor:theme.generalLayout.secondaryColor,
     marginVertical:5
   },
   tabOff:{
@@ -351,13 +354,14 @@ const styles = StyleSheet.create({
   },
   tabOn:{
     width:"100%",
-    color:theme.LIGHT_PINK,
-    paddingHorizontal:30
+    color:theme.generalLayout.textColor,
+    paddingHorizontal:30,
+    fontFamily: theme.generalLayout.font
   },
   tabCont:{
     borderTopWidth:1,
     borderBottomWidth:1,
-    borderColor:theme.LIGHT_PINK,
+    borderColor:theme.generalLayout.secondaryColor,
     width:"100%",
     flexDirection:"row",
     justifyContent:"space-evenly",
@@ -366,7 +370,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     textAlign:"center",
     alignItems:"center",
   },
@@ -385,40 +389,41 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: '#20232a'
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   rating:{
     marginTop:"2%",
     marginBottom:"1%",
-    backgroundColor: theme.DARK
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   ratingText: {
-    color: 'grey',
+    color: theme.generalLayout.textColor,
     padding: 5,
     fontWeight:"bold",
-    textAlign:"center"
+    textAlign:"center",
+    fontFamily: theme.generalLayout.font
   },
   panel: {
     flex:1,
     padding: 20,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     height: '100%',
     borderRightWidth: 2,
     borderLeftWidth: 2,
-    borderRightColor: theme.LIGHT_PINK,
-    borderLeftColor: theme.LIGHT_PINK,
+    borderRightColor: theme.generalLayout.secondaryColor,
+    borderLeftColor: theme.generalLayout.secondaryColor,
   },
   header: {
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     paddingTop: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderTopWidth: 2,
     borderRightWidth: 2,
     borderLeftWidth: 2,
-    borderRightColor: theme.LIGHT_PINK,
-    borderLeftColor: theme.LIGHT_PINK,
-    borderTopColor: theme.LIGHT_PINK
+    borderRightColor: theme.generalLayout.secondaryColor,
+    borderLeftColor: theme.generalLayout.secondaryColor,
+    borderTopColor: theme.generalLayout.secondaryColor
   },
   panelHeader: {
     alignItems: 'center',
@@ -428,20 +433,22 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     marginBottom: 10,
-    backgroundColor: theme.LIGHT_PINK
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   
   panelSubtitle: {
     fontSize: 14,
-    color: 'gray',
+    color: theme.generalLayout.textColor,
     height: 30,
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: theme.generalLayout.font
   },
   panelText: {
     fontSize: 12,
-    color: 'gray',
+    color: theme.generalLayout.textColor,
     textAlign:"center",
     alignItems:"center",
+    fontFamily: theme.generalLayout.font
   },
   panelButton: {
     padding: 20,
@@ -455,7 +462,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 20
   },
   map: {
@@ -463,8 +470,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   ratingSystem: {
-    borderColor: theme.LIGHT_PINK,
-    backgroundColor: theme.DARK,
+    borderColor: theme.generalLayout.secondaryColor,
+    backgroundColor: theme.generalLayout.backgroundColor,
   },
 
 })

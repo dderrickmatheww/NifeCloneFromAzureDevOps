@@ -77,7 +77,7 @@ export default class StatusModal extends React.Component  {
                   mode="contained" 
                   onPress={() => this.onSaveStatus()}
                 >
-                  <Text style={{color: theme.generalLayout.textColor}}>Update Status</Text>
+                  <Text style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Update Status</Text>
                 </Button>
               }
             </View> 
@@ -96,11 +96,13 @@ const localStyles = StyleSheet.create({
     alignSelf:"center", 
     borderRadius: 5,
     marginTop:5,
+    fontFamily: theme.generalLayout.font
   },
   buttonText:{
     color: theme.generalLayout.textColor,
     alignSelf:"center",
     paddingHorizontal:5,
+    fontFamily: theme.generalLayout.font
   },
   button:{
     borderColor: theme.generalLayout.secondaryColor,

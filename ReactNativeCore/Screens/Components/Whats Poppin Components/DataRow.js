@@ -22,8 +22,8 @@ export default class DataRow extends React.Component  {
     componentDidMount(){
         this.setState({loadingBusiness: true});
         Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-        this.setState({businessData: data});
-        this.setState({loadingBusiness: false});
+          this.setState({businessData: data});
+          this.setState({loadingBusiness: false});
         });
     }
 
@@ -75,7 +75,7 @@ export default class DataRow extends React.Component  {
                             source={{uri: this.props.barImage }}
                         />
                         <View style={{width:"45%", textAlign:"center", alignSelf:"center", margin: '2%'}}>
-                            <Headline style={{color:theme.LIGHT_PINK, fontSize: 14, }}>{this.props.name}</Headline>
+                            <Headline style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 14 }}>{this.props.name}</Headline>
                         </View>
                         <View style={localStyles.DrawerOverlay}>
                             <Favorite favoriteTrigg={(buisnessUID, boolean, buisnessName) => {this.props.favoriteABar(buisnessUID, boolean, buisnessName)}} user={this.props.user} buisnessUID={this.props.buisnessUID} buisnessName={this.props.name}/>
@@ -194,7 +194,7 @@ const localStyles = StyleSheet.create({
         justifyContent:"center",
         borderRadius:5,
         borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
+        borderColor:theme.generalLayout.secondaryColor,
         marginVertical:5,
         marginHorizontal:5,
         paddingHorizontal:10,
@@ -205,7 +205,7 @@ const localStyles = StyleSheet.create({
         justifyContent:"center",
         borderRadius:5,
         borderWidth:1,
-        borderColor:theme.LIGHT_PINK,
+        borderColor:theme.generalLayout.secondaryColor,
         marginVertical:5,
         marginHorizontal:5,
         paddingHorizontal:10,
@@ -213,14 +213,16 @@ const localStyles = StyleSheet.create({
         minWidth:"75%",
       },
     eventText:{
-        color:theme.LIGHT_PINK,
+        color:theme.generalLayout.textColor,
         paddingVertical:10,
         paddingHorizontal:10,
         width:"90%",
-        textAlign:"left"
+        textAlign:"left",
+        fontFamily: theme.generalLayout.font
       },
       noEventsText:{
-        color:theme.LIGHT_PINK,
+        color:theme.generalLayout.textColor,
+        fontFamily: theme.generalLayout.font
       },
     tabOff:{
         width:"100%",
@@ -229,18 +231,19 @@ const localStyles = StyleSheet.create({
       },
       tabOn:{
         width:"100%",
-        color:theme.LIGHT_PINK,
-        paddingHorizontal:30
+        color:theme.generalLayout.textColor,
+        paddingHorizontal:30,
+        fontFamily: theme.generalLayout.font
       },
     tabCont:{
         borderTopWidth:1,
         borderBottomWidth:1,
-        borderColor:theme.LIGHT_PINK,
+        borderColor:theme.generalLayout.secondaryColor,
         width:"100%",
         flexDirection:"row",
         justifyContent:"space-evenly",
         marginTop:5,
-        marginBottom:10
+        marginBottom:10,
       },
     navHeader: {
         flexDirection:"row",
@@ -252,7 +255,7 @@ const localStyles = StyleSheet.create({
         justifyContent:"space-between"
     },
     DrawerOverlay: {
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         width: '5%',
         textAlign:"center",
