@@ -7,7 +7,7 @@ import DrawerButton from '../Screens/Universal Components/DrawerButton';
 AboutScreen = ({navigation}) =>
 <View style={styles.viewDark}>
     <DrawerButton drawerButtonColor={theme.generalLayout.secondaryColor} onPress={() => navigation.openDrawer()} ></DrawerButton>
-    <Text style={styles.titleVice}>About Nife</Text>
+    <Text style={localStyles.titleVice}>About Nife</Text>
 </View>
   
   const localStyles = StyleSheet.create({ 
