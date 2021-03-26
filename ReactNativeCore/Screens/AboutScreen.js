@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { theme } from '../Styles/theme';
+import theme  from '../Styles/theme';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
-import {styles} from '../Styles/style';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import WhatsPoppin from '../Screens/WhatsPoppinTab';
 import HomeScreen from '../Screens/HomeScreen';

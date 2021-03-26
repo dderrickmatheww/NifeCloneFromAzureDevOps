@@ -12,7 +12,7 @@ import {
 import Util from '../scripts/Util';
 import { styles } from '../Styles/style';
 import theme from '../Styles/theme';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Components/Profile Screen Components/Status Modal';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 

@@ -6,7 +6,6 @@ import BarModal from './Components/Map Screen Components/BarModal';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 import Util from '../scripts/Util';
 import theme from '../Styles/theme';
-import { styles } from '../Styles/style';
 import VisitedByCallout from './Components/Map Screen Components/VisitedByCallout';
 
 

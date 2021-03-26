@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import { styles } from '../../../Styles/style';
 import Util from '../../../scripts/Util';
 import theme from '../../../Styles/theme';
 

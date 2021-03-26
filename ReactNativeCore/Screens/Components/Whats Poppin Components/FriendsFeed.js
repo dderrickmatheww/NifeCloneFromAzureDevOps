@@ -8,7 +8,6 @@ import {
     Paragraph,
     Snackbar
 } from 'react-native-paper';
-import { styles } from '../../../Styles/style';
 import  theme  from '../../../Styles/theme';
 import Util from '../../../scripts/Util';
 import StatusModal from '../Profile Screen Components/Status Modal';

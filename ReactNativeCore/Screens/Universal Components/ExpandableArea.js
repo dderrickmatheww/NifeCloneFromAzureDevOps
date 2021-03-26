@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, FlatList, Animated} from 'react-native';
-import theme from '../../Styles/theme';
+import { StyleSheet, FlatList } from 'react-native';
 
 class ExpandableArea extends React.Component  {
     render(){

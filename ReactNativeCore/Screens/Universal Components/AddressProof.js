@@ -4,9 +4,7 @@ import {
     View,
     ActivityIndicator
 } from "react-native";
-import Util from '../../scripts/Util';
-import * as firebase from 'firebase';
-import {Modal, Button, TextInput, Text} from 'react-native-paper';
+import {Modal, Button, Text} from 'react-native-paper';
 import theme from '../../Styles/theme';
 
 export default class StatusModal extends React.Component  {
