@@ -171,7 +171,7 @@ export default class ProfileScreen extends Component {
                     this.state.isAddingFriend ?
                       <ActivityIndicator size="small" color={theme.loadingIcon.color}></ActivityIndicator> 
                     :
-                      <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.generalLayout.textColor}}>Add Friend</Text>
+                      <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Add Friend</Text>
                   }
                 </TouchableOpacity> 
               :
@@ -181,7 +181,7 @@ export default class ProfileScreen extends Component {
                   { 
                   this.state.isAddingFriend ?
                     <ActivityIndicator size="small" color={theme.loadingIcon.color}></ActivityIndicator> :
-                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.generalLayout.textColor}}>Remove Friend</Text>
+                    <Text  style={{paddingHorizontal:3, fontSize: 12, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Remove Friend</Text>
                   }
                 </TouchableOpacity> : null
               }
@@ -244,7 +244,7 @@ export default class ProfileScreen extends Component {
                             :
                               <View style={{alignItems:"center"}}>
                                   <Ionicons size={50} color={theme.icons.color} name="ios-person"></Ionicons>
-                                  <Caption style={{color: theme.icons.textColor, textAlign:"center"}}>Click Me To Add Picture!</Caption>
+                                  <Caption style={{color: theme.icons.textColor, textAlign:"center", fontFamily: theme.generalLayout.font}}>Click Me To Add Picture!</Caption>
                               </View>
                         }
                     </TouchableOpacity>
@@ -311,7 +311,7 @@ export default class ProfileScreen extends Component {
                           
                             <Chip mode={"outlined"}  key={i}
                             style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2}} 
-                            textStyle={{color: theme.generalLayout.textColor}}>
+                            textStyle={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                               {drink}
                             </Chip>
                           
@@ -320,7 +320,7 @@ export default class ProfileScreen extends Component {
                         <Chip mode={"outlined"}  
                             style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                             }} 
-                            textStyle={{color: theme.generalLayout.textColor}}>
+                            textStyle={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                           None
                         </Chip>
                       }
@@ -339,9 +339,9 @@ export default class ProfileScreen extends Component {
                           bar.favorited ?
                           <Chip mode={"outlined"}
                               key={i}  
-                              style={{backgroundColor: theme.generalLayout.secondaryColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
+                              style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                               }} 
-                              textStyle={{color: theme.generalLayout.textColor}}>
+                              textStyle={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                               {bar.name ? bar.name : 'None'}
                           </Chip> 
                           : 
@@ -351,7 +351,7 @@ export default class ProfileScreen extends Component {
                       <Chip mode={"outlined"}  
                           style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                           }} 
-                          textStyle={{color: theme.generalLayout.textColor}}>
+                          textStyle={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                         None
                       </Chip>
                     }
@@ -447,11 +447,13 @@ const localStyles = StyleSheet.create({
   },
   descTitle:{
     fontSize: 18, 
-    color: theme.generalLayout.textColor
+    color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   caption:{
     fontSize: 14, 
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     marginLeft: 15
   },
   mainCont:{
@@ -461,8 +463,6 @@ const localStyles = StyleSheet.create({
     alignItems:"stretch",
     justifyContent:"flex-start",
   },
-
-
   LocAndFriends:{
     flexDirection: "row",
     justifyContent:"space-between",
@@ -515,7 +515,8 @@ const localStyles = StyleSheet.create({
     alignItems: 'center',
     marginVertical:'.5%',
     marginLeft:'2.5%',
-    width: "100%"
+    width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   FriendCount: {
     fontSize: 12,
@@ -523,7 +524,8 @@ const localStyles = StyleSheet.create({
     marginBottom: "1%",
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   headerName: {
     fontSize: 20,
@@ -531,7 +533,8 @@ const localStyles = StyleSheet.create({
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign:"center"
+    textAlign:"center",
+    fontFamily: theme.generalLayout.font
   },
   headerAgeGender: {
     fontSize: 14,
@@ -540,7 +543,8 @@ const localStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign:"center",
-    marginTop:-10
+    marginTop:-10,
+    fontFamily: theme.generalLayout.font
   },
   ScrollView: {
     flex: 1,

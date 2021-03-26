@@ -147,6 +147,7 @@ const localStyles = StyleSheet.create({
     textShadowRadius: 1,
     textShadowColor: '#000',
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   headerContainer: {
     marginTop:'10%',
@@ -160,6 +161,7 @@ const localStyles = StyleSheet.create({
     textShadowRadius: 1,
     textShadowColor: '#000',
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   googleLoginBtn: {
     backgroundColor: '#228B22',
@@ -213,7 +215,8 @@ const localStyles = StyleSheet.create({
   loggedOutText: {
     color: theme.generalLayout.textColor,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    fontFamily: theme.generalLayout.font
   },
   btnContainer: {
     alignItems: 'center',

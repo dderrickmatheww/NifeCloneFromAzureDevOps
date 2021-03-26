@@ -189,15 +189,16 @@ export default class InputWithIcon extends React.Component {
         height: 20
     },
     textShadowRadius: 20,
-    color: theme.GOLD
+    color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   searchBar: {
       borderBottomWidth: 3,
-      borderBottomColor: theme.GOLD,
+      borderBottomColor: theme.generalLayout.secondaryColor,
       width: '90%',
       marginHorizontal: 10,
       alignItems: 'center',
-      color: theme.BLUE,
+      color: theme.generalLayout.textColor,
       justifyContent: 'center',
       fontWeight: 'bold',
       textShadowColor: 'black',
@@ -205,7 +206,8 @@ export default class InputWithIcon extends React.Component {
           width: 20, 
           height: 20
       },
-      textShadowRadius: 20
+      textShadowRadius: 20,
+      fontFamily: theme.generalLayout.font
   },
   row: {
     flexDirection: 'row'
@@ -224,10 +226,10 @@ export default class InputWithIcon extends React.Component {
       height: 50,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'lightgrey',
+      backgroundColor: theme.generalLayout.backgroundColor,
       borderRadius: 3,
       borderWidth: 3,
-      borderColor: theme.DARK_PINK,
+      borderColor: theme.generalLayout.secondaryColor,
       flexDirection: 'row'
   },
   nameTxt: {
@@ -240,7 +242,9 @@ export default class InputWithIcon extends React.Component {
     textShadowOffset: {
         width: 20, 
         height: 20
-    }
+    },
+    color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   addressTxt: {
     width: '33%',
@@ -252,7 +256,7 @@ export default class InputWithIcon extends React.Component {
     padding: 5,
     borderRadius: 3,
     borderWidth: 1,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     width: '100%',
   },
   autoCompLoader: {
@@ -266,11 +270,11 @@ export default class InputWithIcon extends React.Component {
   autoCompleteContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.DARK,
+      backgroundColor: theme.generalLayout.backgroundColor,
       maxHeight: 1000,
       padding: 5,
       borderWidth: 2,
-      borderColor: 'lightgrey',
+      borderColor: theme.generalLayout.secondaryColor,
       width: '90%',
   }
   })

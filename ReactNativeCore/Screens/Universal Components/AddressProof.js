@@ -33,9 +33,8 @@ export default class StatusModal extends React.Component  {
               dismissable={true}
               onDismiss={() => this.props.onDismiss()}
             >
-              
                 <View style={localStyles.viewDark}>
-                  <Text style={{color:theme.LIGHT_PINK, marginHorizontal:20, marginBottom:25}}>
+                  <Text style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, marginHorizontal:20, marginBottom:25}}>
                     Please upload your proof of address. Your account will be deleted if you do not complete this. 
                   </Text>
                   {
@@ -43,21 +42,17 @@ export default class StatusModal extends React.Component  {
                     <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
                     :
                     <Button 
-                      labelStyle={{color:theme.LIGHT_PINK}} 
+                      labelStyle={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}} 
                       style={localStyles.button} 
                       icon={"check"}
                       mode="contained" 
                       onPress={() => this.handleUploadImage()}
                     >
-                      <Text style={{color:theme.LIGHT_PINK}}>Upload Image</Text>
+                      <Text style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Upload Image</Text>
                     </Button>
                   }
-                  
                 </View> 
-                
-
             </Modal>
-            
         )
     }
 }
@@ -66,8 +61,9 @@ export default class StatusModal extends React.Component  {
 const localStyles = StyleSheet.create({
   textInput:{
     flex:1,
-    backgroundColor:theme.LIGHT,
-    color:theme.DARK,
+    backgroundColor:theme.generalLayout.backgroundColor,
+    color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     width:"90%", 
     height:"80%", 
     alignSelf:"center", 
@@ -75,27 +71,26 @@ const localStyles = StyleSheet.create({
     marginTop:5,
   },
   buttonText:{
-    color:theme.LIGHT_PINK,
+    color:theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     alignSelf:"center",
     paddingHorizontal:5,
   },
   button:{
-    borderColor:theme.LIGHT_PINK,
+    borderColor:theme.generalLayout.secondaryColor,
     borderRadius:10,
     borderWidth:1,
     width:"50%",
     marginBottom:10,
     marginTop:20,
   },
-
   viewDark:{
     flex:1,
-    backgroundColor:theme.DARK,
+    backgroundColor:theme.generalLayout.backgroundColor,
     flexDirection:"column",
     justifyContent:"center",
     alignContent:"center",
     alignItems:"center"
   }
-
 });
   

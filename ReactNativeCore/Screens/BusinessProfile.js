@@ -155,7 +155,7 @@ export default class ProfileScreen extends Component {
                 left: this.state.businessData.email != this.state.userData.email ? 220 : 275,
                 alignSelf:"flex-end",
                 opacity: 0.75,
-                backgroundColor: theme.DARK,
+                backgroundColor: theme.generalLayout.backgroundColor,
                 borderRadius: 10,
                 marginBottom:5,
               }}
@@ -203,7 +203,7 @@ export default class ProfileScreen extends Component {
                             :
                             <View style={{alignItems:"center"}}>
                                 <Ionicons size={50} color={theme.icons.color} name="ios-person"></Ionicons>
-                                <Caption style={{color:theme.icons.textColor, textAlign:"center"}}>Click Me To Add Picture!</Caption>
+                                <Caption style={{color:theme.icons.textColor, fontFamily: theme.generalLayout.font, textAlign:"center"}}>Click Me To Add Picture!</Caption>
                             </View>
                         }
                     </TouchableOpacity>
@@ -235,7 +235,7 @@ export default class ProfileScreen extends Component {
                         </Title>
                       {
                         this.props.isUsersProfile ?
-                          <TouchableOpacity style={{backgroundColor:theme.DARK, position:"relative",top:10, left:235, opacity:.75 }}
+                          <TouchableOpacity style={{backgroundColor: theme.generalLayout.backgroundColor, position:"relative",top:10, left:235, opacity:.75 }}
                             onPress={() => this.setState({statusModalVisible: true})}
                           >
                               <Ionicons name="ios-chatboxes" size={24} color={theme.icons.color} />
@@ -259,18 +259,18 @@ export default class ProfileScreen extends Component {
                         this.state.businessData.specials.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
-                              style={{backgroundColor: theme.DARK, borderColor: theme.LIGHT_PINK, marginHorizontal:2
+                              style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.GOLD}}>
+                            textStyle={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                               {drink.special}
                             </Chip>
                           
                         ))
                         :
                         <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor: theme.GOLD, marginHorizontal:2
+                            style={{backgroundColor:theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.GOLD}}>
+                            textStyle={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                           None
                         </Chip>
                       }
@@ -289,18 +289,18 @@ export default class ProfileScreen extends Component {
                         this.state.businessData.events.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
-                            style={{backgroundColor:theme.DARK, borderColor:theme.GOLD, marginHorizontal:2
+                            style={{backgroundColor:theme.generalLayout.backgroundColor, borderColor:theme.generalLayout.secondaryColor, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.GOLD}}>
+                            textStyle={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                               {drink.event}
                             </Chip>
                           
                         ))
                         :
                         <Chip mode={"outlined"}  
-                            style={{backgroundColor:theme.DARK, borderColor:theme.GOLD, marginHorizontal:2
+                            style={{backgroundColor:theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2
                             }} 
-                            textStyle={{color:theme.GOLD}}>
+                            textStyle={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>
                           None
                         </Chip>
                       }
@@ -338,7 +338,7 @@ const localStyles = StyleSheet.create({
     padding:10,
     borderRadius:10,
     borderWidth:1,
-    borderColor:theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     justifyContent:'center',
     alignItems:"center"
 },
@@ -350,7 +350,7 @@ const localStyles = StyleSheet.create({
   navHeader:{
     marginTop:40,
     flexDirection:"row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth:1,
     width:"98%",
     justifyContent:"space-between"
@@ -360,14 +360,14 @@ const localStyles = StyleSheet.create({
     left: 215,
     alignSelf:"flex-end",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     marginBottom:5,
   },
   DrawerOverlay: {
     alignSelf:"flex-start",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 10,
     paddingVertical:0,
   },
@@ -377,22 +377,24 @@ const localStyles = StyleSheet.create({
     left: 195,
     alignSelf:"flex-end",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 5,
     marginBottom:7.5,
     borderWidth:1,
-    borderColor: theme.LIGHT_PINK
+    borderColor: theme.generalLayout.secondaryColor
   },
   profRow:{
     marginVertical: 10
   },
   descTitle:{
     fontSize: 18, 
-    color: theme.LIGHT_PINK
+    color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   caption:{
     fontSize: 14, 
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.secondaryColor,
+    fontFamily: theme.generalLayout.font,
     marginLeft: 15
   },
   mainCont:{
@@ -416,7 +418,7 @@ const localStyles = StyleSheet.create({
   },
   loggedInSubView:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     justifyContent:"center",
     marginBottom:"10%",
@@ -424,12 +426,12 @@ const localStyles = StyleSheet.create({
   },
   HeaderCont:{
     flex: 1, 
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
     maxHeight:"30%",
     justifyContent:"flex-end",
     alignItems:"center",
-    borderBottomColor: theme.LIGHT_PINK,
+    borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
     marginTop:90
 
@@ -447,51 +449,55 @@ const localStyles = StyleSheet.create({
   },
   friendCont:{
     flexDirection: "row",
-    borderBottomColor:theme.LIGHT_PINK,
+    borderBottomColor:theme.generalLayout.secondaryColor,
     borderBottomWidth: 1,
   },
   name: {
     fontSize: 18,
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical:'.5%',
     marginLeft:'2.5%',
-    width: "100%"
+    width: "100%",
+    fontFamily: theme.generalLayout.font
   },
   FriendCount: {
     fontSize: 12,
     marginTop: "2%",
     marginBottom: "1%",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    fontFamily: theme.generalLayout.font
   },
   headerName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     textAlign:"center",
-    marginTop:15
+    marginTop:15,
+    fontFamily: theme.generalLayout.font
   },
   headerAgeGender: {
     fontSize: 14,
     fontWeight: "bold",
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
     textAlign:"center",
-    marginTop:-10
+    marginTop:-10,
+    fontFamily: theme.generalLayout.font
   },
   ScrollView: {
     flex: 1,
     width:"100%",
     borderLeftWidth:2,
-    borderLeftColor: theme.LIGHT_PINK,
+    borderLeftColor: theme.generalLayout.secondaryColor,
     borderRightWidth:2,
-    borderRightColor: theme.LIGHT_PINK,
+    borderRightColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: "5%",
     paddingBottom: "1%"
   }

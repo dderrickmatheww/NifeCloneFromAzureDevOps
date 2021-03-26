@@ -80,10 +80,10 @@ export default class CheckInOutButtons extends React.Component  {
                                     
                                 }
                                 else if (checkInObj.closed == "Yes") {
-                                    alert('This bar seems to be closed!');
+                                    Util.basicUtil.Alert('Nife Message', 'This bar seems to be closed!', () => {});
                                 }
                                 else {
-                                    alert('You must be within 1 mile to check in!');
+                                    Util.basicUtil.Alert('Nife Message', 'You must be within 1 mile to check in!', () => {});
                                 }
                             });
                         }}
@@ -154,10 +154,10 @@ export default class CheckInOutButtons extends React.Component  {
                                     });
                                 }
                                 else if (checkInObj.closed == "Yes") {
-                                    alert('This bar seems to be closed!');
+                                    Util.basicUtil.Alert('Nife Message', 'This bar seems to be closed!', () => {});
                                 }
                                 else {
-                                    alert('You must be within 1 mile to check in!');
+                                    Util.basicUtil.Alert('Nife Message', 'You must be within 1 mile to check in!', () => {});
                                 }
                             });
                         }}
@@ -183,23 +183,23 @@ const localStyles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center', 
       alignItems: 'center' ,
-      backgroundColor: theme.DARK
+      backgroundColor: theme.generalLayout.backgroundColor
     },
     descCont: {
       borderRadius: 10,
       padding: '1%',
-      borderColor: theme.LIGHT_PINK_OPAC,
+      borderColor: theme.generalLayout.secondaryColor,
       borderWidth: 1,
       justifyContent: 'center', 
       alignItems: 'center' ,
       alignContent:"center",
-      backgroundColor:theme.DARK,
+      backgroundColor: theme.generalLayout.backgroundColor,
       paddingHorizontal:5,
       paddingVertical:5,
     },
     modalText:{
       width: '100%',
-      color: theme.LIGHT_PINK,
+      color: theme.generalLayout.textColor,
       paddingBottom:2.5,
       fontWeight:"bold",
       justifyContent: 'center', 
@@ -207,7 +207,8 @@ const localStyles = StyleSheet.create({
       alignItems: 'center' ,
       textAlign:"center",
       fontSize: 12,
-      paddingHorizontal:5
+      paddingHorizontal:5,
+      fontFamily: theme.generalLayout.font
     },
     checkInContainer: {
         flexDirection:"row",

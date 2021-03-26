@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { styles } from '../Styles/style';
+import { View, Text, StyleSheet } from 'react-native';
+import { theme } from '../Styles/theme';
 import DrawerButton from '../Screens/Universal Components/DrawerButton';
 
 
 AboutScreen = ({navigation}) =>
 <View style={styles.viewDark}>
-    <DrawerButton drawerButtonColor="#eca6c4" onPress={() => navigation.openDrawer()} ></DrawerButton>
+    <DrawerButton drawerButtonColor={theme.generalLayout.secondaryColor} onPress={() => navigation.openDrawer()} ></DrawerButton>
     <Text style={styles.titleVice}>About Nife</Text>
 </View>
   
-
+  const localStyles = StyleSheet.create({ 
+    titleVice: {
+        fontSize: 36,
+        marginBottom: 16,
+        color: theme.generalLayout.textColor,
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontFamily: theme.generalLayout.font
+    },
+  })
 
 export default AboutScreen;

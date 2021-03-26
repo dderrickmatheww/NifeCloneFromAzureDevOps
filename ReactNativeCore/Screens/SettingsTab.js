@@ -270,6 +270,7 @@ const localStyles = StyleSheet.create({
   switchText:{
     alignSelf:"flex-start",
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     paddingLeft:10,
     fontSize:14
   },
@@ -308,6 +309,7 @@ const localStyles = StyleSheet.create({
   },
   headerText:{
     color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font,
     marginTop: '9%',
     marginLeft: '5%',
     fontSize: 25

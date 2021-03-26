@@ -1,6 +1,5 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useNavigation } from '@react-navigation/native';
 import FriendsList from '../Screens/Components/Profile Screen Components/FriendsList';
 import EditProfile from '../Screens/Components/Profile Screen Components/EditProfile';
 import EditBusinessProfile from '../Screens/Components/Profile Screen Components/EditBusinessProfile';
@@ -85,7 +84,6 @@ export default class ProfileStack extends React.Component  {
         <Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />
         <Stack.Screen name="ScanQR" component={ScanQR} options={{title: 'ScanQR'}} />
       </Stack.Navigator>
-  )
+    )
   }
-  
 };

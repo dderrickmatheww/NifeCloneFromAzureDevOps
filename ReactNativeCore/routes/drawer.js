@@ -220,7 +220,8 @@ class Navigator extends React.Component {
                 activeTintColor: theme.generalLayout.backgroundColor,
                 inactiveTintColor: theme.loadingIcon.color,
                 labelStyle: {
-                  color: theme.generalLayout.backgroundColor
+                  color: theme.generalLayout.textColor,
+                  fontFamily: theme.generalLayout.font
                 }
               }}
               drawerStyle={{

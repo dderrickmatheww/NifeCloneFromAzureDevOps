@@ -31,18 +31,18 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '10%',
         justifyContent: "flex-start",
-        backgroundColor:"#20232a"
+        backgroundColor: theme.generalLayout.backgroundColor
     },
     overlay: {
         position: 'absolute',
         top:"5%",
         left: "5%",
         opacity: .95,
-        backgroundColor: theme.DARK,
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         paddingVertical:0,
         borderWidth: .5,
-        borderColor: theme.LIGHT_PINK
+        borderColor: theme.generalLayout.secondaryColor
       },
 });
 

@@ -35,7 +35,7 @@ export default function IconWithBadge({ name, badgeCount, color, size, type , is
               alignItems: 'center',
             }}
           >
-            <Text style={{ color: theme.generalLayout.textColor, fontSize: 10, fontWeight: 'bold' }}>
+            <Text style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 10, fontWeight: 'bold' }}>
               {badgeCount}
             </Text>
           </View>

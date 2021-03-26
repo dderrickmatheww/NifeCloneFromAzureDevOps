@@ -98,7 +98,7 @@ export function DrawerContent(props) {
                                         size={30}
                                         icon="qrcode-scan"
                                         color={theme.icons.color}
-                                        style={{position: "relative", backgroundColor: theme.generalLayout.secondaryColor}}/>
+                                        style={{position: "relative", backgroundColor: theme.generalLayout.backgroundColor}}/>
                                     </TouchableOpacity>
                                 </View> 
                             : null}
@@ -123,7 +123,7 @@ export function DrawerContent(props) {
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="glass-mug" 
-                                color={theme.GOLD}
+                                color={theme.icons.color}
                                 size={20}
                                 />
                             )}
@@ -134,7 +134,7 @@ export function DrawerContent(props) {
                             icon={() => (
                                 <MaterialCommunityIcons 
                                 name="map-outline" 
-                                color={theme.GOLD}
+                                color={theme.icons.color}
                                 size={20}
                                 />
                             )}
@@ -307,7 +307,8 @@ const styles = StyleSheet.create({
       lineHeight: 16,
       color: theme.generalLayout.textColor,
       flexWrap: "wrap",
-        maxWidth: '80%'
+        maxWidth: '80%',
+        fontFamily: theme.generalLayout.font
     },
     statuscaption: {
         marginTop: 3,
@@ -315,12 +316,14 @@ const styles = StyleSheet.create({
         lineHeight: 14,
         color: theme.generalLayout.textColor,
         flexWrap: "wrap",
-        maxWidth: '78%'
+        maxWidth: '78%',
+        fontFamily: theme.generalLayout.font
       },
     caption: {
       fontSize: 12,
       lineHeight: 14,
-      color: theme.generalLayout.textColor
+      color: theme.generalLayout.textColor,
+      fontFamily: theme.generalLayout.font
     },
     row: {
       marginTop: 20,
@@ -335,18 +338,15 @@ const styles = StyleSheet.create({
     paragraph: {
       fontWeight: 'bold',
       marginRight: 3,
-      color: theme.generalLayout.textColor
+      color: theme.generalLayout.textColor,
+      fontFamily: theme.generalLayout.font
     },
     text: {
-      color: theme.generalLayout.textColor
+      color: theme.generalLayout.textColor,
+      fontFamily: theme.generalLayout.font
     },
     drawerSection: {
       marginTop: 15,
-    },
-    bottomDrawerSection: {
-        // borderTopColor: theme.DARK,
-        // borderTopWidth: 1,
-        // borderBottomWidth: -5
     },
     preference: {
       flexDirection: 'row',

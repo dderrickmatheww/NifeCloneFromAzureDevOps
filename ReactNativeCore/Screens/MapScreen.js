@@ -365,7 +365,7 @@ class MapScreen extends React.Component  {
           <View style={localStyles.autoCompContainer}>
             <InputWithIcon 
               name={'ios-mail'} 
-              color={theme.GOLD} 
+              color={theme.icons.color} 
               styles={localStyles.font}
               size={12} 
               placeHolderText={'Search...'} 
@@ -395,7 +395,7 @@ class MapScreen extends React.Component  {
               minZoomLevel={14}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
-              loadingBackgroundColor={theme.DARK}
+              loadingBackgroundColor={theme.generalLayout.backgroundColor}
             >
             
             {this.state.markers.map(marker => (
@@ -403,7 +403,7 @@ class MapScreen extends React.Component  {
                 <Marker
                   coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
                   key={marker.id}
-                  pinColor={theme.GOLD}
+                  pinColor={theme.icons.color}
                   calloutOffset={{x: 0.5, y: 0.25}}
                   calloutAnchor={{x: 0.5, y: 0.25}}
                 > 
@@ -440,7 +440,7 @@ class MapScreen extends React.Component  {
             > 
             </BarModal> : null
           }       
-          <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress} />  
+          <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress} />  
         </View>
       ) 
       :
@@ -450,7 +450,7 @@ class MapScreen extends React.Component  {
                 size={'large'}
                 color={theme.loadingIcon.color}
             />
-            <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor="#D4DE24" onPress={this.props.onDrawerPress}/>
+            <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress}/>
       </View>
   ) 
   }
@@ -473,11 +473,12 @@ const localStyles = StyleSheet.create({
         height: 20
     },
     textShadowRadius: 20,
-    color: theme.GOLD
+    color: theme.generalLayout.textColor,
+    fontFamily: theme.generalLayout.font
   },
   container: {
     flex: 1,
-    backgroundColor: theme.DARK
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   friendPic:{
     position:"relative",
@@ -492,7 +493,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', 
     alignItems: 'center' ,
-    backgroundColor: theme.DARK
+    backgroundColor: theme.generalLayout.backgroundColor
   },
   callOutMarker: {
     flex: 1,
@@ -504,7 +505,7 @@ const localStyles = StyleSheet.create({
     alignContent: 'center',
     maxWidth: '60%',
     borderRadius: 20,
-    borderColor: theme.LIGHT_PINK,
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 1
   },
   overlay: {
@@ -512,7 +513,7 @@ const localStyles = StyleSheet.create({
     top:"5%",
     left: "5%",
     opacity: 0.75,
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
   },
 
   map: {
@@ -520,7 +521,7 @@ const localStyles = StyleSheet.create({
   },
 
   drawerButton:{
-    backgroundColor: theme.DARK,
+    backgroundColor: theme.generalLayout.backgroundColor,
     position:"absolute",
     alignSelf:"flex-start",
     top:"-30%"
@@ -537,7 +538,7 @@ const localStyles = StyleSheet.create({
     marginBottom:"15%",
     marginTop:"0%",
     marginHorizontal: "2.5%",
-    backgroundColor: "#20232a",
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -558,11 +559,11 @@ const localStyles = StyleSheet.create({
 
   imgCont: {
     flex: 1,
-    backgroundColor: '#5D5E60',
+    backgroundColor: theme.generalLayout.backgroundColor,
     alignItems: 'center',
     justifyContent: 'center',
     
-    borderColor:"#5D5E60",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 10,
     borderRadius: 20,
     width:'100%',
@@ -570,7 +571,7 @@ const localStyles = StyleSheet.create({
   modalImage:{
     width: '100%',
     height: '100%',
-    borderColor:"#BEB2C8",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 10,
     borderRadius: 20,
   },
@@ -578,25 +579,26 @@ const localStyles = StyleSheet.create({
   textCont:{
     bottom:"-10%",
     width:"100%",
-    backgroundColor: "#5D5E60",
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderRadius:20,
   },
   descCont: {
     borderRadius: 20,
-    borderColor: "black",
+    borderColor: theme.generalLayout.secondaryColor,
     borderWidth: 1,
-    backgroundColor:"#BEB2C8",
+    backgroundColor: theme.generalLayout.backgroundColor,
     margin:"1%",
   },
   modalText:{
-    color: "#20232a",
+    color: theme.generalLayout.textColor,
     padding: 5,
     marginLeft:"1%",
     fontWeight:"bold",
+    fontFamily: theme.generalLayout.font
   },
 
   titleCont: {
-    backgroundColor:"#5D5E60",
+    backgroundColor: theme.generalLayout.backgroundColor,
     width: '100%',
     borderRadius: 20,
     alignItems: 'center',
@@ -604,22 +606,24 @@ const localStyles = StyleSheet.create({
     top: "-7.5%"
   },
   modalTitle:{
-    color: "#20232a",
+    color: theme.generalLayout.textColor,
     padding: 5,
     fontSize:24,
     borderRadius: 20,
     textAlign:"center",
     fontWeight:'bold',
-    backgroundColor:"#BEB2C8",
+    backgroundColor: theme.generalLayout.backgroundColor,
     marginVertical:"2%",
     width:"90%",
+    fontFamily: theme.generalLayout.font
 
   },
   ratingText:{
-    color: "#20232a",
+    color: theme.generalLayout.textColor,
     padding: 5,
     fontWeight:"bold",
-    textAlign:"center"
+    textAlign:"center",
+    fontFamily: theme.generalLayout.font
   },
   rating:{
     marginTop:"2%",

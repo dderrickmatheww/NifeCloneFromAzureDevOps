@@ -36,13 +36,13 @@ export default class Favorite extends React.Component  {
                             <TouchableOpacity
                                 onPress={() => this.handlePress(false)}
                             >
-                                <IconWithBadge name={'star'} badgeCount={0} color={theme.LIGHT_PINK} size={30} type={'AntDesign'} />
+                                <IconWithBadge name={'star'} badgeCount={0} color={theme.icons.color} size={30} type={'AntDesign'} />
                             </TouchableOpacity>
                         :
                         <TouchableOpacity
                         onPress={() => this.handlePress(true)}
                         >
-                            <IconWithBadge name={'staro'} badgeCount={0} color={theme.LIGHT_PINK_OPAC} size={30} type={'AntDesign'} />
+                            <IconWithBadge name={'staro'} badgeCount={0} color={theme.icons.color} size={30} type={'AntDesign'} />
                         </TouchableOpacity>
                     :
                     <View style={styles.viewDark}>

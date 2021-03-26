@@ -3,7 +3,7 @@ import Navigator from './routes/drawer';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './scripts/Util';
-import themeUtil from './Styles/theme'
+import theme from './Styles/theme'
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
 if (! global.btoa) {global.btoa = encode}
@@ -19,10 +19,10 @@ const theme = {
   roundness: 2,
   colors: {
     ...DefaultTheme.colors,
-    primary: themeUtil.DARK,
-    accent: themeUtil.LIGHT_PINK,
-    background : themeUtil.DARK,
-    placeholder: themeUtil.LIGHT_PINK_OPAC
+    primary: theme.generalLayout.backgroundColor,
+    accent: theme.generalLayout.secondaryColor,
+    background : theme.generalLayout.backgroundColor,
+    placeholder: theme.generalLayout.textColor
   },
 };
 

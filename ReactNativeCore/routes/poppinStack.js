@@ -68,6 +68,7 @@ class PoppinStack extends React.Component {
             activeTintColor: theme.icons.tabIcon.activeTintColor,
             inactiveTintColor:  theme.icons.color,
             labelStyle: {
+              color: theme.icons.tabIcon.textColor,
               fontFamily: theme.generalLayout.font
             },
             style: {
@@ -75,6 +76,7 @@ class PoppinStack extends React.Component {
               borderTopWidth: 0,
               position: 'absolute',
               color: theme.icons.tabIcon.textColor,
+              fontFamily: theme.generalLayout.font,
               bottom: 20,
               height: 100
             }

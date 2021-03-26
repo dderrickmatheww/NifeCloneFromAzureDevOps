@@ -55,7 +55,6 @@ export default class PopUpModal extends React.Component  {
 }
 
 const localStyles = StyleSheet.create({
-  
     closeButton:{
       left: "55%",
       top: "-7.5%",
@@ -68,8 +67,8 @@ const localStyles = StyleSheet.create({
     modalView: {
       width:"90%",
       height:"30%", 
-      backgroundColor: theme.DARK,
-      borderColor: theme.LIGHT_PINK,
+      backgroundColor: theme.generalLayout.backgroundColor,
+      borderColor: theme.generalLayout.secondaryColor,
       borderWidth: 1,
       borderRadius: 20,
       padding: 35,
@@ -91,16 +90,17 @@ const localStyles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center' ,
         width: '100%',
-        backgroundColor:"#BEB2C8",
+        backgroundColor: theme.generalLayout.backgroundColor,
         textAlign: "center",
     },
     modalTitle:{
-      color: "#20232a",
+      color: theme.generalLayout.textColor,
       padding: 5,
       fontSize: 20,
       textAlign:"center",
       fontWeight:'bold',
       marginVertical:"2%",
+      fontFamily: theme.generalLayout.font
     },
     BtnHolder: {
         padding: '1%',
@@ -113,7 +113,7 @@ const localStyles = StyleSheet.create({
     Btn: {
         justifyContent: 'center', 
         alignItems: 'center',
-        backgroundColor:"#BEB2C8",
+        backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 20,
         width: '50%',
         padding: '5%',
@@ -121,11 +121,12 @@ const localStyles = StyleSheet.create({
         marginTop: '20%'
     },
     BtnText: {
-        color: "#20232a",
+        color: theme.generalLayout.textColor,
         padding: 5,
         fontSize: 20,
         textAlign:"center",
         fontWeight:'bold',
         marginVertical:"2%",
+        fontFamily: theme.generalLayout.font
     }
   });

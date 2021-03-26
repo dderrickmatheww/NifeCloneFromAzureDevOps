@@ -4,15 +4,14 @@ import theme from './theme';
 import Constants from 'expo-constants';
 
 export const styles = StyleSheet.create({
-  calloutText:{
-    color: theme.generalLayout.textColor
-  },
+ 
   center: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
   textFont: {
+
     
   },
   titleDark: {
@@ -20,13 +19,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     color: "white"
   },
-  titleVice: {
-    fontSize: 36,
-    marginBottom: 16,
-    color: theme.generalLayout.textColor,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
+ 
   viewDark: {
     flex: 1,
     justifyContent: 'center', 
@@ -85,46 +78,6 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.generalLayout.backgroundColor,
   }, 
   
-  friendVisitedBy: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  friendVisitedByMulti: {
-    top: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  callOutMarker: {
-    flex: 1,
-    backgroundColor: theme.generalLayout.backgroundColor,
-    color: theme.generalLayout.textColor,
-    borderRadius: 3,
-    padding: 30,
-    margin: 25,
-    justifyContent: 'center',
-    alignContent: 'center',
-    borderRadius: 20,
-    borderColor: theme.generalLayout.secondaryColor,
-    borderWidth: 2,
-    flexDirection:"column"
-  },
-  multiAvatar: {
-    top: '5%',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  singleAvatar: {
-    top: '11%',
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  friendText: {
-    color: theme.generalLayout.textColor,
-    margin: 10,
-    marginTop: 30
-  },
   facebookLoginBtn: {
     backgroundColor: '#4267b2',
     marginTop: '33%',
@@ -144,19 +97,6 @@ export const styles = StyleSheet.create({
     width: 370,
     borderColor: theme.LIGHT_PINK,
     borderWidth: 2
-  },
-  navigateLoginBtn: {
-    backgroundColor: 'grey',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    height: 90,
-    width: 210,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderColor: 'white',
-    borderWidth: 1
   },
   logoutBtn: {
     backgroundColor: 'grey',
