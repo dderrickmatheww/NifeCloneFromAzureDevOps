@@ -2,7 +2,8 @@ import React  from "react";
 import {
     StyleSheet,
     View,
-    ActivityIndicator
+    ActivityIndicator,
+    Keyboard
 } from "react-native";
 import Util from '../../../scripts/Util';
 import {Modal, Button, TextInput, Text} from 'react-native-paper';
@@ -44,8 +45,13 @@ export default class StatusModal extends React.Component  {
         this.props.onSave();
       });
     }
+    handleKeyDown = (e) => {
+      if(e.nativeEvent.key == "Enter"){
+          Keyboard.dismiss();
+      }
+    }
 
-    render(){     
+    render() {     
         return(         
           <Modal 
             contentContainerStyle={{width:"90%", height:"60%", borderRadius:50, alignSelf:"center"}}
@@ -61,9 +67,12 @@ export default class StatusModal extends React.Component  {
                 placeholderTextColor={{color: theme.generalLayout.textColor}}
                 onChangeText={text => this.onStatusChange(text)}
                 style={localStyles.textInput}
-                selectionColor={theme.generalLayout.secondaryColor}
+                selectionColor={theme.generalLayout.textColor}
                 value={this.state.statusText}
                 multiline={true}
+                returnKeyType={'done'}
+                onKeyPress={this.handleKeyDown}
+                theme={{ colors: { text: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
                 > 
               </TextInput>
               {
@@ -96,7 +105,8 @@ const localStyles = StyleSheet.create({
     alignSelf:"center", 
     borderRadius: 5,
     marginTop:5,
-    fontFamily: theme.generalLayout.font
+    fontFamily: theme.generalLayout.font,
+    borderColor: theme.generalLayout.backgroundColor
   },
   buttonText:{
     color: theme.generalLayout.textColor,
@@ -117,7 +127,8 @@ const localStyles = StyleSheet.create({
     flexDirection:"column",
     justifyContent:"center",
     alignContent:"center",
-    alignItems:"center"
+    alignItems:"center",
+    color: theme.generalLayout.textColor
   }
 });
   

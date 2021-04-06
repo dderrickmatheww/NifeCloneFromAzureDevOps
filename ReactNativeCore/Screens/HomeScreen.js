@@ -239,6 +239,7 @@ export default class FriendsFeed extends React.Component  {
             }
         }
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
+        console.log(friendFeedData)
         this.setState({ feedData: friendFeedData });
     }
 
@@ -364,7 +365,7 @@ export default class FriendsFeed extends React.Component  {
                                 this.state.feedData && this.state.feedData.length >0 ?
                                     this.state.feedData.map((data, i)=>(
                                         <View key={i} style={localStyles.feedDataRow}>
-                                            <Avatar.Image source={data.image} size={50}/>
+                                            <Avatar.Image source={data.image.uri !== "Unknown" ? data.image : defPhoto} size={50}/>
                                             <Text style={localStyles.displayName}>
                                                 {data.name}
                                                 {
@@ -535,13 +536,13 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.font
     },
     Paragraph:{
-        color: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
         fontSize:12,
         marginTop:-10,
         fontFamily: theme.generalLayout.font
     },
     displayName:{
-        color: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
         left:60,
         top:-45,
         position:"relative",
@@ -550,7 +551,7 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.fontBold
     },
     feedType:{
-        color: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
         left:60,
         top:-50,
         position:"relative",

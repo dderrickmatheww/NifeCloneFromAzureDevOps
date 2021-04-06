@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, RefreshControl, StyleSheet, ScrollView, ActivityIndicator, Text } from 'react-native';
 import { 
-    Text, 
     Headline,
     Avatar,
     Caption,
@@ -19,15 +18,21 @@ export default class FriendsFeed extends React.Component  {
         userData: null,
         friendData: null,
         feedData: null,
-        snackBarVisable:false,
+        snackBarVisable: false,
+        refresh: false,
     }
     
-    componentDidMount(){
-        this.setState({userData: this.props.user});
-        this.setState({friendData: this.props.friends});
+    componentDidMount() {
+        this.setState({
+            userData: this.props.user,
+            friendData: this.props.friends
+        });
         this.setFriendDataArrays();
     }
-
+    onRefresh = () => {
+        this.setState({ refresh: true });
+        this.refresh();
+    }
     setFriendDataArrays = () => {
         let friends = this.props.friends;
         let user = this.props.user;
@@ -79,12 +84,9 @@ export default class FriendsFeed extends React.Component  {
             }
             
         });
-        
-        
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
         this.setState({feedData:friendFeedData});
     }
-
     onSave = () => {
         this.setState({modalVisable:false});
         this.setState({snackBarVisable: true});
@@ -97,9 +99,19 @@ export default class FriendsFeed extends React.Component  {
         this.setState({snackBarVisable: false});
     }
 
-    refresh = (userData, friendData, requests) =>{
-        this.props.refresh(userData, null, null)
-        setFriendDataArrays()
+    refresh = (userData, friendData, requests) => {
+        if (userData) {
+            this.props.refresh(userData, null, null);
+        }
+        else {
+            this.props.refresh(null, null, null);
+        }
+        this.setState({
+            userData: this.props.user,
+            friendData: this.props.friends,
+            refresh: false
+        });
+        this.setFriendDataArrays();
     }
 
     render() {
@@ -124,16 +136,28 @@ export default class FriendsFeed extends React.Component  {
                 
                {
                 this.state.feedData ?
-                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
+                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={this.state.refresh} 
+                            onRefresh={this.onRefresh}  
+                            size={22}
+                            color={[theme.loadingIcon.color]}
+                            tintColor={theme.loadingIcon.color}
+                            title={'Loading...'}
+                            titleColor={theme.loadingIcon.textColor}
+                        />
+                    }
+                    >
                         {
                             this.state.feedData && this.state.feedData.length > 0 ?
                                 this.state.feedData.map((data, i)=>(
                                     <View key={i} style={localStyles.feedDataRow}>
-                                        <Avatar.Image source={data.image} size={50}/>
-                                        <Text style={localStyles.displayName}>{data.name}</Text>
-                                        <Caption style={localStyles.feedType}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
-                                        <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
-                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
+                                        <Avatar.Image source={data.image ? data.image : defImage} size={50}/>
+                                        <Text style={localStyles.displayName} >{data.name}</Text>
+                                        <Caption style={localStyles.feedType} theme={{ colors: { text: theme.generalLayout.textColor} }}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
+                                        <Paragraph style={localStyles.Paragraph} theme={{ colors: { text: theme.generalLayout.textColor} }}>{data.text}</Paragraph>
+                                        <Caption style={localStyles.Caption} theme={{ colors: { text: theme.generalLayout.textColor} }}>{Util.date.TimeSince(data.time)} ago</Caption>
                                     </View> 
                                 )) 
                             : 
@@ -232,6 +256,7 @@ const localStyles = StyleSheet.create({
         flex:1,
         backgroundColor: theme.generalLayout.backgroundColor,
         borderColor: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
         borderRadius:10,
         borderWidth:1,
         paddingVertical:5,
