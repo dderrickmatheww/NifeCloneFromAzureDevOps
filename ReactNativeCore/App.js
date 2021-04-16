@@ -12,7 +12,7 @@ if (! global.atob) {global.atob = decode}
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
-console.disableYellowBox = true;
+
 
 const theme = {
   ...DefaultTheme,

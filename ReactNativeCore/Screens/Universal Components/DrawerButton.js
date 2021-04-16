@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
         left: "5%",
         opacity: .95,
         backgroundColor: theme.generalLayout.backgroundColor,
-        borderRadius: 10,
+        borderRadius: 50,
         paddingVertical:0,
         borderWidth: .5,
         borderColor: theme.generalLayout.secondaryColor

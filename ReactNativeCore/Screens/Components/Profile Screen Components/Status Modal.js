@@ -1,6 +1,6 @@
 import React  from "react";
 import {
-    StyleSheet,
+    StyleSheet, Platform,
     View,
     ActivityIndicator
 } from "react-native";
@@ -13,13 +13,24 @@ export default class StatusModal extends React.Component  {
       statusText: null,
       userData: null,
       saving: false,
-      refresh: null
+      refresh: null,
+      placeHolderColor:null,
     };
 
     componentDidMount() {
       this.setState({ 
         userData: this.props.user
       });
+      this.getPlaceholderColor()
+    }
+
+    getPlaceholderColor = () =>{
+      this.setState({placeHolderColor:{
+        ...Platform.select({
+          ios: 'white',
+          android:'black'
+        })
+      }}) 
     }
 
     onStatusChange = (text) => {
@@ -57,11 +68,13 @@ export default class StatusModal extends React.Component  {
               <TextInput
                 mode={"outlined"}
                 label=""
-                placeholder={"Type here..."}
-                placeholderTextColor={{color: theme.generalLayout.textColor}}
+                placeholder={Platform.select({
+                  ios: 'Type here...',
+                  android:''
+                })}
+                placeholderTextColor={ this.state.placeHolderColor}
                 onChangeText={text => this.onStatusChange(text)}
                 style={localStyles.textInput}
-                selectionColor={theme.generalLayout.secondaryColor}
                 value={this.state.statusText}
                 multiline={true}
                 > 
@@ -89,8 +102,16 @@ export default class StatusModal extends React.Component  {
 const localStyles = StyleSheet.create({
   textInput:{
     flex:1,
-    backgroundColor: theme.generalLayout.backgroundColor,
-    color: theme.generalLayout.textColor,
+    ...Platform.select({
+      ios:{
+        backgroundColor: theme.generalLayout.backgroundColor,
+        color: theme.generalLayout.textColor,
+      },
+      android:{
+        backgroundColor: 'white',
+        color: 'black',
+      }
+    }),
     width:"90%", 
     height:"80%", 
     alignSelf:"center", 

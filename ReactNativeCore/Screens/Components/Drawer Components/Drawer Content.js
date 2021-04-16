@@ -132,7 +132,7 @@ export function DrawerContent(props) {
                         />
                         <DrawerItem 
                             icon={() => (
-                                <MaterialCommunityIcons 
+                                <Ionicons 
                                 name="map-outline" 
                                 color={theme.icons.color}
                                 size={20}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Picker } from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Platform } from 'react-native';
+import {Picker} from '@react-native-community/picker'
 import Util from '../../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../../Universal Components/DrawerButton';
@@ -26,13 +27,16 @@ export default class EditProfile extends Component {
     showDatePicker: false,
     doneLoading: false,
     favoriteBars: null,
-    faveCount: 0
+    faveCount: 0,
+    dropdownTextColor: null,
   }
 
   setMaxDate = () => {
     var maxDateValue = new Date();
     maxDateValue = maxDateValue.setFullYear( maxDateValue.getFullYear() - 18 );
-    return new Date(maxDateValue);
+    maxDateValue = new Date(maxDateValue);
+    console.log(maxDateValue)
+    return maxDateValue
   }
 
   //Set user data
@@ -50,10 +54,10 @@ export default class EditProfile extends Component {
           });
         }
       }
-    
+      console.log((typeof user.dateOfBirth !== 'undefined' && typeof user.dateOfBirth !== 'string'))
       this.setState({
         userData: typeof user !== 'undefined' ? user : {},
-        dateOfBirth:  typeof user.dateOfBirth !== 'undefined' ? new Date(user.dateOfBirth._seconds ? user.dateOfBirth._seconds * 1000 : user.dateOfBirth.seconds * 1000) : this.setMaxDate(),
+        dateOfBirth:  (typeof user.dateOfBirth !== 'undefined' && typeof user.dateOfBirth !== 'string') ? new Date(user.dateOfBirth._seconds ? user.dateOfBirth._seconds * 1000 : user.dateOfBirth.seconds * 1000) : new Date().setFullYear( new Date().getFullYear() - 18 ),
         gender: typeof user.gender !== 'undefined' ? user.gender : "Other",
         sexualOrientation: typeof user.sexualOrientation !== 'undefined' ? user.sexualOrientation : 'Other',
         bio: typeof user.bio !== 'undefined' ? user.bio : "This user has no bio!",
@@ -63,14 +67,25 @@ export default class EditProfile extends Component {
         displayName: typeof user.displayName !== 'undefined' ? user.displayName : 'Anonymous',
         faveCount: typeof actualFavoriteBars !== 'undefined' ? actualFavoriteBars.length : 0
       });
+      console.log(this.state.dateOfBirth)
   }
 
+  getDropdownColor = () =>{
+    this.setState({dropdownTextColor:{
+      ...Platform.select({
+        ios: 'white',
+        android:'black'
+      })
+    }}) 
+  }
   //gets user and friend data
   async componentDidMount() {
     this.setMaxDate();
     this.setUserData();
   }
 
+    
+  
   onDOBChange = (event, selectedDate) => {
     if (selectedDate) {
       var date = new Date(selectedDate);
@@ -172,7 +187,7 @@ export default class EditProfile extends Component {
             <View style={localStyles.loggedInContainer}>
               <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center'}} style={localStyles.mainCont}> 
               {/* Input Area */}
-                  <Text style={{ fontSize: 18, color: theme.generalLayout.textColor, marginBottom: 15, fontFamily: theme.generalLayout.font}}>
+                  <Text style={{ fontSize: 16, color: theme.generalLayout.textColor, marginBottom: 15, fontFamily: theme.generalLayout.font}}>
                     All information is optional and can be hidden via privacy settings! 
                   </Text>
                   {/* Display name */}
@@ -197,7 +212,7 @@ export default class EditProfile extends Component {
                       <Text style={localStyles.fieldLabel}>
                         Date of Birth:  
                       </Text>
-                      <Text style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 18, marginBottom: 5, marginLeft: '15.5%' }}>
+                      <Text style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 14, marginBottom: 5, marginLeft: '15.5%' }}>
                         {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: '16.5%', paddingBottom: 5}}
@@ -227,13 +242,14 @@ export default class EditProfile extends Component {
                     <Surface style={localStyles.surface}>
                       <Picker 
                         mode={"dropdown"}
-                        style={{backgroundColor: theme.generalLayout.backgroundColor, width:"100%", alignSelf:"center"}}
+                        style={localStyles.dropdown}
                         selectedValue={this.state.gender ? this.state.gender : "Other"}
                         onValueChange={(value) => this.onGenderChange(value)}
+                        itemStyle={{color:'black', backgroundColor: theme.generalLayout.backgroundColor,}}
                       >
-                        <Picker.Item color={theme.generalLayout.textColor} label="Male" value="male"/>
-                        <Picker.Item color={theme.generalLayout.textColor} label="Female" value="female"/>
-                        <Picker.Item color={theme.generalLayout.textColor} label="Other" value="other"/>
+                        <Picker.Item  color={this.state.dropdownTextColor} style={{color:'black'}} label="Male" value="male"/>
+                        <Picker.Item color={this.state.dropdownTextColor} label="Female" value="female"/>
+                        <Picker.Item color={this.state.dropdownTextColor} label="Other" value="other"/>
                       </Picker>
                     </Surface>
                       
@@ -247,13 +263,14 @@ export default class EditProfile extends Component {
                       <Picker
                         mode={"dropdown"}
                         selectedValue={this.state.sexualOrientation ? this.state.sexualOrientation : "Other"}
-                        style={{backgroundColor:theme.DARK, width:"100%", alignSelf:"center"}}
+                        style={localStyles.dropdown}
                         onValueChange={(value) => this.onSexualOrientationChange(value)}
+                        itemStyle={{backgroundColor:theme.DARK}}
                       >
-                        <Picker.Item color={theme.generalLayout.textColor} label="Straight" value="straight"/>
-                        <Picker.Item color={theme.generalLayout.textColor} label="Homosexual/Gay/Lesbian" value="homosexual"/>
-                        <Picker.Item color={theme.generalLayout.textColor} label="Bi-sexual/Fluid" value="bi-sexual"/>
-                        <Picker.Item color={theme.generalLayout.textColor} label="Other" value="other"/>
+                        <Picker.Item color={theme.generalLayout.DARK} style={{backgroundColor:theme.DARK}} label="Straight" value="straight"/>
+                        <Picker.Item color={theme.generalLayout.DARK} label="Homosexual/Gay/Lesbian" value="homosexual"/>
+                        <Picker.Item color={theme.generalLayout.DARK} label="Bi-sexual/Fluid" value="bi-sexual"/>
+                        <Picker.Item color={theme.generalLayout.DARK} label="Other" value="other"/>
                       </Picker>
                     </Surface>
                   </View>
@@ -299,7 +316,7 @@ export default class EditProfile extends Component {
                     label=""
                     placeholder={"Tell us about yourself"}
                     onChangeText={text => this.onBioChange(text)}
-                    value={this.state.bio ? this.state.bio : 'None'}
+                    value={this.state.bio  ? this.state.bio : ''}
                     style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, width:"100%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
                     </TextInput>
                   </View>
@@ -348,6 +365,12 @@ export default class EditProfile extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  dropdown:{
+      ...Platform.select({
+        ios: {backgroundColor:theme.DARK, width:"100%", alignSelf:"center"},
+        android:{backgroundColor:'white', width:"100%", alignSelf:"center"}
+      })
+  },
   fieldLabel:{ 
     fontSize: 18,
     color: theme.generalLayout.textColor,

@@ -272,7 +272,7 @@ const localStyles = StyleSheet.create({
     color: theme.generalLayout.textColor,
     fontFamily: theme.generalLayout.font,
     paddingLeft:10,
-    fontSize:14
+    fontSize:12
   },
   switchCont:{
     flexDirection:"row",

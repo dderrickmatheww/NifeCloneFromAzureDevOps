@@ -78,7 +78,7 @@ class FriendsList extends React.Component {
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.navHeader}>
               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
-                  <Avatar.Image 
+                <Avatar.Image 
                       source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
                           uri:  this.state.userData.photoSource  
                       } : defPhoto}
@@ -260,13 +260,20 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   },
   drawerBtn: {
-    marginTop: '8%',
+    ...Platform.select({
+      ios: {
+        marginTop: '8%',
+      },
+      android: {
+        marginTop: '3%',
+      },
+    }),
     marginLeft: '3%',
     marginBottom: '3%',
     borderWidth: 1,
     borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 70
-  },
+},
 });
 
 export default FriendsList;

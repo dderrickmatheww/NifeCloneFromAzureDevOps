@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, SafeAreaView, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import {
   Title,
   Caption,
@@ -150,7 +150,7 @@ export default class ProfileScreen extends Component {
       return ( 
         ////////////////////////////////////////
           this.state.userData ? 
-          <Surface style={localStyles.container}>
+          <SafeAreaView style={localStyles.container}>
             <View style={localStyles.navHeader}>
             <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                 <Avatar.Image 
@@ -280,7 +280,7 @@ export default class ProfileScreen extends Component {
                       </Title>
                       {
                         this.state.isUsersProfile ?
-                          <TouchableOpacity style={{backgroundColor: theme.generalLayout.backgroundColor, position:"relative", top: 10, left: 235, opacity: .75 }}
+                          <TouchableOpacity style={localStyles.editStatus}
                             onPress={() => this.setState({statusModalVisible: true})}
                           >
                               <Ionicons size={25} color={theme.icons.color} name="ios-add-circle"></Ionicons>
@@ -373,7 +373,7 @@ export default class ProfileScreen extends Component {
                   null
               }
             </ScrollView>
-            </Surface>
+            </SafeAreaView>
             :
            
         ///////////////////////////////////////////
@@ -386,6 +386,21 @@ export default class ProfileScreen extends Component {
 }
 
 const localStyles = StyleSheet.create({
+  editStatus:{
+    backgroundColor: theme.generalLayout.backgroundColor,
+     position:"relative",
+     
+     ...Platform.select({
+      ios: {
+        left: 235,
+      },
+      android: {
+        left: 220,
+      },
+    }),
+      top: 10,
+        opacity: .75 
+  },
   NoAvatarButton:{
     width: 150, 
     height: 150, 
@@ -557,7 +572,14 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   },
   drawerBtn: {
-    marginTop: '8%',
+    ...Platform.select({
+      ios: {
+        marginTop: '8%',
+      },
+      android: {
+        marginTop: '3%',
+      },
+    }),
     marginLeft: '3%',
     marginBottom: '3%',
     borderWidth: 1,

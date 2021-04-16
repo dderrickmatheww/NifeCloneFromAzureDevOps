@@ -99,7 +99,7 @@ export default class FriendsFeed extends React.Component  {
 
     refresh = (userData, friendData, requests) =>{
         this.props.refresh(userData, null, null)
-        setFriendDataArrays()
+        this.setFriendDataArrays()
     }
 
     render() {
@@ -151,7 +151,7 @@ export default class FriendsFeed extends React.Component  {
                     <StatusModal
                         isVisible={this.state.modalVisable}
                         user={this.state.userData}
-                        refresh={this.refresh()}
+                        refresh={this.refresh}
                         onDismiss={() => this.onDismiss()}
                         onSave={()=> this.onSave()}
                     />

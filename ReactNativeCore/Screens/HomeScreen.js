@@ -364,7 +364,7 @@ export default class FriendsFeed extends React.Component  {
                                 this.state.feedData && this.state.feedData.length >0 ?
                                     this.state.feedData.map((data, i)=>(
                                         <View key={i} style={localStyles.feedDataRow}>
-                                            <Avatar.Image source={data.image} size={50}/>
+                                            <Avatar.Image source={data.image ? data.image : defPhoto} size={50}/>
                                             <Text style={localStyles.displayName}>
                                                 {data.name}
                                                 {
