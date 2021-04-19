@@ -37,17 +37,17 @@ export default class FriendsFeed extends React.Component  {
         isVerified: false,
     }
     
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({
             userData: this.props.user,
             friendData: this.props.friends,
             businessData: this.props.business,
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
-        this.setFriendDataArrays();
+        await this.setFriendDataArrays();
     }
 
-    setFriendDataArrays = () => {
+    setFriendDataArrays = async () => {
         let friends = this.props.friends;
         let user = this.props.user;
         let business = this.props.business;
@@ -256,9 +256,11 @@ export default class FriendsFeed extends React.Component  {
     }
 
     onDismiss = () => {
-        this.setState({statusModalVisable: false});
-        this.setState({eventModalVisable: false});
-        this.setState({specialsModalVisable: false});
+        this.setState({
+            statusModalVisable: false,
+            eventModalVisable: false,
+            specialsModalVisable: false
+        });
     }
 
     onDismissUpdate = () => {
@@ -269,9 +271,9 @@ export default class FriendsFeed extends React.Component  {
         this.setState({snackBarVisable: false});
     }
 
-    refresh = (userData, friendData, requests, businessData) => {
-        this.props.refresh(userData, null, null, businessData);
-        this.setFriendDataArrays();
+    refresh = async (userData, friendData, requests, businessData) => {
+        await this.props.refresh(userData, null, null, businessData);
+        await this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
         this.setState({ feedData: friendFeedData });

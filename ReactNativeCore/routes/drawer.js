@@ -103,7 +103,7 @@ class Navigator extends React.Component {
     }
   }
 
-  refreshFromAsync = (userData, friendData, requests, businessData) => {
+  refreshFromAsync = async (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({ userData: userData });
     }
@@ -188,10 +188,10 @@ class Navigator extends React.Component {
     }
    
     await Util.user.CheckAuthStatus((user) => {
-      this.setState({ authLoaded: true });
       if (user) {
         this.setState({
-            userExists: true
+            userExists: true,
+            authLoaded: true,
         });
         if(user.displayName) {
             this.initializeParams(user);

@@ -10,7 +10,7 @@ import theme from '../Styles/theme';
 const Tab = createBottomTabNavigator();
 
 function HomeScreenTab ({route, navigation}) {
-  const {uploadImage, user, friends, business,favorites ,refresh} = route.params;
+  const {uploadImage, user, friends, business, favorites, refresh} = route.params;
   return (
     <HomeScreen uploadImage={uploadImage} favorites={favorites} business={business} refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
@@ -31,14 +31,15 @@ function whatsPoppinScreenTab ({route, navigation}) {
 }
 
 class PoppinStack extends React.Component {
-
   state = {
-    userData:null,
-    friendData:null
+    userData: null,
+    friendData: null
   }
   componentDidMount(){
-    this.setState({userData:this.props.user});
-    this.setState({friendData:this.props.friends});
+    this.setState({ 
+      userData: this.props.user,
+      friendData: this.props.friends
+    });
   }
 
   render() {
@@ -84,7 +85,7 @@ class PoppinStack extends React.Component {
           >
           <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{uploadImage:this.props.uploadImage, user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business, favorites:this.props.favorites}}/>
           {!this.props.user.isBusiness ? <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/> : null}
-          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
+          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user: this.props.user, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>
         </Tab.Navigator> 
         :
         <View style={localStyles.viewDark}>
