@@ -125,7 +125,7 @@ export default class FriendsFeed extends React.Component  {
                     <View style={{width:"100%"}}>
                         <Headline style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.fontBold, marginLeft: '5%', marginBottom: '2%'}}>Friend's Feed</Headline>
                     </View>
-                    <TouchableOpacity onPress={()=>this.setState({modalVisable:true})} style={localStyles.StatusOverlay}>
+                    <TouchableOpacity onPress={() => this.setState({modalVisable: true})} style={localStyles.StatusOverlay}>
                         <Text style={localStyles.statusButton}>Update Status</Text>
                     </TouchableOpacity> 
                 </View>
@@ -171,9 +171,9 @@ export default class FriendsFeed extends React.Component  {
                     <StatusModal
                         isVisible={this.state.modalVisable}
                         user={this.state.userData}
-                        refresh={this.refresh()}
-                        onDismiss={() => this.onDismiss()}
-                        onSave={()=> this.onSave()}
+                        refresh={this.refresh}
+                        onDismiss={this.onDismiss}
+                        onSave={this.onSave}
                     />
                   :
                     null
