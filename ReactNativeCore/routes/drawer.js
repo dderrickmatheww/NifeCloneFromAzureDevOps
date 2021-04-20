@@ -103,7 +103,7 @@ class Navigator extends React.Component {
     }
   }
 
-  refreshFromAsync = (userData, friendData, requests, businessData) => {
+  refreshFromAsync = async (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({ userData: userData });
     }

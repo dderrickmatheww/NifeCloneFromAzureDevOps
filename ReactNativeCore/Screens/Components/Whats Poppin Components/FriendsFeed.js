@@ -29,13 +29,12 @@ export default class FriendsFeed extends React.Component  {
         });
         this.setFriendDataArrays();
     }
-    onRefresh = () => {
+    onRefresh = async () => {
         this.setState({ refresh: true });
-        this.refresh();
+        await this.refresh();
     }
-    setFriendDataArrays = () => {
+    setFriendDataArrays = async () => {
         let friends = this.props.friends;
-        let user = this.props.user;
         let friendFeedData = [];
         friends.forEach((friend) =>{
             if(friend.status){
@@ -85,33 +84,30 @@ export default class FriendsFeed extends React.Component  {
             
         });
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
-        this.setState({feedData:friendFeedData});
+        await this.setState({feedData: friendFeedData});
     }
     onSave = () => {
         this.setState({modalVisable:false});
         this.setState({snackBarVisable: true});
         
     }
-    onDismiss = ()=> {
+    onDismiss = () => {
         this.setState({modalVisable:false});
     }
     onDismissSnackBar = () => {
         this.setState({snackBarVisable: false});
     }
 
-    refresh = (userData, friendData, requests) => {
+    refresh = async (userData, friendData, requests, businessData) => {
         if (userData) {
-            this.props.refresh(userData, null, null);
+            await this.props.refresh(userData, null, null, null);
         }
-        else {
-            this.props.refresh(null, null, null);
-        }
+        await this.setFriendDataArrays();
         this.setState({
             userData: this.props.user,
             friendData: this.props.friends,
             refresh: false
         });
-        this.setFriendDataArrays();
     }
 
     render() {
