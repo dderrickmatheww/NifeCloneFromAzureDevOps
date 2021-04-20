@@ -187,6 +187,7 @@ export default class FriendsFeed extends React.Component  {
                           this.onDismissSnackBar()
                         },
                       }}
+                      style={{position: 'absolute', bottom: 725}}
                 >
                     Updated your status!
                 </Snackbar>
