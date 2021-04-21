@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         paddingVertical:0,
         borderWidth: .5,
-        borderColor: theme.generalLayout.secondaryColor
+        borderColor: theme.generalLayout.secondaryColor,
+        zIndex:100
       },
 });
 

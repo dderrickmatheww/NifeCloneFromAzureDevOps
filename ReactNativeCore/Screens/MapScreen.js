@@ -384,6 +384,7 @@ class MapScreen extends React.Component  {
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
               showsMyLocationButton={false}
+              showsCompass={false}
               showsUserLocation={true}
               showsPointsOfInterest={false}
               userLocationUpdateInterval={1000}
@@ -462,8 +463,10 @@ const localStyles = StyleSheet.create({
   },
   autoCompContainer: {
     maxHeight: '30%',
-    zIndex: 1000,
-    marginTop: '30%'
+    marginTop: '10%',
+    marginLeft: '5%',
+    zIndex: 3, // works on ios
+    elevation: 3, // works on android
   },
   font: {
     textShadowColor: 'black',
@@ -472,7 +475,7 @@ const localStyles = StyleSheet.create({
         height: 20
     },
     textShadowRadius: 20,
-    color: theme.generalLayout.textColor,
+    color: theme.icons.color,
     fontFamily: theme.generalLayout.font
   },
   container: {
@@ -516,14 +519,15 @@ const localStyles = StyleSheet.create({
   },
 
   map: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
 
   drawerButton:{
     backgroundColor: theme.generalLayout.backgroundColor,
     position:"absolute",
     alignSelf:"flex-start",
-    top:"-30%"
+    top:"-30%",
+    zIndex:100,
   },
   
   centeredView: {

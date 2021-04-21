@@ -68,7 +68,7 @@ export default class InputWithIcon extends React.Component {
       this.state.isAutoComplete ?
         <View style={localStyles.container} >
           <TextInput
-              style={localStyles.searchBar}
+              style={[localStyles.searchBar, {marginTop:!this.state.loading ? 40 : 0}]}
               placeholder={this.props.placeHolderText}
               placeholderTextColor={this.props.color}
               returnKeyType={this.props.returnKey}
@@ -79,7 +79,8 @@ export default class InputWithIcon extends React.Component {
                 if(text == "") {
                   this.setState({
                     showAutoComplete: false,
-                    searchQuery: text
+                    searchQuery: text,
+                    loading:true,
                   });
                 }
                 else{
@@ -180,7 +181,9 @@ export default class InputWithIcon extends React.Component {
     container: {
       alignItems: 'center',
       justifyContent:"center",
-      width: '100%'
+      width: '100%',
+      elevation:1,
+      zIndex:1,
   },
   font: {
     textShadowColor: 'black',
@@ -195,10 +198,11 @@ export default class InputWithIcon extends React.Component {
   searchBar: {
       borderBottomWidth: 3,
       borderBottomColor: theme.generalLayout.secondaryColor,
-      width: '90%',
+      width: '70%',
       marginHorizontal: 10,
+      marginBottom: 15,
       alignItems: 'center',
-      color: theme.generalLayout.textColor,
+      color: theme.icons.color,
       justifyContent: 'center',
       fontWeight: 'bold',
       textShadowColor: 'black',
@@ -207,30 +211,26 @@ export default class InputWithIcon extends React.Component {
           height: 20
       },
       textShadowRadius: 20,
-      fontFamily: theme.generalLayout.font
+      fontFamily: theme.generalLayout.font,
+
   },
   row: {
     flexDirection: 'row'
   },
   buisnessImage: {
-    width: '20%',
-    alignItems: "flex-start",
-    justifyContent: 'flex-start',
     backgroundColor: 'lightgrey',
+    marginLeft: -20,
   },
   autoCompBtn: {
       width: 350,
-      marginTop: 10,
-      marginBottom: 5,
-      marginTop: 5,
-      height: 50,
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.generalLayout.backgroundColor,
       borderRadius: 3,
       borderWidth: 3,
       borderColor: theme.generalLayout.secondaryColor,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      marginVertical: 2,
   },
   nameTxt: {
     width: '43%',
@@ -243,14 +243,16 @@ export default class InputWithIcon extends React.Component {
         width: 20, 
         height: 20
     },
-    color: theme.generalLayout.textColor,
+    color: theme.icons.color,
     fontFamily: theme.generalLayout.font
   },
   addressTxt: {
     width: '33%',
     padding: 3,
     alignItems: "center",
-    justifyContent: 'center'
+    justifyContent: 'center',
+    color: theme.icons.color,
+    fontSize: 12,
   },
   autoCompBtnContainer: {
     padding: 5,
@@ -276,5 +278,8 @@ export default class InputWithIcon extends React.Component {
       borderWidth: 2,
       borderColor: theme.generalLayout.secondaryColor,
       width: '90%',
+      // top: 35,
+      // position:'absolute',
+      // maxHeight: '33%',
   }
   })

@@ -118,11 +118,14 @@ class BarModal extends React.Component  {
   }
 
   renderInner = () => (
-    <View style={{flex: 1, height:600}}>
+    <View style={{flex: 1, height:700}}>
       <View style={styles.panel}>
         <View style={styles.titleHeader}>
-          <Text style={styles.panelTitle}>{this.props.barName}</Text>  
-          <View style={{position: "absolute", top: 0, right: 10}}>
+        <View style={{flexGrow:1,width:0,flexDirection:"column",justifyContent:"center"}}>
+            <Text style={styles.panelTitle}>{this.props.barName}</Text>  
+        </View>
+          
+          <View style={{position: "relative"}}>
             <Favorite favoriteTrigg={(buisnessUID, bool, buisnessName) => this.favoriteABar(buisnessUID, bool, buisnessName)} user={this.props.user} buisnessUID={this.props.buisnessUID} buisnessName={this.props.barName} />
           </View>
           
@@ -300,8 +303,7 @@ const IMAGE_SIZE = 200
 
 const styles = StyleSheet.create({
   panelTitle: {
-    fontSize: 25,
-    height: 35,
+    fontSize: 22,
     color: theme.generalLayout.textColor,
     textAlign:"center",
     fontWeight:"bold",
@@ -440,7 +442,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.generalLayout.textColor,
     height: 30,
-    marginBottom: 10,
+    marginBottom: 7,
     fontFamily: theme.generalLayout.font
   },
   panelText: {
@@ -451,7 +453,7 @@ const styles = StyleSheet.create({
     fontFamily: theme.generalLayout.font
   },
   panelButton: {
-    padding: 20,
+    padding: 15,
     borderRadius: 10,
     width: '100%',
     alignItems: 'center',
