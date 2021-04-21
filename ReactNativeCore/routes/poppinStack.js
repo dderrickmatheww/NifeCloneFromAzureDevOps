@@ -72,6 +72,10 @@ class PoppinStack extends React.Component {
             },
             style: {
               backgroundColor: 'transparent',
+              borderWidth:0,
+              elevation:0,
+              borderBottomColor:'transparent',
+              borderTopColor:'transparent',
               borderTopWidth: 0,
               position: 'absolute',
               color: theme.icons.tabIcon.textColor,
