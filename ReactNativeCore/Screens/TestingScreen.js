@@ -1,13 +1,12 @@
 import React from 'react';
+import * as Notifications from 'expo-notifications'
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { styles } from '../Styles/style';
 import * as firebase from 'firebase';
-import Util from '../scripts/Util';
-import Random from '../scripts/random/Random';
-import theme from '../Styles/theme'
-import ExpandableArea from '../Screens/Universal Components/ExpandableArea';
+import theme from '../Styles/theme';
 import 'firebase/firestore'
-
+import Util from "../scripts/Util";
+import * as Constants from "expo-device";
 
 
 class TestingScreen extends React.Component  {
@@ -16,113 +15,24 @@ class TestingScreen extends React.Component  {
         user: null,
         isLoggedIn: firebase.auth().currentUser ? true : false,
         db: firebase.firestore(),
-        friendData:[]
+        friendData:[],
+        expoPushToken:null,
     }
 
-    FriendsVisitedItems = (friend) => {
-        return(
-            <Text style={{color:theme.LIGHT_PINK}}>{friend.displayName}</Text>
-        )
-    }
 
-    getAsyncStorageData = () => {
-        Util.asyncStorage.GetAsyncStorageVar('User', (userData) => {
-          this.setState({user: JSON.parse(userData)});
-        //   console.log("Current User: " + this.state.user);
-        });
-        Util.asyncStorage.GetAsyncStorageVar('Friends', (friends) => {
-            this.setState({friendData: JSON.parse(friends)});
-            // console.log('Friends: ' + this.state.friendData);
-          });
-      }
+    componentDidMount() {
 
-    componentDidMount () {
-        
-        this.getAsyncStorageData();
-        this.setState({db: firebase.firestore()});
-        
-    }
-
-    testFunc = (returnData) => {
-        var allUsers =[];
-        let baseURL = 'https://api.yelp.com/v3/businesses/search?';
-        let params = Util.dataCalls.Yelp.buildParameters("32.989323", "-80.0066694", 8000);
-        Util.dataCalls.Yelp.placeData(baseURL, params, {}, (data) => {
-            let localBusinesses = data;
-            let userRef = firebase.firestore().collection('users').where("email", ">", "").get()
-            .then((res)=>{
-                res.forEach((data)=>{
-                    if(data.data()){
-                        allUsers.push(data.data());
-                    }
-                });
-                if(allUsers.length > 0){
-                    allUsers.forEach((user)=>{
-                        console.log("User: " + JSON.stringify(user))
-                        let randomBusiness = localBusinesses[this.getRandomInt(localBusinesses.length-1)];
-                        let db = firebase.firestore();
-                        let setLoc =  db.collection('users').doc(user.email);
-                        setLoc.set({
-                            privacySettings:{
-                                DOBPrivacy:false,
-                                checkInPrivacy:false,
-                                favoritingPrivacy:false,
-                                genderPrivacy:false,
-                                orientationPrivacy:false,
-                                searchPrivacy:false,
-                                visitedPrivacy:false,
-                            },
-
-                            checkIn: {
-                                checkInTime: new Date(),
-                                latAndLong: randomBusiness.coordinates.latitude +","+randomBusiness.coordinates.longitude,
-                                privacy: "Public",
-                                buisnessUID: randomBusiness.id,
-                                name: randomBusiness.name,
-                                phone: randomBusiness.phone,
-                                address: randomBusiness.location.address1+", "+randomBusiness.location.city+", "+randomBusiness.location.state+" "+randomBusiness.location.zip_code,
-                                barPhoto: randomBusiness.image_url,
-                            },
-                            lastVisited:{}
-                        },
-                        {
-                            merge: true
-                        })
-                        .then(() => {
-                            Util.basicUtil.consoleLog('CheckIn', true);
-                            returnData('true');
-                        })
-                        .catch((error) => {
-                            Util.basicUtil.consoleLog('CheckIn', false);
-                            console.log("Firebase Error: " + error);
-                        });
-                    });
-                } else {
-                    console.log('yo query wrong bitch');
-                }
-
-            });
-        });
-    }
-
-    getRandomInt = (max) => {
-        return Math.floor(Math.random() * Math.floor(max));
     }
 
     render() {
         return (
-            this.state.user ? 
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn} onPress={() => this.testFunc(()=>{console.log('ay')})}>
+                <TouchableOpacity style={localStyles.btn}
+                >
                         <Text>Test</Text>
                 </TouchableOpacity>
             </View>
-            
-            : 
-            <View style={styles.viewDark}>
-                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-            </View> 
-            
+
         )
     }
 }

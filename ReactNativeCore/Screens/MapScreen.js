@@ -500,7 +500,6 @@ const localStyles = StyleSheet.create({
   callOutMarker: {
     flex: 1,
     backgroundColor: 'white',
-    borderRadius: 3,
     padding: 30,
     margin: 25,
     justifyContent: 'center',

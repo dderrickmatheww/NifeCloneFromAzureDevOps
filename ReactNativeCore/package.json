@@ -31,6 +31,7 @@
     "expo-image-picker": "~9.2.0",
     "expo-linear-gradient": "~8.4.0",
     "expo-location": "~10.0.0",
+    "expo-notifications": "^0.11.6",
     "expo-permissions": "~10.0.0",
     "expo-random": "~10.0.0",
     "expo-task-manager": "~8.6.0",

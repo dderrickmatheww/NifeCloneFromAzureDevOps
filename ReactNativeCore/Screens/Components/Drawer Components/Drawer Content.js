@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import { 
     View, 
     StyleSheet, 
@@ -243,17 +243,17 @@ export function DrawerContent(props) {
                             onPress={() => {props.navigation.navigate('Settings', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}
                         />
                         
-                         {/* <DrawerItem 
+                         <DrawerItem 
                             icon={() => (
-                                <MaterialCommunityIcons 
-                                name="settings" 
+                                <FontAwesome
+                                name="gears"
                                 color={theme.LIGHT_PINK}
                                 size={20}
                                 />
                             )}
                             label={()=> <Text style={styles.text}>Test</Text>}
-                            onPress={() => {props.navigation.navigate('Test')}}
-                        />  */}
+                            onPress={() => {props.navigation.navigate('Test', {params:{user: props.user}})}}
+                        /> 
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>

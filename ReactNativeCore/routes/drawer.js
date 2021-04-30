@@ -38,6 +38,8 @@ function Profile ({route, navigation}){
 }
 
 
+
+
 function MapMain ({route, navigation}){
   const {user, friends, refresh} = route.params;
   return(
@@ -176,6 +178,7 @@ class Navigator extends React.Component {
   }
 
   async componentDidMount() {
+    //load fonts
     try {
       await Font.loadAsync({
         Comfortaa: require('../Media/Fonts/Comfortaa/static/Comfortaa-Regular.ttf'),
@@ -186,7 +189,7 @@ class Navigator extends React.Component {
     catch (error) {
       console.log(error);
     }
-   
+   //get user stuff
     await Util.user.CheckAuthStatus((user) => {
       this.setState({ authLoaded: true });
       if (user) {
@@ -199,6 +202,10 @@ class Navigator extends React.Component {
         else {
             this.firstTimeSignUp(user);
         }
+        //get push notification permissions
+        Util.user.registerForPushNotificationsAsync((token) => {
+          Util.user.UpdateUser(user.email, token);
+        });
       } 
       else {
         this.setState({
