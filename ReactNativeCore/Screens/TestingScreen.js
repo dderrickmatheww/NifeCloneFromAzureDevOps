@@ -6,8 +6,14 @@ import * as firebase from 'firebase';
 import theme from '../Styles/theme';
 import 'firebase/firestore'
 import Util from "../scripts/Util";
-import * as Constants from "expo-device";
 
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
 
 class TestingScreen extends React.Component  {
 
@@ -17,17 +23,21 @@ class TestingScreen extends React.Component  {
         db: firebase.firestore(),
         friendData:[],
         expoPushToken:null,
+        notification:{},
     }
 
 
-    componentDidMount() {
 
+    componentDidMount() {
     }
 
     render() {
         return (
             <View style={localStyles.loggedInContainer}>
-                <TouchableOpacity style={localStyles.btn}
+                <TouchableOpacity style={localStyles.btn} onPress={() =>
+                    Util.user.sendFriendReqNotification(firebase.auth().currentUser.displayName, 'mrpalumbophd@gmail.com', ()=>{
+                        Util.basicUtil.consoleLog("sendFriendReqNotification", true);
+                    })}
                 >
                         <Text>Test</Text>
                 </TouchableOpacity>

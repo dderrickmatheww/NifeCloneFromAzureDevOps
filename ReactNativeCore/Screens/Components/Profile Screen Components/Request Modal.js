@@ -79,7 +79,7 @@ class RequestModal extends React.Component  {
                             <Image style={localStyles.friendPic} source={ friend.photoSource  ? {uri:friend.photoSource}  : defPhoto} />
                             <Text style={localStyles.name}>{friend.displayName}</Text>
                           
-                          <View style={{ flexDirection:"row"}}>
+                          <View style={{ flexDirection:"row", marginVertical:5}}>
                             <TouchableOpacity style={localStyles.DenyFriendOverlay}
                               onPress={!this.state.requestLoading ? () => this.handleDeny(friend.email) : null}
                             >
@@ -87,7 +87,7 @@ class RequestModal extends React.Component  {
                                 <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                                 :
                                 <View style={{flexDirection:"row"}}>
-                                  <Ionicons name="ios-close" size={30} color={theme.icons.color}></Ionicons>
+                                  <Ionicons name="ios-close" size={25} color={theme.icons.color}></Ionicons>
                                     <Text style={localStyles.buttonText}>
                                       Deny 
                                     </Text>
@@ -102,7 +102,7 @@ class RequestModal extends React.Component  {
                                 <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                                 :
                                 <View style={{flexDirection:"row"}}>
-                                  <Ionicons name="ios-checkmark" size={30} color={theme.icons.color}></Ionicons>
+                                  <Ionicons name="ios-checkmark" size={25} color={theme.icons.color}></Ionicons>
                                   <Text style={localStyles.buttonText}>
                                     Accept
                                   </Text>
@@ -126,6 +126,7 @@ class RequestModal extends React.Component  {
 
 const localStyles = StyleSheet.create({
   buttonText:{
+    fontSize:14,
     color:theme.generalLayout.textColor,
     alignSelf:"center",
     paddingHorizontal:5,
@@ -140,7 +141,7 @@ const localStyles = StyleSheet.create({
     borderWidth:1,
     borderColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: 4,
-    right:-50,
+    right:-25,
   },
   DenyFriendOverlay: {
     flexDirection:"row",
@@ -151,7 +152,7 @@ const localStyles = StyleSheet.create({
     borderWidth:1,
     borderColor: theme.generalLayout.secondaryColor,
     paddingHorizontal: 4,
-    left:-50,
+    left:-25,
   },
   friendPic: {
     width: 50,

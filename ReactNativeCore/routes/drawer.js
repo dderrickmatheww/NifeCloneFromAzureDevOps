@@ -14,6 +14,16 @@ import * as Permissions from 'expo-permissions';
 import LoginScreen from '../Screens/Login Screen';
 import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Content';
 import * as Font from 'expo-font';
+import * as Notifications from 'expo-notifications';
+import { useNavigation } from '@react-navigation/native';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 const Drawer = createDrawerNavigator();
 
@@ -54,6 +64,12 @@ function Settings ({route, navigation}){
   )
 }
 
+function FriendList({navigation}, data){
+  return navigation.navigate('Profile', {screen:'Friends',
+    params: data,
+  })
+}
+
 class Navigator extends React.Component {
 
   state = {
@@ -70,6 +86,7 @@ class Navigator extends React.Component {
     isBusiness: false, //only set at business sign up for first time
     businessState: null,
     favoritePlaceData: null,
+    notification: null,
   }
 
   getNeededData = (currentUser) => {
@@ -177,6 +194,16 @@ class Navigator extends React.Component {
     });
   }
 
+
+  // _handleNotification = notification => {
+  //   // this.setState({ notification: notification });
+  //   // console.log("Notification: ");
+  //   // console.log(notification);
+  // };
+  //
+
+
+
   async componentDidMount() {
     //load fonts
     try {
@@ -189,32 +216,32 @@ class Navigator extends React.Component {
     catch (error) {
       console.log(error);
     }
-   //get user stuff
     await Util.user.CheckAuthStatus((user) => {
       this.setState({ authLoaded: true });
       if (user) {
         this.setState({
-            userExists: true
+          userExists: true
         });
         if(user.displayName) {
-            this.initializeParams(user);
+          this.initializeParams(user);
         }
         else {
-            this.firstTimeSignUp(user);
+          this.firstTimeSignUp(user);
         }
         //get push notification permissions
         Util.user.registerForPushNotificationsAsync((token) => {
           Util.user.UpdateUser(user.email, token);
         });
-      } 
+      }
       else {
         this.setState({
-            authLoaded: true,
-            userData: null,
-            userExists: false
+          authLoaded: true,
+          userData: null,
+          userExists: false
         });
       }
     })
+    //register notifications
   }
 
   render() {

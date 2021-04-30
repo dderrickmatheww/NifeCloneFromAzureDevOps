@@ -1,4 +1,4 @@
- import React from 'react';
+ import React, {useEffect} from 'react';
 import { 
     View, 
     StyleSheet, 
@@ -23,8 +23,22 @@ import Util from '../../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../../Universal Components/IconWithBadge"
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+ import * as Notifications from 'expo-notifications';
 
 export function DrawerContent(props) {
+    useEffect(()=>{
+        console.log('useEffect hit')
+        Notifications.addNotificationReceivedListener((notification) => {
+            console.log('Notification: ');
+            console.log(notification);
+        });
+        Notifications.addNotificationResponseReceivedListener((response) => {
+            if(response.notification.request.content.data.isFriendRequest)
+                props.navigation.navigate('Profile', {screen:'Friends',
+                    params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh, openRequests:true}
+                })
+        });
+    })
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Util from '../../../scripts/Util';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
@@ -27,7 +27,8 @@ class FriendsList extends React.Component {
         friends: this.props.friends,
         requests: this.props.requests,
         userData: this.props.user,
-        isLoggedin: loggedIn
+        isLoggedin: loggedIn,
+        modalVisible: this.props.openRequests,
       });
     });
   }
@@ -146,19 +147,39 @@ class FriendsList extends React.Component {
 
 const localStyles = StyleSheet.create({
   RequestOverlay: {
-    position:"relative",
-    left: 195,
-    alignSelf:"flex-end",
-    opacity: 0.75,
-    backgroundColor: theme.generalLayout.backgroundColor,
-    borderRadius: 5,
-    marginBottom:7.5,
-    borderWidth:1,
-    borderColor: theme.generalLayout.secondaryColor,
-    justifyContent:"center",
-    alignContent:"center",
-    padding:3,
-    flexDirection:"row"
+    ...Platform.select({
+      ios:{
+        position:"relative",
+        left: 195,
+        alignSelf:"flex-end",
+        opacity: 0.75,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderRadius: 5,
+        marginBottom:7.5,
+        borderWidth:1,
+        borderColor: theme.generalLayout.secondaryColor,
+        justifyContent:"center",
+        alignContent:"center",
+        padding:3,
+        flexDirection:"row"
+      },
+      android:{
+        position:"relative",
+        left: 175,
+        alignSelf:"flex-end",
+        opacity: 0.75,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderRadius: 5,
+        marginBottom:7.5,
+        borderWidth:1,
+        borderColor: theme.generalLayout.secondaryColor,
+        justifyContent:"center",
+        alignContent:"center",
+        padding:3,
+        flexDirection:"row"
+      }
+    })
+
   },
   navHeader:{
     marginTop:25,
@@ -169,7 +190,6 @@ const localStyles = StyleSheet.create({
     // borderBottomWidth: 2,
   },
   loggedInContainer: {
-    alignItems: "flex-start",
     flex: 1,
     flexDirection: "column",
     backgroundColor: theme.generalLayout.backgroundColor,
@@ -187,7 +207,7 @@ const localStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.generalLayout.backgroundColor,
     width: "100%",
-    maxHeight:"15%",
+    maxHeight:"12%",
     justifyContent: "flex-end",
     alignItems: "center",
     borderBottomColor: theme.generalLayout.secondaryColor,

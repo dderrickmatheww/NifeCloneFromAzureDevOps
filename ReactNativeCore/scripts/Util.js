@@ -84,6 +84,9 @@ const Util = {
                     // User that will have a friend request
                     updateFriendObj.friends[userEmail] = null;
                     Util.user.UpdateUser(friendEmail, updateFriendObj, () => {
+                        Util.user.sendFriendReqNotification(firebase.auth().currentUser.displayName, friendEmail, ()=>{
+                            Util.basicUtil.consoleLog("sendFriendReqNotification", true);
+                        })
                         Util.basicUtil.consoleLog("AddFriend", true);
                     });
                 });
@@ -547,6 +550,29 @@ const Util = {
                     vibrationPattern: [0, 250, 250, 250],
                     lightColor: '#FF231F7C',
                 });
+            }
+        },
+        sendFriendReqNotification: async(user, friendEmail, callback) => {
+            let obj = {
+                user: user,
+                friendEmail: friendEmail
+            };
+            if (user && friendEmail) {
+                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/sendFriendRequestNotification',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj)
+                    })
+                    .then(response => response.json())
+                    .then(async data => {
+                        if (callback) {
+                            callback(data.result);
+                        }
+                        Util.basicUtil.consoleLog('VerifyUser', true);
+                    }).catch((error) => {
+                        Util.basicUtil.Alert('Function VerifyUser - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('VerifyUser', false);
+                    });
             }
         }
     },
