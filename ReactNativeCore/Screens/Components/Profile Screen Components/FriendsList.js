@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Util from '../../../scripts/Util';
+import GLOBAL from '../../../scripts/globals';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
@@ -13,31 +14,39 @@ class FriendsList extends React.Component {
   
   state = {
     isLoggedin: false,
-    userData: this.props.user,
+    userData: GLOBAL.userData,
     modalVisible: false,
-    friends: null,
+    friends: GLOBAL.friendData,
     searchQuery: null,
-    requests: null,
+    requests: GLOBAL.friendRequests,
   }
   
   //gets user and friend data
   setPropData = () => {
     Util.user.CheckLoginStatus((loggedIn) => {
+      console.log('set prop data');
+      console.log(this.state.requests);
       this.setState({
-        friends: this.props.friends,
-        requests: this.props.requests,
-        userData: this.props.user,
+        friends: GLOBAL.friendData,
+        requests: GLOBAL.friendRequests,
+        userData: GLOBAL.userData,
         isLoggedin: loggedIn,
         modalVisible: this.props.openRequests,
       });
     });
   }
 
+
+
   handleOpenModal = () => {
     this.setState({ modalVisible: true });
   }
 
   componentDidMount() {
+    this.props.navigation.addListener('focus', () =>{
+          this.setPropData();
+        }
+    )
     this.setPropData();
   }
 
@@ -74,6 +83,7 @@ class FriendsList extends React.Component {
   }
 
   render() {
+
     return (
       (this.state.friends != null && this.state.friends != undefined) ?
         <View style={localStyles.loggedInContainer}>

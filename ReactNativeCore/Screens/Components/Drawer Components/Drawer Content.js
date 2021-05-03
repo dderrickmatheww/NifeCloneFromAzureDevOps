@@ -20,6 +20,7 @@ import {
 import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import Util from '../../../scripts/Util';
+import GLOBAL from '../../../scripts/globals';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../../Universal Components/IconWithBadge"
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
@@ -29,16 +30,24 @@ export function DrawerContent(props) {
     useEffect(()=>{
         console.log('useEffect hit')
         Notifications.addNotificationReceivedListener((notification) => {
-            console.log('Notification: ');
-            console.log(notification);
+            // console.log('Notification: ');
+            // console.log(notification);
         });
         Notifications.addNotificationResponseReceivedListener((response) => {
             if(response.notification.request.content.data.isFriendRequest)
-                props.navigation.navigate('Profile', {screen:'Friends',
-                    params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh, openRequests:true}
+                Util.user.GetUserData(props.user.email, (userData) =>{
+                    console.log('requests: ' + userData.friendData.requests.length);
+                    GLOBAL.userData = userData;
+                    GLOBAL.friendsArr = userData.friendData.acceptedFriends;
+                    GLOBAL.friendRequests = userData.friendData.requests;
+                    props.navigation.navigate('Profile', {screen:'Friends',
+                        params:{refresh:props.refresh, openRequests:true}
+                    })
+
                 })
+
         });
-    })
+    }, [])
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
