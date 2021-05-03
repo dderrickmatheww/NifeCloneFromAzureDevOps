@@ -9,7 +9,6 @@ import PoppinStack from './poppinStack';
 import TestingStack from './testingStack';
 import ProfileStack from './profileStack';
 import Util from '../scripts/Util';
-import GLOBAL from '../scripts/globals';
 import Loading from '../Screens/AppLoading';
 import * as Permissions from 'expo-permissions';
 import LoginScreen from '../Screens/Login Screen';
@@ -17,7 +16,6 @@ import { DrawerContent } from '../Screens/Components/Drawer Components/Drawer Co
 import * as Font from 'expo-font';
 import * as Notifications from 'expo-notifications';
 import { useNavigation } from '@react-navigation/native';
-
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -66,23 +64,28 @@ function Settings ({route, navigation}){
   )
 }
 
+function FriendList({navigation}, data){
+  return navigation.navigate('Profile', {screen:'Friends',
+    params: data,
+  })
+}
 
 class Navigator extends React.Component {
 
   state = {
-    userData: GLOBAL.userData,
-    friendData: GLOBAL.friendData,
+    userData: null,
+    friendData: [],
     authLoaded: false,
     userChecked: false,
-    friendRequests: GLOBAL.friendRequests,
+    friendRequests: null,
     dataLoaded: false,
     userExists: false,
     displayName: null,
     uploading: false,
-    businessData: GLOBAL.businessData,
+    businessData: null,
     isBusiness: false, //only set at business sign up for first time
-    businessState: GLOBAL.businessState,
-    favoritePlaceData: GLOBAL.favoritePlaceData,
+    businessState: null,
+    favoritePlaceData: null,
     notification: null,
   }
 
@@ -98,9 +101,6 @@ class Navigator extends React.Component {
                   businessData: userData.businessData,
                   userData: userData
                 });
-                GLOBAL.businessData = userData.businessData;
-                GLOBAL.userData = userData;
-                console.log('global:',GLOBAL.userData)
             }
             else {
               if(userData.friendData) {
@@ -110,47 +110,30 @@ class Navigator extends React.Component {
                   userChecked: true,
                   userData: userData
                 });
-                GLOBAL.friendData = userData.friendData.acceptedFriends;
-                GLOBAL.friendRequests = userData.friendData.requests;
-                GLOBAL.userData = userData;
-                console.log('global:',GLOBAL.userData)
               }
             }
-
           }
           else {
             this.setState({ userChecked: true });
           }
-
         });
     } else {
       alert(`A user could not be found. Error code: 0001`);
     }
   }
 
-  refreshFromAsync = (userData, friendData, requests, businessData, cb) => {
+  refreshFromAsync = (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({ userData: userData });
-      GLOBAL.userData = userData;
     }
     if(friendData){
       this.setState({ friendData: friendData });
-      GLOBAL.friendData = friendData;
-
     }
     if(requests){
       this.setState({ friendRequests: requests });
-      GLOBAL.friendRequests = requests;
-
-      // console.log('requests refresh hit')
     }
     if(businessData){
       this.setState({ businessData: businessData });
-      GLOBAL.businessData = businessData;
-
-    }
-    if(cb){
-      cb();
     }
   }
 
@@ -200,7 +183,6 @@ class Navigator extends React.Component {
     await Util.user.VerifyUser(user, user.email, (userObj) => {
       let user = userObj;
       this.getNeededData(user);
-
       Permissions.askAsync(Permissions.LOCATION).then((status) => {
         if (status.status === 'granted') {
           Util.location.GetUserLocation(null, user);
@@ -211,6 +193,14 @@ class Navigator extends React.Component {
       });
     });
   }
+
+
+  // _handleNotification = notification => {
+  //   // this.setState({ notification: notification });
+  //   // console.log("Notification: ");
+  //   // console.log(notification);
+  // };
+  //
 
 
 

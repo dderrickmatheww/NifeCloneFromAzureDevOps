@@ -6,8 +6,6 @@ import Util from './scripts/Util';
 import themeUtil from './Styles/theme'
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
-
-
 if (! global.btoa) {global.btoa = encode}
 if (! global.atob) {global.atob = decode}
 
