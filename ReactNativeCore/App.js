@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Navigator from './routes/drawer';
+import Navigator from './src/routes/drawer';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
-import Util from './scripts/Util';
+import Util from './src/scripts/Util';
 import themeUtil from './Styles/theme'
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 
