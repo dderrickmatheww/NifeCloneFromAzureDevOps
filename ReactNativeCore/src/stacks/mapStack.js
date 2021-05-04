@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import MapScreen from '../components/Screens/MapScreen';
+import MapScreen from '../components/Map/MapScreen';
 
 
 function MapComp({route, navigation}){

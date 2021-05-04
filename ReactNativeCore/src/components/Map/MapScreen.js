@@ -2,11 +2,11 @@ import React from 'react';
 import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout, Heatmap } from 'react-native-maps';
 import InputWithIcon from '../Universal/InputWithIcon';
-import BarModal from '../Map/BarModal';
+import BarModal from './BarModal';
 import DrawerButton from '../Universal/DrawerButton';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
-import VisitedByCallout from '../Map/VisitedByCallout';
+import VisitedByCallout from './VisitedByCallout';
 
 
 var { width, height } = Dimensions.get('window');

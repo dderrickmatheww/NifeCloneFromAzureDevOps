@@ -11,7 +11,7 @@ import Util from '../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
-import StatusModal from '../Profile/Status Modal';
+import StatusModal from './Status Modal';
 import Favorite from '../Universal/Favorite'
 
 export default class ProfileScreen extends Component {

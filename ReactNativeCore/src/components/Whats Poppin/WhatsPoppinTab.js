@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import theme from '../../../Styles/theme';
-import getFeedData from '../Whats Poppin/GetFeedData';
-import DataRow from '../Whats Poppin/DataRow';
+import getFeedData from './GetFeedData';
+import DataRow from './DataRow';
 import * as firebase from 'firebase';
 import PleaseLogin from '../Universal/PleaseLogin';
 import {

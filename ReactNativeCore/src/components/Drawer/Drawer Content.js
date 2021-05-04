@@ -24,21 +24,37 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../Universal/IconWithBadge"
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
  import * as Notifications from 'expo-notifications';
+ import * as firebase from "firebase";
+
+ Notifications.setNotificationHandler({
+     handleNotification: async () => ({
+         shouldShowAlert: true,
+         shouldPlaySound: false,
+         shouldSetBadge: false,
+     }),
+ });
 
 export function DrawerContent(props) {
-    // useEffect(()=>{
-    //     console.log('useEffect hit')
-    //     Notifications.addNotificationReceivedListener((notification) => {
-    //         console.log('Notification: ');
-    //         console.log(notification);
-    //     });
-    //     Notifications.addNotificationResponseReceivedListener((response) => {
-    //         if(response.notification.request.content.data.isFriendRequest)
-    //             props.navigation.navigate('Profile', {screen:'Friends',
-    //                 params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh, openRequests:true}
-    //             })
-    //     });
-    // })
+    useEffect(()=>{
+
+        Notifications.addNotificationReceivedListener((notification) => {
+            // console.log('Notification: ');
+            // console.log(notification);
+            console.log('addNotificationReceivedListener hit')
+        });
+        Notifications.addNotificationResponseReceivedListener((response) => {
+            console.log('addNotificationResponseReceivedListener hit')
+            if(response.notification.request.content.data.isFriendRequest){
+                Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
+                    props.refresh(user);
+                    props.navigation.navigate('Profile', {screen:'Friends',
+                        params:{user: props.user, friends:props.friends, requests:props.requests, openRequests:true}
+                    })
+                })
+
+            }
+        });
+    })
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>

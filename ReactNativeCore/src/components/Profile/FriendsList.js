@@ -7,6 +7,7 @@ import RequestModal from './Request Modal';
 import { 
   Avatar,
 } from 'react-native-paper';
+import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class FriendsList extends React.Component {
@@ -26,7 +27,7 @@ class FriendsList extends React.Component {
       this.setState({
         friends: this.props.friends,
         requests: this.props.requests,
-        userData: this.props.user,
+        userData: this.props.userData,
         isLoggedin: loggedIn,
         modalVisible: this.props.openRequests,
       });
@@ -43,7 +44,7 @@ class FriendsList extends React.Component {
 
   filterRequests = (email, didAccept) => {
     let friends = this.state.friends;
-    let requests = this.state.requests;
+    let requests = this.props.requests;
     let newRequests = [];
     if(didAccept){
       requests.forEach((req)=>{
@@ -70,7 +71,10 @@ class FriendsList extends React.Component {
 
   handleRefresh = () => {
     this.setState({ modalVisible: false });
-    this.props.refresh(null, this.state.friends, this.state.requests);
+    let user = this.props.userData;
+    user.friendData.acceptedFriends = this.state.friends;
+    user.friendData.requests = this.state.requests;
+    this.props.refresh(user);
   }
 
   render() {
@@ -80,8 +84,8 @@ class FriendsList extends React.Component {
           <View style={localStyles.navHeader}>
               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                 <Avatar.Image 
-                      source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
-                          uri:  this.state.userData.photoSource  
+                      source={this.props.userData && this.props.userData.photoSource !== 'Unknown' ? {
+                          uri:  this.props.userData.photoSource  
                       } : defPhoto}
                       size={35}
                   />
@@ -101,8 +105,8 @@ class FriendsList extends React.Component {
 
             </View>
           <View style={localStyles.HeaderCont}>
-            <Image style={localStyles.profilePic} source={ this.state.userData.photoSource ? { uri: this.state.userData.photoSource }  : defPhoto } />
-            <Text style={localStyles.Header}>{this.state.userData.displayName}'s Friends</Text>
+            <Image style={localStyles.profilePic} source={ this.props.userData.photoSource ? { uri: this.props.userData.photoSource }  : defPhoto } />
+            <Text style={localStyles.Header}>{this.props.userData.displayName}'s Friends</Text>
             <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
             <View style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, backgroundColor: theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor: theme.generalLayout.secondaryColor, borderRadius:25, marginBottom:2, width:"98%"}}>
               {/* <Searchbar
@@ -131,7 +135,7 @@ class FriendsList extends React.Component {
         :
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.HeaderCont}>
-            <Image style={localStyles.profilePic} source={ this.state.userData.photoSource  ? {uri:this.state.userDataphotoSource}  : defPhoto} />
+            <Image style={localStyles.profilePic} source={ this.props.userData.photoSource  ? {uri:this.props.userData.photoSource }  : defPhoto} />
             <Text style={localStyles.Header}>Your Friends</Text>
             <Text style={localStyles.FriendCount}>Loading Friends...</Text>
           </View>
@@ -296,4 +300,20 @@ const localStyles = StyleSheet.create({
 },
 });
 
-export default FriendsList;
+function mapStateToProps(state){
+  return{
+    userData: state.userData,
+    requests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(FriendsList);

@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import WhatsPoppin from '../components/Screens/WhatsPoppinTab';
-import HomeScreen from '../components/Screens/HomeScreen';
+import WhatsPoppin from '../components/Whats Poppin/WhatsPoppinTab';
+import HomeScreen from '../components/Home/HomeScreen';
 import FriendsFeed from '../components/Whats Poppin/FriendsFeed';
 import IconWithBadge from '../components/Universal/IconWithBadge';
 import theme from '../../Styles/theme';

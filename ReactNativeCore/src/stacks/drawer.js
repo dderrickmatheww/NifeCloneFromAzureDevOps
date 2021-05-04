@@ -2,28 +2,19 @@ import * as React from 'react';
 import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import { createDrawerNavigator} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import MapStack from '../routes/mapStack';
-import SettingsTab from '../components/Screens/SettingsTab';
+import MapStack from './mapStack';
+import SettingsTab from '../components/Settings/SettingsTab';
 import theme from '../../Styles/theme';
 import PoppinStack from './poppinStack';
 import TestingStack from './testingStack';
 import ProfileStack from './profileStack';
 import Util from '../scripts/Util';
-import Loading from '../components/Screens/AppLoading';
+import Loading from '../components/Universal/AppLoading';
 import * as Permissions from 'expo-permissions';
-import LoginScreen from '../components/Screens/Login Screen';
+import LoginScreen from '../components/Login/Login Screen';
 import { DrawerContent } from '../components/Drawer/Drawer Content';
 import * as Font from 'expo-font';
-import * as Notifications from 'expo-notifications';
 import {connect} from "react-redux";
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
 
 //TODO update redux state
 
@@ -97,8 +88,6 @@ class Navigator extends React.Component {
     favoritePlaceData: null,
     notification: null,
   }
-
-
 
   //todo replace with global state updater
   refreshFromAsync = (userData, friendData, requests, businessData) => {
@@ -250,6 +239,7 @@ class Navigator extends React.Component {
       alert(`A user could not be found. Error code: 0001`);
     }
   }
+
   render() {
     return (
       this.state.authLoaded ?
@@ -273,7 +263,7 @@ class Navigator extends React.Component {
               overlayColor={"rgba(32, 35, 42, 0.50)"}
             >
               <Drawer.Screen name="Test" component={TestingStack} />
-              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, refresh: this.refreshFromAsync, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
+              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, refresh: this.props.refresh, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
               {/*<Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>*/}
               {/*<Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
               {/*<Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}

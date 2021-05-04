@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Test from '../components/Screens/TestingScreen'
+import Test from '../components/Testing/TestingScreen'
 
 function Testing({navigation}){
   return(

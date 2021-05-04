@@ -6,8 +6,8 @@ import EditBusinessProfile from '../components/Profile/EditBusinessProfile';
 import UserSearch from '../components/Profile/UserSearch';
 import QRCodeScreen from '../components/Profile/QR Code';
 import ScanQRCodeScreen from '../components/Profile/ScanQRCode';
-import ProfileScreen from '../components/Screens/Profile';
-import Business from '../components/Screens/BusinessProfile';
+import ProfileScreen from '../components/Profile/Profile';
+import Business from '../components/Profile/BusinessProfile';
 import {connect} from "react-redux";
 
 function Friends({route, navigation}){
@@ -79,7 +79,7 @@ class ProfileStack extends React.Component  {
         <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage }}/>
         {/*<Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage, requests: this.props.requests, refresh: this.props.refresh, business: this.props.business }}/>*/}
         {/*<Stack.Screen name="BusinessProfile" component={BusinessProfile} options={{title: 'ProfileScreen'}} initialParams={{ currentUser: this.props.user, requests: this.props.requests, uploadImage: this.props.uploadImage, refresh: this.props.refresh, business: this.props.business }}/>*/}
-        {/*<Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{ requests: this.props.requests, user: this.props.user, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business , openRequests:false}}/>*/}
+        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}} />
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} />
         {/*<Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user: this.props.user,  requests: this.props.requests, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>*/}
         {/*<Stack.Screen name="Search" component={Search} options={{title: 'Search'}} initialParams={{ currentUser: this.props.user }} />*/}

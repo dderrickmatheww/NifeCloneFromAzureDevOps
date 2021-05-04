@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Navigator from './src/routes/drawer';
+import Navigator from './src/stacks/drawer';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './src/scripts/Util';
