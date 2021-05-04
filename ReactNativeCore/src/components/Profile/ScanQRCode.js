@@ -129,7 +129,6 @@ const localStyles = StyleSheet.create({
     width:"90%"
   },
   loggedInContainer:{
-    alignItems:"flex-start", 
     flex: 1, 
     flexDirection: "column",
     backgroundColor: theme.generalLayout.backgroundColor,

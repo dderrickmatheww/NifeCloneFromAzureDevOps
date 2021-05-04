@@ -119,13 +119,7 @@ export default class VisitedByCallout extends React.Component  {
     }
 }
 
-const localStyles = StyleSheet.create({ 
-    friendText: {
-        color: theme.generalLayout.textColor,
-        margin: 10,
-        marginTop: 30,
-        fontFamily: theme.generalLayout.font
-    },
+const localStyles = StyleSheet.create({
     multiAvatar: {
         top: '5%',
         justifyContent: 'center',
@@ -167,7 +161,6 @@ const localStyles = StyleSheet.create({
         margin: 25,
         justifyContent: 'center',
         alignContent: 'center',
-        borderRadius: 20,
         borderColor: theme.generalLayout.secondaryColor,
         borderWidth: 2,
         flexDirection:"column",

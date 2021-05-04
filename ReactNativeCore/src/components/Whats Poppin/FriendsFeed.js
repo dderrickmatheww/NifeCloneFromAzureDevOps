@@ -183,7 +183,6 @@ const localStyles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: .5,
         borderColor: theme.generalLayout.secondaryColor,
-        borderRadius: 5,
         paddingVertical: 8,
         paddingHorizontal: 8,
         fontFamily: theme.generalLayout.font

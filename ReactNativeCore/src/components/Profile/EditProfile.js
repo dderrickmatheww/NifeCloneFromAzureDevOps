@@ -12,13 +12,14 @@ import {
   Surface,
   Chip
 } from 'react-native-paper';
+import {connect} from "react-redux";
 
 
-export default class EditProfile extends Component {
+ class EditProfile extends Component {
   
   state = {
     userData:  this.props.user,
-    dateOfBirth: this.props.user.dateOfBirth ? new Date(this.props.user.dateOfBirth._seconds * 1000 ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : new Date(),
+    dateOfBirth: this.props.user.dateOfBirth && this.props.user != 'Unknown' ? new Date(this.props.user.dateOfBirth._seconds * 1000 ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : new Date(),
     maxDateValue: null,
     gender: this.props.user.gender ? this.props.user.gender : 'Other',
     sexualOrientation: this.props.user.sexualOrientation ? this.props.user.sexualOrientation : 'Other',
@@ -170,10 +171,11 @@ export default class EditProfile extends Component {
       favoritePlaces: this.state.favoriteBars,
       displayName: this.state.displayName
     }
-    var user = this.state.userData;
+    let user = this.state.userData;
     Util.user.UpdateUser(user.email, profileInfo);
-    var updatedUser = Util.basicUtil.extend(user, profileInfo);
-    this.props.refresh(updatedUser, null, null);
+    let updatedUser = Util.basicUtil.extend(user, profileInfo);
+    // this.props.refresh(updatedUser, null, null);
+    this.props.refresh(updatedUser);
     this.props.navigation.navigate("Profile", { screen: "ProfileScreen" });
   }
 
@@ -363,6 +365,25 @@ export default class EditProfile extends Component {
       );
     }
 }
+
+function mapStateToProps(state){
+  return{
+    user: state.userData,
+    requests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
+
 
 const localStyles = StyleSheet.create({
   dropdown:{

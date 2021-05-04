@@ -267,8 +267,6 @@ const localStyles = StyleSheet.create({
         top:2.5,
         right:125,
         backgroundColor: theme.generalLayout.backgroundColor,
-        borderRadius: 10,
-        paddingVertical:0,
         borderWidth:1,
         borderColor: theme.generalLayout.secondaryColor,
         borderRadius:5,

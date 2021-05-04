@@ -8,6 +8,7 @@ import QRCodeScreen from '../components/Profile/QR Code';
 import ScanQRCodeScreen from '../components/Profile/ScanQRCode';
 import ProfileScreen from '../components/Screens/Profile';
 import Business from '../components/Screens/BusinessProfile';
+import {connect} from "react-redux";
 
 function Friends({route, navigation}){
   const { user, friends, requests, refresh, openRequests} = route.params;
@@ -15,10 +16,11 @@ function Friends({route, navigation}){
     <FriendsList refresh={refresh} requests={requests} friends={friends}  user={user} openRequests={openRequests}  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
 }
+
 function UserProfile({route, navigation}){
-  const { user, friends, requests, refresh, uploadImage} = route.params;
+  const { uploadImage} = route.params;
   return(
-    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends}  user={user} isUserProfile={true} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen uploadImage={uploadImage}  isUserProfile={true} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 
@@ -70,20 +72,24 @@ function ScanQR({ navigation}){
 
 const Stack = createStackNavigator();
 
-export default class ProfileStack extends React.Component  {
+class ProfileStack extends React.Component  {
   render(){
     return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage, requests: this.props.requests, refresh: this.props.refresh, business: this.props.business }}/>
-        <Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage, requests: this.props.requests, refresh: this.props.refresh, business: this.props.business }}/>
-        <Stack.Screen name="BusinessProfile" component={BusinessProfile} options={{title: 'ProfileScreen'}} initialParams={{ currentUser: this.props.user, requests: this.props.requests, uploadImage: this.props.uploadImage, refresh: this.props.refresh, business: this.props.business }}/>
-        <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{ requests: this.props.requests, user: this.props.user, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business , openRequests:false}}/>
-        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} initialParams={{ user: this.props.user, friends: this.props.friends, requests: this.props.requests, refresh: this.props.refresh, business: this.props.business }}/>
-        <Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user: this.props.user,  requests: this.props.requests, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>
-        <Stack.Screen name="Search" component={Search} options={{title: 'Search'}} initialParams={{ currentUser: this.props.user }} />
-        <Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />
-        <Stack.Screen name="ScanQR" component={ScanQR} options={{title: 'ScanQR'}} />
+        <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage }}/>
+        {/*<Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage, requests: this.props.requests, refresh: this.props.refresh, business: this.props.business }}/>*/}
+        {/*<Stack.Screen name="BusinessProfile" component={BusinessProfile} options={{title: 'ProfileScreen'}} initialParams={{ currentUser: this.props.user, requests: this.props.requests, uploadImage: this.props.uploadImage, refresh: this.props.refresh, business: this.props.business }}/>*/}
+        {/*<Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}}  initialParams={{ requests: this.props.requests, user: this.props.user, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business , openRequests:false}}/>*/}
+        <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} />
+        {/*<Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user: this.props.user,  requests: this.props.requests, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>*/}
+        {/*<Stack.Screen name="Search" component={Search} options={{title: 'Search'}} initialParams={{ currentUser: this.props.user }} />*/}
+        {/*<Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />*/}
+        {/*<Stack.Screen name="ScanQR" component={ScanQR} options={{title: 'ScanQR'}} />*/}
       </Stack.Navigator>
     )
   }
 };
+
+
+
+export default ProfileStack;

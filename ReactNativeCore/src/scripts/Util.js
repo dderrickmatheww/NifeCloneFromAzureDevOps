@@ -1025,6 +1025,7 @@ const Util = {
                             Util.basicUtil.Alert('Nife Business Sign-Up Error', message, null);
                         }
                     } else {
+                        // noinspection JSAnnotator
                         try {
                             let email = signUpInfo.businessEmail;
                             let password = signUpInfo.password1

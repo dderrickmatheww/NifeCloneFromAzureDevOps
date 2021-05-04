@@ -15,6 +15,7 @@ import LoginScreen from '../components/Screens/Login Screen';
 import { DrawerContent } from '../components/Drawer/Drawer Content';
 import * as Font from 'expo-font';
 import * as Notifications from 'expo-notifications';
+import {connect} from "react-redux";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -23,6 +24,18 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
+//TODO update redux state
+
+/**
+ * Store - holds our state - THERE IS ONLY ONE STATE
+ * Action - State can be modified using actions - SIMPLE OBJECTS
+ * Dispatcher - Action needs to be sent by someone - known as dispatching an action
+ * Reducer - receives the action and modifies the state to give us a new state
+ *  - pure functions
+ *  - only mandatory argument is the 'type'
+ * Subscriber - listens for state change to update the ui
+ */
 
 const Drawer = createDrawerNavigator();
 
@@ -40,14 +53,11 @@ function Poppin ({route, navigation}){
 }
 
 function Profile ({route, navigation}){
-  const {user, friends, refresh, business, uploadImage, request } = route.params;
+  const { uploadImage } = route.params;
   return(
-    <ProfileStack uploadImage={uploadImage} refresh={refresh} user={user} friends={friends} navigate={navigation} request={request} business={business}/>
+    <ProfileStack uploadImage={uploadImage} navigate={navigation}/>
   )
 }
-
-
-
 
 function MapMain ({route, navigation}){
   const {user, friends, refresh} = route.params;
@@ -72,7 +82,7 @@ function FriendList({navigation}, data){
 class Navigator extends React.Component {
 
   state = {
-    userData: null,
+    userData: this.props.userData,
     friendData: [],
     authLoaded: false,
     userChecked: false,
@@ -88,39 +98,9 @@ class Navigator extends React.Component {
     notification: null,
   }
 
-  getNeededData = (currentUser) => {
-    //if user exits get user data, get friend data set to async
-    if (currentUser) {
-        //load user
-        Util.user.GetUserData(currentUser.email, (userData) => {
-          if(userData) {
-            //user data set in filterfriends
-            if(userData.isBusiness) {
-                this.setState({
-                  businessData: userData.businessData,
-                  userData: userData
-                });
-            }
-            else {
-              if(userData.friendData) {
-                this.setState({
-                  friendData: userData.friendData.acceptedFriends,
-                  friendRequests: userData.friendData.requests,
-                  userChecked: true,
-                  userData: userData
-                });
-              }
-            }
-          }
-          else {
-            this.setState({ userChecked: true });
-          }
-        });
-    } else {
-      alert(`A user could not be found. Error code: 0001`);
-    }
-  }
 
+
+  //todo replace with global state updater
   refreshFromAsync = (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({ userData: userData });
@@ -160,8 +140,9 @@ class Navigator extends React.Component {
     let userData = this.state.userData;
     this.setState({ uploading: true});
     Util.user.HandleUploadImage(isBusiness, userData, (resUri, userData) => {
+      this.props.refresh(userData);
       this.setState({
-        userData: userData,
+        // userData: userData, //todo remove
         uploading: false
       });
       callback(resUri);
@@ -192,9 +173,6 @@ class Navigator extends React.Component {
       });
     });
   }
-
-
-
 
   async componentDidMount() {
     //load fonts
@@ -228,18 +206,54 @@ class Navigator extends React.Component {
       else {
         this.setState({
           authLoaded: true,
-          userData: null,
+          // userData: null, //TODO remove
           userExists: false
         });
+
+        this.props.refresh(null);
       }
     })
     //register notifications
   }
 
+  getNeededData = (currentUser) => {
+    //if user exits get user data, get friend data set to async
+    if (currentUser) {
+      //load user
+      Util.user.GetUserData(currentUser.email, (userData) => {
+        if(userData) {
+          //user data set in filterfriends
+          if(userData.isBusiness) {
+            this.props.refresh(userData);
+            // this.setState({
+            //   businessData: userData.businessData, //todo remove
+            //   userData: userData //todo remove
+            // });
+          }
+          else {
+            if(userData.friendData) {
+              this.props.refresh(userData);
+              this.setState({
+                // friendData: userData.friendData.acceptedFriends, //todo remove
+                // friendRequests: userData.friendData.requests, //todo remove
+                userChecked: true,
+                // userData: userData //todo remove
+              });
+            }
+          }
+        }
+        else {
+          this.setState({ userChecked: true });
+        }
+      });
+    } else {
+      alert(`A user could not be found. Error code: 0001`);
+    }
+  }
   render() {
     return (
       this.state.authLoaded ?
-        this.state.userData ? 
+        this.props.userData ?
           <NavigationContainer>
             <Drawer.Navigator 
               drawerContentOptions={{
@@ -254,12 +268,12 @@ class Navigator extends React.Component {
                 backgroundColor: theme.generalLayout.backgroundColor
               }}
               initialRouteName='My Feed'
-              drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.state.friendRequests} friends={this.state.friendData} user={this.state.userData}/>}
+              drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.props.friendRequests} friends={this.props.friendData} user={this.props.userData}/>}
               drawerType={"front"}
               overlayColor={"rgba(32, 35, 42, 0.50)"}
             >
               <Drawer.Screen name="Test" component={TestingStack} />
-              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, requests: this.state.friendRequests }}/>
+              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, refresh: this.refreshFromAsync, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
               {/*<Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>*/}
               {/*<Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
               {/*<Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
@@ -277,12 +291,30 @@ class Navigator extends React.Component {
     );
   }
 }
-const localStyles = StyleSheet.create({ 
+
+const localStyles = StyleSheet.create({
   viewDark: {
     flex: 1,
-    justifyContent: 'center', 
+    justifyContent: 'center',
     alignItems: 'center' ,
     backgroundColor: theme.generalLayout.backgroundColor
   }
 })
-export default Navigator;
+
+function mapStateToProps(state){
+  return{
+    userData: state.userData,
+    friendRequests: state.friendRequests,
+    friendData: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigator);

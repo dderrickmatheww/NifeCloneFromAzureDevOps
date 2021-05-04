@@ -26,19 +26,19 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
  import * as Notifications from 'expo-notifications';
 
 export function DrawerContent(props) {
-    useEffect(()=>{
-        console.log('useEffect hit')
-        Notifications.addNotificationReceivedListener((notification) => {
-            console.log('Notification: ');
-            console.log(notification);
-        });
-        Notifications.addNotificationResponseReceivedListener((response) => {
-            if(response.notification.request.content.data.isFriendRequest)
-                props.navigation.navigate('Profile', {screen:'Friends',
-                    params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh, openRequests:true}
-                })
-        });
-    })
+    // useEffect(()=>{
+    //     console.log('useEffect hit')
+    //     Notifications.addNotificationReceivedListener((notification) => {
+    //         console.log('Notification: ');
+    //         console.log(notification);
+    //     });
+    //     Notifications.addNotificationResponseReceivedListener((response) => {
+    //         if(response.notification.request.content.data.isFriendRequest)
+    //             props.navigation.navigate('Profile', {screen:'Friends',
+    //                 params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh, openRequests:true}
+    //             })
+    //     });
+    // })
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -98,23 +98,23 @@ export function DrawerContent(props) {
                                 <Caption style={styles.caption}>{props.user.isBusiness ? "Followers" : "Drinking Buddies"}</Caption>
                             </View>
                             <View style={styles.section}>
-                              
+
                                 {/* <Paragraph style={[styles.paragraph, styles.caption]}>420</Paragraph>
                                 <Caption style={styles.caption}>Points</Caption> */}
                             </View>
                             {!props.user.isBusiness ?
                                 <View style={styles.section}>
-                                    <TouchableOpacity 
+                                    <TouchableOpacity
                                         onPress={ () =>  props.navigation.navigate('Profile', {screen:'QRCode'})  }
                                         style={{zIndex:10, alignSelf:"flex-end",position:"relative", width:"auto", height:"auto"}}
                                     >
-                                        <Avatar.Icon 
+                                        <Avatar.Icon
                                         size={30}
                                         icon="qrcode-scan"
                                         color={theme.icons.color}
                                         style={{position: "relative", backgroundColor: theme.generalLayout.backgroundColor}}/>
                                     </TouchableOpacity>
-                                </View> 
+                                </View>
                             : null}
                         </View>
                     </View>

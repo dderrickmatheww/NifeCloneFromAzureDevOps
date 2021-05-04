@@ -25,8 +25,6 @@ class TestingScreen extends React.Component  {
         notification:{},
     }
 
-
-
     componentDidMount() {
     }
 

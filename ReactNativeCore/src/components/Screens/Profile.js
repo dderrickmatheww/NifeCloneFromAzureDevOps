@@ -14,12 +14,15 @@ import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from '../Profile/Status Modal';
+import {connect} from "react-redux";
+
+
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-export default class ProfileScreen extends Component {
+class ProfileScreen extends Component {
   state = {
     isLoggedin: false,
-    userData: this.props.user,
+    userData: this.props.userData,
     modalVisible: false,
     friendData: this.props.friends,
     isAddingFriend: false,
@@ -53,7 +56,7 @@ export default class ProfileScreen extends Component {
       });
     }
     else {
-      Util.user.GetUserData(this.props.user.email, (user) => {
+      Util.user.GetUserData(this.props.userData.email, (user) => {
         Util.user.CheckLoginStatus((boolean) => {
           this.setState({
             isLoggedin: boolean,
@@ -70,8 +73,8 @@ export default class ProfileScreen extends Component {
     }
     else {
       if (this.props.friends) {
-        let friends = this.props.user.friends;
-        var count = this.state.friendCount;
+        let friends = this.state.userData.friends;
+        let count = friends.length;
         let friendEmails = Object.keys(friends);
         friendEmails.forEach((email) => {
           if (friends[email] == true) {
@@ -124,6 +127,7 @@ export default class ProfileScreen extends Component {
   }
 
   componentDidMount() {
+    console.log('isUserProfile: ' + this.props.isUserProfile);
     this.setProps();
     this.getBusinessData();
     this.areFriends();
@@ -142,20 +146,21 @@ export default class ProfileScreen extends Component {
     this.props.uploadImage((uri) => {
       let user = this.state.userData;
       user['photoSource'] = uri;
-      this.setState({ userData: user });
+      // this.setState({ userData: user });
+      this.props.refresh(user);
     });
   }
 
    render () {
       return ( 
         ////////////////////////////////////////
-          this.state.userData ? 
+          this.props.userData ?
           <SafeAreaView style={localStyles.container}>
             <View style={localStyles.navHeader}>
             <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
                 <Avatar.Image 
-                    source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
-                        uri:  this.state.userData.photoSource  
+                    source={this.props.userData && this.props.userData.photoSource !== 'Unknown' ? {
+                        uri:  this.props.userData.photoSource
                     } : defPhoto}
                     size={35}
                 />
@@ -197,7 +202,7 @@ export default class ProfileScreen extends Component {
                   borderRadius: 10,
                   marginBottom: '5%',
                 }}
-                  onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit', params:{user: this.state.userData}})}
+                  onPress={() => this.props.navigation.navigate('Profile', {screen:'Edit'})}
                 >
                   <Ionicons name="md-create" size={24} color={theme.icons.color} />
                 </TouchableOpacity> 
@@ -208,16 +213,16 @@ export default class ProfileScreen extends Component {
             <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
               <View style={localStyles.HeaderCont}>
                 <View style={{flexDirection:"column", justifyContent:"center"}}>
-                    <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
+                    <Headline style={localStyles.headerName}>{this.props.userData.displayName} </Headline>
                     <Title style={localStyles.headerAgeGender}> 
-                      {this.genderUpperCase(this.state.userData.gender && this.state.userData.gender !== 'Unknown' ? this.state.userData.gender + ", " : "")} 
-                      {this.genderUpperCase(this.state.userData.sexualOrientation && this.state.userData.sexualOrientation !== 'Unknown' ? this.state.userData.sexualOrientation +" -": "")}  {this.props.user.dateOfBirth && this.props.user.dateOfBirth !== 'Unknown' ? this.calculateAge(this.props.user.dateOfBirth._seconds ? this.props.user.dateOfBirth._seconds * 1000 : this.props.user.dateOfBirth.seconds * 1000) : ""}
+                      {this.genderUpperCase(this.props.userData.gender && this.props.userData.gender !== 'Unknown' ? this.props.userData.gender + ", " : "")}
+                      {this.genderUpperCase(this.props.userData.sexualOrientation && this.props.userData.sexualOrientation !== 'Unknown' ? this.props.userData.sexualOrientation +" -": "")}  {this.props.userData.dateOfBirth && this.props.userData.dateOfBirth !== 'Unknown' ? this.calculateAge(this.props.userData.dateOfBirth._seconds ? this.props.userData.dateOfBirth._seconds * 1000 : this.props.userData.dateOfBirth.seconds * 1000) : ""}
                     </Title>
                 </View>
                 {
-                  this.state.userData.photoSource ? 
+                  this.props.userData.photoSource ?
                     <View>
-                      <ImageBackground style={localStyles.profilePic} source={{ uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
+                      <ImageBackground style={localStyles.profilePic} source={{ uri: this.props.userData.photoSource && this.props.userData.photoSource !== "Unknown" ? this.props.userData.photoSource : defPhoto.uri}}>
                         {
                           this.props.isUserProfile ? 
                             <TouchableOpacity style={{position:"relative", bottom:-125, right:-125}}
@@ -255,9 +260,9 @@ export default class ProfileScreen extends Component {
                   <View style={localStyles.LocAndFriends}>
                     {<View style={{alignSelf:"flex-start", width:"50%"}}>
                       {
-                        !this.state.userData.privacySettings.locationPrivacy ?
+                        !this.props.userData.privacySettings.locationPrivacy ?
                         <Caption  style={localStyles.FriendCount}>
-                          {this.state.userData.loginLocation && this.state.userData.loginLocation.region? this.state.userData.loginLocation.region.city : "Margarittaville"}, {this.state.userData.loginLocation && this.state.userData.loginLocation.region ? this.state.userData.loginLocation.region.region : "Somewhere"}
+                          {this.props.userData.loginLocation && this.props.userData.loginLocation.region? this.props.userData.loginLocation.region.city : "Margarittaville"}, {this.props.userData.loginLocation && this.props.userData.loginLocation.region ? this.props.userData.loginLocation.region.region : "Somewhere"}
                         </Caption>
                           : null
                           }
@@ -265,7 +270,7 @@ export default class ProfileScreen extends Component {
                     <View style={{alignSelf:"flex-end", flexDirection:"row", justifyContent:"space-evenly", width:"50%"}}>
                       <TouchableOpacity
                        disabled={this.state.isUsersProfile ? false : true}
-                       onPress={() => this.props.navigation.navigate('Profile', { screen:'Friends', params: { user: this.state.userData, friends:this.state.friendData } })}>
+                       onPress={() => this.props.navigation.navigate('Profile', { screen:'Friends',})}>
                         <Caption style={localStyles.FriendCount}>{(this.state.friendData != null ? this.state.friendData.length : this.state.friendCount != 0 ? this.state.friendCount : 0)} Friends</Caption>
                       </TouchableOpacity>
                     </View>
@@ -289,14 +294,14 @@ export default class ProfileScreen extends Component {
                           null
                       }
                     </View>
-                    <Caption style={localStyles.caption}>{ this.state.userData.status ? this.state.userData.status.text : "None" }</Caption>
+                    <Caption style={localStyles.caption}>{ this.props.userData.status ? this.props.userData.status.text : "None" }</Caption>
                   </View>
                   {/* bio */}
                   <View style={localStyles.profRow}> 
                     <Title style={localStyles.descTitle}>
                       Bio: 
                     </Title>
-                    <Caption  style={localStyles.caption}>{ this.state.userData.bio ?  this.state.userData.bio : "None" }</Caption>
+                    <Caption  style={localStyles.caption}>{ this.props.userData.bio ?  this.props.userData.bio : "None" }</Caption>
                   </View>
                   {/* fave drinks */}
                   <View style={localStyles.profRow}>
@@ -306,8 +311,8 @@ export default class ProfileScreen extends Component {
                     
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:10}}>
                     {
-                       this.state.userData.favoriteDrinks && this.state.userData.favoriteDrinks.length != 0 ? 
-                        this.state.userData.favoriteDrinks.map((drink, i)=>(
+                       this.props.userData.favoriteDrinks && this.props.userData.favoriteDrinks.length != 0 ?
+                        this.props.userData.favoriteDrinks.map((drink, i)=>(
                           
                             <Chip mode={"outlined"}  key={i}
                             style={{backgroundColor: theme.generalLayout.backgroundColor, borderColor: theme.generalLayout.secondaryColor, marginHorizontal:2}} 
@@ -332,10 +337,10 @@ export default class ProfileScreen extends Component {
                       Favorite Bars: 
                     </Title>
                     <ScrollView horizontal={true} contentContainerStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingBottom:0}}>
-                     { this.state.userData.favoritePlaces 
-                     && this.state.userData.favoritePlaces !== 'Unknown' 
-                     && this.state.userData.favoritePlaces.length > 0 ? 
-                        Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
+                     { this.props.userData.favoritePlaces
+                     && this.props.userData.favoritePlaces !== 'Unknown'
+                     && this.props.userData.favoritePlaces.length > 0 ?
+                        Object.values(this.props.userData.favoritePlaces).map((bar, i) => (
                           bar.favorited ?
                           <Chip mode={"outlined"}
                               key={i}  
@@ -363,7 +368,7 @@ export default class ProfileScreen extends Component {
                 this.state.statusModalVisible ?
                 <StatusModal
                     isVisible={this.state.statusModalVisible}
-                    user={this.state.userData}
+                    user={this.props.userData}
                     onDismiss={()=>this.onDismissStatus()}
                     refresh={this.props.refresh}
                     onSave={()=> this.onDismissStatus()}
@@ -588,3 +593,20 @@ const localStyles = StyleSheet.create({
 },
 });
 
+function mapStateToProps(state){
+  return{
+    userData: state.userData,
+    requests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
