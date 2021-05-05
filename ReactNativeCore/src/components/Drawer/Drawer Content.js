@@ -196,7 +196,7 @@ export function DrawerContent(props) {
                                     )}
                                     label={()=> <Text style={styles.text}>Profile</Text>}
                                     onPress={() => {
-                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, friends:props.friends}})
+                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, friends:props.friends, uploadImage:props.uploadImage, isUserProfile: true}})
                                         props.navigation.closeDrawer();    
                                     }}
                                 />

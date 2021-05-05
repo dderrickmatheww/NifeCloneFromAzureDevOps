@@ -185,6 +185,7 @@ const Util = {
             }
         },
         HandleUploadImage: (isBusiness, userData, callback) => {
+            // console.log('got to util')
             let userEmail = firebase.auth().currentUser.email;
             ImagePicker.getMediaLibraryPermissionsAsync()
                 .then((result) => {
@@ -193,29 +194,31 @@ const Util = {
                             .then((image) => {
                                 let uri = image.uri;
                                 Util.user.UploadImage(uri, userEmail, (resUri) => {
+
+                                    // console.log(resUri);
                                     userData['photoSource'] = resUri;
                                     Util.user.UpdateUser(userEmail, {photoSource: resUri});
                                     if (isBusiness) {
                                         Util.business.UpdateUser(userEmail, {photoSource: resUri});
                                     }
                                     if (callback) {
-                                        callback(resUri, userData);
+                                        callback(resUri);
                                     }
                                 });
                             });
                     } else {
-                        ImagePicker.getMediaLibraryPermissionsAsync()
+                        ImagePicker.requestMediaLibraryPermissionsAsync()
                             .then((result) => {
                                 if (result.status == "granted") {
                                     ImagePicker.launchImageLibraryAsync()
                                         .then((image) => {
                                             let uri = image.uri;
-                                            console.log(uri);
                                             Util.user.UploadImage(uri, userEmail, (resUri) => {
-                                                let userData = this.state.userData;
                                                 userData['photoSource'] = resUri;
+
+                                                // console.log(resUri);
                                                 Util.user.UpdateUser(userEmail, {photoSource: resUri});
-                                                if (this.state.userData.isBusiness) {
+                                                if (userData.isBusiness) {
                                                     Util.business.UpdateUser(userEmail, {photoSource: resUri});
                                                 }
                                                 if (callback) {
@@ -497,7 +500,7 @@ const Util = {
         },
         GenerateQRCode: (userEmail) => {
             let email = encodeURI(userEmail);
-            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data=" + email + "&size=500x500&bgcolor=20232A&color=D4DE24"
+            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data=" + email + "&size=500x500&bgcolor=301E48&color=F1BF42"
             return QRSource;
         },
         UploadImage: async (uri, email, callback, isProof) => {

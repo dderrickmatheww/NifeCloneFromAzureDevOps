@@ -16,6 +16,7 @@ firebase.initializeApp(Util.dataCalls.Firebase.config);
 
 //TODO wrap with redux
 
+console.disableYellowBox = true;
 const  initialState = {
   userData: null,
   friendData:null,

@@ -9,9 +9,10 @@ import {
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
+import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-export default class UserSearch extends Component {
+class UserSearch extends Component {
 
   state = {
     queriedUsers:null,
@@ -87,7 +88,7 @@ export default class UserSearch extends Component {
                     this.state.queriedUsers ? 
                       this.state.queriedUsers.map((user, i) => (
                           <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => !user.isBusiness ? 
-                            this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{user:user, isUsersProfile:false}}) :
+                            this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{profileUser:user, isUsersProfile:false}}) :
                               this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
                             }>
                             <View style={localStyles.friendCont}>
@@ -110,6 +111,25 @@ export default class UserSearch extends Component {
       );
     }
 }
+
+function mapStateToProps(state) {
+  return {
+    currentUser: state.userData,
+    requests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserSearch);
+
 
 const localStyles = StyleSheet.create({
   friendPic: {

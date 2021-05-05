@@ -270,7 +270,7 @@ export default class FriendsFeed extends React.Component  {
     }
 
     refresh = (userData, friendData, requests, businessData) => {
-        this.props.refresh(userData, null, null, businessData);
+        this.props.refresh(userData);
         this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
@@ -436,7 +436,6 @@ export default class FriendsFeed extends React.Component  {
                             user={this.state.userData}
                             onDismiss={()=>this.onDismiss()}
                             onSave={()=>this.onSave({status:true})}
-                            refresh={this.refresh}
                         >
                         </StatusModal> 
                         :
@@ -471,6 +470,7 @@ export default class FriendsFeed extends React.Component  {
                         null
                     }
                     <Snackbar
+                            style={{zIndex:3, elevation:100}}
                             visible={this.state.snackBarVisable}
                             onDismiss={() => this.onDismissSnackBar()}
                             action={{

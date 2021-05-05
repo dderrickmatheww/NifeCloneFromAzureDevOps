@@ -126,10 +126,9 @@ class Navigator extends React.Component {
 
   handleUploadImage = (callback) => {
     let isBusiness = this.state.isBusiness;
-    let userData = this.state.userData;
+    let userData = this.props.userData;
     this.setState({ uploading: true});
-    Util.user.HandleUploadImage(isBusiness, userData, (resUri, userData) => {
-      this.props.refresh(userData);
+    Util.user.HandleUploadImage(isBusiness, userData, (resUri) => {
       this.setState({
         // userData: userData, //todo remove
         uploading: false
@@ -263,8 +262,8 @@ class Navigator extends React.Component {
               overlayColor={"rgba(32, 35, 42, 0.50)"}
             >
               <Drawer.Screen name="Test" component={TestingStack} />
-              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, refresh: this.props.refresh, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
-              {/*<Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.state.userData, friends: this.state.friendData, refresh: this.refreshFromAsync, business: this.state.businessData ? this.state.businessData : null, favorites: this.state.favoritePlaceData}}/>*/}
+              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
+              <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, friends: this.props.friendData,  business: this.props.businessData ? this.props.businessData : null, favorites: this.state.favoritePlaceData}}/>
               {/*<Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
               {/*<Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
             </Drawer.Navigator>

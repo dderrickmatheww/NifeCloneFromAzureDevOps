@@ -7,8 +7,9 @@ import {
 import Util from '../../scripts/Util';
 import {Modal, Button, TextInput, Text} from 'react-native-paper';
 import theme from '../../../Styles/theme';
+import {connect} from "react-redux";
 
-export default class StatusModal extends React.Component  {
+ class StatusModal extends React.Component  {
     state = {
       statusText: null,
       userData: null,
@@ -26,10 +27,7 @@ export default class StatusModal extends React.Component  {
 
     getPlaceholderColor = () =>{
       this.setState({placeHolderColor:{
-        ...Platform.select({
-          ios: 'white',
-          android:'black'
-        })
+
       }}) 
     }
 
@@ -49,7 +47,7 @@ export default class StatusModal extends React.Component  {
       let user = this.props.user;
       user['status'] = obj.status;
       let updatedUserData = user;
-      this.props.refresh(updatedUserData, null, null, null);
+      this.props.refresh(updatedUserData);
       Util.user.UpdateUser(user.email, obj, () => {
         this.setState({ saving: false });
         this.props.onSave();
@@ -72,7 +70,10 @@ export default class StatusModal extends React.Component  {
                   ios: 'Type here...',
                   android:''
                 })}
-                placeholderTextColor={ this.state.placeHolderColor}
+                placeholderTextColor={Platform.select({
+                  ios: 'white',
+                  android:'black'
+                })}
                 onChangeText={text => this.onStatusChange(text)}
                 style={localStyles.textInput}
                 value={this.state.statusText}
@@ -90,7 +91,7 @@ export default class StatusModal extends React.Component  {
                   mode="contained" 
                   onPress={() => this.onSaveStatus()}
                 >
-                  <Text style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Update Status</Text>
+                  <Text style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Update</Text>
                 </Button>
               }
             </View> 
@@ -98,6 +99,25 @@ export default class StatusModal extends React.Component  {
         )
     }
 }
+
+function mapStateToProps(state) {
+  return {
+    user: state.userData,
+    requests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(StatusModal);
+
 
 const localStyles = StyleSheet.create({
   textInput:{

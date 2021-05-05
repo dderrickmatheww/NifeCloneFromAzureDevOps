@@ -143,7 +143,7 @@ export default class NifeLoginModal extends Component {
     uploadProofImage = () => {
         let businessEmail = this.state.businessEmail;
         let busName = this.state.businessName;
-        ImagePicker.getCameraRollPermissionsAsync()
+        ImagePicker.getMediaLibraryPermissionsAsync()
         .then((result) => {
             if(result.status == "granted") {
                 this.setState({ imageLoading: true });
@@ -157,7 +157,7 @@ export default class NifeLoginModal extends Component {
                 });
             }
             else {
-                ImagePicker.requestCameraRollPermissionsAsync()
+                ImagePicker.requestMediaLibraryPermissionsAsync()
                 .then((result) => {
                     if (result.status == "granted") {
                         ImagePicker.launchImageLibraryAsync()
