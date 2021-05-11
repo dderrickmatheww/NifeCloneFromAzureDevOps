@@ -257,9 +257,11 @@ export default class FriendsFeed extends React.Component  {
     }
 
     onDismiss = () => {
-        this.setState({statusModalVisable: false});
-        this.setState({eventModalVisable: false});
-        this.setState({specialsModalVisable: false});
+        this.setState({
+            statusModalVisable: false,
+            eventModalVisable: false,
+            specialsModalVisable: false
+        });
     }
 
     onDismissUpdate = () => {

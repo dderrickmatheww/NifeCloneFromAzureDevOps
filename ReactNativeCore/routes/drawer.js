@@ -188,10 +188,10 @@ class Navigator extends React.Component {
     }
    
     await Util.user.CheckAuthStatus((user) => {
-      this.setState({ authLoaded: true });
       if (user) {
         this.setState({
-            userExists: true
+            userExists: true,
+            authLoaded: true,
         });
         if(user.displayName) {
             this.initializeParams(user);

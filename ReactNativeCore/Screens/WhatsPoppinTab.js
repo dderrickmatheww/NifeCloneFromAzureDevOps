@@ -209,7 +209,7 @@ class WhatsPoppin extends React.Component  {
                             <Text style={localStyles.emptyPoppinFeed}>
                                 Nothing seems to be happening yet! {"\n"}
                                 {"\n"}
-                                Once users start checking in, the resturants that your friends check into will populate here! {"\n"}
+                                Once users start checking in, the restaurants that your friends check into will populate here! {"\n"}
                                 {"\n"}
                                 Tell your friends about Nife and start checking in!
                             </Text>
