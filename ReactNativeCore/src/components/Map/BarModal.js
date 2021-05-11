@@ -16,6 +16,7 @@ import Util from "../../scripts/Util";
 import Favorite from "../Universal/Favorite";
 import PopUpModal from "../Universal/PopUpModal";
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {connect} from "react-redux";
 
 class BarModal extends React.Component  {
 
@@ -477,6 +478,21 @@ const styles = StyleSheet.create({
   },
 
 })
-    
-  
-  export default BarModal;
+
+function mapStateToProps(state){
+  return{
+    user: state.userData,
+    friendRequests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(BarModal);

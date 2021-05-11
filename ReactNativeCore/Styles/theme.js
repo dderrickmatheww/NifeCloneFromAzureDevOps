@@ -26,9 +26,10 @@ var theme = function () {
   this.generalLayout = {
     backgroundColor: this.DARK,
     textColor: this.TEXT_COLOR,
-    secondaryColor: this.LIGHT_PINK,
     font: this.mainFont,
     fontLight: this.mainFontLight,
+    secondaryColor: this.LIGHT_PINK,
+    highlight: this.GOLD,
     fontBold: this.mainFontBold
   }
 };
