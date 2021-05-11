@@ -57,10 +57,9 @@ function MapMain ({route, navigation}){
   )
 }
 
-function Settings ({route, navigation}){
-  const {user, friends, refresh} = route.params;
+function Settings ({navigation}){
   return(
-    <SettingsTab   onDrawerPress={() => navigation.openDrawer()} refresh={refresh} user={user} friends={friends} navigate={navigation} />
+    <SettingsTab   onDrawerPress={() => navigation.openDrawer()}  navigate={navigation} />
   )
 }
 
@@ -213,19 +212,12 @@ class Navigator extends React.Component {
           //user data set in filterfriends
           if(userData.isBusiness) {
             this.props.refresh(userData);
-            // this.setState({
-            //   businessData: userData.businessData, //todo remove
-            //   userData: userData //todo remove
-            // });
           }
           else {
             if(userData.friendData) {
               this.props.refresh(userData);
               this.setState({
-                // friendData: userData.friendData.acceptedFriends, //todo remove
-                // friendRequests: userData.friendData.requests, //todo remove
                 userChecked: true,
-                // userData: userData //todo remove
               });
             }
           }
@@ -264,8 +256,8 @@ class Navigator extends React.Component {
               <Drawer.Screen name="Test" component={TestingStack} />
               <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
               <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, friends: this.props.friendData,  business: this.props.businessData ? this.props.businessData : null, favorites: this.state.favoritePlaceData}}/>
-              {/*<Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
-              {/*<Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>*/}
+              <Drawer.Screen name="Map" component={MapMain} initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
+              <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
             </Drawer.Navigator>
           </NavigationContainer>
         : 

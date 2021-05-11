@@ -82,7 +82,7 @@ class ProfileScreen extends Component {
             this.setState({friendData: this.props.friends});
         } else {
             // if (this.props.friends) {
-                let friends = this.state.userData.friends;
+                let friends = this.props.friends;
                 let friendEmails = Object.keys(friends);
                 let count = friendEmails.filter((email) => {
                     return friends[email] == true
@@ -563,7 +563,6 @@ const localStyles = StyleSheet.create({
     },
     loggedInContainer: {
         paddingHorizontal: 10,
-        top:0,
         minHeight:'100%',
     },
     loggedInSubView: {
@@ -583,7 +582,7 @@ const localStyles = StyleSheet.create({
         alignItems: "center",
         borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth: 2,
-        marginTop: 70
+        marginTop: 50
 
     },
     profilePic: {

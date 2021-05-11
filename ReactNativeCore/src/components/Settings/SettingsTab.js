@@ -10,9 +10,10 @@ import {
 import{
   Switch
 } from 'react-native-paper';
+import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-export default class SettingsTab extends Component {
+class SettingsTab extends Component {
   state = {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: null,
@@ -288,10 +289,10 @@ const localStyles = StyleSheet.create({
   mainCont:{
     flex:1,
     flexDirection:"column",
-    backgroundColor: theme.generalLayout.backgroundColor
+    backgroundColor: theme.generalLayout.backgroundColor,
   },
   navHeader:{
-    marginTop:25,
+    marginTop:10,
     flexDirection:"row",
     borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth:1,
@@ -323,3 +324,22 @@ const localStyles = StyleSheet.create({
     borderRadius: 70
 },
 });
+
+function mapStateToProps(state){
+    return{
+        user: state.userData,
+        friendRequests: state.friendRequests,
+        friendData: state.friendData,
+        businessData: state.businessData,
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsTab);
+
