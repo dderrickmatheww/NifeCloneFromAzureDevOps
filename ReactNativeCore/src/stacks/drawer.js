@@ -289,12 +289,12 @@ const localStyles = StyleSheet.create({
   }
 })
 
-function mapStateToProps(state){
-  return{
+function mapStateToProps(state) {
+  return {
     userData: state.userData,
     friendRequests: state.friendRequests,
     friendData: state.friendData,
-    businessData: state.businessData,
+    businessData: state.businessData
   }
 }
 
