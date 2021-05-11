@@ -35,8 +35,7 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
  });
 
 export function DrawerContent(props) {
-    useEffect(()=>{
-
+    useEffect(() => {
         Notifications.addNotificationReceivedListener((notification) => {
             // console.log('Notification: ');
             // console.log(notification);
@@ -72,7 +71,7 @@ export function DrawerContent(props) {
                                     />
                                     :
                                     <TouchableOpacity style={styles.NoAvatarButton}
-                                        onPress={()=> props.uploadImage(() => null)}
+                                        onPress={() => props.uploadImage(() => null)}
                                     >
                                         {
                                             props.uploading ?

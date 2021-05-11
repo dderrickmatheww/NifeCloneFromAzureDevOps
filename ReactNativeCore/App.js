@@ -1,21 +1,20 @@
 import * as React from 'react';
 import Navigator from './src/stacks/drawer';
-import {decode, encode} from 'base-64';
+import { decode, encode } from 'base-64';
 import * as firebase from 'firebase';
 import Util from './src/scripts/Util';
 import themeUtil from './Styles/theme'
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import {createStore} from "redux";
-import {Provider} from 'react-redux'
+import { createStore } from "redux";
+import { Provider } from 'react-redux'
 
-if (! global.btoa) {global.btoa = encode}
-if (! global.atob) {global.atob = decode}
+if (!global.btoa) {global.btoa = encode}
+if (!global.atob) {global.atob = decode}
 
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
 //TODO wrap with redux
-
 console.disableYellowBox = true;
 const  initialState = {
   userData: null,

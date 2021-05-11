@@ -14,7 +14,7 @@ import * as Permissions from 'expo-permissions';
 import LoginScreen from '../components/Login/Login Screen';
 import { DrawerContent } from '../components/Drawer/Drawer Content';
 import * as Font from 'expo-font';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 
 //TODO update redux state
 
@@ -156,7 +156,7 @@ class Navigator extends React.Component {
           Util.location.GetUserLocation(null, user);
         } 
         else {
-          Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
+          Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you events going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
         }
       });
     });
@@ -197,7 +197,6 @@ class Navigator extends React.Component {
           // userData: null, //TODO remove
           userExists: false
         });
-
         this.props.refresh(null);
       }
     })
