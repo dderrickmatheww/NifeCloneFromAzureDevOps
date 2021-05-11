@@ -174,7 +174,7 @@ class ProfileScreen extends Component {
                         </TouchableOpacity>
 
                         {/* Add Friend */}
-                        {!this.state.isUserProfile ? !this.state.areFriends ?
+                        {this.props.profileUser ? !this.state.areFriends ?
                             <TouchableOpacity
                                 onPress={() => this.addFriend()}
                                 style={localStyles.AddFriendOverlay}
@@ -244,7 +244,7 @@ class ProfileScreen extends Component {
                                         <ImageBackground style={localStyles.profilePic}
                                                          source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                                             {
-                                                this.props.isUserProfile ?
+                                                !this.props.profileUser  ?
                                                     <TouchableOpacity
                                                         style={{position: "relative", bottom: -125, right: -125}}
                                                         onPress={() => {
@@ -318,7 +318,8 @@ class ProfileScreen extends Component {
                                         Status:
                                     </Title>
                                     {
-                                        this.state.isUserProfile ?
+
+                                        !this.props.profileUser ?
                                             <TouchableOpacity style={localStyles.editStatus}
                                                               onPress={() => this.setState({statusModalVisible: true})}
                                             >

@@ -72,7 +72,7 @@ class BarModal extends React.Component  {
             favorited: boolean,
             name: buisnessName
           };
-          this.props.refresh(updatedUserData, null, null, null);
+          this.props.refresh(updatedUserData);
         }
       }
     });

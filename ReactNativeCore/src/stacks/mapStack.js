@@ -4,9 +4,9 @@ import MapScreen from '../components/Map/MapScreen';
 
 
 function MapComp({route, navigation}){
-  const {user, friends, refresh, navigationMain} = route.params;
+  const {navigationMain} = route.params;
   return(
-    <MapScreen refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigationMain}></MapScreen>
+    <MapScreen  onDrawerPress={() => navigation.openDrawer()} navigation={navigationMain}></MapScreen>
 
   );
 }
@@ -17,7 +17,7 @@ class MapStack extends React.Component {
   render(){
     return (
       <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Map" component={MapComp} initialParams={{ user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, navigationMain: this.props.navigate }} options={{title: 'Map'}} />
+        <Stack.Screen name="Map" component={MapComp} initialParams={{ navigationMain: this.props.navigate}} options={{title: 'Map'}} />
       </Stack.Navigator>
     );
   }

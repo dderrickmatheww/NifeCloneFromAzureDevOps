@@ -7,6 +7,7 @@ import DrawerButton from '../Universal/DrawerButton';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
 import VisitedByCallout from './VisitedByCallout';
+import {connect} from "react-redux";
 
 
 var { width, height } = Dimensions.get('window');
@@ -633,4 +634,21 @@ const localStyles = StyleSheet.create({
   }
 
 });
-export default MapScreen;
+
+function mapStateToProps(state){
+  return{
+    user: state.userData,
+    friendRequests: state.friendRequests,
+    friends: state.friendData,
+    businessData: state.businessData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(MapScreen);
