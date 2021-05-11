@@ -32,7 +32,7 @@ const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 class ProfileScreen extends Component {
     state = {
         isLoggedin: false,
-        userData: this.props.isUserProfile? this.props.userData : this.props.profileUser,
+        userData: this.props.isUserProfile ? this.props.userData : this.props.profileUser,
         modalVisible: false,
         friendData: this.props.friends,
         isAddingFriend: false,
@@ -61,7 +61,7 @@ class ProfileScreen extends Component {
             Util.user.CheckLoginStatus((boolean) => {
                 this.setState({
                     isLoggedin: boolean,
-                    userData: this.props.user
+                    userData: this.props.userData
                 });
             });
         } else {
@@ -137,6 +137,7 @@ class ProfileScreen extends Component {
         this.setProps();
         this.getBusinessData();
         this.areFriends();
+        console.log(this.state.userData.favoritePlaces)
     }
 
     getBusinessData = () => {
@@ -400,7 +401,7 @@ class ProfileScreen extends Component {
                                 }}>
                                     {this.state.userData.favoritePlaces
                                     && this.state.userData.favoritePlaces !== 'Unknown'
-                                    && this.state.userData.favoritePlaces.length > 0 ?
+                                    && Object.values(this.state.userData.favoritePlaces).length > 0 ?
                                         Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
                                             bar.favorited ?
                                                 <Chip mode={"outlined"}
