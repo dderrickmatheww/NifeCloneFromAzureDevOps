@@ -532,13 +532,13 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.font
     },
     Paragraph:{
-        color: theme.generalLayout.secondaryColor,
+        color: 'white',
         fontSize:12,
         marginTop:-10,
         fontFamily: theme.generalLayout.font
     },
     displayName:{
-        color: theme.generalLayout.secondaryColor,
+        color: 'white',
         left:60,
         top:-45,
         position:"relative",
@@ -547,7 +547,7 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.fontBold
     },
     feedType:{
-        color: theme.generalLayout.secondaryColor,
+        color: 'white',
         left:60,
         top:-50,
         position:"relative",
@@ -561,7 +561,7 @@ const localStyles = StyleSheet.create({
         borderRadius:10,
         borderWidth:1,
         paddingVertical:5,
-        paddingHorizontal:5,
+        paddingHorizontal:10,
         marginVertical:2,
         width:"100%",
     },

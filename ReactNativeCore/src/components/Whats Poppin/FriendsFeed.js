@@ -180,12 +180,11 @@ const localStyles = StyleSheet.create({
         position:"relative",
         right: 150,
         backgroundColor: theme.generalLayout.backgroundColor,
-        borderRadius: 10,
         borderWidth: .5,
         borderColor: theme.generalLayout.secondaryColor,
+        borderRadius: 5,
         paddingVertical: 8,
-        paddingHorizontal: 8,
-        fontFamily: theme.generalLayout.font
+        paddingHorizontal: 8
     },
     drawerBtn: {
         marginTop: '1%',
@@ -234,7 +233,7 @@ const localStyles = StyleSheet.create({
         borderRadius:10,
         borderWidth:1,
         paddingVertical:5,
-        paddingHorizontal:5,
+        paddingHorizontal:10,
         marginVertical:2,
         width:"100%",
     },
