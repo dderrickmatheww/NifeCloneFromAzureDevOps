@@ -135,41 +135,41 @@ export function DrawerContent(props) {
                     </View>
 
                     <Drawer.Section style={styles.drawerSection}>
-                        {/*<DrawerItem style={styles.text}*/}
-                        {/*    icon={() => (*/}
-                        {/*        <MaterialCommunityIcons */}
-                        {/*        name="home" */}
-                        {/*        color={theme.icons.color}*/}
-                        {/*        size={20}*/}
-                        {/*        />*/}
-                        {/*    )}*/}
-                        {/*    label={()=> <Text style={styles.text}>Home</Text>}*/}
-                        {/*    onPress={() => props.navigation.navigate('My Feed', {screen:"My Feed", params:{user: props.user, isUserProfile:true, friends:props.friends}})}*/}
-                        {/*/>*/}
-                        {/*    */}
+                        <DrawerItem style={styles.text}
+                            icon={() => (
+                                <MaterialCommunityIcons
+                                name="home"
+                                color={theme.icons.color}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Home</Text>}
+                            onPress={() => props.navigation.navigate('My Feed', {screen:"My Feed", params:{user: props.user, isUserProfile:true, friends:props.friends}})}
+                        />
+
                         
-                        {/*<DrawerItem */}
-                        {/*    icon={() => (*/}
-                        {/*        <MaterialCommunityIcons */}
-                        {/*        name="glass-mug" */}
-                        {/*        color={theme.icons.color}*/}
-                        {/*        size={20}*/}
-                        {/*        />*/}
-                        {/*    )}*/}
-                        {/*    label={()=> <Text style={styles.text}>My Feed</Text>}*/}
-                        {/*    onPress={() => {props.navigation.navigate("My Feed", {screen:"Friend's Feed", params:{user: props.user, friends: props.friends, refresh: props.refresh}})}}*/}
-                        {/*/>*/}
-                        {/*<DrawerItem */}
-                        {/*    icon={() => (*/}
-                        {/*        <Ionicons */}
-                        {/*        name="map-outline" */}
-                        {/*        color={theme.icons.color}*/}
-                        {/*        size={20}*/}
-                        {/*        />*/}
-                        {/*    )}*/}
-                        {/*    label={()=> <Text style={styles.text}>Map</Text>}*/}
-                        {/*    onPress={() => {props.navigation.navigate('Map', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}*/}
-                        {/*/>*/}
+                        <DrawerItem
+                            icon={() => (
+                                <MaterialCommunityIcons
+                                name="glass-mug"
+                                color={theme.icons.color}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>My Feed</Text>}
+                            onPress={() => {props.navigation.navigate("My Feed", {screen:"Friend's Feed", params:{user: props.user, friends: props.friends, refresh: props.refresh}})}}
+                        />
+                        <DrawerItem
+                            icon={() => (
+                                <Ionicons
+                                name="map-outline"
+                                color={theme.icons.color}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Map</Text>}
+                            onPress={() => {props.navigation.navigate('Map', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}
+                        />
                        { !props.user.isBusiness ? 
                             <List.Accordion
                                 titleStyle={{color:theme.icons.textColor}}
@@ -195,7 +195,7 @@ export function DrawerContent(props) {
                                     )}
                                     label={()=> <Text style={styles.text}>Profile</Text>}
                                     onPress={() => {
-                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, friends:props.friends, uploadImage:props.uploadImage, isUserProfile: true}})
+                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{uploadImage:props.uploadImage, isUserProfile: true}})
                                         props.navigation.closeDrawer();    
                                     }}
                                 />
@@ -212,10 +212,7 @@ export function DrawerContent(props) {
                                         )}
                                         label={()=> <Text style={styles.text}>Friends</Text>
                                         }
-                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', 
-                                                        params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}
-                                                    })
-                                                }
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Friends'})}
                                             }
                                     /> 
                                
@@ -260,17 +257,17 @@ export function DrawerContent(props) {
                                 />
                             }
                         
-                        {/*<DrawerItem */}
-                        {/*    icon={() => (*/}
-                        {/*        <FontAwesome */}
-                        {/*        name="gears" */}
-                        {/*        color={theme.icons.color}*/}
-                        {/*        size={20}*/}
-                        {/*        />*/}
-                        {/*    )}*/}
-                        {/*    label={()=> <Text style={styles.text}>Settings</Text>}*/}
-                        {/*    onPress={() => {props.navigation.navigate('Settings', {params:{user: props.user, friends:props.friends, requests:props.requests, refresh: props.refresh}})}}*/}
-                        {/*/>*/}
+                        <DrawerItem
+                            icon={() => (
+                                <FontAwesome
+                                name="gears"
+                                color={theme.icons.color}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Settings</Text>}
+                            onPress={() => {props.navigation.navigate('Settings')}}
+                        />
                         
                          <DrawerItem 
                             icon={() => (

@@ -32,7 +32,7 @@ const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 class ProfileScreen extends Component {
     state = {
         isLoggedin: false,
-        userData: this.props.isUserProfile? this.props.userData : this.props.profileUser,
+        userData: this.props.isUserProfile ? this.props.userData : this.props.profileUser,
         modalVisible: false,
         friendData: this.props.friends,
         isAddingFriend: false,
@@ -61,7 +61,7 @@ class ProfileScreen extends Component {
             Util.user.CheckLoginStatus((boolean) => {
                 this.setState({
                     isLoggedin: boolean,
-                    userData: this.props.user
+                    userData: this.props.userData
                 });
             });
         } else {
@@ -82,7 +82,7 @@ class ProfileScreen extends Component {
             this.setState({friendData: this.props.friends});
         } else {
             // if (this.props.friends) {
-                let friends = this.state.userData.friends;
+                let friends = this.props.friends;
                 let friendEmails = Object.keys(friends);
                 let count = friendEmails.filter((email) => {
                     return friends[email] == true
@@ -137,6 +137,7 @@ class ProfileScreen extends Component {
         this.setProps();
         this.getBusinessData();
         this.areFriends();
+        console.log(this.state.userData.favoritePlaces)
     }
 
     getBusinessData = () => {
@@ -174,7 +175,7 @@ class ProfileScreen extends Component {
                         </TouchableOpacity>
 
                         {/* Add Friend */}
-                        {!this.state.isUserProfile ? !this.state.areFriends ?
+                        {this.props.profileUser ? !this.state.areFriends ?
                             <TouchableOpacity
                                 onPress={() => this.addFriend()}
                                 style={localStyles.AddFriendOverlay}
@@ -244,7 +245,7 @@ class ProfileScreen extends Component {
                                         <ImageBackground style={localStyles.profilePic}
                                                          source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                                             {
-                                                this.props.isUserProfile ?
+                                                !this.props.profileUser  ?
                                                     <TouchableOpacity
                                                         style={{position: "relative", bottom: -125, right: -125}}
                                                         onPress={() => {
@@ -318,7 +319,8 @@ class ProfileScreen extends Component {
                                         Status:
                                     </Title>
                                     {
-                                        this.state.isUserProfile ?
+
+                                        !this.props.profileUser ?
                                             <TouchableOpacity style={localStyles.editStatus}
                                                               onPress={() => this.setState({statusModalVisible: true})}
                                             >
@@ -399,7 +401,7 @@ class ProfileScreen extends Component {
                                 }}>
                                     {this.state.userData.favoritePlaces
                                     && this.state.userData.favoritePlaces !== 'Unknown'
-                                    && this.state.userData.favoritePlaces.length > 0 ?
+                                    && Object.values(this.state.userData.favoritePlaces).length > 0 ?
                                         Object.values(this.state.userData.favoritePlaces).map((bar, i) => (
                                             bar.favorited ?
                                                 <Chip mode={"outlined"}
@@ -563,7 +565,6 @@ const localStyles = StyleSheet.create({
     },
     loggedInContainer: {
         paddingHorizontal: 10,
-        top:0,
         minHeight:'100%',
     },
     loggedInSubView: {
@@ -583,7 +584,7 @@ const localStyles = StyleSheet.create({
         alignItems: "center",
         borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth: 2,
-        marginTop: 70
+        marginTop: 50
 
     },
     profilePic: {

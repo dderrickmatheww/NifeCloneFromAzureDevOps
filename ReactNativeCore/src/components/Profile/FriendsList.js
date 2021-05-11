@@ -216,7 +216,8 @@ const localStyles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
-    paddingBottom: 2
+    paddingBottom: 2,
+    marginTop:25
   },
   profilePic: {
     width: 75,
