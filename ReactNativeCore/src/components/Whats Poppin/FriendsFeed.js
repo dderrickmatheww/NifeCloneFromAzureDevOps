@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, RefreshControl, StyleSheet, ScrollView, ActivityIndicator, Text } from 'react-native';
 import { 
-    Text, 
     Headline,
     Avatar,
     Caption,
@@ -20,18 +19,23 @@ class FriendsFeed extends React.Component  {
         userData: null,
         friendData: null,
         feedData: null,
-        snackBarVisable:false,
+        snackBarVisable: false,
+        refresh: false,
     }
     
-    componentDidMount(){
-        this.setState({userData: this.props.user});
-        this.setState({friendData: this.props.friends});
+    componentDidMount() {
+        this.setState({
+            userData: this.props.user,
+            friendData: this.props.friends
+        });
         this.setFriendDataArrays();
     }
-
-    setFriendDataArrays = () => {
+    onRefresh = async () => {
+        this.setState({ refresh: true });
+        await this.refresh();
+    }
+    setFriendDataArrays = async () => {
         let friends = this.props.friends;
-        let user = this.props.user;
         let friendFeedData = [];
         friends.forEach((friend) =>{
             if(friend.status){
@@ -80,27 +84,31 @@ class FriendsFeed extends React.Component  {
             }
             
         });
-        
-        
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
-        this.setState({feedData:friendFeedData});
+        await this.setState({feedData: friendFeedData});
     }
-
     onSave = () => {
         this.setState({modalVisable:false});
         this.setState({snackBarVisable: true});
         
     }
-    onDismiss = ()=> {
+    onDismiss = () => {
         this.setState({modalVisable:false});
     }
     onDismissSnackBar = () => {
         this.setState({snackBarVisable: false});
     }
 
-    refresh = (userData, friendData, requests) =>{
-        this.props.refresh(userData, null, null)
-        this.setFriendDataArrays()
+    refresh = async (userData, friendData, requests, businessData) => {
+        if (userData) {
+            await this.props.refresh(userData, null, null, null);
+        }
+        await this.setFriendDataArrays();
+        this.setState({
+            userData: this.props.user,
+            friendData: this.props.friends,
+            refresh: false
+        });
     }
 
     render() {
@@ -118,23 +126,35 @@ class FriendsFeed extends React.Component  {
                     <View style={{width:"100%"}}>
                         <Headline style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.fontBold, marginLeft: '5%', marginBottom: '2%'}}>Friend's Feed</Headline>
                     </View>
-                    <TouchableOpacity onPress={()=>this.setState({modalVisable:true})} style={localStyles.StatusOverlay}>
+                    <TouchableOpacity onPress={() => this.setState({modalVisable: true})} style={localStyles.StatusOverlay}>
                         <Text style={localStyles.statusButton}>Update Status</Text>
                     </TouchableOpacity> 
                 </View>
                 
                {
                 this.state.feedData ?
-                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
+                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}
+                    refreshControl={
+                        <RefreshControl 
+                            refreshing={this.state.refresh} 
+                            onRefresh={this.onRefresh}  
+                            size={22}
+                            color={[theme.loadingIcon.color]}
+                            tintColor={theme.loadingIcon.color}
+                            title={'Loading...'}
+                            titleColor={theme.loadingIcon.textColor}
+                        />
+                    }
+                    >
                         {
                             this.state.feedData && this.state.feedData.length > 0 ?
                                 this.state.feedData.map((data, i)=>(
                                     <View key={i} style={localStyles.feedDataRow}>
-                                        <Avatar.Image source={data.image} size={50}/>
-                                        <Text style={localStyles.displayName}>{data.name}</Text>
-                                        <Caption style={localStyles.feedType}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
-                                        <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
-                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
+                                        <Avatar.Image source={data.image ? data.image : defImage} size={50}/>
+                                        <Text style={localStyles.displayName} >{data.name}</Text>
+                                        <Caption style={localStyles.feedType} theme={{ colors: { text: theme.generalLayout.textColor} }}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
+                                        <Paragraph style={localStyles.Paragraph} theme={{ colors: { text: theme.generalLayout.textColor} }}>{data.text}</Paragraph>
+                                        <Caption style={localStyles.Caption} theme={{ colors: { text: theme.generalLayout.textColor} }}>{Util.date.TimeSince(data.time)} ago</Caption>
                                     </View> 
                                 )) 
                             : 
@@ -168,6 +188,7 @@ class FriendsFeed extends React.Component  {
                           this.onDismissSnackBar()
                         },
                       }}
+                      style={{position: 'absolute', bottom: 725}}
                 >
                     Updated your status!
                 </Snackbar>
@@ -231,6 +252,7 @@ const localStyles = StyleSheet.create({
         flex:1,
         backgroundColor: theme.generalLayout.backgroundColor,
         borderColor: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
         borderRadius:10,
         borderWidth:1,
         paddingVertical:5,

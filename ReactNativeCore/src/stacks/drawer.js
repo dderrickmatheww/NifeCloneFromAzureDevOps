@@ -87,8 +87,40 @@ class Navigator extends React.Component {
     notification: null,
   }
 
-  //todo replace with global state updater
-  refreshFromAsync = (userData, friendData, requests, businessData) => {
+  getNeededData = (currentUser) => {
+    //if user exits get user data, get friend data set to async
+    if (currentUser) {
+        //load user
+        Util.user.GetUserData(currentUser.email, (userData) => {
+          if(userData) {
+            //user data set in filterfriends
+            if(userData.isBusiness) {
+                this.setState({
+                  businessData: userData.businessData,
+                  userData: userData
+                });
+            }
+            else {
+              if(userData.friendData) {
+                this.setState({
+                  friendData: userData.friendData.acceptedFriends,
+                  friendRequests: userData.friendData.requests,
+                  userChecked: true,
+                  userData: userData
+                });
+              }
+            }
+          }
+          else {
+            this.setState({ userChecked: true });
+          }
+        });
+    } else {
+      alert(`A user could not be found. Error code: 0001`);
+    }
+  }
+
+  refreshFromAsync = async (userData, friendData, requests, businessData) => {
     if(userData){
       this.setState({ userData: userData });
     }
@@ -173,7 +205,6 @@ class Navigator extends React.Component {
       console.log(error);
     }
     await Util.user.CheckAuthStatus((user) => {
-      this.setState({ authLoaded: true });
       if (user) {
         this.setState({
           userExists: true

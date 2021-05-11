@@ -30,15 +30,16 @@ function whatsPoppinScreenTab ({route, navigation}) {
 }
 
 class PoppinStack extends React.Component {
-
   state = {
     userData: null,
     friendData: null
   }
 
   componentDidMount(){
-    this.setState({userData:this.props.user});
-    this.setState({friendData:this.props.friends});
+    this.setState({ 
+      userData: this.props.user,
+      friendData: this.props.friends
+    });
   }
 
   render() {

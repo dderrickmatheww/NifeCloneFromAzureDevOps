@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, RefreshControl, ScrollView, ActivityIndicator } from 'react-native';
 import { 
     Text, 
     Headline,
@@ -36,19 +36,20 @@ class HomeScreen extends React.Component  {
         menuVisable: false,
         snackBarText: "status",
         isVerified: false,
+        refresh: false
     }
     
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({
             userData: this.props.user,
             friendData: this.props.friends,
             businessData: this.props.business,
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
-        this.setFriendDataArrays();
+        await this.setFriendDataArrays();
     }
 
-    setFriendDataArrays = () => {
+    setFriendDataArrays = async () => {
         let friends = this.props.friends;
         let user = this.props.user;
         let business = this.props.business;
@@ -257,9 +258,11 @@ class HomeScreen extends React.Component  {
     }
 
     onDismiss = () => {
-        this.setState({statusModalVisable: false});
-        this.setState({eventModalVisable: false});
-        this.setState({specialsModalVisable: false});
+        this.setState({
+            statusModalVisable: false,
+            eventModalVisable: false,
+            specialsModalVisable: false
+        });
     }
 
     onDismissUpdate = () => {
@@ -275,7 +278,10 @@ class HomeScreen extends React.Component  {
         this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
-        this.setState({ feedData: friendFeedData });
+        this.setState({ 
+            feedData: friendFeedData, 
+            refresh: false 
+        });
         this.render();
     }
 
@@ -360,7 +366,19 @@ class HomeScreen extends React.Component  {
                     </View>
                         
                     {this.state.feedData ?
-                     <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
+                     <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}
+                        refreshControl={
+                            <RefreshControl 
+                                refreshing={this.state.refresh} 
+                                onRefresh={this.onRefresh}  
+                                size={22}
+                                color={[theme.loadingIcon.color]}
+                                tintColor={theme.loadingIcon.color}
+                                title={'Loading...'}
+                                titleColor={theme.loadingIcon.textColor}
+                            />
+                        }
+                     >
                             {
                                 this.state.feedData && this.state.feedData.length >0 ?
                                     this.state.feedData.map((data, i)=>(
@@ -533,13 +551,13 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.font
     },
     Paragraph:{
-        color: 'white',
+        color: theme.generalLayout.textColor,
         fontSize:12,
         marginTop:-10,
         fontFamily: theme.generalLayout.font
     },
     displayName:{
-        color: 'white',
+        color: theme.generalLayout.textColor,
         left:60,
         top:-45,
         position:"relative",
@@ -548,7 +566,7 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.fontBold
     },
     feedType:{
-        color: 'white',
+        color: theme.generalLayout.textColor,
         left:60,
         top:-50,
         position:"relative",
