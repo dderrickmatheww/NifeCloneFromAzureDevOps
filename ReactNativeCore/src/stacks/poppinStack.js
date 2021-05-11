@@ -5,37 +5,37 @@ import WhatsPoppin from '../components/Whats Poppin/WhatsPoppinTab';
 import HomeScreen from '../components/Home/HomeScreen';
 import FriendsFeed from '../components/Whats Poppin/FriendsFeed';
 import IconWithBadge from '../components/Universal/IconWithBadge';
+import { connect } from "react-redux";
 import theme from '../../Styles/theme';
 
 const Tab = createBottomTabNavigator();
 
 function HomeScreenTab ({route, navigation}) {
-  const {uploadImage, user, friends, business,favorites ,refresh} = route.params;
+  const { uploadImage, favorites } = route.params;
   return (
-    <HomeScreen uploadImage={uploadImage} favorites={favorites} business={business} refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <HomeScreen uploadImage={uploadImage} favorites={favorites} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
 function Friends ({route, navigation}) {
-  const {user, friends, refresh} = route.params;
   return (
-    <FriendsFeed refresh={refresh} user={user} friends={friends} navigation={navigation}  onDrawerPress={() => navigation.openDrawer()}/>
+    <FriendsFeed navigation={navigation}  onDrawerPress={() => navigation.openDrawer()}/>
   )
 }
 
 function whatsPoppinScreenTab ({route, navigation}) {
-  const {user, friends, business, refresh} = route.params;
   return (
-    <WhatsPoppin business={business} refresh={refresh} user={user} friends={friends} onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
+    <WhatsPoppin onDrawerPress={() => navigation.openDrawer()} navigation={navigation} />
   )
 }
 
 class PoppinStack extends React.Component {
 
   state = {
-    userData:null,
-    friendData:null
+    userData: null,
+    friendData: null
   }
+
   componentDidMount(){
     this.setState({userData:this.props.user});
     this.setState({friendData:this.props.friends});
@@ -86,9 +86,14 @@ class PoppinStack extends React.Component {
           }}
           initialRouteName="My Feed"
           >
-          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{uploadImage:this.props.uploadImage, user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business, favorites:this.props.favorites}}/>
-          {!this.props.user.isBusiness ? <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/> : null}
-          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh, business:this.props.business}}/>
+          <Tab.Screen name="My Feed" component={HomeScreenTab} initialParams={{ uploadImage: this.props.uploadImage, favorites: this.props.favorites }}/>
+          {
+            !this.props.user.isBusiness ? 
+              <Tab.Screen name="Friend's Feed" component={Friends} /> 
+            : 
+              null
+          }
+          <Tab.Screen name="What's Poppin'" component={whatsPoppinScreenTab} />
         </Tab.Navigator> 
         :
         <View style={localStyles.viewDark}>
@@ -107,4 +112,20 @@ const localStyles = StyleSheet.create({
   },
 })
 
-export default PoppinStack;
+function mapStateToProps(state) {
+  return {
+    userData: state.userData,
+    friendRequests: state.friendRequests,
+    friendData: state.friendData,
+    businessData: state.businessData
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(PoppinStack);

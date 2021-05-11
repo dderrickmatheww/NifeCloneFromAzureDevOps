@@ -18,9 +18,10 @@ import EventsModal from '../Whats Poppin/UpdateEventsModal';
 import SpecialsModal from '../Whats Poppin/UpdateSpecialsModal';
 import * as firebase from 'firebase';
 import * as ImagePicker from 'expo-image-picker';
+import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-export default class FriendsFeed extends React.Component  {
+class HomeScreen extends React.Component  {
 
     state = {
         statusModalVisable: false,
@@ -470,18 +471,18 @@ export default class FriendsFeed extends React.Component  {
                         null
                     }
                     <Snackbar
-                            style={{zIndex:3, elevation:100}}
-                            visible={this.state.snackBarVisable}
-                            onDismiss={() => this.onDismissSnackBar()}
-                            action={{
-                                label: 'Close',
-                                onPress: () => {
-                                this.onDismissSnackBar()
-                                },
-                            }}
-                        >
-                            Updated your {this.state.snackBarText}!
-                        </Snackbar>
+                        style={{zIndex:3, elevation:100}}
+                        visible={this.state.snackBarVisable}
+                        onDismiss={() => this.onDismissSnackBar()}
+                        action={{
+                            label: 'Close',
+                            onPress: () => {
+                            this.onDismissSnackBar()
+                            },
+                        }}
+                    >
+                        Updated your {this.state.snackBarText}!
+                    </Snackbar>
                 </View>
         )
     }
@@ -609,3 +610,20 @@ const localStyles = StyleSheet.create({
     },
   });
   
+  function mapStateToProps(state) {
+    return {
+      user: state.userData,
+      friendRequests: state.friendRequests,
+      friends: state.friendData,
+      business: state.businessData
+    }
+  }
+  
+  function mapDispatchToProps(dispatch){
+    return {
+      refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+    }
+  }
+  
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

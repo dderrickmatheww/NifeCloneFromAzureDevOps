@@ -11,9 +11,10 @@ import {
 import  theme  from '../../../Styles/theme';
 import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
+import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-export default class FriendsFeed extends React.Component  {
+class FriendsFeed extends React.Component  {
     state = {
         modalVisable: false,
         userData: null,
@@ -287,4 +288,22 @@ const localStyles = StyleSheet.create({
         backgroundColor: theme.generalLayout.secondaryColor
     },
   });
+
+  function mapStateToProps(state) {
+    return {
+      user: state.userData,
+      friendRequests: state.friendRequests,
+      friends: state.friendData,
+      business: state.businessData
+    }
+  }
+  
+  function mapDispatchToProps(dispatch){
+    return {
+      refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+    }
+  }
+  
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(FriendsFeed);
   

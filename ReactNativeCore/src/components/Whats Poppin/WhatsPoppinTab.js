@@ -5,6 +5,7 @@ import getFeedData from './GetFeedData';
 import DataRow from './DataRow';
 import * as firebase from 'firebase';
 import PleaseLogin from '../Universal/PleaseLogin';
+import { connect } from "react-redux";
 import {
     Headline,
     Avatar
@@ -64,7 +65,7 @@ class WhatsPoppin extends React.Component  {
                     refresh: false,
                     isLoggedIn: firebase.auth().currentUser ? true : false,
                     user: this.props.user,
-                    feedLoadDone:true
+                    feedLoadDone: true
                 });
             });
         }
@@ -83,7 +84,7 @@ class WhatsPoppin extends React.Component  {
                       favorited: boolean,
                       name: buisnessName
                     };
-                    this.props.refresh(updatedUserData, null, null, null);
+                    this.props.refresh(updatedUserData);
                 }
             }
         });
@@ -297,5 +298,21 @@ const localStyles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 10
     },
-})
-export default WhatsPoppin;
+});
+
+function mapStateToProps(state) {
+    return {
+        user: state.userData,
+        friendRequests: state.friendRequests,
+        friends: state.friendData,
+        business: state.businessData
+    }
+  }
+  
+  function mapDispatchToProps(dispatch){
+    return {
+      refresh: (userData) => dispatch({type:'REFRESH', data: userData })
+    }
+  }
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(WhatsPoppin);
