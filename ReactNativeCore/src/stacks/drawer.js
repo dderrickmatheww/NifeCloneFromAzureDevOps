@@ -15,6 +15,9 @@ import LoginScreen from '../components/Login/Login Screen';
 import { DrawerContent } from '../components/Drawer/Drawer Content';
 import * as Font from 'expo-font';
 import {connect} from "react-redux";
+import * as Notifications from "expo-notifications";
+import * as firebase from "firebase";
+import { useNavigation } from '@react-navigation/native';
 
 //TODO update redux state
 
@@ -200,6 +203,23 @@ class Navigator extends React.Component {
       }
     })
     //register notifications
+    const navigation = useNavigation();
+    Notifications.addNotificationReceivedListener((notification) => {
+      // console.log('Notification: ');
+      console.log(notification);
+      console.log('addNotificationReceivedListener hit')
+    });
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log(response);
+      console.log('addNotificationResponseReceivedListener hit');
+      if(response.notification.request.content.data.isFriendRequest){
+        Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
+          this.props.refresh(user);
+          navigation.navigate('Profile', {screen:'Friends'})
+        })
+
+      }
+    });
   }
 
   getNeededData = (currentUser) => {
@@ -248,7 +268,7 @@ class Navigator extends React.Component {
                 backgroundColor: theme.generalLayout.backgroundColor
               }}
               initialRouteName='My Feed'
-              drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.refreshFromAsync} requests={this.props.friendRequests} friends={this.props.friendData} user={this.props.userData}/>}
+              drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.props.refresh} requests={this.props.friendRequests} friends={this.props.friendData} user={this.props.userData}/>}
               drawerType={"front"}
               overlayColor={"rgba(32, 35, 42, 0.50)"}
             >

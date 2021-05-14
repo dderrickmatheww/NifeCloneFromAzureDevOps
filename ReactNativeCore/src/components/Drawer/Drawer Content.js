@@ -23,38 +23,10 @@ import Util from '../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../Universal/IconWithBadge"
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
- import * as Notifications from 'expo-notifications';
- import * as firebase from "firebase";
 
- Notifications.setNotificationHandler({
-     handleNotification: async () => ({
-         shouldShowAlert: true,
-         shouldPlaySound: false,
-         shouldSetBadge: false,
-     }),
- });
 
 export function DrawerContent(props) {
-    useEffect(()=>{
 
-        Notifications.addNotificationReceivedListener((notification) => {
-            // console.log('Notification: ');
-            // console.log(notification);
-            console.log('addNotificationReceivedListener hit')
-        });
-        Notifications.addNotificationResponseReceivedListener((response) => {
-            console.log('addNotificationResponseReceivedListener hit')
-            if(response.notification.request.content.data.isFriendRequest){
-                Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
-                    props.refresh(user);
-                    props.navigation.navigate('Profile', {screen:'Friends',
-                        params:{user: props.user, friends:props.friends, requests:props.requests, openRequests:true}
-                    })
-                })
-
-            }
-        });
-    })
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -270,17 +242,17 @@ export function DrawerContent(props) {
                             onPress={() => {props.navigation.navigate('Settings')}}
                         />
                         
-                        {/* <DrawerItem */}
-                        {/*    icon={() => (*/}
-                        {/*        <FontAwesome*/}
-                        {/*        name="gears"*/}
-                        {/*        color={theme.LIGHT_PINK}*/}
-                        {/*        size={20}*/}
-                        {/*        />*/}
-                        {/*    )}*/}
-                        {/*    label={()=> <Text style={styles.text}>Test</Text>}*/}
-                        {/*    onPress={() => {props.navigation.navigate('Test', {params:{user: props.user}})}}*/}
-                        {/*/> */}
+                         <DrawerItem
+                            icon={() => (
+                                <FontAwesome
+                                name="gears"
+                                color={theme.LIGHT_PINK}
+                                size={20}
+                                />
+                            )}
+                            label={()=> <Text style={styles.text}>Test</Text>}
+                            onPress={() => {props.navigation.navigate('Test', {params:{user: props.user}})}}
+                        />
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>

@@ -7,6 +7,7 @@ import themeUtil from './Styles/theme'
 import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import {createStore} from "redux";
 import {Provider} from 'react-redux'
+import * as Notifications from "expo-notifications";
 
 if (! global.btoa) {global.btoa = encode}
 if (! global.atob) {global.atob = decode}
@@ -15,7 +16,13 @@ if (! global.atob) {global.atob = decode}
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
 //TODO wrap with redux
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 console.disableYellowBox = true;
 const  initialState = {
   userData: null,

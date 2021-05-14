@@ -10,9 +10,9 @@ import ProfileScreen from '../components/Profile/Profile';
 import Business from '../components/Profile/BusinessProfile';
 
 function Friends({route, navigation}){
-  const { user, friends, requests, refresh, openRequests} = route.params;
+
   return(
-    <FriendsList refresh={refresh} requests={requests} friends={friends}  user={user} openRequests={openRequests}  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
+    <FriendsList  navigation={navigation} onDrawerPress={() => navigation.openDrawer()} ></FriendsList>
   );
 }
 
