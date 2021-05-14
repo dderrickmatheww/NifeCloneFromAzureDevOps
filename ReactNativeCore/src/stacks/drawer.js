@@ -65,11 +65,8 @@ function Settings ({navigation}){
   )
 }
 
-function FriendList({navigation}, data){
-  return navigation.navigate('Profile', {screen:'Friends',
-    params: data,
-  })
-}
+
+
 
 class Navigator extends React.Component {
 
@@ -163,6 +160,8 @@ class Navigator extends React.Component {
     });
   }
 
+
+
   async componentDidMount() {
     //load fonts
     try {
@@ -202,7 +201,6 @@ class Navigator extends React.Component {
         this.props.refresh(null);
       }
     })
-
   }
 
   getNeededData = (currentUser) => {
@@ -237,8 +235,11 @@ class Navigator extends React.Component {
     return (
       this.state.authLoaded ?
         this.props.userData ?
-          <NavigationContainer>
-            <Drawer.Navigator 
+          <NavigationContainer
+
+          >
+            <Drawer.Navigator
+
               drawerContentOptions={{
                 activeTintColor: theme.generalLayout.backgroundColor,
                 inactiveTintColor: theme.loadingIcon.color,

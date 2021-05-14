@@ -18,7 +18,7 @@ class FriendsList extends React.Component {
     modalVisible: false,
     friends: null,
     searchQuery: null,
-    requests: null,
+    requests: this.props.requests,
   }
   
   //gets user and friend data
@@ -29,7 +29,7 @@ class FriendsList extends React.Component {
         requests: this.props.requests,
         userData: this.props.userData,
         isLoggedin: loggedIn,
-        modalVisible: this.props.openRequests,
+        modalVisible: this.props.openRequests
       });
     });
   }
@@ -40,10 +40,18 @@ class FriendsList extends React.Component {
 
   componentDidMount() {
     this.setPropData();
+    this.props.navigation.addListener('focus', () => {
+      this.setState({
+        friends: this.props.friends,
+        requests: this.props.requests,
+        userData: this.props.userData,
+        modalVisible: this.props.openRequests
+      });
+    });
   }
 
   filterRequests = (email, didAccept) => {
-    let friends = this.state.friends;
+    let friends = this.props.friends;
     let requests = this.props.requests;
     let newRequests = [];
     if(didAccept){
@@ -79,7 +87,7 @@ class FriendsList extends React.Component {
 
   render() {
     return (
-      (this.state.friends != null && this.state.friends != undefined) ?
+      (this.props.friends != null && this.props.friends != undefined) ?
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.navHeader}>
               <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
@@ -107,7 +115,7 @@ class FriendsList extends React.Component {
           <View style={localStyles.HeaderCont}>
             <Image style={localStyles.profilePic} source={ this.props.userData.photoSource ? { uri: this.props.userData.photoSource }  : defPhoto } />
             <Text style={localStyles.Header}>{this.props.userData.displayName}'s Friends</Text>
-            <Text style={localStyles.FriendCount}>{(this.state.friends != null ? this.state.friends.length : "0")} Friends</Text>
+            <Text style={localStyles.FriendCount}>{(this.props.friends != null ? this.props.friends.length : "0")} Friends</Text>
             <View style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, backgroundColor: theme.generalLayout.backgroundColor, borderWitdth: 1, borderColor: theme.generalLayout.secondaryColor, borderRadius:25, marginBottom:2, width:"98%"}}>
               {/* <Searchbar
                   placeholder=""
@@ -121,8 +129,8 @@ class FriendsList extends React.Component {
             
           </View>
           <ScrollView style={localStyles.ScrollView}>
-            {this.state.friends.map((friend, i) => (
-              <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', { screen:"OtherProfile", params: { user:friend, isUserProfile: false }})}>
+            {this.props.friends.map((friend, i) => (
+              <TouchableOpacity  key={i} onPress={() => this.props.navigation.navigate('Profile', { screen:"OtherProfile", params: {currentUser:this.props.userData, profileUser:friend, isUserProfile: false }})}>
               <View style={localStyles.friendCont}>
                 <Image style={localStyles.friendPic} source={ friend.photoSource  ? { uri:friend.photoSource }  : defPhoto } />
                 <Text style={localStyles.name}>{friend.displayName}</Text>
@@ -130,7 +138,7 @@ class FriendsList extends React.Component {
             </TouchableOpacity>
             ))}
           </ScrollView>
-          <RequestModal filter={this.filterRequests} onDismiss={()=> this.handleRefresh()} isVisible={this.state.modalVisible} requests={this.state.requests}></RequestModal>
+          <RequestModal filter={this.filterRequests} onDismiss={()=> this.handleRefresh()} isVisible={this.state.modalVisible} ></RequestModal>
         </View>
         :
         <View style={localStyles.loggedInContainer}>

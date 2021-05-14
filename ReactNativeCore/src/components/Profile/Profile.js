@@ -95,6 +95,9 @@ class ProfileScreen extends Component {
     addFriend = () => {
         this.setState({isAddingFriend: true});
         Util.friends.AddFriend(this.state.userData.email, () => {
+            let currentUser = this.props.currentUser;
+            currentUser.friends[this.state.userData.email] = true;
+            this.props.refresh(currentUser)
             this.setState({
                 isAddingFriend: false,
                 areFriends: true,
@@ -105,6 +108,9 @@ class ProfileScreen extends Component {
     removeFriend = () => {
         this.setState({isAddingFriend: true});
         Util.friends.RemoveFriend(this.state.userData.email, () => {
+            let currentUser = this.props.currentUser;
+            currentUser.friends[this.state.userData.email] = false;
+            this.props.refresh(currentUser)
             this.setState({
                 isAddingFriend: false,
                 areFriends: false,
@@ -125,7 +131,7 @@ class ProfileScreen extends Component {
     }
 
     areFriends = () => {
-        if (!this.props.isUserProfile) {
+        if (this.props.profileUser) {
             Util.user.IsFriend(this.props.profileUser.friends, (boolean) => {
                 this.setState({areFriends: boolean});
             });

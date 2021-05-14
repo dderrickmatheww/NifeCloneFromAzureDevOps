@@ -15,7 +15,6 @@ if (! global.atob) {global.atob = decode}
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
-//TODO wrap with redux
 
 console.disableYellowBox = true;
 const  initialState = {

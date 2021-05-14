@@ -169,6 +169,7 @@ const Util = {
         },
         IsFriend: (friends, callback) => {
             let boolean;
+            console.log(friends);
             if (friends[firebase.auth().currentUser.email] == true) {
                 boolean = true;
             } else {
@@ -256,7 +257,7 @@ const Util = {
                     .then(response => response.json())
                     .then(data => {
                         if (callback) {
-                            //console.log(data, data.result);
+                            console.log( data.result);
                             callback(data.result);
                         }
                         Util.basicUtil.consoleLog('GetUserData', true);

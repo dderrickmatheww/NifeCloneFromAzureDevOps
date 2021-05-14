@@ -24,6 +24,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../Universal/IconWithBadge"
  import * as Notifications from "expo-notifications";
  import * as firebase from "firebase";
+ import {useNavigation} from "@react-navigation/native";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
  Notifications.setNotificationHandler({
@@ -35,26 +36,19 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
  });
 
 export function DrawerContent(props) {
+        useEffect(() => {
+            const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+                console.log('addNotificationResponseReceivedListener hit');
+                if(response.notification.request.content.data.isFriendRequest){
+                    Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
+                        props.refresh(user);
+                        props.navigation.navigate('Profile', {screen:'Friends', params:{openRequests:true}})
+                    })
 
-    useEffect(() => {
-        console.log('useEffect hit')
-        Notifications.addNotificationReceivedListener((notification) => {
-            // console.log('Notification: ');
-            console.log(notification);
-            console.log('addNotificationReceivedListener hit')
-        });
-        Notifications.addNotificationResponseReceivedListener((response) => {
-            console.log(response);
-            console.log('addNotificationResponseReceivedListener hit');
-            if(response.notification.request.content.data.isFriendRequest){
-                Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
-                    props.refresh(user);
-                    props.navigation.navigate('Profile', {screen:'Friends'})
-                })
-
-            }
-        });
-    })
+                }
+            });
+            return () => subscription.remove();
+        }, [])
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
@@ -213,7 +207,7 @@ export function DrawerContent(props) {
                                         )}
                                         label={()=> <Text style={styles.text}>Friends</Text>
                                         }
-                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Friends'})}
+                                        onPress={() => {props.navigation.navigate('Profile', {screen:'Friends', params:{openRequests: false}})}
                                             }
                                     /> 
                                

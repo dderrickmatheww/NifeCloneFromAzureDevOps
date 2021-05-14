@@ -12,50 +12,39 @@ import Util from '../../scripts/Util';
 import { Modal, Text, Subheading } from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
+import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class RequestModal extends React.Component  {
     state = {
-      requests: null,
+      requests: this.props.requests,
       requestLoading: false,
     };
 
     async componentDidMount() {
+      console.log(this.props.requests)
       this.setState({ requests: this.props.requests });
     }
 
     handleAccept = (friendEmail) => {
-      this.props.filter(friendEmail, true);
       this.setState({ requestLoading: true });
       Util.friends.AcceptFriendRequest(friendEmail, () => {
-        this.updateRequestList(friendEmail, () => {
+        Util.user.GetUserData(this.props.user.email, (userData) =>{
+          this.props.refresh(userData);
+
           this.setState({ requestLoading: false });
-        });
+        })
       });
     }
 
     handleDeny = (friendEmail) => {
       this.setState({ requestLoading: true });
-      this.props.filter(friendEmail, false);
       Util.friends.RemoveFriend(friendEmail, () => {
-        this.updateRequestList(friendEmail, () => {
+        Util.user.GetUserData(this.props.user.email, (userData) =>{
           this.setState({ requestLoading: false });
-        });
+          this.props.refresh(userData);
+        })
       });
-    }
-    
-    updateRequestList = (friendEmail, callback) => {
-      let requests = this.state.requests;
-      let cleanedRequests = [];
-      requests.forEach((request, i) => {
-        if(friendEmail != request.email){
-          cleanedRequests.push(request);
-        }
-      });
-      this.setState({ requests: cleanedRequests });
-      if(callback) {
-        callback();
-      }
     }
 
     render(){     
@@ -290,5 +279,19 @@ const localStyles = StyleSheet.create({
     marginBottom:"1%",
   }
 });
-  
-  export default RequestModal;
+
+function mapStateToProps(state){
+  return{
+    requests: state.friendRequests,
+    user: state.userData,
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(RequestModal);
