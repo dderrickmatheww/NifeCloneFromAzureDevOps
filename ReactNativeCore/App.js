@@ -16,13 +16,7 @@ if (! global.atob) {global.atob = decode}
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
 //TODO wrap with redux
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
+
 console.disableYellowBox = true;
 const  initialState = {
   userData: null,

@@ -202,24 +202,7 @@ class Navigator extends React.Component {
         this.props.refresh(null);
       }
     })
-    //register notifications
-    const navigation = useNavigation();
-    Notifications.addNotificationReceivedListener((notification) => {
-      // console.log('Notification: ');
-      console.log(notification);
-      console.log('addNotificationReceivedListener hit')
-    });
-    Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log(response);
-      console.log('addNotificationResponseReceivedListener hit');
-      if(response.notification.request.content.data.isFriendRequest){
-        Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
-          this.props.refresh(user);
-          navigation.navigate('Profile', {screen:'Friends'})
-        })
 
-      }
-    });
   }
 
   getNeededData = (currentUser) => {
