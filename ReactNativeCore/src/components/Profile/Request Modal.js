@@ -20,31 +20,15 @@ class RequestModal extends React.Component  {
       requests: this.props.requests,
       requestLoading: false,
     };
-
-    async componentDidMount() {
-      console.log(this.props.requests)
-      this.setState({ requests: this.props.requests });
-    }
-
-    handleAccept = (friendEmail) => {
+  handleRequest = (friendEmail, answer) => {
       this.setState({ requestLoading: true });
-      Util.friends.AcceptFriendRequest(friendEmail, () => {
+      Util.friends.handleFriendRequest(friendEmail, answer, () => {
         Util.user.GetUserData(this.props.user.email, (userData) =>{
           this.props.refresh(userData);
-
           this.setState({ requestLoading: false });
         })
       });
-    }
 
-    handleDeny = (friendEmail) => {
-      this.setState({ requestLoading: true });
-      Util.friends.RemoveFriend(friendEmail, () => {
-        Util.user.GetUserData(this.props.user.email, (userData) =>{
-          this.setState({ requestLoading: false });
-          this.props.refresh(userData);
-        })
-      });
     }
 
     render(){     
@@ -56,13 +40,13 @@ class RequestModal extends React.Component  {
               onDismiss={this.props.onDismiss}
             >
               {
-                this.state.requests ? 
+                this.props.requests ?
                 <View style={styles.viewDark}>
                   <View style={{justifyContent:"center", alignItems:"center", marginBottom:15, borderBottomColor:theme.LIGHT_PINK, borderBottomWidth:1}}>
                     <Subheading style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Your Friend Requests</Subheading>
                   </View>
                   <ScrollView  contentContainerStyle={{paddingTop:20, paddingBottom:25, justifyContent:"center", alignItems:"center"}}>
-                    {this.state.requests.map((friend, i) => (
+                    {this.props.requests.map((friend, i) => (
                         <View key={i} style={localStyles.friendCont}>
                           
                             <Image style={localStyles.friendPic} source={ friend.photoSource  ? {uri:friend.photoSource}  : defPhoto} />
@@ -70,7 +54,7 @@ class RequestModal extends React.Component  {
                           
                           <View style={{ flexDirection:"row", marginVertical:5}}>
                             <TouchableOpacity style={localStyles.DenyFriendOverlay}
-                              onPress={!this.state.requestLoading ? () => this.handleDeny(friend.email) : null}
+                              onPress={!this.state.requestLoading ? () => this.handleRequest(friend.email, false) : null}
                             >
                               { this.state.requestLoading ?
                                 <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
@@ -85,7 +69,7 @@ class RequestModal extends React.Component  {
                               }
                             </TouchableOpacity>
                             <TouchableOpacity style={localStyles.AddFriendOverlay}
-                              onPress={!this.state.requestLoading ? ()=> this.handleAccept(friend.email) : null}
+                              onPress={!this.state.requestLoading ? ()=> this.handleRequest(friend.email, true) : null}
                             >
                             { this.state.requestLoading ?
                                 <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>

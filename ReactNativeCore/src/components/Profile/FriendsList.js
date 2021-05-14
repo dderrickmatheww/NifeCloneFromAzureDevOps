@@ -25,9 +25,6 @@ class FriendsList extends React.Component {
   setPropData = () => {
     Util.user.CheckLoginStatus((loggedIn) => {
       this.setState({
-        friends: this.props.friends,
-        requests: this.props.requests,
-        userData: this.props.userData,
         isLoggedin: loggedIn,
         modalVisible: this.props.openRequests
       });
@@ -42,9 +39,6 @@ class FriendsList extends React.Component {
     this.setPropData();
     this.props.navigation.addListener('focus', () => {
       this.setState({
-        friends: this.props.friends,
-        requests: this.props.requests,
-        userData: this.props.userData,
         modalVisible: this.props.openRequests
       });
     });
@@ -77,12 +71,8 @@ class FriendsList extends React.Component {
     });
   }
 
-  handleRefresh = () => {
+  closeModal = () => {
     this.setState({ modalVisible: false });
-    let user = this.props.userData;
-    user.friendData.acceptedFriends = this.state.friends;
-    user.friendData.requests = this.state.requests;
-    this.props.refresh(user);
   }
 
   render() {
@@ -100,12 +90,12 @@ class FriendsList extends React.Component {
               </TouchableOpacity> 
               {/* Requests button */}
               {
-                this.state.requests && this.state.requests.length > 0 ?
+                this.props.requests && this.props.requests.length > 0 ?
                 <TouchableOpacity onPress={() => this.handleOpenModal()} style={localStyles.RequestOverlay}>
                   <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.icons.color}/>
                     
                   <Text style={localStyles.Requests}>
-                    {this.state.requests.length} Requests
+                    {this.props.requests.length} Requests
                   </Text>
                 </TouchableOpacity> : null
               }
@@ -138,7 +128,7 @@ class FriendsList extends React.Component {
             </TouchableOpacity>
             ))}
           </ScrollView>
-          <RequestModal filter={this.filterRequests} onDismiss={()=> this.handleRefresh()} isVisible={this.state.modalVisible} ></RequestModal>
+          <RequestModal onDismiss={this.closeModal} isVisible={this.state.modalVisible} ></RequestModal>
         </View>
         :
         <View style={localStyles.loggedInContainer}>

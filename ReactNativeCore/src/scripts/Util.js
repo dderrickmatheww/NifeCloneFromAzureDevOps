@@ -98,46 +98,27 @@ const Util = {
                 Util.basicUtil.Alert('Function: AddFriend - Error message: ', error.message, null);
             }
         },
-        RemoveFriend: function (friendEmail, callback) {
+        handleFriendRequest: function (friendEmail, answer, callback) {
             try {
-                let userEmail = firebase.auth().currentUser.email;
                 let updateObj = {
                     friends: {}
                 }
-                updateObj.friends[friendEmail] = false;
-                Util.user.UpdateUser(userEmail, updateObj, () => {
-                    Util.basicUtil.consoleLog("RemoveFriend", true);
-                    let friendUpdateObj = {
-                        friends: {}
-                    }
-                    friendUpdateObj.friends[userEmail] = false;
-                    Util.user.UpdateUser(friendEmail, friendUpdateObj, () => {
-                        Util.basicUtil.consoleLog("RemoveFriend", true);
+                let friendUpdateObj = {
+                    friends:{},
+                    requests:{}
+                }
+                updateObj.friends[friendEmail] = answer;
+                friendUpdateObj.friends[firebase.auth().currentUser.email] = answer;
+
+                friendUpdateObj.requests[firebase.auth().currentUser.email] = false;
+                Util.user.UpdateUser(friendEmail, friendUpdateObj, () => {
+                    Util.user.UpdateUser(firebase.auth().currentUser.email, updateObj, () => {
+                        if(callback)
+                            callback();
                     });
                 });
-                if (callback) {
-                    callback();
-                }
-            } catch (error) {
-                Util.basicUtil.consoleLog("RemoveFriend", false);
-                Util.basicUtil.Alert('Function: RemoveFriend - Error message: ', error.message, null);
             }
-        },
-        AcceptFriendRequest: (friendEmail, callback) => {
-            try {
-                let userEmail = firebase.auth().currentUser.email;
-                let updateUserObj = {
-                    friends: {}
-                }
-                // User that will have a friend request
-                updateUserObj.friends[friendEmail] = true;
-                Util.user.UpdateUser(userEmail, updateUserObj, () => {
-                    Util.basicUtil.consoleLog("AcceptFriendRequest", true);
-                });
-                if (callback) {
-                    callback();
-                }
-            } catch (error) {
+             catch (error) {
                 Util.basicUtil.consoleLog("AcceptFriendRequest", false);
                 Util.basicUtil.Alert('Function: AcceptFriendRequest - Error message: ', error.message, null);
             }
