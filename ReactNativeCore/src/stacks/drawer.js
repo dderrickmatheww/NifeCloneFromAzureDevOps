@@ -205,6 +205,7 @@ class Navigator extends React.Component {
       console.log(error);
     }
     await Util.user.CheckAuthStatus((user) => {
+      console.log(user)
       if (user) {
         this.setState({
           userExists: true
@@ -226,7 +227,7 @@ class Navigator extends React.Component {
           // userData: null, //TODO remove
           userExists: false
         });
-        this.props.refresh(null);
+        this.props.refresh(userData);
       }
     })
     //register notifications
@@ -286,7 +287,7 @@ class Navigator extends React.Component {
               <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
               <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, friends: this.props.friendData,  business: this.props.businessData ? this.props.businessData : null, favorites: this.state.favoritePlaceData}}/>
               <Drawer.Screen name="Map" component={MapMain}/>
-              <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
+              <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.props.userData, friends:this.props.friendData, refresh: this.refreshFromAsync}}/>
             </Drawer.Navigator>
           </NavigationContainer>
         : 
