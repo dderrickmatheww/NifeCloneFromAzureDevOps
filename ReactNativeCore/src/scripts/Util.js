@@ -98,6 +98,25 @@ const Util = {
                 Util.basicUtil.Alert('Function: AddFriend - Error message: ', error.message, null);
             }
         },
+        sendFriendRequest: function (friendEmail, callback) {
+            try {
+                let userEmail = firebase.auth().currentUser.email;
+                let friendUpdateObj = {
+                    requests: {}
+                }
+                // User that requested the friend
+                friendUpdateObj.requests[friendEmail] = true;
+                Util.user.UpdateUser(userEmail, friendUpdateObj, () => {
+                    if (callback) {
+                        callback();
+                    }
+                });
+
+            } catch (error) {
+                Util.basicUtil.consoleLog("sendFriendRequest", false);
+                Util.basicUtil.Alert('Function: sendFriendRequest - Error message: ', error.message, null);
+            }
+        },
         handleFriendRequest: function (friendEmail, answer, callback) {
             try {
                 let updateObj = {
@@ -119,8 +138,8 @@ const Util = {
                 });
             }
              catch (error) {
-                Util.basicUtil.consoleLog("AcceptFriendRequest", false);
-                Util.basicUtil.Alert('Function: AcceptFriendRequest - Error message: ', error.message, null);
+                Util.basicUtil.consoleLog("handleFriendRequest", false);
+                Util.basicUtil.Alert('Function: handleFriendRequest - Error message: ', error.message, null);
             }
         },
     },
@@ -148,12 +167,13 @@ const Util = {
                     });
             }
         },
-        IsFriend: (friends, callback) => {
+        IsFriend: (userData, friendEmail,callback) => {
             let boolean;
-            console.log(friends);
-            if (friends[firebase.auth().currentUser.email] == true) {
+            if (userData.friends[friendEmail] == true) {
                 boolean = true;
-            } else {
+            } else if(userData.requests[friendEmail] == true){
+                boolean = true;
+            }else {
                 boolean = false;
             }
             if (callback) {
@@ -238,7 +258,6 @@ const Util = {
                     .then(response => response.json())
                     .then(data => {
                         if (callback) {
-                            console.log( data.result);
                             callback(data.result);
                         }
                         Util.basicUtil.consoleLog('GetUserData', true);
@@ -537,12 +556,12 @@ const Util = {
                 });
             }
         },
-        sendFriendReqNotification: async(user, friendEmail, callback) => {
+        sendFriendReqNotification: async(userName, friendEmail, callback) => {
             let obj = {
-                user: user,
+                user: userName,
                 friendEmail: friendEmail
             };
-            if (user && friendEmail) {
+            if (userName && friendEmail) {
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/sendFriendRequestNotification',
                     {
                         method: 'POST',

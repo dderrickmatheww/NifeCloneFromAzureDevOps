@@ -87,7 +87,7 @@ import {connect} from "react-redux";
                 multiline={true}
                 returnKeyType={'done'}
                 onKeyPress={this.handleKeyDown}
-                theme={{ colors: { text: 'black', underlineColor: 'transparent' } }}
+                theme={{ colors: {  underlineColor: 'transparent' } }}
                 > 
               </TextInput>
               {
@@ -134,7 +134,7 @@ const localStyles = StyleSheet.create({
     flex:1,
     ...Platform.select({
       ios:{
-        backgroundColor: theme.generalLayout.backgroundColor,
+        backgroundColor: 'white',
         color: theme.generalLayout.textColor,
       },
       android:{

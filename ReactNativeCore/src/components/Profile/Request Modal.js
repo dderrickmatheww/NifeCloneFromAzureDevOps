@@ -35,7 +35,7 @@ class RequestModal extends React.Component  {
         return(         
             <Modal 
               contentContainerStyle={{width:"90%", height:"75%", borderRadius:50, alignSelf:"center"}}
-              visible={this.props.isVisible}
+              visible={this.props.requests.length > 0 ? this.props.isVisible : this.props.requests.length > 0}
               dismissable={true}
               onDismiss={this.props.onDismiss}
             >

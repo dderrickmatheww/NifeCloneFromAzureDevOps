@@ -31,9 +31,9 @@ function BusinessProfile({route, navigation}){
 }
 
 function OtherProfile({route, navigation}){
-  const { currentUser, friends, requests, refresh, uploadImage, profileUser} = route.params;
+  const { friends, requests, refresh, uploadImage, profileUser} = route.params;
   return(
-    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends} profileUser={profileUser}  currentUser={currentUser} isUserProfile={true} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends} profileUser={profileUser}   isUserProfile={true} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 

@@ -1,5 +1,14 @@
 import React from 'react';
-import { View, TouchableOpacity, RefreshControl, StyleSheet, ScrollView, ActivityIndicator, Text } from 'react-native';
+import {
+    View,
+    TouchableOpacity,
+    RefreshControl,
+    StyleSheet,
+    ScrollView,
+    ActivityIndicator,
+    Text,
+    Dimensions
+} from 'react-native';
 import { 
     Headline,
     Avatar,
@@ -12,6 +21,8 @@ import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
 import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+
+const screen = Dimensions.get("window");
 
  class FriendsFeed extends React.Component  {
     state = {
@@ -32,7 +43,10 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
     }
     onRefresh = async () => {
         this.setState({ refresh: true });
-        await this.refresh(this.props.user);
+        Util.user.GetUserData(this.props.user.email, (userData) =>{
+
+             this.refresh(userData);
+        })
     }
     setFriendDataArrays = async () => {
         let friends = this.props.friends;
@@ -100,6 +114,7 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
     }
 
     refresh = async (userData) => {
+
         if (userData) {
             await this.props.refresh(userData);
         }
@@ -133,7 +148,7 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
                 
                {
                 this.state.feedData ?
-                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}
+                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={localStyles.scrollContent}
                     refreshControl={
                         <RefreshControl 
                             refreshing={this.state.refresh} 
@@ -198,6 +213,8 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
     }
 }
 const localStyles = StyleSheet.create({
+    scrollContent:{justifyContent:"center", alignItems:"center", width:"98%"},
+
     StatusOverlay: {
         position:"relative",
         right: 150,
@@ -259,6 +276,8 @@ const localStyles = StyleSheet.create({
         paddingHorizontal:10,
         marginVertical:2,
         width:"100%",
+        minHeight: 150,
+        maxHeight: 150,
     },
     noFeedData:{
         flex:1,

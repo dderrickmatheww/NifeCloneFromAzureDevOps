@@ -32,7 +32,7 @@ const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 class ProfileScreen extends Component {
     state = {
         isLoggedin: false,
-        userData: this.props.isUserProfile ? this.props.userData : this.props.profileUser,
+        userData: this.props.isUserProfile ? this.props.currentUser : this.props.profileUser,
         modalVisible: false,
         friendData: this.props.friends,
         isAddingFriend: false,
@@ -94,28 +94,33 @@ class ProfileScreen extends Component {
 
     addFriend = () => {
         this.setState({isAddingFriend: true});
-        Util.friends.AddFriend(this.state.userData.email, () => {
-            let currentUser = this.props.currentUser;
-            currentUser.friends[this.state.userData.email] = true;
-            this.props.refresh(currentUser)
-            this.setState({
-                isAddingFriend: false,
-                areFriends: true,
-            });
+        Util.friends.sendFriendRequest(this.props.profileUser.email, () => {
+            Util.user.sendFriendReqNotification(this.props.currentUser.displayName, this.props.profileUser.email, console.log('sent notification!'));
+            Util.user.GetUserData(this.props.currentUser.email, (userData) => {
+                this.props.refresh(userData)
+                this.setState({
+                    isAddingFriend: false,
+                    areFriends: true,
+                });
+            })
+
         });
     }
 
     removeFriend = () => {
         this.setState({isAddingFriend: true});
-        Util.friends.RemoveFriend(this.state.userData.email, () => {
-            let currentUser = this.props.currentUser;
-            currentUser.friends[this.state.userData.email] = false;
-            this.props.refresh(currentUser)
-            this.setState({
-                isAddingFriend: false,
-                areFriends: false,
-                friendCount: this.state.friendCount !== 0 ? this.state.friendCount -= 1 : 0
+        Util.friends.handleFriendRequest(this.props.profileUser.email, false,() => {
+
+            Util.user.GetUserData(this.props.currentUser.email, (userData) => {
+                this.props.refresh(userData)
+                this.setState({
+                    isAddingFriend: false,
+                    areFriends: false,
+                    friendCount: this.state.friendCount !== 0 ? this.state.friendCount -= 1 : 0
+                });
             });
+
+
         });
     }
 
@@ -132,7 +137,7 @@ class ProfileScreen extends Component {
 
     areFriends = () => {
         if (this.props.profileUser) {
-            Util.user.IsFriend(this.props.profileUser.friends, (boolean) => {
+            Util.user.IsFriend(this.props.currentUser, this.props.profileUser.email,(boolean) => {
                 this.setState({areFriends: boolean});
             });
         }
@@ -218,7 +223,7 @@ class ProfileScreen extends Component {
                         }
 
                         {/* Edit Button */}
-                        {this.state.isUserProfile ?
+                        {!this.props.profileUser ?
                             <TouchableOpacity style={{
                                 position: "relative",
                                 left: 250,
@@ -676,7 +681,7 @@ const localStyles = StyleSheet.create({
 
 function mapStateToProps(state) {
     return {
-        userData: state.userData,
+        currentUser: state.userData,
         requests: state.friendRequests,
         friends: state.friendData,
         businessData: state.businessData,

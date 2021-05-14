@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ActivityIndicator, StyleSheet} from 'react-native';
+import {View, ActivityIndicator, StyleSheet, Platform} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import WhatsPoppin from '../components/Whats Poppin/WhatsPoppinTab';
 import HomeScreen from '../components/Home/HomeScreen';
@@ -71,7 +71,7 @@ class PoppinStack extends React.Component {
               fontFamily: theme.generalLayout.font
             },
             style: {
-              backgroundColor: 'transparent',
+              backgroundColor: theme.generalLayout.backgroundColor,
               borderWidth:0,
               elevation:0,
               borderBottomColor:'transparent',
@@ -80,8 +80,16 @@ class PoppinStack extends React.Component {
               position: 'absolute',
               color: theme.icons.tabIcon.textColor,
               fontFamily: theme.generalLayout.font,
-              bottom: 20,
-              height: 100
+              bottom: 0,
+              ...Platform.select({
+                ios: {
+                  paddingBottom: 30,
+                },
+                android: {
+                  paddingBottom: 20,
+                },
+              }),
+              height: 80
             }
           }}
           initialRouteName="My Feed"
