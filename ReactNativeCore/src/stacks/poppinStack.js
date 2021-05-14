@@ -36,15 +36,9 @@ class PoppinStack extends React.Component {
     friendData: null
   }
   componentDidMount(){
-<<<<<<< HEAD
     this.setState({userData: this.props.user});
     this.setState({friendData: this.props.friends});
-=======
-    this.setState({ 
-      userData: this.props.user,
-      friendData: this.props.friends
-    });
->>>>>>> dev
+
   }
 
   render() {

@@ -48,7 +48,7 @@ import {connect} from "react-redux";
       let user = this.props.user;
       user['status'] = obj.status;
       let updatedUserData = user;
-      this.props.refresh(updatedUserData);
+      this.props.globalRefresh(updatedUserData);
       Util.user.UpdateUser(user.email, obj, () => {
         this.setState({ saving: false });
         this.props.onSave();
@@ -87,7 +87,7 @@ import {connect} from "react-redux";
                 multiline={true}
                 returnKeyType={'done'}
                 onKeyPress={this.handleKeyDown}
-                theme={{ colors: { text: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
+                theme={{ colors: { text: 'black', underlineColor: 'transparent' } }}
                 > 
               </TextInput>
               {
@@ -121,7 +121,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+    globalRefresh: (userData) => dispatch({type: 'REFRESH', data: userData})
   }
 }
 

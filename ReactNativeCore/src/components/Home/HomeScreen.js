@@ -18,9 +18,10 @@ import EventsModal from '../Whats Poppin/UpdateEventsModal';
 import SpecialsModal from '../Whats Poppin/UpdateSpecialsModal';
 import * as firebase from 'firebase';
 import * as ImagePicker from 'expo-image-picker';
+import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-export default class FriendsFeed extends React.Component  {
+class FriendsFeed extends React.Component  {
 
     state = {
         statusModalVisable: false,
@@ -37,7 +38,22 @@ export default class FriendsFeed extends React.Component  {
         isVerified: false,
         refresh: false
     }
-    
+    state = {
+        statusModalVisable: false,
+        eventModalVisable: false,
+        specialsModalVisable: false,
+        modalVisible: false,
+        userData: this.props.user,
+        friendData: this.props.friends,
+        feedData: null,
+        businessData: this.props.business,
+        snackBarVisable: false,
+        menuVisable: false,
+        snackBarText: "status",
+        isVerified: false,
+        refresh: false
+    }
+
     async componentDidMount() {
         this.setState({
             userData: this.props.user,
@@ -59,7 +75,7 @@ export default class FriendsFeed extends React.Component  {
             let obj = {
                 name: user.displayName,
                 text: user.status.text,
-                time: new Date(user.status.timestamp.seconds ? user.status.timestamp.seconds : user.status.timestamp._seconds * 1000),
+                time: new Date(user.status.timestamp.seconds ? user.status.timestamp.seconds * 1000 : user.status.timestamp._seconds * 1000),
                 image: user.photoSource ? {uri:user.photoSource} : defPhoto,
                 status: true,
                 visited: false,
@@ -74,7 +90,7 @@ export default class FriendsFeed extends React.Component  {
                     let obj = {
                         name: friend.displayName,
                         text: friend.status.text,
-                        time: new Date(friend.status.timestamp.seconds ? friend.status.timestamp.seconds : friend.status.timestamp._seconds * 1000),
+                        time: new Date(friend.status.timestamp.seconds ? friend.status.timestamp.seconds * 1000 : friend.status.timestamp._seconds * 1000),
                         image: friend.photoSource ? {uri:friend.photoSource} : defPhoto,
                         status: true,
                         visited: false,
@@ -91,7 +107,7 @@ export default class FriendsFeed extends React.Component  {
                         let obj = {
                             name: friend.displayName,
                             text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere! No name provided!"),
-                            time: new Date(friend.checkIn.checkInTime.seconds ? friend.checkIn.checkInTime.seconds : friend.checkIn.checkInTime._seconds * 1000),
+                            time: new Date(friend.checkIn.checkInTime.seconds ? friend.checkIn.checkInTime.seconds * 1000 : friend.checkIn.checkInTime._seconds * 1000),
                             image: friend.photoSource ? { uri: friend.photoSource} : { defPhoto },
                             status: false,
                             visited:false,
@@ -108,7 +124,7 @@ export default class FriendsFeed extends React.Component  {
                             let obj = {
                                 name: friend.displayName,
                                 text: "Visited " + (visited.name ? visited.name : "somewhere! No name provided!"),
-                                time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds : visited.checkInTime._seconds * 1000),
+                                time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds * 1000 : visited.checkInTime._seconds * 1000),
                                 image: friend.photoSource ? { uri: friend.photoSource } : { defPhoto },
                                 status: false,
                                 visited:true,
@@ -131,7 +147,7 @@ export default class FriendsFeed extends React.Component  {
                             let obj = {
                                 name: place.displayName,
                                 text: "Event: " + event.event,
-                                time: new Date(event.uploaded.seconds ? event.uploaded.seconds : event.uploaded._seconds * 1000),
+                                time: new Date(event.uploaded.seconds ? event.uploaded.seconds * 1000 : event.uploaded._seconds * 1000),
                                 image: place.photoSource ? { uri: place.photoSource } : { defPhoto },
                                 status: false,
                                 visited: false,
@@ -170,7 +186,7 @@ export default class FriendsFeed extends React.Component  {
                     let obj = {
                         name: user.displayName,
                         text: "Checked into " + (user.checkIn.name ? " at " +  user.checkIn.name : "somewhere! No name provided!"),
-                        time: new Date(user.checkIn.checkInTime.seconds ? user.checkIn.checkInTime.seconds : user.checkIn.checkInTime._seconds * 1000),
+                        time: new Date(user.checkIn.checkInTime.seconds ? user.checkIn.checkInTime.seconds * 1000 : user.checkIn.checkInTime._seconds * 1000),
                         image: user.photoSource ? { uri: user.photoSource } : { defPhoto },
                         status: false,
                         visited: false,
@@ -191,7 +207,7 @@ export default class FriendsFeed extends React.Component  {
                         let obj = {
                             name: user.displayName,
                             text: "Visited " + (visited.name ? visited.name : "somewhere! No name provided!"),
-                            time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds: visited.checkInTime._seconds * 1000),
+                            time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds * 1000: visited.checkInTime._seconds * 1000),
                             image: user.photoSource ? {uri:user.photoSource} : {defPhoto},
                             status: false,
                             visited:true,
@@ -210,7 +226,7 @@ export default class FriendsFeed extends React.Component  {
                     let obj = {
                         name: business.displayName,
                         text: "Event: " + event.event,
-                        time: new Date(event.uploaded.seconds ? event.uploaded.seconds : event.uploaded._seconds   * 1000),
+                        time: new Date(event.uploaded.seconds ? event.uploaded.seconds * 1000 : event.uploaded._seconds   * 1000),
                         image: business.photoSource ? {uri:business.photoSource} : {defPhoto},
                         status: false,
                         visited: false,
@@ -227,7 +243,7 @@ export default class FriendsFeed extends React.Component  {
                     let obj = {
                         name: business.displayName,
                         text: "Special: " + special.special,
-                        time: new Date(special.uploaded.seconds ? special.uploaded.seconds : special.uploaded._seconds * 1000),
+                        time: new Date(special.uploaded.seconds ? special.uploaded.seconds * 1000 : special.uploaded._seconds * 1000),
                         image: business.photoSource ? { uri: business.photoSource } : { defPhoto },
                         status: false,
                         visited: false,
@@ -239,7 +255,7 @@ export default class FriendsFeed extends React.Component  {
                 });
             }
         }
-        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
+        friendFeedData = friendFeedData.sort((a, b) => b.time - a.time);
         this.setState({ feedData: friendFeedData });
     }
 
@@ -254,6 +270,8 @@ export default class FriendsFeed extends React.Component  {
         if (updated.specials) {
             this.setState({snackBarText: "specials"});
         }
+
+        this.setFriendDataArrays();
     }
 
     onDismiss = () => {
@@ -273,13 +291,14 @@ export default class FriendsFeed extends React.Component  {
     }
     onRefresh = async () => {
         this.setState({ refresh: true });
-        await this.refresh();
+        await this.refresh(this.props.user);
     }
+
     refresh = async (userData) => {
         this.props.refresh(userData);
         await this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;
-        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
+        friendFeedData = friendFeedData.sort((a, b) => b.time - a.time);
         this.setState({ 
             feedData: friendFeedData, 
             refresh: false 
@@ -443,7 +462,7 @@ export default class FriendsFeed extends React.Component  {
                                 user={this.state.userData}
                                 onDismiss={()=>this.onDismiss()}
                                 onSave={()=>this.onSave({status:true})}
-                                refresh={this.refresh}
+                                refresh={this.onRefresh}
                                 uploadImage={this.handleUploadImage}
                             >
                             </AddressProof> 
@@ -630,4 +649,21 @@ const localStyles = StyleSheet.create({
         backgroundColor: theme.generalLayout.backgroundColor,
     },
   });
-  
+
+function mapStateToProps(state){
+    return{
+        user: state.userData,
+        friendRequests: state.friendRequests,
+        friends: state.friendData,
+        business: state.businessData,
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(FriendsFeed);
