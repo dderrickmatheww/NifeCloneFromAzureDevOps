@@ -176,7 +176,6 @@ class Navigator extends React.Component {
       console.log(error);
     }
     await Util.user.CheckAuthStatus((user) => {
-      this.setState({ authLoaded: true });
       if (user) {
         this.setState({
           userExists: true

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, RefreshControl, ScrollView, ActivityIndicator } from 'react-native';
 import { 
     Text, 
     Headline,
@@ -35,19 +35,20 @@ export default class FriendsFeed extends React.Component  {
         menuVisable: false,
         snackBarText: "status",
         isVerified: false,
+        refresh: false
     }
     
-    componentDidMount() {
+    async componentDidMount() {
         this.setState({
             userData: this.props.user,
             friendData: this.props.friends,
             businessData: this.props.business,
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
         });
-        this.setFriendDataArrays();
+        await this.setFriendDataArrays();
     }
 
-    setFriendDataArrays = () => {
+    setFriendDataArrays = async () => {
         let friends = this.props.friends;
         let user = this.props.user;
         let business = this.props.business;
@@ -256,9 +257,11 @@ export default class FriendsFeed extends React.Component  {
     }
 
     onDismiss = () => {
-        this.setState({statusModalVisable: false});
-        this.setState({eventModalVisable: false});
-        this.setState({specialsModalVisable: false});
+        this.setState({
+            statusModalVisable: false,
+            eventModalVisable: false,
+            specialsModalVisable: false
+        });
     }
 
     onDismissUpdate = () => {
@@ -268,13 +271,19 @@ export default class FriendsFeed extends React.Component  {
     onDismissSnackBar = () => {
         this.setState({snackBarVisable: false});
     }
-
-    refresh = (userData, friendData, requests, businessData) => {
+    onRefresh = async () => {
+        this.setState({ refresh: true });
+        await this.refresh();
+    }
+    refresh = async (userData) => {
         this.props.refresh(userData);
-        this.setFriendDataArrays();
+        await this.setFriendDataArrays();
         let friendFeedData = this.state.feedData;
         friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 );
-        this.setState({ feedData: friendFeedData });
+        this.setState({ 
+            feedData: friendFeedData, 
+            refresh: false 
+        });
         this.render();
     }
 
@@ -359,12 +368,24 @@ export default class FriendsFeed extends React.Component  {
                     </View>
                         
                     {this.state.feedData ?
-                     <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}>
+                     <ScrollView style={localStyles.ScrollView} contentContainerStyle={{justifyContent:"center", alignItems:"center", width:"98%", paddingBottom:20}}
+                        refreshControl={
+                            <RefreshControl 
+                                refreshing={this.state.refresh} 
+                                onRefresh={this.onRefresh}  
+                                size={22}
+                                color={[theme.loadingIcon.color]}
+                                tintColor={theme.loadingIcon.color}
+                                title={'Loading...'}
+                                titleColor={theme.loadingIcon.textColor}
+                            />
+                        }
+                     >
                             {
                                 this.state.feedData && this.state.feedData.length >0 ?
                                     this.state.feedData.map((data, i)=>(
                                         <View key={i} style={localStyles.feedDataRow}>
-                                            <Avatar.Image source={data.image ? data.image : defPhoto} size={50}/>
+                                            <Avatar.Image source={data.image.uri !== "Unknown" ? data.image : defPhoto} size={50}/>
                                             <Text style={localStyles.displayName}>
                                                 {data.name}
                                                 {
@@ -479,9 +500,10 @@ export default class FriendsFeed extends React.Component  {
                                 this.onDismissSnackBar()
                                 },
                             }}
+                            style={{position: 'absolute', bottom: 725}}
                         >
                             Updated your {this.state.snackBarText}!
-                        </Snackbar>
+                    </Snackbar>
                 </View>
         )
     }
