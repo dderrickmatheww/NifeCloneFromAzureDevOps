@@ -8,6 +8,9 @@ import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
 import VisitedByCallout from './VisitedByCallout';
 import {connect} from "react-redux";
+import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
+import {Avatar} from "react-native-paper";
+
 
 
 var { width, height } = Dimensions.get('window');
@@ -249,6 +252,27 @@ class MapScreen extends React.Component  {
     });
   }
 
+  recenter = ( ) => {
+    Util.location.GetUserLocation(async (loc, region) => {
+      let userLocation = loc.coords;
+      let { width, height } = Dimensions.get('window')
+      ASPECT_RATIO = width / height;
+      LATITUDE = userLocation.latitude;
+      LONGITUDE = userLocation.longitude;
+      LATITUDE_DELTA = 0.0922;
+      LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+      this.setState({
+        isLoaded: true,
+        region: {
+          latitude: LATITUDE,
+          longitude: LONGITUDE,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA
+        }
+      });
+    });
+  }
+
   gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean, autoCompUpdate) => {  
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
       if(boolean) {
@@ -362,6 +386,7 @@ class MapScreen extends React.Component  {
       this.state.markers != undefined ? 
       (
         <View style={localStyles.container}>
+
           <View style={localStyles.autoCompContainer}>
             <InputWithIcon 
               name={'ios-mail'} 
@@ -380,6 +405,7 @@ class MapScreen extends React.Component  {
               PopUpBarModel={(e, buisnessUID, places) => { this.HandleMarkerPress(e, buisnessUID, places) }} 
               autocompleteData={this.state.dropDownData}
             />
+
           </View>
            <MapView
               style={localStyles.map}
@@ -398,6 +424,7 @@ class MapScreen extends React.Component  {
               moveOnMarkerPress={false}
               loadingBackgroundColor={theme.generalLayout.backgroundColor}
             >
+
             
             {this.state.markers.map(marker => (
               
@@ -418,6 +445,15 @@ class MapScreen extends React.Component  {
                 </ Marker>
               ))} 
           </MapView>
+
+          <TouchableOpacity onPress={this.recenter} style={localStyles.ovrly}>
+            <MaterialCommunityIcons
+                name='navigation'
+                color={theme.GOLD}
+                size={35}
+            />
+          </TouchableOpacity>
+
           { this.state.isModalVisible ?
               <BarModal 
               isVisible={this.state.isModalVisible}
@@ -441,7 +477,9 @@ class MapScreen extends React.Component  {
             > 
             </BarModal> : null
           }       
-          <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress} />  
+          <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress} />
+
+
         </View>
       ) 
       :
@@ -458,6 +496,16 @@ class MapScreen extends React.Component  {
 }
 
 const localStyles = StyleSheet.create({
+  ovrly: {
+    position: 'absolute',
+    top:"5%",
+    left: "89%",
+    opacity: 0.9,
+    backgroundColor: theme.generalLayout.backgroundColor,
+    paddingVertical:0,
+    borderColor: theme.generalLayout.secondaryColor,
+    zIndex:150
+  },
   markerVisited:{
     marginTop: 12,
     position:"relative"

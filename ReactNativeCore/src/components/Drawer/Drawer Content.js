@@ -22,11 +22,39 @@ import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icon
 import Util from '../../scripts/Util';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../Universal/IconWithBadge"
+ import * as Notifications from "expo-notifications";
+ import * as firebase from "firebase";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
+ Notifications.setNotificationHandler({
+     handleNotification: async () => ({
+         shouldShowAlert: true,
+         shouldPlaySound: false,
+         shouldSetBadge: false,
+     }),
+ });
 
 export function DrawerContent(props) {
 
+    useEffect(() => {
+        console.log('useEffect hit')
+        Notifications.addNotificationReceivedListener((notification) => {
+            // console.log('Notification: ');
+            console.log(notification);
+            console.log('addNotificationReceivedListener hit')
+        });
+        Notifications.addNotificationResponseReceivedListener((response) => {
+            console.log(response);
+            console.log('addNotificationResponseReceivedListener hit');
+            if(response.notification.request.content.data.isFriendRequest){
+                Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
+                    props.refresh(user);
+                    props.navigation.navigate('Profile', {screen:'Friends'})
+                })
+
+            }
+        });
+    })
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
