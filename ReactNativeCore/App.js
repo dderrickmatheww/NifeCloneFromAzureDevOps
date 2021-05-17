@@ -28,10 +28,10 @@ const reducer = (state = initialState, action) => {
   switch(action.type){
     case 'REFRESH':
       return {
-        userData: action.data,
-        friendData: action.data.friendData.acceptedFriends,
-        friendRequests: action.data.friendData.requests,
-        businessData: action.data.businessData,
+        userData: action.data ? action.data : null,
+        friendData:action.data ? action.data.friendData.acceptedFriends : null,
+        friendRequests: action.data ? action.data.friendData.requests: null,
+        businessData: action.data ? action.data.businessData: null,
       }
   }
     return state;
