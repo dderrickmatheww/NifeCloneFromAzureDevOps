@@ -18,14 +18,14 @@ export default class NifeLoginModal extends Component {
         signUp: true,
         bussinessApplication: false,
         bussinessApplicationPt2: false,
-        businessName: "",
-        ownerName: "",
-        businessEmail: "",
-        businessPhone: "",
-        Address: "",
-        City: "",
-        State: "",
-        zip: "",
+        businessName: "Oscar's",
+        ownerName: "Mike",
+        businessEmail: "mpalumbofifa@gmail.com",
+        businessPhone: "8438220589",
+        Address: "207 W 5th North Street",
+        City: "Summerville",
+        State: "SC",
+        zip: "29483",
         businessId: "",
         coordinates: null,
         proofURI: null,
@@ -123,7 +123,7 @@ export default class NifeLoginModal extends Component {
         if(address !== null & city  !== null  & state !== null & name !== null ){
             console.log(address, city, state, name);
             Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US", (data) => {
-                console.log(data);
+                // console.log(data);
                 if (data.businesses && data.businesses.length > 0) {
                     this.setState({
                         businessId: data.businesses[0].id,

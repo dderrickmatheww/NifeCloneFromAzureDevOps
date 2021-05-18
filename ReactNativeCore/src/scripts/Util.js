@@ -144,10 +144,12 @@ const Util = {
         },
     },
     user: {
-        VerifyUser: async (user, email, callback) => {
+        VerifyUser: async (user, email, business,callback) => {
+            console.log(user);
             let obj = {
                 user: user,
-                email: email
+                email: email,
+                business: business ? business: null,
             };
             if (user && email) {
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser',

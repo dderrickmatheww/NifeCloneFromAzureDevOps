@@ -80,8 +80,9 @@ class Navigator extends React.Component {
     userExists: false,
     displayName: null,
     uploading: false,
-    businessData: null,
-    isBusiness: false, //only set at business sign up for first time
+    businessSignUp: null,
+    isBusiness: false,
+    //only set at business sign up for first time
     businessState: null,
     favoritePlaceData: null,
     notification: null,
@@ -105,8 +106,11 @@ class Navigator extends React.Component {
 
 
   firstTimeSignUp = (user) => {
-    if(this.state.displayName) {
-      user.updateProfile({ displayName: this.state.displayName })
+    // console.log(user);
+    // console.log('firstTimeSignUp fired');
+    // console.log(this.state.displayName,  this.state.businessState.businessName)
+    if(this.state.displayName || this.state.businessSignUp.businessName) {
+      user.updateProfile({ displayName: this.state.businessSignUp ? this.state.businessSignUp.businessName :  this.state.displayName})
       .then(() => {
         this.initializeParams(user);
       });
@@ -136,28 +140,37 @@ class Navigator extends React.Component {
   }
 
   setIsBusiness = (bool, signUpState) => {
+    console.log(signUpState);
     this.setState({ isBusiness: bool });
     if (signUpState) {
-      this.setState({ 
-        businessState: signUpState,
-        authLoaded: true
+      this.setState({
+        businessSignUp: signUpState,
+        authLoaded: true,
+        displayName: signUpState.businessName,
       });
     }
   }
 
   initializeParams = async (user) => {
-    await Util.user.VerifyUser(user, user.email, (userObj) => {
-      let user = userObj;
-      this.getNeededData(user);
-      Permissions.askAsync(Permissions.LOCATION).then((status) => {
-        if (status.status === 'granted') {
-          Util.location.GetUserLocation(null, user);
-        } 
-        else {
-          Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
-        }
+    console.log('initializeParams fired');
+      await Util.user.VerifyUser(user, user.email, this.state.businessSignUp,(userObj) => {
+        let user = userObj;
+        this.getNeededData(user);
+
+        //get push notification permissions
+        Util.user.registerForPushNotificationsAsync((token) => {
+          Util.user.UpdateUser(user.email, token);
+        });
+        Permissions.askAsync(Permissions.LOCATION).then((status) => {
+          if (status.status === 'granted') {
+            Util.location.GetUserLocation(null, user);
+          }
+          else {
+            Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
+          }
+        });
       });
-    });
+
   }
 
 
@@ -175,6 +188,8 @@ class Navigator extends React.Component {
       console.log(error);
     }
     await Util.user.CheckAuthStatus((user) => {
+      console.log('CheckAuthStatus fired');
+
       this.setState({ authLoaded: true });
       if (user) {
         this.setState({
@@ -186,10 +201,7 @@ class Navigator extends React.Component {
         else {
           this.firstTimeSignUp(user);
         }
-        //get push notification permissions
-        Util.user.registerForPushNotificationsAsync((token) => {
-          Util.user.UpdateUser(user.email, token);
-        });
+
       }
       else {
         this.setState({
