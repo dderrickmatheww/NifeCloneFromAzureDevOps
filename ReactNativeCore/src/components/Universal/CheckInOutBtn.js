@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
 export default class CheckInOutButtons extends React.Component  {

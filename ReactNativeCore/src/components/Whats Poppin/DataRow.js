@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import {
@@ -7,6 +7,7 @@ import {
 } from 'react-native-paper';
 import Favorite from '../Universal/Favorite';
 import Util from '../../scripts/Util';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class DataRow extends React.Component  {
     state = {

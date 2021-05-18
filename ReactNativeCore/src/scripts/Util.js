@@ -1,9 +1,10 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import {
     STAND_ALONE,
     YELP_PLACE_KEY,
     ClientKey,
     AndroidClientKey,
+    IOSClientKeyStandAlone,
     IOSClientKey,
     apiKey,
     authDomain,
@@ -19,7 +20,7 @@ import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
-import {isPointWithinRadius, getDistance} from 'geolib';
+import { isPointWithinRadius, getDistance } from 'geolib';
 import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -978,7 +979,8 @@ const Util = {
                         androidClientId: AndroidClientKey,
                         iosClientId: IOSClientKey,
                         clientId: ClientKey,
-                        androidStandaloneAppClientId: STAND_ALONE
+                        androidStandaloneAppClientId: STAND_ALONE,
+                        iosStandaloneAppClientId: IOSClientKeyStandAlone 
                     });
                     if (result.type === 'success') {
                         /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
@@ -1015,28 +1017,7 @@ const Util = {
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                                 .catch(function (error) {
                                     Util.basicUtil.consoleLog("Nife's sign-up", false);
-                                    Util.basicUtil.Alert('Nife Business Sign-Up Error', error.message, null);
-                                });
-                            dataObj['data'] = firebase.auth().currentUser;
-                            dataObj['token'] = null;
-                            dataObj['user'] = firebase.auth().currentUser;
-                            Util.basicUtil.consoleLog("Nife's Business sign-up", true);
-                            if (callback) {
-                                callback(dataObj);
-                            }
-                        } catch ({message}) {
-                            Util.basicUtil.consoleLog("Nife's Business sign-up", false);
-                            Util.basicUtil.Alert('Nife Business Sign-Up Error', message, null);
-                        }
-                    } else {
-                        // noinspection JSAnnotator
-                        try {
-                            let email = signUpInfo.businessEmail;
-                            let password = signUpInfo.password1
-                            firebase.auth().createUserWithEmailAndPassword(email, password)
-                                .catch(function (error) {
-                                    Util.basicUtil.consoleLog("Nife's User sign-up", false);
-                                    Util.basicUtil.Alert('Nife Sign-Up Error', error.message, null);
+                                    Util.basicUtil.Alert('Nife User Sign-Up Error', error.message, null);
                                 });
                             dataObj['data'] = firebase.auth().currentUser;
                             dataObj['token'] = null;
@@ -1047,6 +1028,28 @@ const Util = {
                             }
                         } catch ({message}) {
                             Util.basicUtil.consoleLog("Nife's User sign-up", false);
+                            Util.basicUtil.Alert('Nife User Sign-Up Error', message, null);
+                        }
+                    } else {
+                        // noinspection JSAnnotator
+                        console.log('is business sign up')
+                        try {
+                            let email = signUpInfo.businessEmail;
+                            let password = signUpInfo.password1
+                            firebase.auth().createUserWithEmailAndPassword(email, password)
+                                .catch(function (error) {
+                                    Util.basicUtil.consoleLog("Nife's Business sign-up", false);
+                                    Util.basicUtil.Alert('Nife Sign-Up Error', error.message, null);
+                                });
+                            dataObj['data'] = firebase.auth().currentUser;
+                            dataObj['token'] = null;
+                            dataObj['user'] = firebase.auth().currentUser;
+                            Util.basicUtil.consoleLog("Nife's Business sign-up", true);
+                            if (callback) {
+                                callback(dataObj);
+                            }
+                        } catch ({message}) {
+                            Util.basicUtil.consoleLog("Nife's Business sign-up", false);
                             Util.basicUtil.Alert('Nife Sign-Up Error', message, null);
                         }
                     }
@@ -1258,7 +1261,15 @@ const Util = {
             }
             return dest;
         },
-        defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken
+        defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken,
+        TouchableOpacity: () => {
+            if(Device.osName == "Android") {
+                return require('react-native-gesture-handler').TouchableOpacity;
+            }
+            else {
+                return require('react-native').TouchableOpacity;
+            }
+        }
     }
 }
 

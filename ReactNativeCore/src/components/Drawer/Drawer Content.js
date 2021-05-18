@@ -1,4 +1,4 @@
- import React, {useEffect} from 'react';
+ import React, { useEffect } from 'react';
 import { 
     View, 
     StyleSheet, 
@@ -20,12 +20,12 @@ import {
 import theme from '../../../Styles/theme';
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import Util from '../../scripts/Util';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import IconWithBadge from "../Universal/IconWithBadge"
  import * as Notifications from "expo-notifications";
  import * as firebase from "firebase";
- import {useNavigation} from "@react-navigation/native";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+
 
  Notifications.setNotificationHandler({
      handleNotification: async () => ({

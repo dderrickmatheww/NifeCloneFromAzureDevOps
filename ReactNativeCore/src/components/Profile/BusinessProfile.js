@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, TouchableOpacity, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, ScrollView, ImageBackground, ActivityIndicator, StyleSheet } from 'react-native';
 import {
   Title,
   Caption,
@@ -12,7 +12,8 @@ import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import StatusModal from './Status Modal';
-import Favorite from '../Universal/Favorite'
+import Favorite from '../Universal/Favorite';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class ProfileScreen extends Component {
   state = {
