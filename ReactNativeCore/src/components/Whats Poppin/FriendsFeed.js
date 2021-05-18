@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     View,
-    TouchableOpacity,
     RefreshControl,
     StyleSheet,
     ScrollView,
@@ -19,8 +18,9 @@ import {
 import  theme  from '../../../Styles/theme';
 import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 const screen = Dimensions.get("window");
 

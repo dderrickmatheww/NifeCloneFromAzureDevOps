@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class PleaseLogin extends React.Component  {
     render() {

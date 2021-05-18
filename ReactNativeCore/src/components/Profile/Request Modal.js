@@ -1,6 +1,5 @@
 import React  from "react";
 import {
-    TouchableOpacity,
     StyleSheet,
     View,
     ActivityIndicator,
@@ -12,8 +11,9 @@ import Util from '../../scripts/Util';
 import { Modal, Text, Subheading } from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class RequestModal extends React.Component  {
     state = {
