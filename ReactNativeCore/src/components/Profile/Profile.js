@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 import {
     View,
-    SafeAreaView,
-    KeyboardAvoidingView,
     ScrollView,
-    TouchableOpacity,
     ImageBackground,
     ActivityIndicator,
     StyleSheet,
@@ -16,18 +13,18 @@ import {
     Text,
     Headline,
     Avatar,
-    Chip,
-    Surface
+    Chip
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
-import {styles} from '../../../Styles/style';
+import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
-import {Ionicons} from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import StatusModal from './Status Modal';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
-const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
+const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class ProfileScreen extends Component {
     state = {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from 'react-native';
 import Util from '../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../Universal/DrawerButton';
@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import {
   TextInput
 } from 'react-native-paper';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
 

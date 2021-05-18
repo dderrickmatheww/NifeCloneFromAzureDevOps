@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,8 +10,9 @@ import {
 import{
   Switch
 } from 'react-native-paper';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class SettingsTab extends Component {
   state = {

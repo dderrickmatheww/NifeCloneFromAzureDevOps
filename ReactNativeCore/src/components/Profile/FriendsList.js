@@ -1,6 +1,6 @@
 import React from 'react';
 import Util from '../../scripts/Util';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Platform } from 'react-native';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
@@ -9,6 +9,7 @@ import {
 } from 'react-native-paper';
 import {connect} from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class FriendsList extends React.Component {
   

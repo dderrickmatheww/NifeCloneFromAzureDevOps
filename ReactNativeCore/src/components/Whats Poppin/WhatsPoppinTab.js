@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import theme from '../../../Styles/theme';
 import getFeedData from './GetFeedData';
 import DataRow from './DataRow';
@@ -11,6 +11,7 @@ import {
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class WhatsPoppin extends React.Component  {
 

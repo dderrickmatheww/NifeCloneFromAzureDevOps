@@ -1,10 +1,11 @@
 import React from 'react';
 import * as Notifications from 'expo-notifications'
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
 import theme from '../../../Styles/theme';
 import 'firebase/firestore'
 import Util from "../../scripts/Util";
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
