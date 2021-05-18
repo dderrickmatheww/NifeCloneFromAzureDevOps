@@ -1015,28 +1015,7 @@ const Util = {
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                                 .catch(function (error) {
                                     Util.basicUtil.consoleLog("Nife's sign-up", false);
-                                    Util.basicUtil.Alert('Nife Business Sign-Up Error', error.message, null);
-                                });
-                            dataObj['data'] = firebase.auth().currentUser;
-                            dataObj['token'] = null;
-                            dataObj['user'] = firebase.auth().currentUser;
-                            Util.basicUtil.consoleLog("Nife's Business sign-up", true);
-                            if (callback) {
-                                callback(dataObj);
-                            }
-                        } catch ({message}) {
-                            Util.basicUtil.consoleLog("Nife's Business sign-up", false);
-                            Util.basicUtil.Alert('Nife Business Sign-Up Error', message, null);
-                        }
-                    } else {
-                        // noinspection JSAnnotator
-                        try {
-                            let email = signUpInfo.businessEmail;
-                            let password = signUpInfo.password1
-                            firebase.auth().createUserWithEmailAndPassword(email, password)
-                                .catch(function (error) {
-                                    Util.basicUtil.consoleLog("Nife's User sign-up", false);
-                                    Util.basicUtil.Alert('Nife Sign-Up Error', error.message, null);
+                                    Util.basicUtil.Alert('Nife User Sign-Up Error', error.message, null);
                                 });
                             dataObj['data'] = firebase.auth().currentUser;
                             dataObj['token'] = null;
@@ -1047,6 +1026,28 @@ const Util = {
                             }
                         } catch ({message}) {
                             Util.basicUtil.consoleLog("Nife's User sign-up", false);
+                            Util.basicUtil.Alert('Nife User Sign-Up Error', message, null);
+                        }
+                    } else {
+                        // noinspection JSAnnotator
+                        console.log('is business sign up')
+                        try {
+                            let email = signUpInfo.businessEmail;
+                            let password = signUpInfo.password1
+                            firebase.auth().createUserWithEmailAndPassword(email, password)
+                                .catch(function (error) {
+                                    Util.basicUtil.consoleLog("Nife's Business sign-up", false);
+                                    Util.basicUtil.Alert('Nife Sign-Up Error', error.message, null);
+                                });
+                            dataObj['data'] = firebase.auth().currentUser;
+                            dataObj['token'] = null;
+                            dataObj['user'] = firebase.auth().currentUser;
+                            Util.basicUtil.consoleLog("Nife's Business sign-up", true);
+                            if (callback) {
+                                callback(dataObj);
+                            }
+                        } catch ({message}) {
+                            Util.basicUtil.consoleLog("Nife's Business sign-up", false);
                             Util.basicUtil.Alert('Nife Sign-Up Error', message, null);
                         }
                     }
