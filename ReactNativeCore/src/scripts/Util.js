@@ -4,6 +4,7 @@ import {
     YELP_PLACE_KEY,
     ClientKey,
     AndroidClientKey,
+    IOSClientKeyStandAlone,
     IOSClientKey,
     apiKey,
     authDomain,
@@ -980,7 +981,8 @@ const Util = {
                         androidClientId: AndroidClientKey,
                         iosClientId: IOSClientKey,
                         clientId: ClientKey,
-                        androidStandaloneAppClientId: STAND_ALONE
+                        androidStandaloneAppClientId: STAND_ALONE,
+                        iosStandaloneAppClientId: IOSClientKeyStandAlone 
                     });
                     if (result.type === 'success') {
                         /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
