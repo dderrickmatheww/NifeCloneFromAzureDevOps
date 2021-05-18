@@ -1,15 +1,15 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet, Image, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
-import MapView, { PROVIDER_GOOGLE, Marker, Callout, Heatmap } from 'react-native-maps';
+import { View,  Dimensions,  StyleSheet, Image, ActivityIndicator } from 'react-native';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import InputWithIcon from '../Universal/InputWithIcon';
 import BarModal from './BarModal';
 import DrawerButton from '../Universal/DrawerButton';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
 import VisitedByCallout from './VisitedByCallout';
-import {connect} from "react-redux";
-import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
-import {Avatar} from "react-native-paper";
+import { connect } from "react-redux";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
 

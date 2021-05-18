@@ -4,7 +4,7 @@ import IconWithBadge from './IconWithBadge';
 import theme from '../../../Styles/theme';
 import { styles } from '../../../Styles/style';
 import Util from '../../scripts/Util';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class Favorite extends React.Component  { 
 

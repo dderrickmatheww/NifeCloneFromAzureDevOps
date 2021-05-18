@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     View,
-    TouchableOpacity,
     StyleSheet,
     RefreshControl,
     ScrollView,
@@ -28,7 +27,7 @@ import SpecialsModal from '../Whats Poppin/UpdateSpecialsModal';
 import * as firebase from 'firebase';
 import * as ImagePicker from 'expo-image-picker';
 import {connect} from "react-redux";
-
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 
 const screen = Dimensions.get("screen");

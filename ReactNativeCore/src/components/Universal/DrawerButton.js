@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
     Avatar
 } from 'react-native-paper';
 import theme from '../../../Styles/theme';
 import Util from '../../scripts/Util';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class DrawerButton extends React.Component  {
     render() {

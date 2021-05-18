@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
 import NifeLoginModal from '../Home/LoginModal'
 import * as firebase from 'firebase';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class LoginScreen extends Component {
   state = {
@@ -93,7 +94,7 @@ export default class LoginScreen extends Component {
               modalVisible: true
             }); 
           }}>
-            <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife as a business</Text>
+            <Text style={localStyles.loggedOutText}>Login/Sign-up with Nife</Text>
             <Image
               style={localStyles.Logo}
               source={defPhoto}

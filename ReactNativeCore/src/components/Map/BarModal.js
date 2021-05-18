@@ -15,8 +15,8 @@ import theme from "../../../Styles/theme";
 import Util from "../../scripts/Util";
 import Favorite from "../Universal/Favorite";
 import PopUpModal from "../Universal/PopUpModal";
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class BarModal extends React.Component  {
 

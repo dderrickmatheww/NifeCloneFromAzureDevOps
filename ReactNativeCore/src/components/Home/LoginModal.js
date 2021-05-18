@@ -1,20 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Text, ScrollView, Platform } from 'react-native';
+import { View, StyleSheet, Text, ScrollView } from 'react-native';
 import Util from '../../scripts/Util';
 import { Modal, Subheading, Caption, TextInput, ActivityIndicator } from 'react-native-paper';
 import { styles } from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import * as ImagePicker from 'expo-image-picker';
-import * as Device from "expo-device";
-
-let TouchableOpacity;
-if(Device.osName == "Android") {
-    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
-}
-else {
-    TouchableOpacity = require('react-native').TouchableOpacity;
-}
-
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class NifeLoginModal extends Component {
 

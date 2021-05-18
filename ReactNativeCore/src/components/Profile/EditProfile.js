@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, StyleSheet, ScrollView, Platform } from 'react-native';
-import {Picker} from '@react-native-community/picker'
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Platform } from 'react-native';
+import { Picker } from '@react-native-community/picker'
 import Util from '../../scripts/Util';
 import { styles } from '../../../Styles/style';
 import DrawerButton from '../Universal/DrawerButton';
@@ -13,6 +13,7 @@ import {
   Chip
 } from 'react-native-paper';
 import {connect} from "react-redux";
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
  class EditProfile extends Component {

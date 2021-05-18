@@ -1,18 +1,11 @@
 import * as React from 'react';
-import * as Device from 'expo-device';
 import { View, TextInput, Text, ActivityIndicator, StyleSheet, FlatList } from 'react-native';
 import {
   Avatar
 } from 'react-native-paper';
 import theme from '../../../Styles/theme';
-
-let TouchableOpacity;
-if(Device.osName == "Android") {
-    TouchableOpacity = require('react-native-gesture-handler').TouchableOpacity;
-}
-else {
-    TouchableOpacity = require('react-native').TouchableOpacity;
-}
+import Util from '../../scripts/Util';
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 export default class InputWithIcon extends React.Component { 
   
