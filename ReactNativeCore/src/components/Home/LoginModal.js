@@ -121,14 +121,15 @@ export default class NifeLoginModal extends Component {
         let state = this.state.State ? this.state.State : null;
         let name = this.state.businessName ? this.state.businessName : null;
         if(address !== null & city  !== null  & state !== null & name !== null ){
+            console.log(address, city, state, name);
             Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US", (data) => {
+                console.log(data);
                 if (data.businesses && data.businesses.length > 0) {
                     this.setState({
                         businessId: data.businesses[0].id,
                         coordinates: data.businesses[0].coordinates,
                         bussinessApplicationPt2: true
                     });
-                    this.props.setIsBusiness(true, this.state);
                 } else {
                     this.setState({ verifying: false });
                     Util.basicUtil.Alert('Nife Message', "We could not find your business! Make sure your contact information matches other online sources! For more information contact admin@nife.app.", null);
@@ -249,12 +250,12 @@ export default class NifeLoginModal extends Component {
                         >
                             {
                                 !this.state.verifying ?
-                                <View>
+                                <View style={localStyles.Container}>
                                     <View style={localStyles.Container}>
                                         <Subheading style={localStyles.Subheading}>Please fill out the information to verify your business!</Subheading>
                                     </View>
                             
-                                    <ScrollView contentContainerStyle={localStyles.Container}>
+                                    <ScrollView style={{maxHeight:450}} contentContainerStyle={localStyles.Container}>
                                         <TextInput   theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
                                         style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
 
@@ -404,14 +405,20 @@ const localStyles = StyleSheet.create({
     loginSwitchText:{
         color: theme.generalLayout.textColor, 
         fontSize: 15,
-        marginTop: '25%',
         textAlign:"center",
         fontFamily: theme.generalLayout.font
     },
     loginLoginSwitchText:{
         color: theme.generalLayout.textColor, 
         fontSize: 15,
-        marginTop: '50%',
+        ...Platform.select({
+            ios: {
+                marginTop: "'7'%",
+            },
+            android: {
+                marginTop: "20%",
+            },
+        }),
         textAlign:"center",
         fontFamily: theme.generalLayout.font
     },
@@ -424,7 +431,14 @@ const localStyles = StyleSheet.create({
         paddingVertical:2,
         marginTop: '5%',
         width: '40%',
-        height: '7%',
+        ...Platform.select({
+            ios: {
+                height: "7%",
+            },
+            android: {
+                height: "20%",
+            },
+        })
     },
     notBusiness:{
         borderColor: theme.generalLayout.secondaryColor,
@@ -440,10 +454,15 @@ const localStyles = StyleSheet.create({
         borderRadius: 10,
         alignSelf:"center",
         borderWidth: 1,
-        paddingHorizontal:5,
-        paddingVertical: 2,
         width: '40%',
-        height: '7%',
+        ...Platform.select({
+            ios: {
+                height: "7%",
+            },
+            android: {
+                height: "20%",
+            },
+        }),
         marginTop: '10%',
         textAlign:"center",
     },
@@ -454,19 +473,23 @@ const localStyles = StyleSheet.create({
         borderWidth: 1,
         paddingHorizontal:5,
         paddingVertical: 2,
-        width: '30%',
+        width: 100,
         margin: '2%',
-        textAlign:"center",
     },
-    LoginBtn: {
+    signUpBtn:{
         borderColor: theme.generalLayout.secondaryColor,
         borderRadius: 10,
         alignSelf:"center",
         borderWidth: 1,
-        paddingHorizontal:5,
-        paddingVertical: 2,
         width: '40%',
-        height: '8%',
+        ...Platform.select({
+            ios: {
+                height: "7%",
+            },
+            android: {
+                height: "20%",
+            },
+        }),
         marginTop: '10%',
         textAlign:"center",
     },
@@ -474,7 +497,6 @@ const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor, 
         fontSize: 15,
         textAlign:"center",
-        padding: '2%',
         fontFamily: theme.generalLayout.font
     },
     business:{
@@ -538,9 +560,10 @@ const localStyles = StyleSheet.create({
     },
     Container:{
         flexDirection:'column',
-        justifyContent:"center",
+        justifyContent:"flex-start",
         alignContent:"center",
         textAlign:"center",
         borderRadius:10,
     },
+
 })
