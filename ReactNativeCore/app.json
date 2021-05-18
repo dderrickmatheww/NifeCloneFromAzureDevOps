@@ -20,7 +20,13 @@
     },
     "ios": {
       "bundleIdentifier": "com.virastarllc.nife",
-      "buildNumber": "1.0.0.0"
+      "buildNumber": "1.0.0.0",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0",
+        "googleSignIn": {
+          "reservedClientId": "24040009982-mugkd12ks4b97bh33sml890mkb8dpouc.apps.googleusercontent.com"
+        }
+      }
     },
     "android": {
       "package": "com.virastarllc.nife",

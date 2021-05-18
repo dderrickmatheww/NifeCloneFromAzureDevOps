@@ -7,7 +7,7 @@ import RequestModal from './Request Modal';
 import { 
   Avatar,
 } from 'react-native-paper';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
