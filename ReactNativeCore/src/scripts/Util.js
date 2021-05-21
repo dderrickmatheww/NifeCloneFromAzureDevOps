@@ -146,10 +146,12 @@ const Util = {
         },
     },
     user: {
-        VerifyUser: async (user, email, callback) => {
+        VerifyUser: async (user, email, business,callback) => {
+            console.log(user);
             let obj = {
                 user: user,
-                email: email
+                email: email,
+                business: business ? business: null,
             };
             if (user && email) {
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser',
@@ -805,6 +807,29 @@ const Util = {
                         Util.basicUtil.consoleLog("SendProofEmail", false);
                     })
             }
+        },
+        getNifeBusinessesNearby: async(user, cb) => {
+            let obj = {
+                user: user
+            }
+            if (user && typeof obj.user !== 'undefined') {
+                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getNifeBusinessesNearby',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (cb) {
+                            cb(data.result);
+                        }
+                        Util.basicUtil.consoleLog('getNifeBusinessesNearby', true);
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.Alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('getNifeBusinessesNearby', false);
+                    });
+            }
         }
 
     },
@@ -1150,6 +1175,23 @@ const Util = {
                     })
                     .catch((err) => {
                         Util.basicUtil.consoleLog("businessPhoneVerification", false);
+                        Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
+                    });
+            },
+            getBusinessData: (id, callback) =>{
+                fetch("https://api.yelp.com/v3/businesses/"+id,
+                    {
+                        headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
+                    })
+                    .then((data) => data.json())
+                    .then((response) => {
+                        Util.basicUtil.consoleLog("getBusinessData", true);
+                        if (callback) {
+                            callback(response);
+                        }
+                    })
+                    .catch((err) => {
+                        Util.basicUtil.consoleLog("getBusinessData", false);
                         Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
                     });
             }

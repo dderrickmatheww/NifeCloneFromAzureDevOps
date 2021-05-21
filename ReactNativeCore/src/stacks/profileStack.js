@@ -24,9 +24,9 @@ function UserProfile({route, navigation}){
 }
 
 function BusinessProfile({route, navigation}){
-  const { user, currentUser, requests, refresh} = route.params;
+  const { user, currentUser, requests, refresh, isUserProfile, uploadImage} = route.params;
   return(
-    <Business currentUser={currentUser} refresh={refresh} requests={requests} user={user} onDrawerPress={() => navigation.openDrawer()} isUserProfile={true}  navigation={navigation}></Business>
+    <Business uploadImage={uploadImage} isUserProfile={isUserProfile} currentUser={currentUser} refresh={refresh} requests={requests} user={user} onDrawerPress={() => navigation.openDrawer()} isUserProfile={true}  navigation={navigation}></Business>
   );
 }
 
@@ -77,7 +77,7 @@ class ProfileStack extends React.Component  {
       <Stack.Navigator headerMode="none">
         <Stack.Screen name="ProfileScreen" component={UserProfile} options={{title: 'ProfileScreen'}} initialParams={{ uploadImage: this.props.uploadImage, isUserProfile:true }}/>
         <Stack.Screen name="OtherProfile" component={OtherProfile} options={{title: 'ProfileScreen'}} initialParams={{uploadImage: this.props.uploadImage, requests: this.props.requests, refresh: this.props.refresh, business: this.props.business }}/>
-        <Stack.Screen name="BusinessProfile" component={BusinessProfile} options={{title: 'ProfileScreen'}} initialParams={{ currentUser: this.props.user, requests: this.props.requests, uploadImage: this.props.uploadImage, refresh: this.props.refresh, business: this.props.business }}/>
+        <Stack.Screen name="BusinessProfile" component={BusinessProfile} options={{title: 'ProfileScreen'}} initialParams={{isUserProfile:false, currentUser: this.props.user, requests: this.props.requests, uploadImage: this.props.uploadImage, refresh: this.props.refresh, business: this.props.business }}/>
         <Stack.Screen name="Friends" component={Friends} options={{title: 'Friends'}} />
         <Stack.Screen name="Edit" component={Edit} options={{title: 'Edit'}} />
         <Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user: this.props.user,  requests: this.props.requests, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>

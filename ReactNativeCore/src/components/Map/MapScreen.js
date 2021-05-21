@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View,  Dimensions,  StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import InputWithIcon from '../Universal/InputWithIcon';
 import BarModal from './BarModal';
@@ -9,7 +9,7 @@ import theme from '../../../Styles/theme';
 import VisitedByCallout from './VisitedByCallout';
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+// const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
 
@@ -45,7 +45,8 @@ class MapScreen extends React.Component  {
     buisnessUID: null,
     searchParam: "",
     dropDownData: [],
-    isSearch: false
+    isSearch: false,
+    nifeBusinesses:[],
   };
   
   mapStyle = [
@@ -365,6 +366,10 @@ class MapScreen extends React.Component  {
       friendData: this.props.friends
     });
     this.OnChangeMapRegion();
+    Util.business.getNifeBusinessesNearby(this.props.user, (data) => {
+      this.setState({nifeBusinesses: data});
+      console.log(data);
+    });
   }
 
   componentDidMount() {
@@ -431,7 +436,7 @@ class MapScreen extends React.Component  {
                 <Marker
                   coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
                   key={marker.id}
-                  pinColor={theme.icons.color}
+                  pinColor={this.state.nifeBusinesses.includes(marker.id) ? theme.icons.color : theme.generalLayout.secondaryColor}
                   calloutOffset={{x: 0.5, y: 0.25}}
                   calloutAnchor={{x: 0.5, y: 0.25}}
                 > 
@@ -504,7 +509,8 @@ const localStyles = StyleSheet.create({
     backgroundColor: theme.generalLayout.backgroundColor,
     paddingVertical:0,
     borderColor: theme.generalLayout.secondaryColor,
-    zIndex:150
+    zIndex:150,
+    elevation:150,
   },
   markerVisited:{
     marginTop: 12,

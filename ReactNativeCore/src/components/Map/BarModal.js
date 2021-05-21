@@ -164,7 +164,7 @@ class BarModal extends React.Component  {
                         this.state.businessData.events.map((event, i)=>(
                           <View  key={i} style={styles.eventCont}>
                             <Text  style={styles.eventText}>
-                              {event.event}
+                              {event.text}
                             </Text>
                           </View>
                         ))
@@ -191,7 +191,7 @@ class BarModal extends React.Component  {
                         this.state.businessData.specials.map((special, i)=>(
                           <View key={i} style={styles.eventCont}>
                             <Text  style={styles.eventText}>
-                              {special.special}
+                              {special.text}
                             </Text>
                           </View>
                         ))
