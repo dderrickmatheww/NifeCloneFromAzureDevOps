@@ -42,10 +42,6 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
-	<key>NSAppTransportSecurity</key>
-	<dict>  
-      <key>NSAllowsArbitraryLoads</key><true/>  
- 	</dict>
 	<!-- Facebook OAuth -->
 	<key>CFBundleURLTypes</key>
 	<array>
