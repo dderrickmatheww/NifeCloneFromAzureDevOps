@@ -45,14 +45,12 @@
 	<key>NSAppTransportSecurity</key>
 	<!-- Facebook OAuth -->
 	<key>CFBundleURLTypes</key>
-	<array>
 	<dict>
 	<key>CFBundleURLSchemes</key>
 	<array>
 		<string>fb2910411615715770</string>
 	</array>
 	</dict>
-	</array>
 	<key>UIAppFonts</key>
 	<array>
 	<string>AntDesign.ttf</string>
