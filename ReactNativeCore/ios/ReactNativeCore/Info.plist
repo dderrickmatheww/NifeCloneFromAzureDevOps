@@ -42,6 +42,7 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSAppTransportSecurity</key>
 	<!-- Facebook OAuth -->
 	<key>CFBundleURLTypes</key>
 	<array>
