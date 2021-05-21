@@ -1153,6 +1153,23 @@ const Util = {
                         Util.basicUtil.consoleLog("businessPhoneVerification", false);
                         Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
                     });
+            },
+            getBusinessData: (id, callback) =>{
+                fetch("https://api.yelp.com/v3/businesses/"+id,
+                    {
+                        headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
+                    })
+                    .then((data) => data.json())
+                    .then((response) => {
+                        Util.basicUtil.consoleLog("getBusinessData", true);
+                        if (callback) {
+                            callback(response);
+                        }
+                    })
+                    .catch((err) => {
+                        Util.basicUtil.consoleLog("getBusinessData", false);
+                        Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
+                    });
             }
         },
         Firebase: {

@@ -143,7 +143,7 @@ class FriendsFeed extends React.Component {
                         events.forEach((event) => {
                             let obj = {
                                 name: place.displayName,
-                                text: "Event: " + event.event,
+                                text: "Event: " + event.text,
                                 time: new Date(event.uploaded.seconds ? event.uploaded.seconds * 1000 : event.uploaded._seconds * 1000),
                                 image: place.photoSource ? {uri: place.photoSource} : {defPhoto},
                                 status: false,
@@ -159,8 +159,8 @@ class FriendsFeed extends React.Component {
                         specials.forEach((special) => {
                             let obj = {
                                 name: place.displayName,
-                                text: "Special: " + special,
-                                time: new Date(),
+                                text: "Special: " + special.text,
+                                time: new Date(special.uploaded.seconds ? special.uploaded.seconds * 1000 : special.uploaded._seconds * 1000),
                                 image: place.photoSource ? {uri: place.photoSource} : {defPhoto},
                                 status: false,
                                 visited: false,
@@ -222,7 +222,7 @@ class FriendsFeed extends React.Component {
                 events.forEach((event) => {
                     let obj = {
                         name: business.displayName,
-                        text: "Event: " + event.event,
+                        text: "Event: " + event.text,
                         time: new Date(event.uploaded.seconds ? event.uploaded.seconds * 1000 : event.uploaded._seconds * 1000),
                         image: business.photoSource ? {uri: business.photoSource} : {defPhoto},
                         status: false,
@@ -239,7 +239,7 @@ class FriendsFeed extends React.Component {
                 specials.forEach((special) => {
                     let obj = {
                         name: business.displayName,
-                        text: "Special: " + special.special,
+                        text: "Special: " + special.text,
                         time: new Date(special.uploaded.seconds ? special.uploaded.seconds * 1000 : special.uploaded._seconds * 1000),
                         image: business.photoSource ? {uri: business.photoSource} : {defPhoto},
                         status: false,
@@ -417,7 +417,7 @@ class FriendsFeed extends React.Component {
                                             {
                                                 this.state.userData.isBusiness ?
                                                     <Caption
-                                                        style={localStyles.feedType}>{"   " + this.state.businessData.city + ", " + this.state.businessData.state}</Caption> : null
+                                                        style={localStyles.feedType}>{"   " + this.props.business.City + ", " + this.props.business.State}</Caption> : null
                                             }
                                         </Text>
                                         <Caption

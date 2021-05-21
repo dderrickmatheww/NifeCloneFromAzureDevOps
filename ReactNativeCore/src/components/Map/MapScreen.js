@@ -1,5 +1,5 @@
 import React from 'react';
-import { View,  Dimensions,  StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { View,  Dimensions,  StyleSheet, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import InputWithIcon from '../Universal/InputWithIcon';
 import BarModal from './BarModal';
@@ -9,7 +9,7 @@ import theme from '../../../Styles/theme';
 import VisitedByCallout from './VisitedByCallout';
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+// const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
 
@@ -504,7 +504,8 @@ const localStyles = StyleSheet.create({
     backgroundColor: theme.generalLayout.backgroundColor,
     paddingVertical:0,
     borderColor: theme.generalLayout.secondaryColor,
-    zIndex:150
+    zIndex:150,
+    elevation:150,
   },
   markerVisited:{
     marginTop: 12,

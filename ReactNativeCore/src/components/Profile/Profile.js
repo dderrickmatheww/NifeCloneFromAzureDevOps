@@ -531,7 +531,6 @@ const localStyles = StyleSheet.create({
         borderRadius: 10,
         paddingVertical: 0,
     },
-
     AddFriendOverlay: {
         position: "relative",
         left: 195,

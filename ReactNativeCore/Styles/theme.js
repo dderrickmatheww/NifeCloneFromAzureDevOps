@@ -3,6 +3,7 @@ var theme = function () {
   this.FONT_SMALL = 12;
   this.FONT_MEDIUM = 14;
   this.FONT_LARGE = 16;
+  this.VERY_DARK = "#1e122b";
   this.DARK = "#301E48";
   this.LIGHT_PINK = "#7286F6";
   this.GOLD = '#F1BF42';

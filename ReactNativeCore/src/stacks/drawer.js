@@ -223,7 +223,13 @@ class Navigator extends React.Component {
         if(userData) {
           //user data set in filterfriends
           if(userData.isBusiness) {
-            this.props.refresh(userData);
+
+            Util.dataCalls.Yelp.getBusinessData(userData.businessId, (data)=> {
+              userData.businessData['data'] = data;
+              Util.business.UpdateUser(userData.email, {data: data})
+              this.props.refresh(userData);
+              console.log(data);
+            })
           }
           else {
             if(userData.friendData) {
@@ -308,7 +314,8 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+    refresh: (userData) => dispatch({type:'REFRESH', data:userData}),
+    yelpDataRefresh: (data) => dispatch({type:'YELPDATA', data:data}),
   }
 }
 

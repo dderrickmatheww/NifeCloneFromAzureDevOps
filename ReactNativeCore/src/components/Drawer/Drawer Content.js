@@ -190,7 +190,9 @@ export function DrawerContent(props) {
                                     )}
                                     label={()=> <Text style={styles.text}>Profile</Text>}
                                     onPress={() => {
-                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{uploadImage:props.uploadImage, isUserProfile: true}})
+
+                                            props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{uploadImage:props.uploadImage, isUserProfile: true}})
+
                                         props.navigation.closeDrawer();    
                                     }}
                                 />
@@ -246,7 +248,7 @@ export function DrawerContent(props) {
                                     )}
                                     label={()=> <Text style={styles.text}>Profile</Text>}
                                     onPress={() => {
-                                        props.navigation.navigate('Profile', {screen:"ProfileScreen", params:{user: props.user, friends:props.friends}})
+                                        props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user: props.user, isUserProfile:true, uploadImage:props.uploadImage,}})
                                         props.navigation.closeDrawer();    
                                     }}
                                 />

@@ -121,14 +121,15 @@ export default class NifeLoginModal extends Component {
         let state = this.state.State ? this.state.State : null;
         let name = this.state.businessName ? this.state.businessName : null;
         if(address !== null & city  !== null  & state !== null & name !== null ){
-            console.log(address, city, state, name);
+            //console.log(address, city, state, name);
             Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US", (data) => {
-                // console.log(data);
+                console.log(data);
                 if (data.businesses && data.businesses.length > 0) {
                     this.setState({
                         businessId: data.businesses[0].id,
                         coordinates: data.businesses[0].coordinates,
-                        bussinessApplicationPt2: true
+                        bussinessApplicationPt2: true,
+                        businessPhone: data.businesses[0].phone,
                     });
                 } else {
                     this.setState({ verifying: false });
