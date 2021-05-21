@@ -806,6 +806,29 @@ const Util = {
                         Util.basicUtil.consoleLog("SendProofEmail", false);
                     })
             }
+        },
+        getNifeBusinessesNearby: async(user, cb) => {
+            let obj = {
+                user: user
+            }
+            if (user && typeof obj.user !== 'undefined') {
+                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getNifeBusinessesNearby',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (cb) {
+                            cb(data.result);
+                        }
+                        Util.basicUtil.consoleLog('getNifeBusinessesNearby', true);
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.Alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('getNifeBusinessesNearby', false);
+                    });
+            }
         }
 
     },

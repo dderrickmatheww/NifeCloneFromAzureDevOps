@@ -5,6 +5,7 @@ import * as firebase from 'firebase';
 import theme from '../../../Styles/theme';
 import 'firebase/firestore'
 import Util from "../../scripts/Util";
+import {connect} from "react-redux";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 Notifications.setNotificationHandler({
@@ -33,9 +34,8 @@ class TestingScreen extends React.Component  {
         return (
             <View style={localStyles.loggedInContainer}>
                 <TouchableOpacity style={localStyles.btn} onPress={() =>
-                    Util.user.sendFriendReqNotification(firebase.auth().currentUser.displayName, 'mrpalumbophd@gmail.com', ()=>{
-                        Util.basicUtil.consoleLog("sendFriendReqNotification", true);
-                    })}
+                    Util.business.getNifeBusinessesNearby(this.props.userData, (data) => console.log(data))
+                }
                 >
                         <Text>Test</Text>
                 </TouchableOpacity>
@@ -67,5 +67,21 @@ const localStyles = StyleSheet.create({
       },
     
     });
-  
-export default TestingScreen;
+
+function mapStateToProps(state){
+    return{
+        userData: state.userData,
+        requests: state.friendRequests,
+        friends: state.friendData,
+        businessData: state.businessData,
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(TestingScreen);

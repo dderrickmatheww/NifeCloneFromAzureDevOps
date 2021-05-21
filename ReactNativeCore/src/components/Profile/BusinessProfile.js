@@ -141,6 +141,8 @@ class BusinessProfile extends Component {
                                 size={35}
                             />
                         </TouchableOpacity>
+
+
                     </View>
                     <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
                         <View style={localStyles.HeaderCont}>

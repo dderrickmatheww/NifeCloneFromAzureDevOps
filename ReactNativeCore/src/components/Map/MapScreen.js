@@ -45,7 +45,8 @@ class MapScreen extends React.Component  {
     buisnessUID: null,
     searchParam: "",
     dropDownData: [],
-    isSearch: false
+    isSearch: false,
+    nifeBusinesses:[],
   };
   
   mapStyle = [
@@ -365,6 +366,10 @@ class MapScreen extends React.Component  {
       friendData: this.props.friends
     });
     this.OnChangeMapRegion();
+    Util.business.getNifeBusinessesNearby(this.props.user, (data) => {
+      this.setState({nifeBusinesses: data});
+      console.log(data);
+    });
   }
 
   componentDidMount() {
@@ -431,7 +436,7 @@ class MapScreen extends React.Component  {
                 <Marker
                   coordinate={{latitude:marker.coordinates.latitude, longitude:marker.coordinates.longitude}}
                   key={marker.id}
-                  pinColor={theme.icons.color}
+                  pinColor={this.state.nifeBusinesses.includes(marker.id) ? theme.icons.color : theme.generalLayout.secondaryColor}
                   calloutOffset={{x: 0.5, y: 0.25}}
                   calloutAnchor={{x: 0.5, y: 0.25}}
                 > 
