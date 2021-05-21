@@ -43,6 +43,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSAppTransportSecurity</key>
+	<array></array>
 	<key>UIAppFonts</key>
 	<array>
 	<string>AntDesign.ttf</string>
