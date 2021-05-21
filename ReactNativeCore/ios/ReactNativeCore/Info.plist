@@ -43,8 +43,6 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSAppTransportSecurity</key>
-	<array>
-	</array>
 	<key>UIAppFonts</key>
 	<array>
 	<string>AntDesign.ttf</string>
@@ -63,6 +61,29 @@
 	<string>Octicons.ttf</string>
 	<string>Zocial.ttf</string>
 	</array>
+	<key>FacebookAppID</key>
+	<string>2910411615715770</string>
+	<key>FacebookDisplayName</key>
+	<string>Nife Authentication</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	<string>fbapi</string>
+	<string>fbapi20130214</string>
+	<string>fbapi20130410</string>
+	<string>fbapi20130702</string>
+	<string>fbapi20131010</string>
+	<string>fbapi20131219</string>
+	<string>fbapi20140410</string>
+	<string>fbapi20140116</string>
+	<string>fbapi20150313</string>
+	<string>fbapi20150629</string>
+	<string>fbapi20160328</string>
+	<string>fbauth</string>
+	<string>fb-messenger-share-api</string>
+	<string>fbauth2</string>
+	<string>fbshareextension</string>
+	</array>
+
 	<!--See http://ste.vn/2015/06/10/configuring-app-transport-security-ios-9-osx-10-11/ -->
 	<dict>
     <key>NSAllowsArbitraryLoads</key>
@@ -77,26 +98,27 @@
 		</dict>
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Allow Nife to access your calendar</string>
+	<string>Allow ReactNativeCore to access your calendar</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow Nife to use the camera</string>
+	<string>Allow ReactNativeCore to use the camera</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Allow Nife experiences to access your contacts</string>
+	<string>Allow ReactNativeCore experiences to access your contacts</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow Nife to use your location</string>
+	<string>Allow ReactNativeCore to use your location</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow Nife to use your location</string>
+	<string>Allow ReactNativeCore to use your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow Nife to use your location</string>
+	<string>Allow ReactNativeCore to use your location</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow Nife to access your microphone</string>
+	<string>Allow ReactNativeCore to access your microphone</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Allow Nife to access your device's accelerometer</string>
+	<string>Allow ReactNativeCore to access your device's accelerometer</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Give Nife periences permission to save photos</string>
+	<string>Give ReactNativeCore periences permission to save photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Give Nife periences permission to access your photos</string>
+	<string>Give ReactNativeCore periences permission to access your photos</string>
 	<key>NSRemindersUsageDescription</key>
-	<string>Allow Nife to access your reminders</string>
+	<string>Allow ReactNativeCore to access your reminders</string>
+	
 </dict>
 </plist>
