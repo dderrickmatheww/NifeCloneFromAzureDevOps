@@ -25,6 +25,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
 
+
 const Util = {
     friends: {
         GetFriends: function (email, callback) {
