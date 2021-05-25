@@ -357,6 +357,10 @@ class MapScreen extends React.Component  {
       }
     });
     this.setState({
+      region: {
+        latitude: wantedPlace.coordinates.latitude,
+        longitude: wantedPlace.coordinates.longitude,
+      },
       modalProps:{
         source:{uri: "" + wantedPlace.image_url},
         barName:wantedPlace.name, 
