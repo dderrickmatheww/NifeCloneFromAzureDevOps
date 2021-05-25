@@ -6,7 +6,7 @@ import {
     ScrollView,
     ActivityIndicator,
     Text,
-    Dimensions
+    Dimensions, Platform
 } from 'react-native';
 import { 
     Headline,
@@ -213,7 +213,19 @@ const screen = Dimensions.get("window");
     }
 }
 const localStyles = StyleSheet.create({
-    scrollContent:{justifyContent:"center", alignItems:"center", width:"98%"},
+    scrollContent: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: "98%",
+        ...Platform.select({
+            ios: {
+                paddingBottom: 120,
+            },
+            android: {
+                paddingBottom: 120,
+            },
+        })
+    },
 
     StatusOverlay: {
         position:"relative",
@@ -310,8 +322,8 @@ const localStyles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingHorizontal: "5%",
-        paddingBottom: 30,
-        paddingTop: 10
+        paddingBottom: 10,
+        paddingTop: 10,
     },
     emptyPoppinFeed: {
         color: theme.generalLayout.textColor, 
