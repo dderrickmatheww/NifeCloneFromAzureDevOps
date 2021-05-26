@@ -4,9 +4,9 @@
   "expo": {
     "name": "Nife",
     "slug": "Nife",
-    "icon": "https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2Flogoicon.PNG?alt=media&token=86fc1470-baf3-472c-bbd3-fad78787eeed",
+    "icon": "./Media/Images/UpdatedLogoN.png",
     "privacy": "unlisted",
-    "version": "1.0.0.9",
+    "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
       "ios",
@@ -20,11 +20,11 @@
     },
     "ios": {
       "bundleIdentifier": "com.virastarllc.nife",
-      "buildNumber": "1.0.0.0",
+      "buildNumber": "1.0.0",
       "config": {
-        "googleMapsApiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0",
+        "googleMapsApiKey": "AIzaSyDMhTqk52JopkK1kT4YBtUYKm7cWy2rvao",
         "googleSignIn": {
-          "reservedClientId": "24040009982-mugkd12ks4b97bh33sml890mkb8dpouc.apps.googleusercontent.com"
+          "reservedClientId": "com.googleusercontent.apps.24040009982-mugkd12ks4b97bh33sml890mkb8dpouc"
         }
       }
     },

@@ -1,20 +1,20 @@
 import { Alert } from 'react-native';
-// import {
-//     YELP_PLACE_KEY,
-//     ClientKey,
-//     AndroidClientKey,
-//     IOSClientKeyStandAlone,
-//     IOSClientKey,
-//     apiKey,
-//     authDomain,
-//     databaseURL,
-//     projectId,
-//     storageBucket,
-//     messagingSenderId,
-//     appId,
-//     measurementId,
-//     photoUrlToken
-// } from 'react-native-dotenv';
+import {
+    YELP_PLACE_KEY,
+    ClientKey,
+    AndroidClientKey,
+    IOSClientKeyStandAlone,
+    IOSClientKey,
+    apiKey,
+    authDomain,
+    databaseURL,
+    projectId,
+    storageBucket,
+    messagingSenderId,
+    appId,
+    measurementId,
+    photoUrlToken
+} from 'react-native-dotenv';
 import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
@@ -24,20 +24,20 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
 import { proc } from 'react-native-reanimated';
-const YELP_PLACE_KEY = process.env.YelpApiKey,
-    ClientKey = process.env.GoogleAndroidStandAloneClientKey,
-    AndroidClientKey = process.env.GoogleAndroidClientKey,
-    IOSClientKeyStandAlone = process.env.GoogleiOSStandAloneClientKey,
-    IOSClientKey = process.env.GoogleiOSClientKey,
-    apiKey = process.env.GoogleApiKey,
-    authDomain = process.env.FirebaseAuthDomain,
-    databaseURL = process.env.FirebaseDBURL,
-    projectId = process.env.FirebaseProjectId,
-    storageBucket = process.env.FirebaseStorageBucket,
-    messagingSenderId = process.env.FirebaseMessagingSenderId,
-    appId = process.env.FirebaseAppId,
-    measurementId = process.env.FirebaseMeasurementId,
-    photoUrlToken = process.env.FirebasePhotoToken
+// const YELP_PLACE_KEY = process.env.YelpApiKey,
+//     ClientKey = process.env.GoogleAndroidStandAloneClientKey,
+//     AndroidClientKey = process.env.GoogleAndroidClientKey,
+//     IOSClientKeyStandAlone = process.env.GoogleiOSStandAloneClientKey,
+//     IOSClientKey = process.env.GoogleiOSClientKey,
+//     apiKey = process.env.GoogleApiKey,
+//     authDomain = process.env.FirebaseAuthDomain,
+//     databaseURL = process.env.FirebaseDBURL,
+//     projectId = process.env.FirebaseProjectId,
+//     storageBucket = process.env.FirebaseStorageBucket,
+//     messagingSenderId = process.env.FirebaseMessagingSenderId,
+//     appId = process.env.FirebaseAppId,
+//     measurementId = process.env.FirebaseMeasurementId,
+//     photoUrlToken = process.env.FirebasePhotoToken
 
 const Util = {
     friends: {
