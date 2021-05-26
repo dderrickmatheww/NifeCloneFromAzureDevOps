@@ -6,7 +6,7 @@ import MapStack from './mapStack';
 import SettingsTab from '../components/Settings/SettingsTab';
 import theme from '../../Styles/theme';
 import PoppinStack from './poppinStack';
-import TestingStack from './testingStack';
+//import TestingStack from './testingStack';
 import ProfileStack from './profileStack';
 import Util from '../scripts/Util';
 import Loading from '../components/Universal/AppLoading';
@@ -274,7 +274,7 @@ class Navigator extends React.Component {
               drawerType={"front"}
               overlayColor={"rgba(32, 35, 42, 0.50)"}
             >
-              <Drawer.Screen name="Test" component={TestingStack} />
+              {/* <Drawer.Screen name="Test" component={TestingStack} /> */}
               <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
               <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, friends: this.props.friendData,  business: this.props.businessData ? this.props.businessData : null, favorites: this.state.favoritePlaceData}}/>
               <Drawer.Screen name="Map" component={MapMain}/>
