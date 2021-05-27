@@ -266,7 +266,7 @@ export function DrawerContent(props) {
                             onPress={() => {props.navigation.navigate('Settings')}}
                         />
                         
-                         <DrawerItem
+                         {/* <DrawerItem
                             icon={() => (
                                 <FontAwesome
                                 name="gears"
@@ -276,7 +276,7 @@ export function DrawerContent(props) {
                             )}
                             label={()=> <Text style={styles.text}>Test</Text>}
                             onPress={() => {props.navigation.navigate('Test', {params:{user: props.user}})}}
-                        />
+                        /> */}
                     </Drawer.Section>
                     {/* <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>

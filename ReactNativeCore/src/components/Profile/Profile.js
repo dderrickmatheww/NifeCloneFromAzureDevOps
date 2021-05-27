@@ -141,11 +141,9 @@ class ProfileScreen extends Component {
     }
 
     componentDidMount() {
-        console.log('isUserProfile: ' + this.props.isUserProfile);
         this.setProps();
         this.getBusinessData();
         this.areFriends();
-        console.log(this.state.userData.favoritePlaces)
     }
 
     getBusinessData = () => {
@@ -159,7 +157,6 @@ class ProfileScreen extends Component {
     UploadPic = () => {
         this.setState({uploading: true});
         this.props.uploadImage((uri) => {
-            console.log(uri);
             let user = this.props.userData;
             user['photoSource'] = uri;
             this.setState({userData: user});
@@ -181,7 +178,6 @@ class ProfileScreen extends Component {
                                 size={35}
                             />
                         </TouchableOpacity>
-
                         {/* Add Friend */}
                         {this.props.profileUser ? !this.state.areFriends ?
                             <TouchableOpacity
@@ -190,8 +186,10 @@ class ProfileScreen extends Component {
                             >
                                 {
                                     this.state.isAddingFriend ?
-                                        <ActivityIndicator size="small"
-                                                           color={theme.loadingIcon.color}></ActivityIndicator>
+                                        <ActivityIndicator 
+                                            size="small"
+                                            color={theme.loadingIcon.color}>
+                                        </ActivityIndicator>
                                         :
                                         <Text style={{
                                             paddingHorizontal: 3,
@@ -226,11 +224,19 @@ class ProfileScreen extends Component {
                                 left: 250,
                                 alignSelf: "flex-end",
                                 opacity: 0.75,
+                                ...Platform.select({
+                                    ios: {
+                                      left: 300
+                                    },
+                                    android: {
+                                        left: 250
+                                    }
+                                  }),
                                 backgroundColor: theme.generalLayout.backgroundColor,
                                 borderRadius: 10,
                                 marginBottom: '5%',
                             }}
-                                              onPress={() => this.props.navigation.navigate('Profile', {screen: 'Edit'})}
+                                onPress={() => this.props.navigation.navigate('Profile', {screen: 'Edit'})}
                             >
                                 <Ionicons name="md-create" size={24} color={theme.icons.color}/>
                             </TouchableOpacity>

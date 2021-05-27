@@ -61,7 +61,7 @@ export default class InputWithIcon extends React.Component {
       this.state.isAutoComplete ?
         <View style={localStyles.container} >
           <TextInput
-              style={[localStyles.searchBar, {marginTop:!this.state.loading ? 40 : 0}]}
+              style={localStyles.searchBar}
               placeholder={this.props.placeHolderText}
               placeholderTextColor={this.props.color}
               returnKeyType={this.props.returnKey}
@@ -115,7 +115,7 @@ export default class InputWithIcon extends React.Component {
                                     uri:  item.image_url  
                                   }}
                                   style={localStyles.buisnessImage}
-                                  size={45}
+                                  size={40}
                                 />
                               :
                                 null
@@ -195,7 +195,7 @@ export default class InputWithIcon extends React.Component {
       marginHorizontal: 10,
       marginBottom: 15,
       alignItems: 'center',
-      color: theme.icons.color,
+      color: theme.generalLayout.textColor,
       justifyContent: 'center',
       fontWeight: 'bold',
       textShadowColor: 'black',
@@ -205,7 +205,6 @@ export default class InputWithIcon extends React.Component {
       },
       textShadowRadius: 20,
       fontFamily: theme.generalLayout.font,
-
   },
   row: {
     flexDirection: 'row'
@@ -215,12 +214,13 @@ export default class InputWithIcon extends React.Component {
     marginLeft: -20,
   },
   autoCompBtn: {
-      width: 350,
+      width: '100%',
       alignItems: 'center',
       justifyContent: 'center',
+      padding: 5,
       backgroundColor: theme.generalLayout.backgroundColor,
       borderRadius: 3,
-      borderWidth: 3,
+      borderWidth: .5,
       borderColor: theme.generalLayout.secondaryColor,
       flexDirection: 'row',
       marginVertical: 2,
@@ -228,6 +228,13 @@ export default class InputWithIcon extends React.Component {
   nameTxt: {
     width: '43%',
     padding: 3,
+    ...Platform.select({
+      ios: {
+        marginLeft: '2%'
+      },
+      android: {
+      }
+    }),
     alignItems: "center",
     justifyContent: 'center',
     fontWeight: 'bold',
@@ -236,7 +243,7 @@ export default class InputWithIcon extends React.Component {
         width: 20, 
         height: 20
     },
-    color: theme.icons.color,
+    color: theme.generalLayout.textColor,
     fontFamily: theme.generalLayout.font
   },
   addressTxt: {
@@ -244,7 +251,7 @@ export default class InputWithIcon extends React.Component {
     padding: 3,
     alignItems: "center",
     justifyContent: 'center',
-    color: theme.icons.color,
+    color: theme.generalLayout.textColor,
     fontSize: 12,
   },
   autoCompBtnContainer: {
@@ -270,7 +277,8 @@ export default class InputWithIcon extends React.Component {
       padding: 5,
       borderWidth: 2,
       borderColor: theme.generalLayout.secondaryColor,
-      width: '90%',
+      width: '70%',
+      marginTop: '-5%'
       // top: 35,
       // position:'absolute',
       // maxHeight: '33%',

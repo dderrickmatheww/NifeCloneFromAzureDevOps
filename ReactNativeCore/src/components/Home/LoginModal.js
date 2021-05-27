@@ -18,14 +18,14 @@ export default class NifeLoginModal extends Component {
         signUp: true,
         bussinessApplication: false,
         bussinessApplicationPt2: false,
-        businessName: "Oscar's",
-        ownerName: "Mike",
-        businessEmail: "mpalumbofifa@gmail.com",
-        businessPhone: "8438220589",
-        Address: "207 W 5th North Street",
-        City: "Summerville",
-        State: "SC",
-        zip: "29483",
+        businessName: "",
+        ownerName: "",
+        businessEmail: "",
+        businessPhone: "",
+        Address: "",
+        City: "",
+        State: "",
+        zip: "",
         businessId: "",
         coordinates: null,
         proofURI: null,
@@ -52,7 +52,7 @@ export default class NifeLoginModal extends Component {
                         this.props.onSignUp(this.state);
                         Util.dataCalls.Nife.login(this.state, null, (dataObj, error) => {
                             if(error) {
-                                alert(error);
+                                Util.basicUtil.Alert('Nife Message', error.message, null);
                                 this.resetPasswordField();
                             } 
                             else {
@@ -191,16 +191,15 @@ export default class NifeLoginModal extends Component {
                         >
                             <Subheading style={localStyles.Subheading}>Please fill out this form! </Subheading>
                             <View style={localStyles.Container}>
-                                <TextInput textContentType={"none"} theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Display Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "displayName")} />
-                                <TextInput textContentType={"emailAddress"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
-                                <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                                <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
+                                <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"none"} theme={{ colors: { text: theme.generalLayout.textColor } }}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Display Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "displayName")} />
+                                <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                                <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                                <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor }}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password2")} />
                                 
                                 <TouchableOpacity
                                     onPress={() => this.authenticateUser('sign-up')}
                                     style={localStyles.signUpBtn}
                                 > 
-                                
                                     <Caption style={localStyles.Caption}>Sign up</Caption>
                                 </TouchableOpacity>
                                 <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
@@ -222,19 +221,19 @@ export default class NifeLoginModal extends Component {
                         >
                             <Subheading style={localStyles.Subheading}>Please enter your credentials to login!</Subheading>
                             <View style={localStyles.Container}>
-                                <TextInput textContentType={"emailAddress"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
-                                <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                                <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                                <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor} }}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password1")} />
                                 
                                 <TouchableOpacity
                                     onPress={() => this.authenticateUser('login')}
-                                    style={localStyles.LoginBtn}
+                                    style={localStyles.signUpBtn}
                                 > 
                                     <Caption style={localStyles.Caption}>Log In</Caption>
                                 </TouchableOpacity>
                                 <Text style={localStyles.loginLoginSwitchText}>Need to make an account?</Text>
                                 <TouchableOpacity
                                     onPress={() => this.setState({signUp: true})}
-                                    style={localStyles.LoginBtn}
+                                    style={localStyles.signUpBtn}
                                 > 
                                     <Caption style={localStyles.Caption}>Sign Up</Caption>
                                 </TouchableOpacity>
@@ -257,26 +256,26 @@ export default class NifeLoginModal extends Component {
                                     </View>
                             
                                     <ScrollView style={{maxHeight:450}} contentContainerStyle={localStyles.Container}>
-                                        <TextInput   theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
+                                        style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
 
-                                        <TextInput  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
+                                        style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
 
-                                        <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} 
+                                        <TextInput selectionColor={theme.generalLayout.textColor}t textContentType={"emailAddress"} secureTextEntry={false}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} 
                                         placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "businessEmail")} />
 
-                                        <TextInput  keyboardType={"phone-pad"} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor}  keyboardType={"phone-pad"} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
+                                        style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />
 
-                                        <TextInput   theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Address'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "Address")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
+                                        style={localStyles.textInput} placeholder={'Address'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "Address")} />
 
-                                        <TextInput theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'City'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "City")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
+                                        style={localStyles.textInput} placeholder={'City'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "City")} />
 
-                                        <TextInput  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "State")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
+                                        style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureTextEntry={false} onChangeText={(text) => this.onChangeText(text, "State")} />
                                         
                                         <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
                                             <TouchableOpacity
@@ -339,8 +338,8 @@ export default class NifeLoginModal extends Component {
                                     <Caption style={localStyles.VerificationText}>Click here to upload proof of address.</Caption>
                                 }
                             </TouchableOpacity> */}
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                            <TextInput secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
+                            <TextInput selectionColor={theme.generalLayout.textColor} secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                            <TextInput selectionColor={theme.generalLayout.textColor} secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
 
                             <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
                                 <TouchableOpacity
@@ -375,7 +374,7 @@ export default class NifeLoginModal extends Component {
             >
                 <Subheading style={localStyles.Subheading}>Please enter your email to reset your password! </Subheading>
                 <View style={localStyles.Container}>
-                    <TextInput textContentType={"emailAddress"}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                    <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
                     <TouchableOpacity
                         onPress={() => Util.dataCalls.Firebase.passwordReset(this.state.email)}
                         style={localStyles.nextBtn}
@@ -450,23 +449,6 @@ const localStyles = StyleSheet.create({
         paddingVertical:2,
         marginBottom:10,
     },
-    signUpBtn:{
-        borderColor: theme.generalLayout.secondaryColor,
-        borderRadius: 10,
-        alignSelf:"center",
-        borderWidth: 1,
-        width: '40%',
-        ...Platform.select({
-            ios: {
-                height: "7%",
-            },
-            android: {
-                height: "20%",
-            },
-        }),
-        marginTop: '10%',
-        textAlign:"center",
-    },
     nextBtn: {
         borderColor: theme.generalLayout.secondaryColor,
         borderRadius: 10,
@@ -485,7 +467,9 @@ const localStyles = StyleSheet.create({
         width: '40%',
         ...Platform.select({
             ios: {
-                height: "7%",
+                height: "8%",
+                padding: 5,
+                marginBottom: '15%'
             },
             android: {
                 height: "20%",
@@ -519,7 +503,14 @@ const localStyles = StyleSheet.create({
     Modal:{
         backgroundColor: theme.generalLayout.backgroundColor,
         width:"90%",
-        height:"85%",
+        ...Platform.select({
+            ios: {
+                height: "75%"
+            },
+            android: {
+                height: "85%"
+            },
+        }),
         alignSelf:"center",
         justifyContent:"flex-start",
         borderRadius: 10,

@@ -414,7 +414,7 @@ class MapScreen extends React.Component  {
           <View style={localStyles.autoCompContainer}>
             <InputWithIcon 
               name={'ios-mail'} 
-              color={theme.icons.color} 
+              color={theme.generalLayout.textColor} 
               styles={localStyles.font}
               size={12} 
               placeHolderText={'Search...'} 
@@ -509,7 +509,6 @@ class MapScreen extends React.Component  {
         </View>
       ) 
       :
-        
       <View style={localStyles.activityIndicator}>
             <ActivityIndicator 
                 size={'large'}
@@ -539,7 +538,14 @@ const localStyles = StyleSheet.create({
   },
   autoCompContainer: {
     maxHeight: '30%',
-    marginTop: '10%',
+    ...Platform.select({
+      ios: {
+        marginTop: '17%'
+      },
+      android: {
+        marginTop: '10%'
+      }
+    }),
     marginLeft: '5%',
     zIndex: 3, // works on ios
     elevation: 3, // works on android
