@@ -47,6 +47,7 @@ class MapScreen extends React.Component  {
     dropDownData: [],
     isSearch: false,
     nifeBusinesses:[],
+    yelpBusIds:[],
   };
   
   mapStyle = [
@@ -286,11 +287,25 @@ class MapScreen extends React.Component  {
         }
       }
       else {
-        //Orginal data call to get markers based on user location
-        this.setState({
-          markers: data,
-          userLocation: userLocation
+
+        Util.business.getNifeBusinessesNearby(this.props.user, (nifeData) => {
+          this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});
+
+          //Orginal data call to get markers based on user location
+          this.setState({yelpBusIds: data.map(bus => bus.id)});
+
+          nifeData.forEach(bus =>{
+            if(!this.state.yelpBusIds.includes(bus.id)){
+              data.push(bus);
+            }
+          });
+
+          this.setState({
+            markers: data,
+            userLocation: userLocation
+          });
         });
+
       }
     });
   }
@@ -305,6 +320,10 @@ class MapScreen extends React.Component  {
       var places = this.state.markers;
     }
     this.setWantedPlaceData(places, key);
+  }
+
+  OnMapChange = (e) => {
+    console.log(e);
   }
 
   OnSearch = async (text, autoCompUpdate) => {
@@ -338,6 +357,10 @@ class MapScreen extends React.Component  {
       }
     });
     this.setState({
+      region: {
+        latitude: wantedPlace.coordinates.latitude,
+        longitude: wantedPlace.coordinates.longitude,
+      },
       modalProps:{
         source:{uri: "" + wantedPlace.image_url},
         barName:wantedPlace.name, 
@@ -366,10 +389,6 @@ class MapScreen extends React.Component  {
       friendData: this.props.friends
     });
     this.OnChangeMapRegion();
-    Util.business.getNifeBusinessesNearby(this.props.user, (data) => {
-      this.setState({nifeBusinesses: data});
-      console.log(data);
-    });
   }
 
   componentDidMount() {
@@ -421,7 +440,7 @@ class MapScreen extends React.Component  {
               showsPointsOfInterest={false}
               userLocationUpdateInterval={1000}
               region={this.state.region}
-              onUserLocationChange={(e) => {null}}
+              // onUserLocationChange={(e) => this.OnMapChange(e)}
               showsScale={true}
               customMapStyle={this.mapStyle}
               minZoomLevel={14}
@@ -448,8 +467,10 @@ class MapScreen extends React.Component  {
                     <VisitedByCallout marker={marker}/>
                   </Callout>
                 </ Marker>
-              ))} 
-          </MapView>
+              ))}
+
+
+           </MapView>
 
           <TouchableOpacity onPress={this.recenter} style={localStyles.ovrly}>
             <MaterialCommunityIcons

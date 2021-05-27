@@ -9,7 +9,6 @@ export default class VisitedByCallout extends React.Component  {
         return (
             <View style={localStyles.callOutMarker}>
                 <Text style={[localStyles.calloutText, {fontSize:16, fontWeight:"bold", textAlign:"center", textDecorationLine:"underline"}]}>{this.props.marker.name}</Text>
-                <Text style={localStyles.calloutText}>Rated {this.props.marker.rating}/5 stars in {this.props.marker.review_count} reviews.</Text>
                 { 
                     this.props.marker.lastVisitedBy && this.props.marker.lastVisitedBy.length > 0 ?
                         this.props.marker.lastVisitedBy.length < 2 ?
