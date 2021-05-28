@@ -5,7 +5,8 @@ import {
     ImageBackground,
     ActivityIndicator,
     StyleSheet,
-    Platform
+    Platform,
+    TouchableOpacity
 } from 'react-native';
 import {
     Title,
@@ -21,7 +22,7 @@ import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons';
 import StatusModal from './Status Modal';
 import { connect } from "react-redux";
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+
 
 
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
@@ -133,19 +134,21 @@ class ProfileScreen extends Component {
     }
 
     areFriends = () => {
+
         if (this.props.profileUser) {
             Util.user.IsFriend(this.props.currentUser, this.props.profileUser.email,(boolean) => {
+                console.log(boolean)
                 this.setState({areFriends: boolean});
             });
         }
     }
 
     componentDidMount() {
-        console.log('isUserProfile: ' + this.props.isUserProfile);
+       // console.log('isUserProfile: ' + this.props.isUserProfile);
         this.setProps();
         this.getBusinessData();
         this.areFriends();
-        console.log(this.state.userData.favoritePlaces)
+        //console.log(this.state.userData.favoritePlaces)
     }
 
     getBusinessData = () => {

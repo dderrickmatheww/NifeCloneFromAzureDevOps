@@ -170,13 +170,11 @@ const Util = {
                     });
             }
         },
-        IsFriend: (userData, friendEmail,callback) => {
+        IsFriend: (userData, friendEmail, callback) => {
             let boolean;
-            if (userData.friends[friendEmail] == true) {
+            if (userData.friends[friendEmail] == true || userData.requests[friendEmail] == true) {
                 boolean = true;
-            } else if(userData.requests[friendEmail] == true){
-                boolean = true;
-            }else {
+            } else {
                 boolean = false;
             }
             if (callback) {

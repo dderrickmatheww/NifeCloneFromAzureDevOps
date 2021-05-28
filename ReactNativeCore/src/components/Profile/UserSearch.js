@@ -88,7 +88,7 @@ class UserSearch extends Component {
                   {
                     this.state.queriedUsers ? 
                       this.state.queriedUsers.map((user, i) => (
-                          <TouchableOpacity style={{paddingLeft:27}}  key={i} onPress={() => !user.isBusiness ? 
+                          <TouchableOpacity style={{paddingHorizontal:65,    borderBottomColor: theme.generalLayout.secondaryColor, borderBottomWidth: 1,}}  key={i} onPress={() => !user.isBusiness ?
                             this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{profileUser:user, isUsersProfile:false}}) :
                               this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
                             }>
@@ -137,11 +137,11 @@ const localStyles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 50,
+    marginVertical: 5,
   },
   friendCont: {
     flexDirection: "row",
-    borderBottomColor: theme.generalLayout.secondaryColor,
-    borderBottomWidth: 1,
+
     alignSelf:"center"
   },
   name: {
@@ -149,7 +149,7 @@ const localStyles = StyleSheet.create({
     color: theme.generalLayout.textColor,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: '.5%',
+    marginHorizontal:15,
     marginLeft: '2.5%',
     width: "100%",
     fontFamily: theme.generalLayout.font
@@ -202,9 +202,7 @@ const localStyles = StyleSheet.create({
     backgroundColor: theme.generalLayout.backgroundColor,
   },
   drawerBtn: {
-    marginTop: '5%',
-    marginLeft: '1%',
-    marginBottom: '3%',
+    marginVertical: '10%',
     borderWidth: 1,
     borderColor: theme.generalLayout.secondaryColor,
     borderRadius: 70
