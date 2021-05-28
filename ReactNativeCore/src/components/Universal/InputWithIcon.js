@@ -278,9 +278,9 @@ export default class InputWithIcon extends React.Component {
       borderWidth: 2,
       borderColor: theme.generalLayout.secondaryColor,
       width: '70%',
-      marginTop: '-5%'
-      // top: 35,
-      // position:'absolute',
-      // maxHeight: '33%',
+      marginTop: '-5%',
+      zIndex: 1000,
+      top: 37,
+      position:'absolute',
   }
   })

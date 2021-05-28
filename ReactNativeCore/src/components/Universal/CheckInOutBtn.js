@@ -81,9 +81,15 @@ export default class CheckInOutButtons extends React.Component  {
                                 }
                                 else if (checkInObj.closed == "Yes") {
                                     Util.basicUtil.Alert('Nife Message', 'This bar seems to be closed!', () => {});
+                                    this.setState({
+                                        loading: false
+                                    });
                                 }
                                 else {
                                     Util.basicUtil.Alert('Nife Message', 'You must be within 1 mile to check in!', () => {});
+                                    this.setState({
+                                        loading: false
+                                    });
                                 }
                             });
                         }}
@@ -155,9 +161,15 @@ export default class CheckInOutButtons extends React.Component  {
                                 }
                                 else if (checkInObj.closed == "Yes") {
                                     Util.basicUtil.Alert('Nife Message', 'This bar seems to be closed!', () => {});
+                                    this.setState({
+                                        loading: false
+                                    });
                                 }
                                 else {
                                     Util.basicUtil.Alert('Nife Message', 'You must be within 1 mile to check in!', () => {});
+                                    this.setState({
+                                        loading: false
+                                    });
                                 }
                             });
                         }}

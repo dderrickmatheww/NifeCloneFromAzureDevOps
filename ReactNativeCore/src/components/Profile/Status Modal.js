@@ -63,7 +63,7 @@ import {connect} from "react-redux";
     render() {     
         return(         
           <Modal 
-            contentContainerStyle={{width:"90%", height:"60%", borderRadius:50, alignSelf:"center"}}
+            contentContainerStyle={{width:"90%", height:"70%", borderRadius:50, alignSelf:"center"}}
             visible={this.props.isVisible}
             dismissable={true}
             onDismiss={() => this.props.onDismiss()}
@@ -72,22 +72,23 @@ import {connect} from "react-redux";
               <TextInput
                 mode={"outlined"}
                 label=""
+                selectionColor={theme.generalLayout.textColor}
+                outlineColor={theme.generalLayout.backgroundColor}
                 placeholder={Platform.select({
                   ios: 'Type here...',
                   android:''
                 })}
                 placeholderTextColor={Platform.select({
-                  ios: 'white',
+                  ios: theme.generalLayout.textColor,
                   android:'black'
                 })}
                 onChangeText={text => this.onStatusChange(text)}
                 style={localStyles.textInput}
-                selectionColor={theme.generalLayout.textColor}
                 value={this.state.statusText}
                 multiline={true}
                 returnKeyType={'done'}
                 onKeyPress={this.handleKeyDown}
-                theme={{ colors: {  underlineColor: 'transparent' } }}
+                theme={{ colors: { primary: theme.generalLayout.secondaryColor, placeholder: theme.generalLayout.textColor, text: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
                 > 
               </TextInput>
               {
@@ -134,7 +135,7 @@ const localStyles = StyleSheet.create({
     flex:1,
     ...Platform.select({
       ios:{
-        backgroundColor: 'white',
+        backgroundColor: theme.generalLayout.backgroundColor,
         color: theme.generalLayout.textColor,
       },
       android:{
@@ -148,7 +149,6 @@ const localStyles = StyleSheet.create({
     borderRadius: 5,
     marginTop:5,
     fontFamily: theme.generalLayout.font,
-    borderColor: theme.generalLayout.backgroundColor
   },
   buttonText:{
     color: theme.generalLayout.textColor,
@@ -164,13 +164,17 @@ const localStyles = StyleSheet.create({
     marginBottom: 20
   },
   viewDark:{
-    flex:1,
+    flex: 1,
     backgroundColor: theme.generalLayout.backgroundColor,
     flexDirection:"column",
     justifyContent:"center",
     alignContent:"center",
     alignItems:"center",
-    color: theme.generalLayout.textColor
+    color: theme.generalLayout.textColor,
+    borderRadius: 15,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: theme.generalLayout.secondaryColor
   }
 });
   

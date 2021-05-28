@@ -431,6 +431,10 @@ class MapScreen extends React.Component  {
             />
 
           </View>
+          <View style={{flex: 1,
+            backgroundColor: theme.generalLayout.backgroundColor,
+            borderColor: theme.icons.color,
+            borderTopWidth: 1}}>
            <MapView
               style={localStyles.map}
               provider={PROVIDER_GOOGLE}
@@ -446,10 +450,10 @@ class MapScreen extends React.Component  {
               minZoomLevel={14}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
+              loadingEnabled={true}
+              loadingIndicatorColor={theme.loadingIcon.color}
               loadingBackgroundColor={theme.generalLayout.backgroundColor}
             >
-
-            
             {this.state.markers.map(marker => (
               
                 <Marker
@@ -468,10 +472,8 @@ class MapScreen extends React.Component  {
                   </Callout>
                 </ Marker>
               ))}
-
-
            </MapView>
-
+           </View>
           <TouchableOpacity onPress={this.recenter} style={localStyles.ovrly}>
             <MaterialCommunityIcons
                 name='navigation'
@@ -504,8 +506,6 @@ class MapScreen extends React.Component  {
             </BarModal> : null
           }       
           <DrawerButton userPhoto={this.state.userData ? this.state.userData.photoSource : null} drawerButtonColor={theme.generalLayout.secondaryColor} onPress={this.props.onDrawerPress} />
-
-
         </View>
       ) 
       :
@@ -600,7 +600,8 @@ const localStyles = StyleSheet.create({
   },
 
   map: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: theme.generalLayout.backgroundColor
   },
 
   drawerButton:{

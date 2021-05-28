@@ -236,7 +236,7 @@ class ProfileScreen extends Component {
                                 borderRadius: 10,
                                 marginBottom: '5%',
                             }}
-                                onPress={() => this.props.navigation.navigate('Profile', {screen: 'Edit'})}
+                                onPress={() => this.props.navigation.navigate('Profile', { screen: 'Edit' })}
                             >
                                 <Ionicons name="md-create" size={24} color={theme.icons.color}/>
                             </TouchableOpacity>

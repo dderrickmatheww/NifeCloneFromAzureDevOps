@@ -429,7 +429,6 @@ class FriendsFeed extends React.Component {
                                     </View>
                                 ))
                                 :
-
                                 <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends and
                                     favorite spots if you haven't already!</Text>
 
@@ -608,25 +607,23 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.font
     },
     Paragraph: {
-        color: 'white',
+        color: theme.generalLayout.textColor,
         fontSize: 12,
         marginTop: -10,
         fontFamily: theme.generalLayout.font
     },
     displayName: {
-        color: 'white',
+        color: theme.generalLayout.textColor,
         left: 60,
         top: -45,
-        position: "relative",
         fontSize: 15,
         fontWeight: "bold",
         fontFamily: theme.generalLayout.fontBold
     },
     feedType: {
-        color: 'white',
+        color: theme.generalLayout.textColor,
         left: 60,
         top: -50,
-        position: "relative",
         fontSize: 12,
         opacity: 0.60
     },
@@ -639,7 +636,7 @@ const localStyles = StyleSheet.create({
         borderWidth: 1,
         paddingVertical: 5,
         paddingHorizontal: 10,
-        marginVertical: 2,
+        marginVertical: 3,
         width: "100%",
         minHeight: 150,
         maxHeight: 150,

@@ -12,7 +12,7 @@ import {
   Surface,
   Chip
 } from 'react-native-paper';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
@@ -56,7 +56,6 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
           });
         }
       }
-      console.log((typeof user.dateOfBirth !== 'undefined' && typeof user.dateOfBirth !== 'string'))
       this.setState({
         userData: typeof user !== 'undefined' ? user : {},
         dateOfBirth:  (typeof user.dateOfBirth !== 'undefined' && typeof user.dateOfBirth !== 'string') ? new Date(user.dateOfBirth._seconds ? user.dateOfBirth._seconds * 1000 : user.dateOfBirth.seconds * 1000) : new Date().setFullYear( new Date().getFullYear() - 18 ),
@@ -69,11 +68,10 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
         displayName: typeof user.displayName !== 'undefined' ? user.displayName : 'Anonymous',
         faveCount: typeof actualFavoriteBars !== 'undefined' ? actualFavoriteBars.length : 0
       });
-      console.log(this.state.dateOfBirth)
   }
 
   getDropdownColor = () =>{
-    this.setState({dropdownTextColor:{
+    this.setState({dropdownTextColor: {
       ...Platform.select({
         ios: 'white',
         android:'black'
@@ -86,18 +84,12 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
     this.setUserData();
   }
 
-    
-  
   onDOBChange = (event, selectedDate) => {
     if (selectedDate) {
       var date = new Date(selectedDate);
       this.setState({ 
-        dateOfBirth: date,
-        showDatePicker: false
+        dateOfBirth: date
       });
-    }
-    else {
-      this.setState({ showDatePicker: false });
     }
   }
 
@@ -198,12 +190,12 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
                     <Text style={localStyles.fieldLabel}>
                       Display Name: 
                     </Text>
-                    <TextInput  theme={{ colors: { text:theme.generalLayout.textColor } }}  numberOfLines={2}
+                    <TextInput  theme={{ colors: { text: theme.generalLayout.textColor } }}  numberOfLines={2}
                       mode={"flat"}
                       label=""
                       placeholder={"What should we call you?"}
                       onChangeText={text => this.onNameChange(text)}
-                      placeholderTextColor={{color: theme.generalLayout.textColor}}
+                      placeholderTextColor={theme.generalLayout.textColor}
                       value={this.state.displayName}
                       style={{backgroundColor: theme.generalLayout.backgroundColor, color: theme.generalLayout.textColor, width:"100%", alignSelf:"center", textAlign:"left", paddingHorizontal:10, paddingVertical:5, borderRadius: 5, borderColor: theme.generalLayout.secondaryColor, borderWidth:1}}>
                     </TextInput>
@@ -219,7 +211,7 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
                         {this.state.dateOfBirth ? new Date(this.state.dateOfBirth).toLocaleDateString() : "None given."}
                       </Text>
                       <TouchableOpacity style={{alignSelf: "flex-end", marginLeft: '16.5%', paddingBottom: 5}}
-                        onPress={() => this.setState({showDatePicker: true})}
+                        onPress={() => this.state.showDatePicker ? this.setState({showDatePicker: false}) : this.setState({showDatePicker: true})}
                       >
                           <Ionicons name="md-calendar" size={24} color={theme.icons.color} />
                       </TouchableOpacity>
@@ -227,13 +219,19 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
                     
                     {
                       this.state.showDatePicker && (
+                        <View style={localStyles.fieldCont, {alignContent: 'center'}}> 
+                        <Text style={{ fontSize: 12, color: theme.generalLayout.textColor, marginBottom: 15, fontFamily: theme.generalLayout.font}}>
+                          Click the date again to dismiss!
+                        </Text>
                         <DateTimePicker
                           mode={"date"}
+                          textColor={theme.generalLayout.textColor}
                           value={ this.state.dateOfBirth ? this.state.dateOfBirth : new Date() }
                           maximumDate={ this.setMaxDate() }
                           display={"spinner"}
                           onChange={(event, selectedDate) => this.onDOBChange(event, selectedDate)}
                         />
+                        </View>
                       )
                     }
                   </View>
@@ -250,9 +248,20 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
                         onValueChange={(value) => this.onGenderChange(value)}
                         itemStyle={{color:'black', backgroundColor: theme.generalLayout.backgroundColor,}}
                       >
-                        <Picker.Item  color={this.state.dropdownTextColor} style={{color:'black'}} label="Male" value="male"/>
-                        <Picker.Item color={this.state.dropdownTextColor} label="Female" value="female"/>
-                        <Picker.Item color={this.state.dropdownTextColor} label="Other" value="other"/>
+                        <Picker.Item  color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })} 
+                          style={{color:'black'}} label="Male" value="male"
+                        />
+                        <Picker.Item color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })}  label="Female" value="female"/>
+                        <Picker.Item color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })}  label="Other" value="other"/>
                       </Picker>
                     </Surface>
                       
@@ -270,10 +279,22 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
                         onValueChange={(value) => this.onSexualOrientationChange(value)}
                         itemStyle={{backgroundColor:theme.DARK}}
                       >
-                        <Picker.Item color={theme.generalLayout.DARK} style={{backgroundColor:theme.DARK}} label="Straight" value="straight"/>
-                        <Picker.Item color={theme.generalLayout.DARK} label="Homosexual/Gay/Lesbian" value="homosexual"/>
-                        <Picker.Item color={theme.generalLayout.DARK} label="Bi-sexual/Fluid" value="bi-sexual"/>
-                        <Picker.Item color={theme.generalLayout.DARK} label="Other" value="other"/>
+                        <Picker.Item color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })}  style={{backgroundColor:theme.DARK}} label="Straight" value="straight"/>
+                        <Picker.Item color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })}  label="Homosexual/Gay/Lesbian" value="homosexual"/>
+                        <Picker.Item color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })}  label="Bi-sexual/Fluid" value="bi-sexual"/>
+                        <Picker.Item color={Platform.select({
+                            ios: theme.generalLayout.textColor,
+                            android:'black'
+                          })}  label="Other" value="other"/>
                       </Picker>
                     </Surface>
                   </View>
@@ -354,13 +375,13 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
               >
                 <Ionicons name="ios-close-circle-outline" size={30} color={theme.icons.color} />
               </TouchableOpacity>
-              <DrawerButton drawerButtonColor={theme.icons.color} onPress={this.props.onDrawerPress} /> 
+              <DrawerButton userPhoto={this.state.userData.photoSource} drawerButtonColor={theme.icons.color} onPress={this.props.onDrawerPress} /> 
             </View>
             :
         ///////////////////////////////////////////
             <View style={styles.viewDark}>
                 <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-                <DrawerButton drawerButtonColor={theme.icons.color} onPress={this.props.onDrawerPress} /> 
+                <DrawerButton userPhoto={this.state.userData.photoSource} drawerButtonColor={theme.icons.color} onPress={this.props.onDrawerPress} /> 
             </View> 
         
       );
@@ -389,7 +410,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
 const localStyles = StyleSheet.create({
   dropdown:{
       ...Platform.select({
-        ios: {backgroundColor:theme.DARK, width:"100%", alignSelf:"center"},
+        ios: { backgroundColor: theme.generalLayout.backgroundColor, width:"100%", alignSelf:"center"},
         android:{backgroundColor:'white', width:"100%", alignSelf:"center"}
       })
   },
