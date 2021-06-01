@@ -24,9 +24,9 @@ function UserProfile({route, navigation}){
 }
 
 function BusinessProfile({route, navigation}){
-  const { user, currentUser, requests, refresh, isUserProfile, uploadImage} = route.params;
+  const { profileUser, currentUser, requests, refresh, isUserProfile, uploadImage} = route.params;
   return(
-    <Business uploadImage={uploadImage} isUserProfile={isUserProfile} currentUser={currentUser} refresh={refresh} requests={requests} user={user} onDrawerPress={() => navigation.openDrawer()} isUserProfile={true}  navigation={navigation}></Business>
+    <Business uploadImage={uploadImage} isUserProfile={isUserProfile} currentUser={currentUser} refresh={refresh} requests={requests} profileUser={profileUser} onDrawerPress={() => navigation.openDrawer()} isUserProfile={true}  navigation={navigation}></Business>
   );
 }
 

@@ -89,8 +89,8 @@ class UserSearch extends Component {
                     this.state.queriedUsers ? 
                       this.state.queriedUsers.map((user, i) => (
                           <TouchableOpacity style={{paddingHorizontal:65,    borderBottomColor: theme.generalLayout.secondaryColor, borderBottomWidth: 1,}}  key={i} onPress={() => !user.isBusiness ?
-                            this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{profileUser:user, isUsersProfile:false}}) :
-                              this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{user:user, currentUser:this.state.currentUserData}})
+                            this.props.navigation.navigate('Profile', {screen:"OtherProfile", params:{profileUser:user, isUserProfile:false}}) :
+                              this.props.navigation.navigate('Profile', {screen:"BusinessProfile", params:{profileUser:user,  isUserProfile:false}})
                             }>
                             <View style={localStyles.friendCont}>
                               <Image style={localStyles.friendPic} source={ user.providerData != null ? {uri:user.photoSource}  : defPhoto} />
