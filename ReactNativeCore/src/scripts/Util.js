@@ -25,6 +25,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
 
+
 const Util = {
     friends: {
         GetFriends: function (email, callback) {
@@ -187,7 +188,7 @@ const Util = {
                 callback(isLoggedIn);
             }
         },
-        HandleUploadImage: (isBusiness, userData, callback) => {
+        HandleUploadImage: (isBusiness, userData, callback, isStatusImage) => {
             // console.log('got to util')
             let userEmail = firebase.auth().currentUser.email;
             ImagePicker.getMediaLibraryPermissionsAsync()
@@ -198,16 +199,17 @@ const Util = {
                                 let uri = image.uri;
                                 Util.user.UploadImage(uri, userEmail, (resUri) => {
 
-                                    // console.log(resUri);
-                                    userData['photoSource'] = resUri;
-                                    Util.user.UpdateUser(userEmail, {photoSource: resUri});
+                                    if(!isStatusImage) {
+                                        userData['photoSource'] = resUri;
+                                        Util.user.UpdateUser(userEmail, {photoSource: resUri});
+                                    }
                                     if (isBusiness) {
                                         Util.business.UpdateUser(userEmail, {photoSource: resUri});
                                     }
                                     if (callback) {
                                         callback(resUri);
                                     }
-                                });
+                                }, null, isStatusImage);
                             });
                     } else {
                         ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -217,17 +219,20 @@ const Util = {
                                         .then((image) => {
                                             let uri = image.uri;
                                             Util.user.UploadImage(uri, userEmail, (resUri) => {
-                                                userData['photoSource'] = resUri;
+
 
                                                 // console.log(resUri);
-                                                Util.user.UpdateUser(userEmail, {photoSource: resUri});
+                                                if(!isStatusImage) {
+                                                    userData['photoSource'] = resUri;
+                                                    Util.user.UpdateUser(userEmail, {photoSource: resUri});
+                                                }
                                                 if (userData.isBusiness) {
                                                     Util.business.UpdateUser(userEmail, {photoSource: resUri});
                                                 }
                                                 if (callback) {
                                                     callback(resUri);
                                                 }
-                                            });
+                                            }, null, isStatusImage);
                                         });
                                 }
                             });
@@ -505,7 +510,7 @@ const Util = {
             let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data=" + email + "&size=500x500&bgcolor=301E48&color=F1BF42"
             return QRSource;
         },
-        UploadImage: async (uri, email, callback, isProof) => {
+        UploadImage: async (uri, email, callback, isProof, isStatusImage) => {
             const blob = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
@@ -518,10 +523,15 @@ const Util = {
                 xhr.open('GET', uri, true);
                 xhr.send(null);
             });
+
             let ref = firebase
                 .storage()
                 .ref()
-                .child(!isProof ? email : email);
+            if(!isStatusImage)
+                ref.child(!isProof ? email : email);
+            else
+                ref.child(email+'/status/'+uri)
+
             const snapshot = await ref.put(blob);
             // We're done with the blob, close and release it
             blob.close();
