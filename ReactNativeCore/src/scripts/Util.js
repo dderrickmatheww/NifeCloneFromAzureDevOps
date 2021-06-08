@@ -27,6 +27,7 @@ import * as Notifications from "expo-notifications";
 import uuid from 'react-native-uuid';
 
 
+
 const Util = {
     friends: {
         GetFriends: function (email, callback) {
