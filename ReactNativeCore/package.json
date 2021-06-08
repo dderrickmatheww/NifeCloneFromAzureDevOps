@@ -40,7 +40,7 @@
     "firebase-auth": "^0.1.2",
     "geolib": "^3.3.1",
     "jssha": "^3.1.0",
-    "metro-config": "^0.64.0",
+    "metro-config": "^0.58",
     "metro-transform-worker": "^0.64.0",
     "random-string": "^0.2.0",
     "react": "16.13.1",
