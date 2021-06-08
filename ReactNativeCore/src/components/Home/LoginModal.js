@@ -31,7 +31,8 @@ export default class NifeLoginModal extends Component {
         proofURI: null,
         imageLoading: false,
         verifying: false,
-        isReset: false
+        isReset: false,
+        isBusiness: this.props.isBusiness
     }
 
     onChangeText = (text, type) => {
@@ -180,7 +181,7 @@ export default class NifeLoginModal extends Component {
     render () {
         return (
             !this.props.isReset ?
-                !this.props.isBusiness ? 
+                !this.state.isBusiness ?
                     this.state.signUp ?
                         //Sign-up with Nife
                         <Modal
@@ -207,7 +208,7 @@ export default class NifeLoginModal extends Component {
                                 <TouchableOpacity
                                     onPress={() => this.setState({signUp: false})}
                                     style={localStyles.loginSwitch}
-                                > 
+                                >
                                     <Caption style={localStyles.Caption}>Login</Caption>
                                 </TouchableOpacity>
                             </View>
@@ -249,6 +250,7 @@ export default class NifeLoginModal extends Component {
                             onDismiss={this.props.onDismiss}
                             contentContainerStyle={localStyles.Modal}
                         >
+
                             {
                                 !this.state.verifying ?
                                 <View style={localStyles.Container}>
@@ -257,6 +259,34 @@ export default class NifeLoginModal extends Component {
                                     </View>
                             
                                     <ScrollView style={{maxHeight:450}} contentContainerStyle={localStyles.Container}>
+                                        <View>
+                                            <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    this.setState({
+                                                        isBusiness:false,
+                                                        signUp: false,
+                                                        bussinessApplicationPt2: false,
+                                                        bussinessApplication: false
+                                                    })
+                                                }}
+                                                style={{
+                                                    borderColor: theme.generalLayout.secondaryColor,
+                                                    borderRadius: 10,
+                                                    alignSelf:"center",
+                                                    borderWidth: 1,
+                                                    paddingHorizontal:5,
+                                                    paddingVertical:2,
+                                                    marginTop: '5%',
+                                                    marginBottom:10,
+                                                    width: '40%',
+                                                }}
+                                            >
+                                                <Caption style={localStyles.Caption}>Login</Caption>
+                                            </TouchableOpacity>
+                                        </View>
+
+
                                         <TextInput   theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
                                         style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
 
@@ -305,6 +335,8 @@ export default class NifeLoginModal extends Component {
                                                 <Caption style={localStyles.Caption}>Next</Caption>
                                             </TouchableOpacity>
                                         </View>
+
+
                                     </ScrollView> 
                                 </View>
                                 :
