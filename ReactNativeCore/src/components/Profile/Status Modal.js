@@ -43,7 +43,8 @@ class StatusModal extends React.Component {
         let obj = {
             status: {
                 text: status,
-                timestamp: new Date()
+                timestamp: new Date(),
+                image: this.state.pic,
             }
         }
         let user = this.props.user;
@@ -59,6 +60,14 @@ class StatusModal extends React.Component {
         if (e.nativeEvent.key == "Enter") {
             Keyboard.dismiss();
         }
+    }
+
+    handleUploadImageStatus = () => {
+        this.setState({saving: true});
+        Util.user.HandleUploadImage(this.props.user.isBusiness, this.props.user, (image) => {
+            this.setState({saving: false});
+            this.setState({pic: image});
+        }, true)
     }
 
     render() {
@@ -96,18 +105,36 @@ class StatusModal extends React.Component {
                             <ActivityIndicator style={{marginVertical: 5}} color={theme.loadingIcon.color}
                                                size="large"/>
                             :
-                            <Button
-                                labelStyle={{color: theme.generalLayout.textColor}}
-                                style={localStyles.button}
-                                icon={"check"}
-                                mode="contained"
-                                onPress={() => this.onSaveStatus()}
-                            >
-                                <Text style={{
-                                    color: theme.generalLayout.textColor,
-                                    fontFamily: theme.generalLayout.font
-                                }}>Update</Text>
-                            </Button>
+                            <View style={{flexDirection: 'column', justifyContent: 'center'}}>
+                                {!this.state.saving ? <Button
+                                    labelStyle={{color: theme.generalLayout.textColor}}
+                                    style={localStyles.button}
+                                    mode="contained"
+                                    onPress={() => this.handleUploadImageStatus()}
+                                    disabled={!this.state.pic ? false : true}
+                                >
+                                    <Text style={{
+                                        color: theme.generalLayout.textColor,
+                                        fontFamily: theme.generalLayout.font
+                                    }}>
+                                        {!this.state.pic ? "Upload Image" : "Image Added!"}
+                                    </Text>
+                                </Button> : <ActivityIndicator style={{marginVertical: 5}} color={theme.loadingIcon.color}
+                                                               size="large"/>}
+                                <Button
+                                    labelStyle={{color: theme.generalLayout.textColor}}
+                                    style={localStyles.button}
+                                    icon={"check"}
+                                    mode="contained"
+                                    onPress={() => this.onSaveStatus()}
+                                >
+                                    <Text style={{
+                                        color: theme.generalLayout.textColor,
+                                        fontFamily: theme.generalLayout.font
+                                    }}>Update</Text>
+                                </Button>
+                            </View>
+
                     }
                 </View>
             </Modal>
@@ -166,7 +193,7 @@ const localStyles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         width: "50%",
-        marginBottom: 20
+        marginBottom: 20,
     },
     viewDark: {
         flex: 1,

@@ -524,13 +524,13 @@ const Util = {
                 xhr.send(null);
             });
 
-            let ref = firebase
-                .storage()
-                .ref()
-            if(!isStatusImage)
-                ref.child(!isProof ? email : email);
-            else
-                ref.child(email+'/status/'+uri)
+            let ref;
+            if(!isStatusImage) {
+                ref = firebase.storage().ref().child(!isProof ? email : email);
+            }
+            else {
+                ref = firebase.storage().ref().child(email + '/status/' + uri)
+            }
 
             const snapshot = await ref.put(blob);
             // We're done with the blob, close and release it
