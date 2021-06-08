@@ -215,8 +215,7 @@ const localStyles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: theme.generalLayout.secondaryColor,
     borderBottomWidth: 2,
-    paddingBottom: 2,
-    marginTop:25
+    marginTop:50
   },
   profilePic: {
     width: 75,
@@ -289,10 +288,9 @@ const localStyles = StyleSheet.create({
         marginTop: '8%',
       },
       android: {
-        marginTop: '3%',
+        marginTop: '10%',
       },
     }),
-    marginLeft: '3%',
     marginBottom: '3%',
     borderWidth: 1,
     borderColor: theme.generalLayout.secondaryColor,

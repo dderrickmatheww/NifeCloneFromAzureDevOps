@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, ScrollView, ImageBackground, ActivityIndicator, StyleSheet, Platform} from 'react-native';
+import {View, ScrollView, ImageBackground, ActivityIndicator, StyleSheet, Platform, TouchableOpacity} from 'react-native';
 import {
     Title,
     Caption,
@@ -15,7 +15,6 @@ import StatusModal from './Status Modal';
 import Clipboard from '../Universal/Clipboard';
 import {connect} from "react-redux";
 
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 
@@ -23,7 +22,7 @@ const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 class BusinessProfile extends Component {
     state = {
         isLoggedin: false,
-        userData: this.props.isUserProfile ? this.props.currentUser : null,
+        userData: !this.props.profileUser? this.props.currentUser : this.props.profileUser,
         modalVisible: false,
         friendData: null,
         isAddingFriend: false,
@@ -64,37 +63,35 @@ class BusinessProfile extends Component {
         }
     }
 
-    //gets user and friend data
-    setProps = () => {
-        this.getBusinessData();
 
-    }
 
     onDismissStatus = () => {
         this.setState({statusModalVisible: false});
     }
 
     getBusinessData = () => {
-        if (this.state.userData.isBusiness) {
-            if (!this.props.isUserProfile)
+            if (this.props.profileUser)
                 Util.business.GetBusinessByUID(this.state.userData.businessId, (data) => {
+                    console.log(data);
                     this.setState({businessData: data});
-                    this.getHours();
+                    // this.getHours();
+                    Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
+                        this.setState({followerCount: count});
+                    });
                 });
             else {
                 //console.log(this.props.businessData)
                 this.setState({businessData: this.props.businessData})
-                this.getHours();
+                // this.getHours();
+
+                Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
+                    this.setState({followerCount: count});
+                });
             }
-            Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
-                this.setState({followerCount: count});
-            });
-        }
+
     }
 
     componentDidMount() {
-        //console.log(this.props.yelpData)
-        this.setProps();
         this.getBusinessData();
     }
 
@@ -142,7 +139,6 @@ class BusinessProfile extends Component {
                             />
                         </TouchableOpacity>
 
-
                     </View>
                     <ScrollView contentContainerStyle={localStyles.loggedInContainer}>
                         <View style={localStyles.HeaderCont}>
@@ -155,7 +151,7 @@ class BusinessProfile extends Component {
                                 <ImageBackground style={localStyles.profilePic}
                                                  source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                                     {
-                                        this.props.isUserProfile ?
+                                        !this.props.profileUser ?
                                             <TouchableOpacity
                                                 style={{position: "relative", bottom: 0, left: 125 , zIndex:15}}
                                                 onPress={() => {
@@ -186,9 +182,9 @@ class BusinessProfile extends Component {
 
                                 <View style={{alignSelf: "flex-start", width: "100%"}}>
                                     {
-                                        this.props.businessData.data.location ?
+                                        this.state.businessData.data.location ?
                                             <Caption style={localStyles.address}>
-                                                {this.props.businessData.data.location.display_address[0] + " " + this.props.businessData.data.location.display_address[1]}
+                                                {this.state.businessData.data.location.display_address[0] + " " + this.state.businessData.data.location.display_address[1]}
                                             </Caption>
                                             : null
                                     }
@@ -204,7 +200,7 @@ class BusinessProfile extends Component {
                                         Events:
                                     </Title>
                                 </View>
-                                <Clipboard type={'events'} data={this.props.businessData.events} />
+                                <Clipboard editable={!this.props.profileUser} type={'events'} data={this.state.businessData.events} />
                                 {/*    TODO Event Adder*/}
                             </View>
                             {/* Specials */}
@@ -214,7 +210,7 @@ class BusinessProfile extends Component {
                                         Specials:
                                     </Title>
                                 </View>
-                                <Clipboard type={'specials'} data={this.props.businessData.specials} />
+                                <Clipboard editable={!this.props.profileUser} type={'specials'} data={this.state.businessData.specials} />
                                 {/*    TODO Specials Adder*/}
                             </View>
 

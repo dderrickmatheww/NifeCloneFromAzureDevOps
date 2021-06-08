@@ -9,11 +9,11 @@ import { Ionicons } from '@expo/vector-icons';
 import {
   TextInput
 } from 'react-native-paper';
+import {connect} from "react-redux";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
-
-export default class EditBusinessProfile extends Component {
+ class EditBusinessProfile extends Component {
   
   state = {
     userData:  null,
@@ -395,3 +395,24 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   }
 });
+
+
+
+function mapStateToProps(state) {
+  return {
+    user: state.userData,
+    requests: state.friendRequests,
+    friends: state.friendData,
+    business: state.businessData,
+    yelpData: state.yelpData,
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditBusinessProfile);

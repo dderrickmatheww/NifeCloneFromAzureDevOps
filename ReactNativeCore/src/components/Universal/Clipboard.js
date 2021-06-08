@@ -83,12 +83,12 @@ class Clipboard extends React.Component {
                                     {obj.text}
                                 </Caption>
 
-                                <TouchableOpacity style={localStyles.addBtn}
-                                                  onPress={() => this.removeIndex(i)}
+                                {this.props.editable ? <TouchableOpacity style={localStyles.addBtn}
+                                                   onPress={() => this.removeIndex(i)}
                                 >
                                     <Ionicons size={20} color={theme.icons.color}
                                               name="md-close"></Ionicons>
-                                </TouchableOpacity>
+                                </TouchableOpacity> : null}
 
                             </View>
 
@@ -120,12 +120,12 @@ class Clipboard extends React.Component {
                     </TextInput> :
 
                     //Add to Button
-                    <TouchableOpacity style={localStyles.addBtn}
+                    this.props.editable ? <TouchableOpacity style={localStyles.addBtn}
                                       onPress={() => this.toggleModal(true)}
                     >
                         <Ionicons size={25} color={theme.icons.color}
                                   name="ios-add-circle"></Ionicons>
-                    </TouchableOpacity>
+                    </TouchableOpacity> : null
                 }
 
 

@@ -24,16 +24,16 @@ function UserProfile({route, navigation}){
 }
 
 function BusinessProfile({route, navigation}){
-  const { user, currentUser, requests, refresh, isUserProfile, uploadImage} = route.params;
+  const { profileUser, currentUser, requests, refresh, isUserProfile, uploadImage} = route.params;
   return(
-    <Business uploadImage={uploadImage} isUserProfile={isUserProfile} currentUser={currentUser} refresh={refresh} requests={requests} user={user} onDrawerPress={() => navigation.openDrawer()} isUserProfile={true}  navigation={navigation}></Business>
+    <Business uploadImage={uploadImage} isUserProfile={isUserProfile} currentUser={currentUser} refresh={refresh} requests={requests} profileUser={profileUser} onDrawerPress={() => navigation.openDrawer()} isUserProfile={true}  navigation={navigation}></Business>
   );
 }
 
 function OtherProfile({route, navigation}){
   const { friends, requests, refresh, uploadImage, profileUser} = route.params;
   return(
-    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends} profileUser={profileUser}   isUserProfile={true} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
+    <ProfileScreen uploadImage={uploadImage} refresh={refresh} requests={requests} friends={friends} profileUser={profileUser}   isUserProfile={false} onDrawerPress={() => navigation.openDrawer()}  navigation={navigation}></ProfileScreen>
   );
 }
 

@@ -6,7 +6,9 @@ import {
     ScrollView,
     ActivityIndicator,
     Dimensions,
-    Platform
+    Platform,
+    TouchableOpacity,
+    Image
 } from 'react-native';
 import {
     Text,
@@ -27,10 +29,9 @@ import SpecialsModal from '../Whats Poppin/UpdateSpecialsModal';
 import * as firebase from 'firebase';
 import * as ImagePicker from 'expo-image-picker';
 import {connect} from "react-redux";
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 
-const screen = Dimensions.get("screen");
+const win = Dimensions.get('window');
 
 class FriendsFeed extends React.Component {
 
@@ -77,6 +78,7 @@ class FriendsFeed extends React.Component {
                 status: true,
                 visited: false,
                 checkedIn: false,
+                statusImage: user.status.image,
             }
             friendFeedData.push(obj);
         }
@@ -92,6 +94,7 @@ class FriendsFeed extends React.Component {
                         status: true,
                         visited: false,
                         checkedIn: false,
+                        statusImage: friend.status.image,
                     }
                     friendFeedData.push(obj);
                 }
@@ -420,12 +423,21 @@ class FriendsFeed extends React.Component {
                                                         style={localStyles.feedType}>{"   " + this.props.business.City + ", " + this.props.business.State}</Caption> : null
                                             }
                                         </Text>
-                                        <Caption
-                                            style={localStyles.feedType}>{data.visited ? "took a visit" : data.checkedIn ? "checked in" : data.event ? "booked an event" : data.specials ? "has a new special" : "status update"}</Caption>
+                                        <Caption style={localStyles.feedType}>{data.visited ? "took a visit" : data.checkedIn ? "checked in" : data.event ? "booked an event" : data.specials ? "has a new special" : "status update"}</Caption>
+                                        <View>
+                                            <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
+                                            {
+                                                data.statusImage ?
+                                                    <Image
+                                                        resizeMethod="auto"
+                                                        resizeMode="contain"
+                                                        style={{flex:1,resizeMode:'contain',aspectRatio:1}}
+                                                        source={{uri: data.statusImage}}/>
+                                                    : null
+                                            }
+                                        </View>
 
-                                        <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
-                                        <Caption
-                                            style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
+                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
                                     </View>
                                 ))
                                 :
@@ -610,6 +622,7 @@ const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor,
         fontSize: 12,
         marginTop: -10,
+        marginBottom: 10,
         fontFamily: theme.generalLayout.font
     },
     displayName: {
@@ -638,8 +651,6 @@ const localStyles = StyleSheet.create({
         paddingHorizontal: 10,
         marginVertical: 3,
         width: "100%",
-        minHeight: 150,
-        maxHeight: 150,
     },
     emptyPoppinFeed: {
         color: theme.generalLayout.textColor,
