@@ -6,7 +6,7 @@ import {
     ScrollView,
     ActivityIndicator,
     Text,
-    Dimensions, Platform
+    Dimensions, Platform, Image
 } from 'react-native';
 import { 
     Headline,
@@ -61,6 +61,7 @@ const screen = Dimensions.get("window");
                     status: true,
                     visited:false,
                     checkedIn:false,
+                    statusImage: friend.status.image,
                 }
                 friendFeedData.push(obj);
             }
@@ -148,35 +149,58 @@ const screen = Dimensions.get("window");
                 
                {
                 this.state.feedData ?
-                    <ScrollView style={localStyles.ScrollView} contentContainerStyle={localStyles.scrollContent}
-                    refreshControl={
-                        <RefreshControl 
-                            refreshing={this.state.refresh} 
-                            onRefresh={this.onRefresh}  
-                            size={22}
-                            color={[theme.loadingIcon.color]}
-                            tintColor={theme.loadingIcon.color}
-                            title={'Loading...'}
-                            titleColor={theme.loadingIcon.textColor}
-                        />
-                    }
+                    <ScrollView style={[localStyles.ScrollView]} contentContainerStyle={localStyles.scrollContent}
+                                refreshControl={
+                                    <RefreshControl
+                                        refreshing={this.state.refresh}
+                                        onRefresh={this.onRefresh}
+                                        size={22}
+                                        color={[theme.loadingIcon.color]}
+                                        tintColor={theme.loadingIcon.color}
+                                        title={'Loading...'}
+                                        titleColor={theme.loadingIcon.textColor}
+                                    />
+                                }
                     >
                         {
                             this.state.feedData && this.state.feedData.length > 0 ?
-                                this.state.feedData.map((data, i)=>(
+                                this.state.feedData.map((data, i) => (
                                     <View key={i} style={localStyles.feedDataRow}>
-                                        <Avatar.Image source={data.image ? data.image : defImage} size={50}/>
-                                        <Text style={localStyles.displayName} >{data.name}</Text>
-                                        <Caption style={localStyles.feedType} theme={{ colors: { text: theme.generalLayout.textColor} }}>{data.visited ?"took a visit" : data.checkedIn ? "checked in" : "status update"}</Caption>
-                                        <Paragraph style={localStyles.Paragraph} theme={{ colors: { text: theme.generalLayout.textColor} }}>{data.text}</Paragraph>
-                                        <Caption style={localStyles.Caption} theme={{ colors: { text: theme.generalLayout.textColor} }}>{Util.date.TimeSince(data.time)} ago</Caption>
-                                    </View> 
-                                )) 
-                            : 
-                                <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends if you haven't already!</Text>
-                                
+                                        <Avatar.Image source={data.image.uri !== "Unknown" ? data.image : defPhoto}
+                                                      size={50}/>
+                                        <Text style={localStyles.displayName}>
+                                            {data.name}
+                                            {
+                                                this.state.userData.isBusiness ?
+                                                    <Caption
+                                                        style={localStyles.feedType}>{"   " + this.props.business.City + ", " + this.props.business.State}</Caption> : null
+                                            }
+                                        </Text>
+                                        <Caption style={localStyles.feedType}>{data.visited ? "took a visit" : data.checkedIn ? "checked in" : data.event ? "booked an event" : data.specials ? "has a new special" : "status update"}</Caption>
+                                        <View>
+                                            <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
+                                            {
+                                                data.statusImage ?
+                                                    <Image
+                                                        resizeMethod="auto"
+                                                        resizeMode="contain"
+                                                        style={{flex:1,resizeMode:'contain',aspectRatio:1}}
+                                                        source={{uri: data.statusImage}}/>
+                                                    : null
+                                            }
+                                        </View>
+
+                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
+                                    </View>
+                                ))
+                                :
+
+                                <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends and
+                                    favorite spots if you haven't already!</Text>
+
                         }
-                    </ScrollView> 
+
+                    </ScrollView>
                 :
                     <View style={localStyles.viewDark}>
                         <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
@@ -226,9 +250,32 @@ const localStyles = StyleSheet.create({
             },
         })
     },
-
+    viewDark: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.generalLayout.backgroundColor,
+        paddingBottom: 10
+    },
+    modalButton: {
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderWidth: 1,
+        borderColor: theme.generalLayout.secondaryColor,
+        borderRadius: 5,
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+        textAlign: "center",
+        marginVertical: 5,
+        fontFamily: theme.generalLayout.font
+    },
+    modalButtonText: {
+        color: theme.generalLayout.secondaryColor,
+        fontSize: 20,
+        textAlign: "center",
+        fontFamily: theme.generalLayout.font
+    },
     StatusOverlay: {
-        position:"relative",
+        position: "relative",
         right: 150,
         backgroundColor: theme.generalLayout.backgroundColor,
         borderWidth: .5,
@@ -237,86 +284,75 @@ const localStyles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 8
     },
-    drawerBtn: {
-        marginTop: '1%',
-        marginLeft: '3%',
-        marginBottom: '3%',
-        borderRadius: 70
-    },
     Caption: {
         color: theme.generalLayout.textColor,
         opacity: 0.60,
         fontFamily: theme.generalLayout.font
     },
     statusButton: {
-        color:  theme.generalLayout.textColor,
+        color: theme.generalLayout.textColor,
         fontSize: 11,
         fontFamily: theme.generalLayout.font
     },
-    Paragraph:{
-        color:  theme.generalLayout.textColor,
-        fontSize:12,
-        marginTop:-10,
+    Paragraph: {
+        color: 'white',
+        fontSize: 12,
+        marginTop: -10,
+        marginBottom: 10,
         fontFamily: theme.generalLayout.font
     },
-    displayName:{
-        color: theme.generalLayout.textColor,
-        left:60,
-        top:-45,
-        position:"relative",
-        fontSize:15,
-        fontWeight:"bold",
-        fontFamily: theme.generalLayout.font
+    displayName: {
+        color: 'white',
+        left: 60,
+        top: -45,
+        position: "relative",
+        fontSize: 15,
+        fontWeight: "bold",
+        fontFamily: theme.generalLayout.fontBold
     },
-    feedType:{
-        color:  theme.generalLayout.textColor,
-        left:60,
-        top:-50,
-        position:"relative",
-        fontSize:12,
-        opacity: 0.60,
-        fontFamily: theme.generalLayout.font
+    feedType: {
+        color: 'white',
+        left: 60,
+        top: -50,
+        position: "relative",
+        fontSize: 12,
+        opacity: 0.60
     },
-    feedDataRow:{
-        flex:1,
+    feedDataRow: {
+        flex: 1,
         backgroundColor: theme.generalLayout.backgroundColor,
         borderColor: theme.generalLayout.secondaryColor,
         color: theme.generalLayout.textColor,
-        borderRadius:10,
-        borderWidth:1,
-        paddingVertical:5,
-        paddingHorizontal:10,
-        marginVertical:2,
-        width:"100%",
-        minHeight: 150,
-        maxHeight: 150,
+        borderRadius: 10,
+        borderWidth: 1,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginVertical: 2,
+        width: "100%",
     },
-    noFeedData:{
-        flex:1,
-        backgroundColor: theme.generalLayout.backgroundColor,
-        borderColor: theme.generalLayout.secondaryColor,
-        width:"100%",
+    emptyPoppinFeed: {
+        color: theme.generalLayout.textColor,
+        fontSize: 16,
+        padding: 20,
+        textAlign: "center",
+        justifyContent: "center",
+        fontFamily: theme.generalLayout.font
     },
     navHeader: {
         marginTop: 12.5,
-        flexDirection:"row",
+        flexDirection: "row",
         borderBottomColor: theme.generalLayout.secondaryColor,
-        borderBottomWidth:1,
-        width:"98%",
-        textAlign:"center",
-        alignItems:"center",
-    },
-    safeAreaContainer: {
-        flex: 1,
-        paddingTop:"7%",
-        backgroundColor: theme.generalLayout.backgroundColor,
+        borderBottomWidth: 1,
+        width: "98%",
+        textAlign: "center",
+        alignItems: "center",
     },
     DrawerOverlay: {
-      alignSelf:"flex-start",
-      opacity: 0.75,
-      backgroundColor: theme.generalLayout.backgroundColor,
-      borderRadius: 10,
-      paddingVertical:0,
+        alignSelf: "flex-start",
+        opacity: 0.75,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderRadius: 10,
+        paddingVertical: 0,
     },
     ScrollView: {
         flex: 1,
@@ -325,21 +361,18 @@ const localStyles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 10,
     },
-    emptyPoppinFeed: {
-        color: theme.generalLayout.textColor, 
-        fontSize: 16,
-        padding: 20,
-        textAlign: "center",
-        justifyContent: "center",
-        fontFamily: theme.generalLayout.font
+    drawerBtn: {
+        marginTop: '1%',
+        marginLeft: '3%',
+        marginBottom: '3%',
+        borderRadius: 70
     },
-    viewDark: {
+    safeAreaContainer: {
         flex: 1,
-        justifyContent: 'center', 
-        alignItems: 'center' ,
-        backgroundColor: theme.generalLayout.secondaryColor
+        paddingTop: "7%",
+        backgroundColor: theme.generalLayout.backgroundColor,
     },
-  });
+});
 
 function mapStateToProps(state){
     return{
