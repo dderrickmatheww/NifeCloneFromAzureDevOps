@@ -24,6 +24,7 @@ import { isPointWithinRadius, getDistance } from 'geolib';
 import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
+import uuid from 'react-native-uuid';
 
 
 const Util = {
@@ -529,7 +530,7 @@ const Util = {
                 ref = firebase.storage().ref().child(!isProof ? email : email);
             }
             else {
-                ref = firebase.storage().ref().child(email + '/status/' + uri)
+                ref = firebase.storage().ref().child(email + '/status/' + uuid.v4())
             }
 
             const snapshot = await ref.put(blob);
