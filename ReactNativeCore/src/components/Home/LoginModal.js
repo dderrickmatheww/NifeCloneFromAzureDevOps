@@ -258,10 +258,6 @@ export default class NifeLoginModal extends Component {
                                     </View>
                             
                                     <ScrollView style={{maxHeight:450}} contentContainerStyle={localStyles.Container}>
-<<<<<<< HEAD
-                                        <TextInput selectionColor={theme.generalLayout.textColor}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
-=======
                                         <View>
                                             <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
                                             <TouchableOpacity
@@ -292,7 +288,6 @@ export default class NifeLoginModal extends Component {
 
                                         <TextInput   theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
                                         style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
->>>>>>> dev
 
                                         <TextInput selectionColor={theme.generalLayout.textColor}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
                                         style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />

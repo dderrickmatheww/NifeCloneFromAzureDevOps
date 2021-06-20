@@ -22,7 +22,8 @@ const  initialState = {
   friendData:null,
   friendRequests: null,
   businessData: null,
-  yelpData: null
+  yelpData: null,
+  feedData: null
 }
 
 const reducer = (state = initialState, action) => {
@@ -37,6 +38,10 @@ const reducer = (state = initialState, action) => {
     case 'YELPDATA':
       return {
         yelpData:  action.data ? action.data : null
+      }
+    case 'REFRESHFEED':
+      return {
+        feedData: action.feed ? action.feed : null
       }
   }
     return state;

@@ -15,9 +15,6 @@ import LoginScreen from '../components/Login/Login Screen';
 import { DrawerContent } from '../components/Drawer/Drawer Content';
 import * as Font from 'expo-font';
 import {connect} from "react-redux";
-import * as Notifications from "expo-notifications";
-import * as firebase from "firebase";
-import { useNavigation } from '@react-navigation/native';
 
 //TODO update redux state
 
@@ -106,9 +103,6 @@ class Navigator extends React.Component {
 
 
   firstTimeSignUp = (user) => {
-    // console.log(user);
-    // console.log('firstTimeSignUp fired');
-    // console.log(this.state.displayName,  this.state.businessState.businessName)
     if(this.state.displayName || this.state.businessSignUp.businessName) {
       user.updateProfile({ displayName: this.state.businessSignUp ? this.state.businessSignUp.businessName :  this.state.displayName})
       .then(() => {
@@ -223,17 +217,21 @@ class Navigator extends React.Component {
         if(userData) {
           //user data set in filterfriends
           if(userData.isBusiness) {
-
-            Util.dataCalls.Yelp.getBusinessData(userData.businessId, (data)=> {
+            Util.dataCalls.Yelp.getBusinessData(userData.businessId, (data) => {
               userData.businessData['data'] = data;
-              Util.business.UpdateUser(userData.email, {data: data})
+              Util.business.UpdateUser(userData.email, { data: data });
               this.props.refresh(userData);
-              console.log(data);
-            })
+            });
           }
           else {
             if(userData.friendData) {
               this.props.refresh(userData);
+              const req = {
+                email: userData.email,
+                take: 50,
+                skip: 0
+              }
+              Util.user.getUserFeed(req, (feed) => { this.props.feedRefresh(feed)});
               this.setState({
                 userChecked: true,
               });
@@ -253,11 +251,8 @@ class Navigator extends React.Component {
     return (
       this.state.authLoaded ?
         this.props.userData ?
-          <NavigationContainer
-
-          >
+          <NavigationContainer>
             <Drawer.Navigator
-
               drawerContentOptions={{
                 activeTintColor: theme.generalLayout.backgroundColor,
                 inactiveTintColor: theme.loadingIcon.color,
@@ -306,6 +301,7 @@ const localStyles = StyleSheet.create({
 function mapStateToProps(state){
   return{
     userData: state.userData,
+    feedData: state.feedData,
     friendRequests: state.friendRequests,
     friendData: state.friendData,
     businessData: state.businessData,
@@ -314,8 +310,9 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    refresh: (userData) => dispatch({type:'REFRESH', data:userData}),
-    yelpDataRefresh: (data) => dispatch({type:'YELPDATA', data:data}),
+    refresh: (userData) => dispatch({type:'REFRESH', data: userData}),
+    feedRefresh: (feed) => dispatch({type:'REFRESHFEED', feed: feed}),
+    yelpDataRefresh: (data) => dispatch({type:'YELPDATA', data: data}),
   }
 }
 

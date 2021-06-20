@@ -55,6 +55,7 @@ class FriendsFeed extends React.Component {
     async componentDidMount() {
         this.setState({
             userData: this.props.user,
+            feedData: this.props.feed,
             friendData: this.props.friends,
             businessData: this.props.business,
             isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
@@ -62,81 +63,11 @@ class FriendsFeed extends React.Component {
         await this.setFriendDataArrays();
     }
 
-    setFriendDataArrays = async () => {
-        let friends = this.props.friends;
+    setFriendDataArrays = async (feedData = null) => {
         let user = this.props.user;
         let business = this.props.business;
         let favorites = this.props.favorites;
-        let friendFeedData = [];
-
-        if (user.status) {
-            let obj = {
-                name: user.displayName,
-                text: user.status.text,
-                time: new Date(user.status.timestamp.seconds ? user.status.timestamp.seconds * 1000 : user.status.timestamp._seconds * 1000),
-                image: user.photoSource ? {uri: user.photoSource} : defPhoto,
-                status: true,
-                visited: false,
-                checkedIn: false,
-                statusImage: user.status.image,
-            }
-            friendFeedData.push(obj);
-        }
-        //get friend data if not a business
-        if (!user.isBusiness && typeof friends !== 'undefined' && friends.length > 0) {
-            friends.forEach((friend) => {
-                if (friend.status) {
-                    let obj = {
-                        name: friend.displayName,
-                        text: friend.status.text,
-                        time: new Date(friend.status.timestamp.seconds ? friend.status.timestamp.seconds * 1000 : friend.status.timestamp._seconds * 1000),
-                        image: friend.photoSource ? {uri: friend.photoSource} : defPhoto,
-                        status: true,
-                        visited: false,
-                        checkedIn: false,
-                        statusImage: friend.status.image,
-                    }
-                    friendFeedData.push(obj);
-                }
-                if (friend.checkIn) {
-                    if (
-                        (friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") &&
-                        friend.checkIn.checkInTime &&
-                        (!friend.privacySettings || !friend.privacySettings.checkedInPrivacy)
-                    ) {
-                        let obj = {
-                            name: friend.displayName,
-                            text: "Checked in " + (friend.checkIn.name ? " at " + friend.checkIn.name : "somewhere! No name provided!"),
-                            time: new Date(friend.checkIn.checkInTime.seconds ? friend.checkIn.checkInTime.seconds * 1000 : friend.checkIn.checkInTime._seconds * 1000),
-                            image: friend.photoSource ? {uri: friend.photoSource} : {defPhoto},
-                            status: false,
-                            visited: false,
-                            checkedIn: true,
-                        }
-                        friendFeedData.push(obj);
-                    }
-                }
-                if (friend.lastVisited) {
-                    let keys = Object.keys(friend.lastVisited);
-                    keys.forEach((key) => {
-                        let visited = friend.lastVisited[key];
-                        if (visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)) {
-                            let obj = {
-                                name: friend.displayName,
-                                text: "Visited " + (visited.name ? visited.name : "somewhere! No name provided!"),
-                                time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds * 1000 : visited.checkInTime._seconds * 1000),
-                                image: friend.photoSource ? {uri: friend.photoSource} : {defPhoto},
-                                status: false,
-                                visited: true,
-                                checkedIn: false,
-                            }
-                            friendFeedData.push(obj);
-                        }
-                    });
-                }
-            });
-        }
-
+        let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feed);
         //get user data
         if (!user.isBusiness) {
             if (favorites && favorites.length > 0) {
@@ -154,7 +85,7 @@ class FriendsFeed extends React.Component {
                                 checkedIn: false,
                                 event: true,
                             }
-                            friendFeedData.push(obj);
+                            friendFeedData.add(obj);
                         });
                     }
                     if (place.specials) {
@@ -171,52 +102,11 @@ class FriendsFeed extends React.Component {
                                 event: false,
                                 specials: true,
                             }
-                            friendFeedData.push(obj);
+                            friendFeedData.add(obj);
                         });
                     }
                 });
-            }
-
-            if (user.checkIn) {
-                if (
-                    (user.checkIn.privacy == "Public" || user.checkIn.privacy == "Friends") &&
-                    user.checkIn.checkInTime &&
-                    (!user.privacySettings || !user.privacySettings.checkedInPrivacy)
-                ) {
-                    let obj = {
-                        name: user.displayName,
-                        text: "Checked into " + (user.checkIn.name ? " at " + user.checkIn.name : "somewhere! No name provided!"),
-                        time: new Date(user.checkIn.checkInTime.seconds ? user.checkIn.checkInTime.seconds * 1000 : user.checkIn.checkInTime._seconds * 1000),
-                        image: user.photoSource ? {uri: user.photoSource} : {defPhoto},
-                        status: false,
-                        visited: false,
-                        checkedIn: true
-                    }
-                    friendFeedData.push(obj);
-                }
-            }
-
-            if (user.lastVisited) {
-                let keys = Object.keys(user.lastVisited);
-                keys.forEach((key) => {
-                    let visited = user.lastVisited[key];
-                    if (
-                        visited.privacy == "Public" || visited.privacy == "Friends" &&
-                        (!user.privacySettings || !user.privacySettings.visitedPrivacy)
-                    ) {
-                        let obj = {
-                            name: user.displayName,
-                            text: "Visited " + (visited.name ? visited.name : "somewhere! No name provided!"),
-                            time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds * 1000 : visited.checkInTime._seconds * 1000),
-                            image: user.photoSource ? {uri: user.photoSource} : {defPhoto},
-                            status: false,
-                            visited: true,
-                            checkedIn: false,
-                        }
-                        friendFeedData.push(obj);
-                    }
-                });
-            }
+            } 
         }
         //if its a business
         if (business) {
@@ -233,10 +123,9 @@ class FriendsFeed extends React.Component {
                         checkedIn: false,
                         event: true,
                     }
-                    friendFeedData.push(obj);
+                    friendFeedData.add(obj);
                 });
             }
-
             if (business.specials.length > 0) {
                 let specials = business.specials;
                 specials.forEach((special) => {
@@ -251,26 +140,25 @@ class FriendsFeed extends React.Component {
                         event: false,
                         specials: true,
                     }
-                    friendFeedData.push(obj);
+                    friendFeedData.add(obj);
                 });
             }
         }
-        friendFeedData = friendFeedData.sort((a, b) => b.time - a.time);
-        this.setState({feedData: friendFeedData});
+        friendFeedData = [...friendFeedData].sort((a, b) => b.time - a.time);
+        this.props.feedRefresh(friendFeedData);
     }
 
     onSave = (updated) => {
         this.setState({statusModalVisable: false, snackBarVisable: true});
         if (updated.status) {
-            this.setState({snackBarText: "status"});
+            this.setState({ snackBarText: "status" });
         }
         if (updated.events) {
-            this.setState({snackBarText: "events"});
+            this.setState({ snackBarText: "events" });
         }
         if (updated.specials) {
-            this.setState({snackBarText: "specials"});
+            this.setState({ snackBarText: "specials" });
         }
-
         this.setFriendDataArrays();
     }
 
@@ -283,28 +171,30 @@ class FriendsFeed extends React.Component {
     }
 
     onDismissUpdate = () => {
-        this.setState({modalVisible: false});
+        this.setState({ modalVisible: false });
     }
 
     onDismissSnackBar = () => {
-        this.setState({snackBarVisable: false});
+        this.setState({ snackBarVisable: false });
     }
-    onRefresh = async () => {
-        this.setState({refresh: true});
+    onRefresh = async ({ top, bottom }) => {
+        this.setState({ 
+            refresh: top,
+            vertRefresh: bottom 
+        });
         Util.user.GetUserData(this.props.user.email, (userData) => {
-
-            this.refresh(userData);
-        })
+            Util.user.GetUserFeed(this.props.user.email, (feedData) => {
+                this.refresh({ userData, feedData });
+            });
+        });
     }
 
-    refresh = async (userData) => {
+    refresh = async ({ userData,  feedData }) => {
         this.props.refresh(userData);
-        await this.setFriendDataArrays();
-        let friendFeedData = this.state.feedData;
-        friendFeedData = friendFeedData.sort((a, b) => b.time - a.time);
+        await this.setFriendDataArrays(feedData);
         this.setState({
-            feedData: friendFeedData,
-            refresh: false
+            refresh: false,
+            vertRefresh: false 
         });
         this.render();
     }
@@ -332,7 +222,8 @@ class FriendsFeed extends React.Component {
                             Util.basicUtil.Alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
                             Util.basicUtil.consoleLog('HomeScreen/handleUploadImage', false);
                         });
-                } else {
+                } 
+                else {
                     ImagePicker.requestCameraRollPermissionsAsync()
                         .then((result) => {
                             if (result.status == "granted") {
@@ -343,7 +234,7 @@ class FriendsFeed extends React.Component {
                                         Util.business.UploadAddressProof(uri, userEmail, (resUri) => {
                                             this.setState({isVerified: true});
                                             Util.business.SendProofEmail(userEmail, resUri);
-                                            Util.user.UpdateUser(firebase.firestore(), userEmail, {isVerified: true}, () => {
+                                            Util.user.UpdateUser(userEmail, { isVerified: true }, () => {
                                                 let user = this.state.userData;
                                                 user.isVerified = true;
                                                 this.setState({userData: user});
@@ -400,7 +291,7 @@ class FriendsFeed extends React.Component {
                                 refreshControl={
                                     <RefreshControl
                                         refreshing={this.state.refresh}
-                                        onRefresh={this.onRefresh}
+                                        onRefresh={this.onRefresh({ top: true, bottom: false })}
                                         size={22}
                                         color={[theme.loadingIcon.color]}
                                         tintColor={theme.loadingIcon.color}
@@ -408,6 +299,12 @@ class FriendsFeed extends React.Component {
                                         titleColor={theme.loadingIcon.textColor}
                                     />
                                 }
+                                onScroll={({nativeEvent}) => {
+                                    if (Util.basicUtil.VerticalLoader(nativeEvent)) {
+                                        this.onRefresh({ top: false, bottom: true });
+                                    }
+                                }}
+                                scrollEventThrottle={400}
                     >
                         {
                             this.state.feedData && this.state.feedData.length > 0 ?
@@ -443,7 +340,14 @@ class FriendsFeed extends React.Component {
                                 :
                                 <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends and
                                     favorite spots if you haven't already!</Text>
-
+                        }
+                        {
+                            this.state.vertRefresh ? 
+                                <View style={localStyles.feedDataRow}>
+                                    <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
+                                </View>
+                            :
+                                null
                         }
 
                     </ScrollView>
@@ -494,7 +398,7 @@ class FriendsFeed extends React.Component {
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
                             onSave={() => this.onSave({status: true})}
-                            refresh={this.onRefresh}
+                            refresh={this.onRefresh({ top: true, bottom: false })}
                             uploadImage={this.handleUploadImage}
                         >
                         </AddressProof>
@@ -520,7 +424,7 @@ class FriendsFeed extends React.Component {
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
                             onSave={() => this.onSave({events: true})}
-                            refresh={this.refresh}
+                            refresh={this.onRefresh({ top: true, bottom: false })}
                             business={this.state.businessData}
                         >
                         </EventsModal>
@@ -699,6 +603,7 @@ const localStyles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         user: state.userData,
+        feedData: state.feedData,
         friendRequests: state.friendRequests,
         friends: state.friendData,
         business: state.businessData,
@@ -707,7 +612,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+        refresh: (userData) => dispatch({type: 'REFRESH', data: userData}),
+        feedRefresh: (feed) => dispatch({type:'REFRESHFEED', feed: feed}),
     }
 }
 

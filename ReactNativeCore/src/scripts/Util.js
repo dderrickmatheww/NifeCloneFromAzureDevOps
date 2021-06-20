@@ -25,6 +25,7 @@ import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
 import { proc } from 'react-native-reanimated';
 import uuid from 'react-native-uuid';
+
 // const YELP_PLACE_KEY = process.env.YelpApiKey,
 //     ClientKey = process.env.GoogleAndroidStandAloneClientKey,
 //     AndroidClientKey = process.env.GoogleAndroidClientKey,
@@ -39,9 +40,6 @@ import uuid from 'react-native-uuid';
 //     appId = process.env.FirebaseAppId,
 //     measurementId = process.env.FirebaseMeasurementId,
 //     photoUrlToken = process.env.FirebasePhotoToken
-
-
-
 
 const Util = {
     friends: {
@@ -288,6 +286,26 @@ const Util = {
                     .catch((error) => {
                         Util.basicUtil.Alert('Function GetUserData - Error message:', error.message, null);
                         Util.basicUtil.consoleLog('GetUserData', false);
+                    });
+            }
+        },
+        getUserFeed: async (obj, callback) => {
+            if (obj && typeof obj.email !== 'undefined') {
+                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserFeed',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (callback) {
+                            callback(data.result);
+                        }
+                        Util.basicUtil.consoleLog('GetUserFeed', true);
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.Alert('Function GetUserFeed - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('GetUserFeed', false);
                     });
             }
         },
@@ -1336,6 +1354,11 @@ const Util = {
             else {
                 return require('react-native').TouchableOpacity;
             }
+        },
+        VerticalLoader: ({layoutMeasurement, contentOffset, contentSize}) => {
+            const paddingToBottom = 20;
+            return layoutMeasurement.height + contentOffset.y >=
+              contentSize.height - paddingToBottom;
         }
     }
 }

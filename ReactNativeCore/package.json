@@ -4,7 +4,9 @@
     "ios": "react-native run-ios",
     "web": "expo start --web",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "deploy-ios": "node deploy.js ios",
+    "deploy-android": "node deploy.js android"
   },
   "dependencies": {
     "@expo-google-fonts/comfortaa": "^0.1.0",
