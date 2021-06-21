@@ -69,7 +69,7 @@ class Navigator extends React.Component {
 
   state = {
     userData: this.props.userData,
-    friendData: [],
+    friendData: this.props.feedData,
     authLoaded: false,
     userChecked: false,
     friendRequests: null,
@@ -134,7 +134,6 @@ class Navigator extends React.Component {
   }
 
   setIsBusiness = (bool, signUpState) => {
-    console.log(signUpState);
     this.setState({ isBusiness: bool });
     if (signUpState) {
       this.setState({
@@ -147,10 +146,9 @@ class Navigator extends React.Component {
 
   initializeParams = async (user) => {
     console.log('initializeParams fired');
-      await Util.user.VerifyUser(user, user.email, this.state.businessSignUp,(userObj) => {
+      await Util.user.VerifyUser(user, user.email, this.state.businessSignUp, (userObj) => {
         let user = userObj;
         this.getNeededData(user);
-
         //get push notification permissions
         Util.user.registerForPushNotificationsAsync((token) => {
           Util.user.UpdateUser(user.email, token);
@@ -164,10 +162,7 @@ class Navigator extends React.Component {
           }
         });
       });
-
   }
-
-
 
   async componentDidMount() {
     //load fonts
@@ -182,8 +177,6 @@ class Navigator extends React.Component {
       console.log(error);
     }
     await Util.user.CheckAuthStatus((user) => {
-      console.log('CheckAuthStatus fired');
-
       this.setState({ authLoaded: true });
       if (user) {
         this.setState({
@@ -195,15 +188,12 @@ class Navigator extends React.Component {
         else {
           this.firstTimeSignUp(user);
         }
-
       }
       else {
         this.setState({
           authLoaded: true,
-          // userData: null, //TODO remove
           userExists: false
         });
-
         this.props.refresh(null);
       }
     })
@@ -225,16 +215,23 @@ class Navigator extends React.Component {
           }
           else {
             if(userData.friendData) {
-              this.props.refresh(userData);
               const req = {
                 email: userData.email,
                 take: 50,
                 skip: 0
               }
-              Util.user.getUserFeed(req, (feed) => { this.props.feedRefresh(feed)});
+              Util.user.getFeed(req, (feed) => { 
+                console.log(feed);
+                this.props.feedRefresh(feed);
+                
+              });
               this.setState({
                 userChecked: true,
               });
+              this.props.refresh(userData);
+            }
+            else {
+              this.props.refresh(userData);
             }
           }
         }
@@ -299,9 +296,9 @@ const localStyles = StyleSheet.create({
 })
 
 function mapStateToProps(state){
-  return{
+  return {
     userData: state.userData,
-    feedData: state.feedData,
+    feedData: state.feed,
     friendRequests: state.friendRequests,
     friendData: state.friendData,
     businessData: state.businessData,

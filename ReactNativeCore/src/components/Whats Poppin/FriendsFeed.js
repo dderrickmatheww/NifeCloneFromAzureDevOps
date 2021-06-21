@@ -41,90 +41,52 @@ const screen = Dimensions.get("window");
         });
         this.setFriendDataArrays();
     }
-    onRefresh = async () => {
-        this.setState({ refresh: true });
-        Util.user.GetUserData(this.props.user.email, (userData) =>{
-
-             this.refresh(userData);
-        })
-    }
-    setFriendDataArrays = async () => {
-        let friends = this.props.friends;
-        let friendFeedData = [];
-        friends.forEach((friend) =>{
-            if(friend.status){
-                let obj = {
-                    name: friend.displayName,
-                    text: friend.status.text,
-                    time: new Date(friend.status.timestamp.seconds ? friend.status.timestamp.seconds : friend.status.timestamp._seconds  * 1000),
-                    image: friend.photoSource ? {uri:friend.photoSource} : defPhoto,
-                    status: true,
-                    visited:false,
-                    checkedIn:false,
-                    statusImage: friend.status.image,
-                }
-                friendFeedData.push(obj);
-            }
-            if(friend.checkIn){
-                if((friend.checkIn.privacy == "Public" || friend.checkIn.privacy == "Friends") && friend.checkIn.checkInTime &&(!friend.privacySettings || !friend.privacySettings.checkInPrivacy)){
-                    let obj = {
-                        name: friend.displayName,
-                        text: "Checked in " + (friend.checkIn.name ? " at " +  friend.checkIn.name : "somewhere"),
-                        time: new Date(friend.checkIn.checkInTime.seconds ? friend.checkIn.checkInTime.seconds: friend.checkIn.checkInTime._seconds * 1000),
-                        image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
-                        status: false,
-                        visited:false,
-                        checkedIn:true,
-                    }
-                    friendFeedData.push(obj);
-                }
-            }
-            if(friend.lastVisited){
-                let keys = Object.keys(friend.lastVisited);
-                keys.forEach((key)=>{
-                    let visited = friend.lastVisited[key];
-                    if(visited.privacy == "Public" || visited.privacy == "Friends" && (!friend.privacySettings || !friend.privacySettings.visitedPrivacy)){
-                        let obj = {
-                            name: friend.displayName,
-                            text: "Visited " + (visited.name ? visited.name : "somewhere"),
-                            time: new Date(visited.checkInTime.seconds ? visited.checkInTime.seconds: visited.checkInTime._seconds * 1000),
-                            image: friend.photoSource ? {uri:friend.photoSource} : {defPhoto},
-                            status: false,
-                            visited:true,
-                            checkedIn:false,
-                        }
-                        friendFeedData.push(obj);
-                    }
-                })
-            }
-            
+    onRefresh = async ({ top, bottom }) => {
+        this.setState({ 
+            refresh: top,
+            vertRefresh: bottom 
         });
-        friendFeedData = friendFeedData.sort((a, b) => (a.time < b.time) ? 1 : -1 )
-        await this.setState({feedData: friendFeedData});
+        Util.user.GetUserData(this.props.user.email, (userData) => {
+            Util.user.getFeed(this.props.user.email, (feedData) => {
+                this.refresh({ userData, feedData });
+            });
+        });
+    }
+    setFriendDataArrays = async (feedData = null) => {
+        let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feed);
+        this.setState({
+            feedData: friendFeedData
+        });
+        this.props.feedRefresh(friendFeedData);
     }
     onSave = () => {
-        this.setState({modalVisable:false});
-        this.setState({snackBarVisable: true});
+        this.setState({
+            modalVisable: false,
+            snackBarVisable: true
+        });
         this.setFriendDataArrays();
     }
     onDismiss = () => {
-        this.setState({modalVisable:false});
+        this.setState({
+            modalVisable: false
+        });
     }
     onDismissSnackBar = () => {
-        this.setState({snackBarVisable: false});
+        this.setState({
+            snackBarVisable: false
+        });
     }
 
-    refresh = async (userData) => {
-
+    refresh = async ({userData, feedData}) => {
         if (userData) {
             await this.props.refresh(userData);
         }
-        await this.setFriendDataArrays();
+        await this.setFriendDataArrays(feedData);
         this.setState({
-            userData: this.props.user,
-            friendData: this.props.friends,
-            refresh: false
+            refresh: false,
+            vertRefresh: false 
         });
+        this.render();
     }
 
     render() {
@@ -142,7 +104,7 @@ const screen = Dimensions.get("window");
                     <View style={{width:"100%"}}>
                         <Headline style={{ color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.fontBold, marginLeft: '5%', marginBottom: '2%'}}>Friend's Feed</Headline>
                     </View>
-                    <TouchableOpacity onPress={() => this.setState({modalVisable: true})} style={localStyles.StatusOverlay}>
+                    <TouchableOpacity onPress={() => this.setState({ modalVisable: true })} style={localStyles.StatusOverlay}>
                         <Text style={localStyles.statusButton}>Update Status</Text>
                     </TouchableOpacity> 
                 </View>

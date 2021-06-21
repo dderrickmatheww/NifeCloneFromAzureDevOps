@@ -2,35 +2,27 @@ import React from 'react';
 import {
     View,
     StyleSheet,
-    RefreshControl,
-    ScrollView,
-    ActivityIndicator,
     Dimensions,
     Platform,
     TouchableOpacity,
-    Image
 } from 'react-native';
 import {
     Text,
     Headline,
     Avatar,
-    Caption,
-    Paragraph,
     Snackbar,
     Modal
 } from 'react-native-paper';
-import {styles} from '../../../Styles/style';
 import theme from '../../../Styles/theme';
 import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
 import AddressProof from '../Universal/AddressProof';
 import EventsModal from '../Whats Poppin/UpdateEventsModal';
 import SpecialsModal from '../Whats Poppin/UpdateSpecialsModal';
-import * as firebase from 'firebase';
+import Feed from '../Universal/Feed';
 import * as ImagePicker from 'expo-image-picker';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
-
 const win = Dimensions.get('window');
 
 class FriendsFeed extends React.Component {
@@ -41,8 +33,7 @@ class FriendsFeed extends React.Component {
         specialsModalVisable: false,
         modalVisible: false,
         userData: this.props.user,
-        friendData: this.props.friends,
-        feedData: null,
+        feedData: this.props.feed,
         businessData: this.props.business,
         snackBarVisable: false,
         menuVisable: false,
@@ -52,114 +43,51 @@ class FriendsFeed extends React.Component {
     }
 
 
-    async componentDidMount() {
+    componentDidMount() {
         this.setState({
             userData: this.props.user,
             feedData: this.props.feed,
-            friendData: this.props.friends,
             businessData: this.props.business,
-            isVerified: this.state.userData.isVerified ? this.state.userData.isVerified : false
+            isVerified: this.props.user.isVerified ? this.props.user.isVerified : false
         });
-        await this.setFriendDataArrays();
-    }
-
-    setFriendDataArrays = async (feedData = null) => {
-        let user = this.props.user;
-        let business = this.props.business;
-        let favorites = this.props.favorites;
-        let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feed);
-        //get user data
-        if (!user.isBusiness) {
-            if (favorites && favorites.length > 0) {
-                favorites.forEach((place) => {
-                    if (place.events) {
-                        let events = place.events;
-                        events.forEach((event) => {
-                            let obj = {
-                                name: place.displayName,
-                                text: "Event: " + event.text,
-                                time: new Date(event.uploaded.seconds ? event.uploaded.seconds * 1000 : event.uploaded._seconds * 1000),
-                                image: place.photoSource ? {uri: place.photoSource} : {defPhoto},
-                                status: false,
-                                visited: false,
-                                checkedIn: false,
-                                event: true,
-                            }
-                            friendFeedData.add(obj);
-                        });
-                    }
-                    if (place.specials) {
-                        let specials = place.specials;
-                        specials.forEach((special) => {
-                            let obj = {
-                                name: place.displayName,
-                                text: "Special: " + special.text,
-                                time: new Date(special.uploaded.seconds ? special.uploaded.seconds * 1000 : special.uploaded._seconds * 1000),
-                                image: place.photoSource ? {uri: place.photoSource} : {defPhoto},
-                                status: false,
-                                visited: false,
-                                checkedIn: false,
-                                event: false,
-                                specials: true,
-                            }
-                            friendFeedData.add(obj);
-                        });
-                    }
-                });
-            } 
-        }
-        //if its a business
-        if (business) {
-            if (business.events.length > 0) {
-                let events = business.events;
-                events.forEach((event) => {
-                    let obj = {
-                        name: business.displayName,
-                        text: "Event: " + event.text,
-                        time: new Date(event.uploaded.seconds ? event.uploaded.seconds * 1000 : event.uploaded._seconds * 1000),
-                        image: business.photoSource ? {uri: business.photoSource} : {defPhoto},
-                        status: false,
-                        visited: false,
-                        checkedIn: false,
-                        event: true,
-                    }
-                    friendFeedData.add(obj);
-                });
-            }
-            if (business.specials.length > 0) {
-                let specials = business.specials;
-                specials.forEach((special) => {
-                    let obj = {
-                        name: business.displayName,
-                        text: "Special: " + special.text,
-                        time: new Date(special.uploaded.seconds ? special.uploaded.seconds * 1000 : special.uploaded._seconds * 1000),
-                        image: business.photoSource ? {uri: business.photoSource} : {defPhoto},
-                        status: false,
-                        visited: false,
-                        checkedIn: false,
-                        event: false,
-                        specials: true,
-                    }
-                    friendFeedData.add(obj);
-                });
-            }
-        }
-        friendFeedData = [...friendFeedData].sort((a, b) => b.time - a.time);
-        this.props.feedRefresh(friendFeedData);
     }
 
     onSave = (updated) => {
-        this.setState({statusModalVisable: false, snackBarVisable: true});
-        if (updated.status) {
+        let { status, events, specials} = updated;
+        this.setState({
+            statusModalVisable: false, 
+            snackBarVisable: true
+        });
+        if (status) {
             this.setState({ snackBarText: "status" });
         }
-        if (updated.events) {
+        if (events) {
             this.setState({ snackBarText: "events" });
         }
-        if (updated.specials) {
+        if (specials) {
             this.setState({ snackBarText: "specials" });
         }
-        this.setFriendDataArrays();
+        this.refresh();
+    }
+
+    refresh = async ({ userData, feedData }) => {
+        if (userData) {
+            await this.props.refresh(userData);
+        }
+        else {
+            await this.props.refresh(this.state.userData);
+        }
+        if (feedData) {
+            await this.props.feedRefresh(feedData);
+        }
+        else {
+            await this.props.feedRefresh(this.state.feedData);
+        }
+        this.setState({
+            refresh: false,
+            vertRefresh: false 
+        });
+        this.render();
     }
 
     onDismiss = () => {
@@ -177,45 +105,26 @@ class FriendsFeed extends React.Component {
     onDismissSnackBar = () => {
         this.setState({ snackBarVisable: false });
     }
-    onRefresh = async ({ top, bottom }) => {
-        this.setState({ 
-            refresh: top,
-            vertRefresh: bottom 
-        });
-        Util.user.GetUserData(this.props.user.email, (userData) => {
-            Util.user.GetUserFeed(this.props.user.email, (feedData) => {
-                this.refresh({ userData, feedData });
-            });
-        });
-    }
-
-    refresh = async ({ userData,  feedData }) => {
-        this.props.refresh(userData);
-        await this.setFriendDataArrays(feedData);
-        this.setState({
-            refresh: false,
-            vertRefresh: false 
-        });
-        this.render();
-    }
 
     handleUploadImage = () => {
-        let userEmail = firebase.auth().currentUser.email;
+        let userEmail = this.state.user.email;
         ImagePicker.getCameraRollPermissionsAsync()
             .then((result) => {
                 if (result.status == "granted") {
-                    this.setState({uploading: true});
+                    this.setState({ uploading: true });
                     ImagePicker.launchImageLibraryAsync()
                         .then((image) => {
                             let uri = image.uri;
                             Util.business.UploadAddressProof(uri, userEmail, (resUri) => {
-                                this.setState({isVerified: true});
                                 Util.business.SendProofEmail(userEmail, resUri);
-                                Util.user.UpdateUser(userEmail, {isVerified: true})
-                                let user = this.state.userData;
-                                user.isVerified = true;
-                                this.setState({userData: user});
-                                this.refresh(user, null, null, null);
+                                Util.user.UpdateUser(userEmail, { isVerified: true });
+                                let userData = this.state.userData;
+                                userData.isVerified = true;
+                                this.setState({
+                                    userData: userData,
+                                    isVerified: true
+                                });
+                                this.refresh({ userData });
                             }, true);
                         })
                         .catch((error) => {
@@ -224,30 +133,9 @@ class FriendsFeed extends React.Component {
                         });
                 } 
                 else {
-                    ImagePicker.requestCameraRollPermissionsAsync()
-                        .then((result) => {
-                            if (result.status == "granted") {
-                                this.setState({uploading: true});
-                                ImagePicker.launchImageLibraryAsync()
-                                    .then((image) => {
-                                        let uri = image.uri
-                                        Util.business.UploadAddressProof(uri, userEmail, (resUri) => {
-                                            this.setState({isVerified: true});
-                                            Util.business.SendProofEmail(userEmail, resUri);
-                                            Util.user.UpdateUser(userEmail, { isVerified: true }, () => {
-                                                let user = this.state.userData;
-                                                user.isVerified = true;
-                                                this.setState({userData: user});
-                                                this.refresh(user, null, null, null);
-                                            });
-                                        }, true);
-                                    })
-                                    .catch((error) => {
-                                        Util.basicUtil.Alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
-                                        Util.basicUtil.consoleLog('HomeScreen/handleUploadImage', false);
-                                    });
-                            }
-                        });
+                    this.setState({
+                        isVerified: false
+                    });
                 }
             });
     }
@@ -285,77 +173,11 @@ class FriendsFeed extends React.Component {
                             </TouchableOpacity>
                     }
                 </View>
-
-                {this.state.feedData ?
-                    <ScrollView style={[localStyles.ScrollView]} contentContainerStyle={localStyles.scrollContent}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.refresh}
-                                        onRefresh={this.onRefresh({ top: true, bottom: false })}
-                                        size={22}
-                                        color={[theme.loadingIcon.color]}
-                                        tintColor={theme.loadingIcon.color}
-                                        title={'Loading...'}
-                                        titleColor={theme.loadingIcon.textColor}
-                                    />
-                                }
-                                onScroll={({nativeEvent}) => {
-                                    if (Util.basicUtil.VerticalLoader(nativeEvent)) {
-                                        this.onRefresh({ top: false, bottom: true });
-                                    }
-                                }}
-                                scrollEventThrottle={400}
-                    >
-                        {
-                            this.state.feedData && this.state.feedData.length > 0 ?
-                                this.state.feedData.map((data, i) => (
-                                    <View key={i} style={localStyles.feedDataRow}>
-                                        <Avatar.Image source={data.image.uri !== "Unknown" ? data.image : defPhoto}
-                                                      size={50}/>
-                                        <Text style={localStyles.displayName}>
-                                            {data.name}
-                                            {
-                                                this.state.userData.isBusiness ?
-                                                    <Caption
-                                                        style={localStyles.feedType}>{"   " + this.props.business.City + ", " + this.props.business.State}</Caption> : null
-                                            }
-                                        </Text>
-                                        <Caption style={localStyles.feedType}>{data.visited ? "took a visit" : data.checkedIn ? "checked in" : data.event ? "booked an event" : data.specials ? "has a new special" : "status update"}</Caption>
-                                        <View>
-                                            <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
-                                            {
-                                                data.statusImage ?
-                                                    <Image
-                                                        resizeMethod="auto"
-                                                        resizeMode="contain"
-                                                        style={{flex:1,resizeMode:'contain',aspectRatio:1}}
-                                                        source={{uri: data.statusImage}}/>
-                                                    : null
-                                            }
-                                        </View>
-
-                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
-                                    </View>
-                                ))
-                                :
-                                <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends and
-                                    favorite spots if you haven't already!</Text>
-                        }
-                        {
-                            this.state.vertRefresh ? 
-                                <View style={localStyles.feedDataRow}>
-                                    <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-                                </View>
-                            :
-                                null
-                        }
-
-                    </ScrollView>
-                    :
-                    <View style={styles.viewDark}>
-                        <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-                    </View>
-                }
+                <Feed 
+                    isFriendFeed={true}
+                    favorites={this.props.favorites}
+                    business={this.props.business}
+                />
                 {
                     this.state.modalVisible ?
                         <Modal
@@ -372,23 +194,22 @@ class FriendsFeed extends React.Component {
                             dismissable={true}
                             onDismiss={() => this.onDismissUpdate()}
                         >
-
                             <View style={localStyles.viewDark}>
-                                <TouchableOpacity onPress={() => this.setState({statusModalVisable: true})}
+                                <TouchableOpacity onPress={() => this.setState({ statusModalVisable: true })}
                                                   style={localStyles.modalButton}>
                                     <Text style={localStyles.modalButtonText}>Update Status</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.setState({eventModalVisable: true})}
+                                <TouchableOpacity onPress={() => this.setState({ eventModalVisable: true })}
                                                   style={localStyles.modalButton}>
                                     <Text style={localStyles.modalButtonText}>Update Events</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => this.setState({specialsModalVisable: true})}
+                                <TouchableOpacity onPress={() => this.setState({ specialsModalVisable: true })}
                                                   style={localStyles.modalButton}>
                                     <Text style={localStyles.modalButtonText}>Update Specials</Text>
                                 </TouchableOpacity>
                             </View>
                         </Modal>
-                        :
+                    :
                         null
                 }
                 {
@@ -397,12 +218,12 @@ class FriendsFeed extends React.Component {
                             isVisible={!this.state.userData.isVerified}
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
-                            onSave={() => this.onSave({status: true})}
+                            onSave={() => this.onSave({ status: true })}
                             refresh={this.onRefresh({ top: true, bottom: false })}
                             uploadImage={this.handleUploadImage}
                         >
                         </AddressProof>
-                        :
+                    :
                         null
                 }
                 {
@@ -414,7 +235,7 @@ class FriendsFeed extends React.Component {
                             onSave={() => this.onSave({status: true})}
                         >
                         </StatusModal>
-                        :
+                    :
                         null
                 }
                 {
@@ -428,7 +249,7 @@ class FriendsFeed extends React.Component {
                             business={this.state.businessData}
                         >
                         </EventsModal>
-                        :
+                    :
                         null
                 }
                 {
@@ -442,7 +263,7 @@ class FriendsFeed extends React.Component {
                             business={this.state.businessData}
                         >
                         </SpecialsModal>
-                        :
+                    :
                         null
                 }
                 <Snackbar
@@ -603,9 +424,8 @@ const localStyles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         user: state.userData,
-        feedData: state.feedData,
+        feed: state.feedData,
         friendRequests: state.friendRequests,
-        friends: state.friendData,
         business: state.businessData,
     }
 }

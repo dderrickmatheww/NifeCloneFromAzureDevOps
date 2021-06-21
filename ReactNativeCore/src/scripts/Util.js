@@ -289,8 +289,11 @@ const Util = {
                     });
             }
         },
-        getUserFeed: async (obj, callback) => {
+        getFeed: async (obj, callback) => {
             if (obj && typeof obj.email !== 'undefined') {
+                obj['take'] = obj.take ? obj.take : 50;
+                obj['skip'] = obj.skip ? obj.skip : 0;
+                obj['getUserFeed'] = obj.getUserFeed ? obj.getUserFeed : false;
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserFeed',
                     {
                         method: 'POST',
@@ -301,11 +304,11 @@ const Util = {
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('GetUserFeed', true);
+                        Util.basicUtil.consoleLog('getFeed', true);
                     })
                     .catch((error) => {
-                        Util.basicUtil.Alert('Function GetUserFeed - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog('GetUserFeed', false);
+                        Util.basicUtil.Alert('Function getFeed - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('getFeed', false);
                     });
             }
         },
@@ -328,18 +331,49 @@ const Util = {
         },
         CheckIn: (checkInObj, callback) => {
             let db = firebase.firestore();
-            let setLoc = db.collection('users').doc(checkInObj.email);
-            let lastVisited = {};
-            lastVisited[checkInObj.buisnessUID] = {
-                checkInTime: new Date(),
-                latAndLong: checkInObj.latAndLong,
-                privacy: checkInObj.privacy,
-                name: checkInObj.barName,
-                phone: checkInObj.phone,
-                address: checkInObj.address,
-                barPhoto: checkInObj.image,
+            let feed = db.collection('feed');
+            let setLoc = feed.doc(checkInObj.email);
+            if (checkInObj.buisnessUID) {
+                let lastVisited = {};
+                lastVisited[checkInObj.buisnessUID] = {
+                    checkInTime: new Date(),
+                    latAndLong: checkInObj.latAndLong,
+                    privacy: checkInObj.privacy,
+                    name: checkInObj.barName,
+                    phone: checkInObj.phone,
+                    address: checkInObj.address,
+                    barPhoto: checkInObj.image,
+                }
             }
-            setLoc.set({
+            if (!setLoc.exist()) {
+                feed.set({
+                    [checkInObj.email]: {
+                        checkIn: {
+                            checkInTime: new Date(),
+                            latAndLong: checkInObj.latAndLong,
+                            buisnessUID: checkInObj.buisnessUID,
+                            privacy: checkInObj.privacy,
+                            name: checkInObj.barName,
+                            phone: checkInObj.phone,
+                            address: checkInObj.address,
+                            barPhoto: checkInObj.image,
+                        },
+                        lastVisited
+                    }
+                })
+                .then(() => {
+                    Util.basicUtil.consoleLog('CheckIn', true);
+                    if (callback) {
+                        callback('true');
+                    }
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('CheckIn', false);
+                    Util.basicUtil.Alert('Function CheckIn - Error message:', error.message, null);
+                });
+            }
+            else {
+                setLoc.set({
                     checkIn: {
                         checkInTime: new Date(),
                         latAndLong: checkInObj.latAndLong,
@@ -365,10 +399,11 @@ const Util = {
                     Util.basicUtil.consoleLog('CheckIn', false);
                     Util.basicUtil.Alert('Function CheckIn - Error message:', error.message, null);
                 });
+            }
         },
         CheckOut: async (email, callback) => {
             let db = firebase.firestore();
-            let setLoc = await db.collection('users').doc(email);
+            let setLoc = await db.collection('feed').doc(email);
             setLoc.set({
                     checkIn: {
                         buisnessUID: "",
@@ -397,7 +432,7 @@ const Util = {
         },
         IsUserCheckedIn: (email, buisnessUID, callback) => {
             try {
-                Util.user.GetUserData(email, (userData) => {
+                Util.user.GetFeed({ email, getUserFeed: true }, (userData) => {
                     let user = userData;
                     if (!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
                         if (callback) {

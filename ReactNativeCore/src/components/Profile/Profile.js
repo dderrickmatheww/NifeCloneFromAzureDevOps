@@ -144,17 +144,11 @@ class ProfileScreen extends Component {
     }
 
     componentDidMount() {
-<<<<<<< HEAD
-        this.setProps();
-        this.getBusinessData();
-        this.areFriends();
-=======
        // console.log('isUserProfile: ' + this.props.isUserProfile);
         this.setProps();
         this.getBusinessData();
         this.areFriends();
         //console.log(this.state.userData.favoritePlaces)
->>>>>>> dev
     }
 
     getBusinessData = () => {
