@@ -162,7 +162,6 @@ const Util = {
     },
     user: {
         VerifyUser: async (user, email, business,callback) => {
-            console.log(user);
             let obj = {
                 user: user,
                 email: email,
@@ -777,7 +776,7 @@ const Util = {
         UpdateUser: (email, updateObject, callback) => {
             let db = firebase.firestore();
             let userRef = db.collection('businesses').doc(email);
-            userRef.set(updateObject, {merge: true})
+            userRef.set(updateObject, { merge: true })
                 .then(() => {
                     Util.basicUtil.consoleLog('Updatebusinesses', true);
                     if (callback) {

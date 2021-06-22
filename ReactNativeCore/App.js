@@ -4,10 +4,9 @@ import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './src/scripts/Util';
 import themeUtil from './Styles/theme'
-import {DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
-import {createStore} from "redux";
-import {Provider} from 'react-redux'
-import * as Notifications from "expo-notifications";
+import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
+import { createStore } from "redux";
+import { Provider } from 'react-redux'
 
 if (! global.btoa) {global.btoa = encode}
 if (! global.atob) {global.atob = decode}
@@ -15,11 +14,10 @@ if (! global.atob) {global.atob = decode}
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
-
 console.disableYellowBox = true;
-const  initialState = {
+const initialState = {
   userData: null,
-  friendData:null,
+  friendData: null,
   friendRequests: null,
   businessData: null,
   yelpData: null,
@@ -27,28 +25,27 @@ const  initialState = {
 }
 
 const reducer = (state = initialState, action) => {
-  switch(action.type){
+  switch(action.type) {
     case 'REFRESH':
       return {
         userData: action.data ? action.data : null,
-        friendData:action.data ? action.data.friendData ? action.data.friendData.acceptedFriends : null : null,
+        friendData: action.data ? action.data.friendData ? action.data.friendData.acceptedFriends : null : null,
         friendRequests: action.data ? action.data.friendData ?  action.data.friendData.requests  : null : null,
         businessData: action.data ? action.data.businessData: null,
       }
     case 'YELPDATA':
       return {
-        yelpData:  action.data ? action.data : null
+        yelpData: action.data ? action.data : null
       }
     case 'REFRESHFEED':
       return {
-        feedData: action.feed ? action.feed : null
+        feedData: action.data ? action.data : null
       }
   }
     return state;
 }
 
 const store = createStore(reducer);
-
 
 const theme = {
   ...DefaultTheme,

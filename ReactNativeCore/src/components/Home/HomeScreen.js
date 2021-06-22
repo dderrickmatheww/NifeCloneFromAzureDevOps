@@ -32,21 +32,22 @@ class FriendsFeed extends React.Component {
         eventModalVisable: false,
         specialsModalVisable: false,
         modalVisible: false,
-        userData: this.props.user,
-        feedData: this.props.feed,
+        userData: this.props.userData,
+        feedData: this.props.feedData,
         businessData: this.props.business,
         snackBarVisable: false,
         menuVisable: false,
         snackBarText: "status",
         isVerified: false,
-        refresh: false
+        refresh: false,
+        vertRefresh: false
     }
 
 
     componentDidMount() {
         this.setState({
-            userData: this.props.user,
-            feedData: this.props.feed,
+            userData: this.props.userData,
+            feedData: this.props.feedData,
             businessData: this.props.business,
             isVerified: this.props.user.isVerified ? this.props.user.isVerified : false
         });
@@ -421,21 +422,23 @@ const localStyles = StyleSheet.create({
     },
 });
 
-function mapStateToProps(state) {
+function mapStateToProps(state){
     return {
-        user: state.userData,
-        feed: state.feedData,
-        friendRequests: state.friendRequests,
-        business: state.businessData,
+      userData: state.userData,
+      feedData: state.feedData,
+      friendRequests: state.friendRequests,
+      friendData: state.friendData,
+      businessData: state.businessData,
     }
-}
-
-function mapDispatchToProps(dispatch) {
+  }
+  
+  function mapDispatchToProps(dispatch){
     return {
-        refresh: (userData) => dispatch({type: 'REFRESH', data: userData}),
-        feedRefresh: (feed) => dispatch({type:'REFRESHFEED', feed: feed}),
+      refresh: (userData) => dispatch({ type:'REFRESH', data: userData }),
+      feedRefresh: (feed) => dispatch({ type:'REFRESHFEED', feed: feed }),
+      yelpDataRefresh: (data) => dispatch({type:'YELPDATA', data: data}),
     }
-}
+  }
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(FriendsFeed);

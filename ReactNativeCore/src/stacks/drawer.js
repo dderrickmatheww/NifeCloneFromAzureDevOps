@@ -62,14 +62,12 @@ function Settings ({navigation}){
   )
 }
 
-
-
-
 class Navigator extends React.Component {
 
   state = {
     userData: this.props.userData,
-    friendData: this.props.feedData,
+    friendData: this.props.friendData,
+    feedData: this.props.feedData,
     authLoaded: false,
     userChecked: false,
     friendRequests: null,
@@ -145,7 +143,6 @@ class Navigator extends React.Component {
   }
 
   initializeParams = async (user) => {
-    console.log('initializeParams fired');
       await Util.user.VerifyUser(user, user.email, this.state.businessSignUp, (userObj) => {
         let user = userObj;
         this.getNeededData(user);
@@ -176,14 +173,14 @@ class Navigator extends React.Component {
     catch (error) {
       console.log(error);
     }
-    await Util.user.CheckAuthStatus((user) => {
+    await Util.user.CheckAuthStatus(async (user) => {
       this.setState({ authLoaded: true });
       if (user) {
         this.setState({
           userExists: true
         });
         if(user.displayName) {
-          this.initializeParams(user);
+          await this.initializeParams(user);
         }
         else {
           this.firstTimeSignUp(user);
@@ -203,41 +200,43 @@ class Navigator extends React.Component {
     //if user exits get user data, get friend data set to async
     if (currentUser) {
       //load user
-      Util.user.GetUserData(currentUser.email, (userData) => {
-        if(userData) {
-          //user data set in filterfriends
-          if(userData.isBusiness) {
-            Util.dataCalls.Yelp.getBusinessData(userData.businessId, (data) => {
-              userData.businessData['data'] = data;
-              Util.business.UpdateUser(userData.email, { data: data });
-              this.props.refresh(userData);
-            });
+      const req = {
+        email: currentUser.email,
+        take: 50,
+        skip: 0,
+        getUserFeed: true
+      }
+      Util.user.GetUserData(req.email, (userData) => {
+        Util.user.getFeed(req, async (feed) => {
+          if (feed) {
+            this.props.feedRefresh(feed);
+            console.log(this.props.feedData);
           }
-          else {
-            if(userData.friendData) {
-              const req = {
-                email: userData.email,
-                take: 50,
-                skip: 0
-              }
-              Util.user.getFeed(req, (feed) => { 
-                console.log(feed);
-                this.props.feedRefresh(feed);
-                
+          if(userData) {
+            //user data set in filterfriends
+            if(userData.isBusiness) {
+              Util.dataCalls.Yelp.getBusinessData(userData.businessId, (data) => {
+                userData.businessData['data'] = data;
+                Util.business.UpdateUser(userData.email, { data: data });
+                this.props.refresh(userData);
               });
-              this.setState({
-                userChecked: true,
-              });
-              this.props.refresh(userData);
             }
             else {
-              this.props.refresh(userData);
+              if(userData.friendData) {
+                this.setState({
+                  userChecked: true,
+                });
+                this.props.refresh(userData);
+              }
+              else {
+                this.props.refresh(userData);
+              }
             }
           }
-        }
-        else {
-          this.setState({ userChecked: true });
-        }
+          else {
+            this.setState({ userChecked: true });
+          }
+        });
       });
     } else {
       alert(`A user could not be found. Error code: 0001`);
@@ -247,7 +246,7 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-        this.props.userData ?
+        this.state.userData && this.state.feedData ?
           <NavigationContainer>
             <Drawer.Navigator
               drawerContentOptions={{
@@ -258,7 +257,7 @@ class Navigator extends React.Component {
                   fontFamily: theme.generalLayout.font
                 }
               }}
-              drawerStyle={{
+              drawerStyle={{ 
                 backgroundColor: theme.generalLayout.backgroundColor
               }}
               initialRouteName='My Feed'
@@ -298,7 +297,7 @@ const localStyles = StyleSheet.create({
 function mapStateToProps(state){
   return {
     userData: state.userData,
-    feedData: state.feed,
+    feedData: state.feedData,
     friendRequests: state.friendRequests,
     friendData: state.friendData,
     businessData: state.businessData,
@@ -307,11 +306,10 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    refresh: (userData) => dispatch({type:'REFRESH', data: userData}),
-    feedRefresh: (feed) => dispatch({type:'REFRESHFEED', feed: feed}),
-    yelpDataRefresh: (data) => dispatch({type:'YELPDATA', data: data}),
+    refresh: (userData) => dispatch({ type:'REFRESH', data: userData }),
+    feedRefresh: (feedData) => dispatch({ type:'REFRESHFEED', data: feedData }),
+    yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
   }
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navigator);

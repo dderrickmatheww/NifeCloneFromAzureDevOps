@@ -23,8 +23,8 @@ const screen = Dimensions.get("window");
 
  class Feed extends React.Component  {
     state = {
-        userData: this.props.user,
-        feedData: this.props.feed,
+        userData: this.props.userData,
+        feedData: this.props.feedData,
         refresh: false,
         skip: 0
     }
@@ -71,7 +71,6 @@ const screen = Dimensions.get("window");
         let user =  userData ? userData : this.props.user;
         let business = this.props.business;
         let favorites = this.props.favorites;
-        console.log(feedData);
         let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feed);
         let isFriendFeed = this.props.isFriendFeed;
         if (!isFriendFeed) {
@@ -378,16 +377,16 @@ const localStyles = StyleSheet.create({
 
 function mapStateToProps(state){
     return{
-        user: state.user,
+        userData: state.userData,
         business: state.businessData,
-        feed: state.feed
+        feedData: state.feedData
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
         refresh: (userData) => dispatch({type: 'REFRESH', data: userData}),
-        feedRefresh: (feedData) => dispatch({type: 'REFRESHFEED', feed: feedData}),
+        feedRefresh: (feedData) => dispatch({ type: 'REFRESHFEED', data: feedData }),
     }
 }
 
