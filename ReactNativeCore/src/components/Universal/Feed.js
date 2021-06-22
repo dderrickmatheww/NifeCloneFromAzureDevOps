@@ -23,32 +23,32 @@ const screen = Dimensions.get("window");
 
  class Feed extends React.Component  {
     state = {
-        userData: this.props.userData,
-        feedData: this.props.feedData,
+        userData: null,
+        feedData: null,
         refresh: false,
         skip: 0
     }
     
     componentDidMount() {
         let {  
-            user,  
-            feed,
+            userData,  
+            feedData,
         } = this.props;
         this.setState({
-            userData: user,
-            feedData: feed
+            userData: userData,
+            feedData: feedData
         });
         this.setFriendDataArrays({
-            userData: user,
-            feedData: feed
+            userData: userData,
+            feedData: feedData
         });
     }
     onRefresh = async ({ top, bottom }) => {
-        let { email } = this.props.user;
+        let { email } = this.props.userData;
         this.setState({ 
             refresh: top,
             vertRefresh: bottom,
-            skip: top ? 0 :this.state.skip += 50
+            skip: top ? 0 : this.state.skip += 50
         });
         Util.user.GetUserData(email, (userData) => {
             Util.user.getFeed({ email, skip: this.state.skip }, (feedData) => {
@@ -60,18 +60,17 @@ const screen = Dimensions.get("window");
         if (userData) {
             await this.props.refresh(userData);
         }
-        await this.setFriendDataArrays(feedData);
+        await this.setFriendDataArrays(userData, feedData);
         this.setState({
             refresh: false,
             vertRefresh: false 
         });
-        this.render();
     }
     setFriendDataArrays = async ({ userData, feedData }) => {
-        let user =  userData ? userData : this.props.user;
+        let user =  userData ? userData : this.props.userData;
         let business = this.props.business;
         let favorites = this.props.favorites;
-        let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feed);
+        let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feedData);
         let isFriendFeed = this.props.isFriendFeed;
         if (!isFriendFeed) {
             //get user data
@@ -152,12 +151,16 @@ const screen = Dimensions.get("window");
             }
         }
         friendFeedData = [...friendFeedData];
+        let data = new Set([...this.state.feedData, ...friendFeedData]
+        .map(obj =>  { 
+            obj['image'] = obj.image ? obj.image : defPhoto 
+            return obj;
+        })
+        .sort((a, b) => b.time - a.time));
         this.setState({
-            feedData: [...this.state.feedData, ...friendFeedData]
-            .map(obj => obj['image'] = obj.image ? obj.image :  { defPhoto })
-            .sort((a, b) => b.time - a.time)
+            feedData: [...data]
         });
-        this.props.feedRefresh(this.state.feedData);
+        this.props.refresh(null, this.state.feedData);
     }
     render() {
         return (
@@ -167,7 +170,7 @@ const screen = Dimensions.get("window");
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.refresh}
-                        onRefresh={this.onRefresh}
+                        onRefresh={() => { this.onRefresh({ top: true, bottom: false }) }}
                         size={22}
                         color={[theme.loadingIcon.color]}
                         tintColor={theme.loadingIcon.color}
@@ -175,9 +178,13 @@ const screen = Dimensions.get("window");
                         titleColor={theme.loadingIcon.textColor}
                     />
                 }
-                onScroll={({nativeEvent}) => {
-                    if (Util.basicUtil.VerticalLoader(nativeEvent)) {
-                        this.onRefresh({ top: false, bottom: true });
+                onScroll={({ nativeEvent }) => {
+                    let count = 0;
+                    if (count == 0) {
+                        if (Util.basicUtil.VerticalLoader(nativeEvent)) {
+                            this.onRefresh({ top: false, bottom: true });
+                            count++;
+                        }
                     }
                 }}
                 scrollEventThrottle={400}
@@ -187,7 +194,7 @@ const screen = Dimensions.get("window");
                     this.state.feedData && this.state.feedData.length > 0 ?
                         this.state.feedData.map((data, i) => (
                             <View key={i} style={localStyles.feedDataRow}>
-                                <Avatar.Image source={data.image.uri !== "Unknown" ? data.image : defPhoto}
+                                <Avatar.Image source={data.image ? data.image.uri : defPhoto}
                                                 size={50}/>
                                 <Text style={localStyles.displayName}>
                                     { data.name }
@@ -215,7 +222,7 @@ const screen = Dimensions.get("window");
                                             null
                                     }
                                 </View>
-                                <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
+                                <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time._seconds ? data.time._seconds * 1000 : data.time.seconds * 1000)} ago</Caption>
                             </View>
                         ))
                     :
@@ -227,7 +234,7 @@ const screen = Dimensions.get("window");
                }
                { 
                     this.state.vertRefresh ? 
-                        <View style={localStyles.feedDataRow}>
+                        <View style={localStyles.loaderRow}>
                             <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
                         </View>
                     :
@@ -331,6 +338,17 @@ const localStyles = StyleSheet.create({
         marginVertical: 2,
         width: "100%",
     },
+    loaderRow: {
+        flex: 1,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderColor: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
+        borderRadius: 10,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginVertical: 2,
+        width: "100%",
+    },
     emptyPoppinFeed: {
         color: theme.generalLayout.textColor,
         fontSize: 16,
@@ -359,8 +377,8 @@ const localStyles = StyleSheet.create({
         flex: 1,
         width: "100%",
         paddingHorizontal: "5%",
-        paddingBottom: 10,
-        paddingTop: 10,
+        paddingBottom: 20,
+        paddingTop: 20,
     },
     drawerBtn: {
         marginTop: '1%',

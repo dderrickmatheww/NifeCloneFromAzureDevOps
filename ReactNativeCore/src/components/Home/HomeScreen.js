@@ -72,23 +72,11 @@ class FriendsFeed extends React.Component {
     }
 
     refresh = async ({ userData, feedData }) => {
-        if (userData) {
-            await this.props.refresh(userData);
-        }
-        else {
-            await this.props.refresh(this.state.userData);
-        }
-        if (feedData) {
-            await this.props.feedRefresh(feedData);
-        }
-        else {
-            await this.props.feedRefresh(this.state.feedData);
-        }
+        await this.props.refresh(userData, feedData);
         this.setState({
             refresh: false,
             vertRefresh: false 
         });
-        this.render();
     }
 
     onDismiss = () => {
@@ -269,7 +257,7 @@ class FriendsFeed extends React.Component {
                 }
                 <Snackbar
                     style={{zIndex: 3, elevation: 100}}
-                    visible={this.state.snackBarVisable}
+                    visible={this.state.snackBarVisable} 
                     onDismiss={() => this.onDismissSnackBar()}
                     action={{
                         label: 'Close',

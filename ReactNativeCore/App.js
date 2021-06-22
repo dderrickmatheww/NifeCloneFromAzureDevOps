@@ -28,18 +28,48 @@ const reducer = (state = initialState, action) => {
   switch(action.type) {
     case 'REFRESH':
       return {
-        userData: action.data ? action.data : null,
-        friendData: action.data ? action.data.friendData ? action.data.friendData.acceptedFriends : null : null,
-        friendRequests: action.data ? action.data.friendData ?  action.data.friendData.requests  : null : null,
-        businessData: action.data ? action.data.businessData: null,
+        userData: ( 
+          action.data ? 
+            action.data 
+          : 
+            state.userData ?
+              state.userData 
+            :
+              null
+          ),
+        friendData: ( 
+          action.data ? 
+            action.data.friendData ? 
+              action.data.friendData.acceptedFriends 
+            : 
+            null 
+          : 
+          state.friendData ?
+            state.friendData.acceptedFriends
+            :
+            null 
+        ),
+        friendRequests: (
+          action.data ? 
+            action.data.friendData ?  
+            action.data.friendData.requests 
+          : 
+          state.friendData.requests ? 
+              state.friendData.requests 
+            : 
+              null 
+          : 
+          state.friendData.requests ? 
+              state.friendData.requests 
+            : 
+              null
+        ),
+        businessData: ( action.data ? action.data.businessData : state.businessData ? state.businessData : null ),
+        feedData: action.feed ? action.feed : state.feedData
       }
     case 'YELPDATA':
       return {
         yelpData: action.data ? action.data : null
-      }
-    case 'REFRESHFEED':
-      return {
-        feedData: action.data ? action.data : null
       }
   }
     return state;

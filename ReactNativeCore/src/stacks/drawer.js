@@ -180,7 +180,7 @@ class Navigator extends React.Component {
           userExists: true
         });
         if(user.displayName) {
-          await this.initializeParams(user);
+          this.initializeParams(user);
         }
         else {
           this.firstTimeSignUp(user);
@@ -208,17 +208,13 @@ class Navigator extends React.Component {
       }
       Util.user.GetUserData(req.email, (userData) => {
         Util.user.getFeed(req, async (feed) => {
-          if (feed) {
-            this.props.feedRefresh(feed);
-            console.log(this.props.feedData);
-          }
           if(userData) {
             //user data set in filterfriends
             if(userData.isBusiness) {
               Util.dataCalls.Yelp.getBusinessData(userData.businessId, (data) => {
                 userData.businessData['data'] = data;
                 Util.business.UpdateUser(userData.email, { data: data });
-                this.props.refresh(userData);
+                this.props.refresh(userData, feed);
               });
             }
             else {
@@ -226,10 +222,10 @@ class Navigator extends React.Component {
                 this.setState({
                   userChecked: true,
                 });
-                this.props.refresh(userData);
+                this.props.refresh(userData, feed);
               }
               else {
-                this.props.refresh(userData);
+                this.props.refresh(userData, feed);
               }
             }
           }
@@ -246,7 +242,7 @@ class Navigator extends React.Component {
   render() {
     return (
       this.state.authLoaded ?
-        this.state.userData && this.state.feedData ?
+        this.props.userData ?
           <NavigationContainer>
             <Drawer.Navigator
               drawerContentOptions={{
@@ -306,8 +302,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
   return {
-    refresh: (userData) => dispatch({ type:'REFRESH', data: userData }),
-    feedRefresh: (feedData) => dispatch({ type:'REFRESHFEED', data: feedData }),
+    refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
     yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
   }
 }
