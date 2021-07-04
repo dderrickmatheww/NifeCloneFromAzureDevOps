@@ -175,6 +175,11 @@ const Util = {
                     })
                     .then(response => response.json())
                     .then(async data => {
+                        if (data.error) {
+                            Util.basicUtil.Alert('Function getFeed - Error message:', data.error, null);
+                            Util.basicUtil.consoleLog('getFeed', false);
+                            return false;
+                        }
                         if (callback) {
                             callback(data.result);
                         }
@@ -277,6 +282,11 @@ const Util = {
                     })
                     .then(response => response.json())
                     .then(data => {
+                        if (data.error) {
+                            Util.basicUtil.Alert('Function getFeed - Error message:', data.error, null);
+                            Util.basicUtil.consoleLog('getFeed', false);
+                            return false;
+                        }
                         if (callback) {
                             callback(data.result);
                         }
@@ -294,28 +304,71 @@ const Util = {
                 obj['skip'] = obj.skip ? obj.skip : 0;
                 obj['getUserFeed'] = obj.getUserFeed ? obj.getUserFeed : false;
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserFeed',
-                    {
-                        method: 'POST',
-                        body: JSON.stringify(obj)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (callback) {
-                            callback(data.result);
-                        }
-                        Util.basicUtil.consoleLog('getFeed', true);
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.Alert('Function getFeed - Error message:', error.message, null);
+                {
+                    method: 'POST',
+                    body: JSON.stringify(obj)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Util.basicUtil.Alert('Function getFeed - Error message:', data.error, null);
                         Util.basicUtil.consoleLog('getFeed', false);
-                    });
+                        return false;
+                    }
+                    if (callback) {
+                        callback(data.result);
+                    }
+                    Util.basicUtil.consoleLog('getFeed', true);
+                })
+                .catch((error) => {
+                    Util.basicUtil.Alert('Function getFeed - Error message:', error.message, null);
+                    Util.basicUtil.consoleLog('getFeed', false);
+                });
             }
         },
         UpdateUser: (email, updateObject, callback) => {
             let db = firebase.firestore();
+            
             let userRef = db.collection('users').doc(email);
             if (typeof updateObject !== 'undefined') {
-                userRef.set(updateObject, {merge: true})
+                userRef.set(updateObject, { merge: true })
+                .then(() => {
+                    Util.basicUtil.consoleLog('UpdateUser', true);
+                    if (callback) {
+                        callback();
+                    }
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('UpdateUser', false);
+                    Util.basicUtil.Alert('Function UpdateUser - Error message:', error.message, null);
+                });
+            }
+        },
+        UpdateFeed: async (email, updateObject, callback) => {
+            let db = firebase.firestore();
+            let userRef = db.collection('feed').doc(email);
+            let userTimeline = await userRef.get();
+            updateObject['uid'] = uuid.v4();
+            let data = userTimeline.data();
+            if (typeof updateObject !== 'undefined' && data) {
+                if (data.timeline) {
+                    data.timeline.push(updateObject);
+                    userRef.set(data, { merge: true })
+                    .then(() => {
+                        Util.basicUtil.consoleLog('UpdateUser', true);
+                        if (callback) {
+                            callback(data);
+                        }
+                    })
+                    .catch((error) => {
+                        Util.basicUtil.consoleLog('UpdateFeed', false);
+                        Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                    });
+                }
+                else {
+                    data['timeline'] = [];
+                    data.timeline.push(updateObject);
+                    userRef.set(data, { merge: true })
                     .then(() => {
                         Util.basicUtil.consoleLog('UpdateUser', true);
                         if (callback) {
@@ -323,39 +376,74 @@ const Util = {
                         }
                     })
                     .catch((error) => {
-                        Util.basicUtil.consoleLog('UpdateUser', false);
-                        Util.basicUtil.Alert('Function UpdateUser - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('UpdateFeed', false);
+                        Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
                     });
+                }
+            }
+            else {
+                userTimeline = {
+                    checkIn: {},
+                    lastVisited: {},
+                    timeline: []
+                }
+                userTimeline.timeline.push(updateObject);
+                userRef.set(userTimeline)
+                .then(() => {
+                    Util.basicUtil.consoleLog('UpdateUser', true);
+                    if (callback) {
+                        callback();
+                    }
+                })
+                .catch((error) => {
+                    Util.basicUtil.consoleLog('UpdateFeed', false);
+                    Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                });
             }
         },
-        CheckIn: (checkInObj, callback) => {
+        CheckIn: async (checkInObj, callback) => {
             let db = firebase.firestore();
             let feed = db.collection('feed');
             let setLoc = feed.doc(checkInObj.email);
-            if (checkInObj.buisnessUID) {
-                let lastVisited = {};
-                lastVisited[checkInObj.buisnessUID] = {
-                    checkInTime: new Date(),
-                    latAndLong: checkInObj.latAndLong,
-                    privacy: checkInObj.privacy,
-                    name: checkInObj.barName,
-                    phone: checkInObj.phone,
-                    address: checkInObj.address,
-                    barPhoto: checkInObj.image,
-                }
+            let data = (await setLoc.get()).data();
+            const { 
+                latAndLong, 
+                privacy,
+                barName,
+                phone,
+                address,
+                image,
+                userImage,
+                displayName
+            } = checkInObj;
+            let lastVisited = {};
+            lastVisited[checkInObj.buisnessUID] = {
+                checkInTime: new Date(),
+                latAndLong: latAndLong,
+                privacy: privacy,
+                name: barName,
+                phone: phone,
+                address: address,
+                barPhoto: image,
+                image: userImage,
+                uid: uuid.v4(),
+                username: displayName
             }
-            if (!setLoc.exist()) {
+            if (!data) {
                 feed.set({
                     [checkInObj.email]: {
                         checkIn: {
                             checkInTime: new Date(),
-                            latAndLong: checkInObj.latAndLong,
-                            buisnessUID: checkInObj.buisnessUID,
-                            privacy: checkInObj.privacy,
-                            name: checkInObj.barName,
-                            phone: checkInObj.phone,
-                            address: checkInObj.address,
-                            barPhoto: checkInObj.image,
+                            latAndLong: latAndLong,
+                            buisnessUID: buisnessUID,
+                            privacy: privacy,
+                            name: barName,
+                            phone: phone,
+                            address: address,
+                            barPhoto: image,
+                            image: userImage,
+                            uid: uuid.v4(),
+                            username: displayName
                         },
                         lastVisited
                     }
@@ -382,6 +470,9 @@ const Util = {
                         phone: checkInObj.phone,
                         address: checkInObj.address,
                         barPhoto: checkInObj.image,
+                        image: userImage,
+                        uid: uuid.v4(),
+                        username: displayName
                     },
                     lastVisited
                 },
@@ -431,19 +522,16 @@ const Util = {
         },
         IsUserCheckedIn: (email, buisnessUID, callback) => {
             try {
-                Util.user.GetFeed({ email, getUserFeed: true }, (userData) => {
-                    let user = userData;
-                    if (!user.checkIn || !user.checkIn.checkInTime || user.checkIn.checkInTime == "") {
+                Util.user.getFeed({ email, getUserFeed: true }, (userData) => {
+                    let user = userData.filter(x => (x.checkedIn && x.checkedIn === true) && (x.businessUID == buisnessUID));
+                    if (user.length > 0) {
+                        if (callback) {
+                            callback("true");
+                        }
+                    }
+                    else {
                         if (callback) {
                             callback("false");
-                        }
-                    } else if (user.checkIn.buisnessUID && user.checkIn.buisnessUID == buisnessUID) {
-                        if (callback) {
-                            callback("true");
-                        }
-                    } else {
-                        if (callback) {
-                            callback("true");
                         }
                     }
                 });
@@ -1393,7 +1481,8 @@ const Util = {
             const paddingToBottom = 20;
             return layoutMeasurement.height + contentOffset.y >=
               contentSize.height - paddingToBottom;
-        }
+        },
+        getUUID: () => uuid.v4()
     }
 }
 

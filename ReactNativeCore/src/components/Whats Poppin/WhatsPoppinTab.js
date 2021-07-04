@@ -10,6 +10,7 @@ import {
     Avatar
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
+import { connect } from 'react-redux';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
@@ -84,7 +85,7 @@ class WhatsPoppin extends React.Component  {
                       favorited: boolean,
                       name: buisnessName
                     };
-                    this.props.refresh(updatedUserData, null, null, null);
+                    this.props.refresh(updatedUserData, this.props.feedData);
                 }
             }
         });
@@ -298,5 +299,17 @@ const localStyles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 10
     },
-})
-export default WhatsPoppin;
+});
+function mapStateToProps(state) {
+    return {
+        userData: state.userData,
+        business: state.businessData,
+        feedData: state.feedData
+    }
+}
+function mapDispatchToProps (dispatch) {
+    return {
+        refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(WhatsPoppin);

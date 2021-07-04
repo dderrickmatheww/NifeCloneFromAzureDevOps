@@ -227,12 +227,13 @@ const localStyles = StyleSheet.create({
       },
     tabOff:{
         width:"100%",
-        color:"gray",
-        paddingHorizontal:30
+        paddingHorizontal:30,
+        color: theme.icons.color,
+        fontFamily: theme.generalLayout.font
       },
       tabOn:{
         width:"100%",
-        color:theme.generalLayout.textColor,
+        color: theme.generalLayout.textColor,
         paddingHorizontal:30,
         fontFamily: theme.generalLayout.font
       },

@@ -10,9 +10,6 @@ import VisitedByCallout from './VisitedByCallout';
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 // const TouchableOpacity = Util.basicUtil.TouchableOpacity();
-
-
-
 var { width, height } = Dimensions.get('window');
 var ASPECT_RATIO = width / height;
 var LATITUDE_DELTA = 0.0922;
@@ -226,13 +223,9 @@ class MapScreen extends React.Component  {
   OnChangeMapRegion = (autoCompUpdate) => {
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
-      let { width, height } = Dimensions.get('window');
       let boolean = this.state.searchParam != "";
-      ASPECT_RATIO = width / height;
       LATITUDE = userLocation.latitude;
       LONGITUDE = userLocation.longitude;
-      LATITUDE_DELTA = 0.0922;
-      LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
       let baseURL = 'https://api.yelp.com/v3/businesses/search?';
       let params;
       if(boolean) {
@@ -257,12 +250,8 @@ class MapScreen extends React.Component  {
   recenter = ( ) => {
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
-      let { width, height } = Dimensions.get('window')
-      ASPECT_RATIO = width / height;
       LATITUDE = userLocation.latitude;
       LONGITUDE = userLocation.longitude;
-      LATITUDE_DELTA = 0.0922;
-      LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
       this.setState({
         isLoaded: true,
         region: {

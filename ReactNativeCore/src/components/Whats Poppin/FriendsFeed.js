@@ -1,27 +1,24 @@
 import React from 'react';
 import {
     View,
-    RefreshControl,
     StyleSheet,
-    ScrollView,
-    ActivityIndicator,
     Text,
-    Dimensions, Platform, Image
+    Dimensions, 
+    Platform
 } from 'react-native';
 import { 
     Headline,
     Avatar,
-    Caption,
-    Paragraph,
     Snackbar
 } from 'react-native-paper';
-import  theme  from '../../../Styles/theme';
+import theme from '../../../Styles/theme';
 import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
+import Feed from '../Universal/Feed';
 import { connect } from "react-redux";
+import * as ImagePicker from 'expo-image-picker';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
-
 const screen = Dimensions.get("window");
 
  class FriendsFeed extends React.Component  {
@@ -33,38 +30,27 @@ const screen = Dimensions.get("window");
         snackBarVisable: false,
         refresh: false,
     }
-    
     componentDidMount() {
         this.setState({
             userData: this.props.user,
             friendData: this.props.friends
         });
-        this.setFriendDataArrays();
     }
-    onRefresh = async ({ top, bottom }) => {
-        this.setState({ 
-            refresh: top,
-            vertRefresh: bottom 
-        });
-        Util.user.GetUserData(this.props.user.email, (userData) => {
-            Util.user.getFeed(this.props.user.email, (feedData) => {
-                this.refresh({ userData, feedData });
-            });
-        });
-    }
-    setFriendDataArrays = async (feedData = null) => {
-        let friendFeedData = feedData ? new Set(feedData) : new Set(this.props.feed);
+    onSave = (updated) => {
+        let { status, events, specials} = updated;
         this.setState({
-            feedData: friendFeedData
-        });
-        this.props.feedRefresh(friendFeedData);
-    }
-    onSave = () => {
-        this.setState({
-            modalVisable: false,
+            statusModalVisable: false, 
             snackBarVisable: true
         });
-        this.setFriendDataArrays();
+        if (status) {
+            this.setState({ snackBarText: "status" });
+        }
+        if (events) {
+            this.setState({ snackBarText: "events" });
+        }
+        if (specials) {
+            this.setState({ snackBarText: "specials" });
+        }
     }
     onDismiss = () => {
         this.setState({
@@ -76,19 +62,43 @@ const screen = Dimensions.get("window");
             snackBarVisable: false
         });
     }
-
-    refresh = async ({userData, feedData}) => {
-        if (userData) {
-            await this.props.refresh(userData);
-        }
-        await this.setFriendDataArrays(feedData);
-        this.setState({
-            refresh: false,
-            vertRefresh: false 
-        });
-        this.render();
+    refresh = async (userData) => {
+        await this.props.refresh(userData, this.props.feedData);
+        this.setState({ refresh: false });
     }
-
+    handleUploadImage = () => {
+        let userEmail = this.state.user.email;
+        ImagePicker.getCameraRollPermissionsAsync()
+            .then((result) => {
+                if (result.status == "granted") {
+                    this.setState({ uploading: true });
+                    ImagePicker.launchImageLibraryAsync()
+                        .then((image) => {
+                            let uri = image.uri;
+                            Util.business.UploadAddressProof(uri, userEmail, (resUri) => {
+                                Util.business.SendProofEmail(userEmail, resUri);
+                                Util.user.UpdateUser(userEmail, { isVerified: true });
+                                let userData = this.state.userData;
+                                userData.isVerified = true;
+                                this.setState({
+                                    userData: userData,
+                                    isVerified: true
+                                });
+                                this.refresh({ userData });
+                            }, true);
+                        })
+                        .catch((error) => {
+                            Util.basicUtil.Alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
+                            Util.basicUtil.consoleLog('HomeScreen/handleUploadImage', false);
+                        });
+                } 
+                else {
+                    this.setState({
+                        isVerified: false
+                    });
+                }
+            });
+    }
     render() {
         return (
            <View style={localStyles.safeAreaContainer}>
@@ -108,66 +118,11 @@ const screen = Dimensions.get("window");
                         <Text style={localStyles.statusButton}>Update Status</Text>
                     </TouchableOpacity> 
                 </View>
-                
-               {
-                this.state.feedData ?
-                    <ScrollView style={[localStyles.ScrollView]} contentContainerStyle={localStyles.scrollContent}
-                                refreshControl={
-                                    <RefreshControl
-                                        refreshing={this.state.refresh}
-                                        onRefresh={this.onRefresh}
-                                        size={22}
-                                        color={[theme.loadingIcon.color]}
-                                        tintColor={theme.loadingIcon.color}
-                                        title={'Loading...'}
-                                        titleColor={theme.loadingIcon.textColor}
-                                    />
-                                }
-                    >
-                        {
-                            this.state.feedData && this.state.feedData.length > 0 ?
-                                this.state.feedData.map((data, i) => (
-                                    <View key={i} style={localStyles.feedDataRow}>
-                                        <Avatar.Image source={data.image.uri !== "Unknown" ? data.image : defPhoto}
-                                                      size={50}/>
-                                        <Text style={localStyles.displayName}>
-                                            {data.name}
-                                            {
-                                                this.state.userData.isBusiness ?
-                                                    <Caption
-                                                        style={localStyles.feedType}>{"   " + this.props.business.City + ", " + this.props.business.State}</Caption> : null
-                                            }
-                                        </Text>
-                                        <Caption style={localStyles.feedType}>{data.visited ? "took a visit" : data.checkedIn ? "checked in" : data.event ? "booked an event" : data.specials ? "has a new special" : "status update"}</Caption>
-                                        <View>
-                                            <Paragraph style={localStyles.Paragraph}>{data.text}</Paragraph>
-                                            {
-                                                data.statusImage ?
-                                                    <Image
-                                                        resizeMethod="auto"
-                                                        resizeMode="contain"
-                                                        style={{flex:1,resizeMode:'contain',aspectRatio:1}}
-                                                        source={{uri: data.statusImage}}/>
-                                                    : null
-                                            }
-                                        </View>
-
-                                        <Caption style={localStyles.Caption}>{Util.date.TimeSince(data.time)} ago</Caption>
-                                    </View>
-                                ))
-                                :
-
-                                <Text style={localStyles.emptyPoppinFeed}>Nothing to show here, add some friends and
-                                    favorite spots if you haven't already!</Text>
-
-                        }
-
-                    </ScrollView>
-                :
-                    <View style={localStyles.viewDark}>
-                        <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-                    </View>
-               }
+                <Feed 
+                    isFriendFeed={false}
+                    favorites={this.props.favorites}
+                    business={this.props.business}
+                />
                {
                    this.state.modalVisable ?
                     <StatusModal
@@ -347,7 +302,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
     return {
-        refresh: (userData) => dispatch({type:'REFRESH', data:userData})
+        refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData })
     }
 }
 

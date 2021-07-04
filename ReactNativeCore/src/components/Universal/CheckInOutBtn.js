@@ -8,9 +8,9 @@ import {
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+import { connect } from "react-redux";
 
-
-export default class CheckInOutButtons extends React.Component  {
+class CheckInOutButtons extends React.Component  {
     state = {
         checkedIn: "",
         loading:  false
@@ -21,7 +21,7 @@ export default class CheckInOutButtons extends React.Component  {
     }
     
     IsUserCheckedInLocal = async () => {
-        this.setState({loading: true});
+        this.setState({ loading: true });
         Util.user.IsUserCheckedIn(this.props.email, this.props.buisnessUID, (boolean) => {
           this.setState({ 
             checkedIn: boolean,
@@ -67,7 +67,9 @@ export default class CheckInOutButtons extends React.Component  {
                                     phone: this.props.phone,
                                     image: this.props.source.uri,
                                     closed: this.props.closed == true ? "Yes" : "No",
-                                    privacy: "Public"
+                                    privacy: "Public",
+                                    displayName: this.props.userData.displayName,
+                                    userImage: this.props.userData.photoSource
                                 }
                                 withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
                                 if(checkInObj.closed == "No" && withinRadius) {
@@ -97,43 +99,6 @@ export default class CheckInOutButtons extends React.Component  {
                         >
                         <Text style={localStyles.modalText}>Public Check In</Text>
                         </TouchableOpacity>
-                    {/* <TouchableOpacity
-                        onPress={() => {
-                            this.setState({loading: true});
-                            Util.location.GetUserLocation((userLocation) => {
-                                let withinRadius;
-                                let checkInObj = {
-                                    email: this.props.email,
-                                    buisnessUID: this.props.buisnessUID,
-                                    latAndLong: this.props.latitude + ',' + this.props.longitude,
-                                    barName: this.props.barName,
-                                    address: this.props.address,
-                                    phone: this.props.phone,
-                                    image: this.props.source,
-                                    closed: this.props.closed == true ? "Yes" : "No",
-                                    privacy: "Friends Only"
-                                }
-                                withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
-                                if(checkInObj.closed == "No" && withinRadius) {
-                                    Util.user.CheckIn(checkInObj, (boolean) => {
-                                        this.setState({
-                                            checkedIn: boolean,
-                                            loading: false
-                                        });
-                                    });
-                                }
-                                else if (checkInObj.closed == "Yes") {
-                                    alert('This bar seems to be closed!');
-                                }
-                                else {
-                                    alert('You must be within 1 mile to check in!');
-                                }
-                            });
-                        }}
-                        style={localStyles.descCont}
-                        >
-                        <Text style={localStyles.modalText}>Friend Check In</Text>
-                        </TouchableOpacity> */}
                         <TouchableOpacity
                         onPress={() => {
                             this.setState({loading: true});
@@ -148,7 +113,9 @@ export default class CheckInOutButtons extends React.Component  {
                                     phone: this.props.phone,
                                     image: this.props.source,
                                     closed: this.props.closed == true ? "Yes" : "No",
-                                    privacy: "Private"
+                                    privacy: "Private",
+                                    displayName: this.props.userData.displayName,
+                                    userImage: this.props.userData.photoSource
                                 }
                                 withinRadius = Util.location.IsWithinRadius(checkInObj, userLocation, true);
                                 if(checkInObj.closed == "No" && withinRadius) {
@@ -237,3 +204,18 @@ const localStyles = StyleSheet.create({
         alignItems:"center"
     }
   });
+
+  function mapStateToProps(state) {
+    return {
+        userData: state.userData,
+        feedData: state.feedData
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        globalRefresh: (userData, feedData) => dispatch({type: 'REFRESH', data: userData, feed: feedData})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CheckInOutButtons);

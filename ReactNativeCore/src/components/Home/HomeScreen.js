@@ -26,7 +26,6 @@ const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 const win = Dimensions.get('window');
 
 class FriendsFeed extends React.Component {
-
     state = {
         statusModalVisable: false,
         eventModalVisable: false,
@@ -39,11 +38,8 @@ class FriendsFeed extends React.Component {
         menuVisable: false,
         snackBarText: "status",
         isVerified: false,
-        refresh: false,
-        vertRefresh: false
+        refresh: false
     }
-
-
     componentDidMount() {
         this.setState({
             userData: this.props.userData,
@@ -52,7 +48,6 @@ class FriendsFeed extends React.Component {
             isVerified: this.props.user.isVerified ? this.props.user.isVerified : false
         });
     }
-
     onSave = (updated) => {
         let { status, events, specials} = updated;
         this.setState({
@@ -68,17 +63,11 @@ class FriendsFeed extends React.Component {
         if (specials) {
             this.setState({ snackBarText: "specials" });
         }
-        this.refresh();
     }
-
-    refresh = async ({ userData, feedData }) => {
-        await this.props.refresh(userData, feedData);
-        this.setState({
-            refresh: false,
-            vertRefresh: false 
-        });
+    refresh = async (userData) => {
+        await this.props.refresh(userData, this.props.feedData);
+        this.setState({ refresh: false });
     }
-
     onDismiss = () => {
         this.setState({
             statusModalVisable: false,
@@ -86,15 +75,12 @@ class FriendsFeed extends React.Component {
             specialsModalVisable: false
         });
     }
-
     onDismissUpdate = () => {
         this.setState({ modalVisible: false });
     }
-
     onDismissSnackBar = () => {
         this.setState({ snackBarVisable: false });
     }
-
     handleUploadImage = () => {
         let userEmail = this.state.user.email;
         ImagePicker.getCameraRollPermissionsAsync()
@@ -128,7 +114,6 @@ class FriendsFeed extends React.Component {
                 }
             });
     }
-
     render() {
         return (
             <View style={localStyles.safeAreaContainer}>
@@ -221,7 +206,7 @@ class FriendsFeed extends React.Component {
                             isVisible={this.state.statusModalVisable}
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
-                            onSave={() => this.onSave({status: true})}
+                            onSave={() => this.onSave({ status: true })}
                         >
                         </StatusModal>
                     :
@@ -407,6 +392,7 @@ const localStyles = StyleSheet.create({
         flex: 1,
         paddingTop: "7%",
         backgroundColor: theme.generalLayout.backgroundColor,
+        width: '100%'
     },
 });
 
@@ -422,8 +408,7 @@ function mapStateToProps(state){
   
   function mapDispatchToProps(dispatch){
     return {
-      refresh: (userData) => dispatch({ type:'REFRESH', data: userData }),
-      feedRefresh: (feed) => dispatch({ type:'REFRESHFEED', feed: feed }),
+      refresh: (userData) => dispatch({ type:'REFRESH', data: userData, feed: feed }),
       yelpDataRefresh: (data) => dispatch({type:'YELPDATA', data: data}),
     }
   }

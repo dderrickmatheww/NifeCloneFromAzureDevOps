@@ -45,24 +45,33 @@ const reducer = (state = initialState, action) => {
             null 
           : 
           state.friendData ?
-            state.friendData.acceptedFriends
+            state.friendData.acceptedFriends ?
+                state.friendData.acceptedFriends
+              :
+                null
             :
             null 
         ),
         friendRequests: (
           action.data ? 
             action.data.friendData ?  
-            action.data.friendData.requests 
+            action.data.friendData.requests ?
+            action.data.friendData.requests
+            :
+            {}
+          : 
+          state.friendData ?
+          state.friendData.requests ? 
+                state.friendData.requests 
+              : 
+                {}
+            : 
+              {} 
           : 
           state.friendData.requests ? 
               state.friendData.requests 
             : 
-              null 
-          : 
-          state.friendData.requests ? 
-              state.friendData.requests 
-            : 
-              null
+              {}
         ),
         businessData: ( action.data ? action.data.businessData : state.businessData ? state.businessData : null ),
         feedData: action.feed ? action.feed : state.feedData

@@ -164,22 +164,21 @@ export const styles = StyleSheet.create({
     textAlign:"center",
     alignItems:"center",
   },
-  
   facebookDataText: {
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     fontSize: 11,
-    //fontFamily: theme.fontFamily,
+    fontFamily: theme.fontFamily,
     alignSelf:"center"
   },
   checkedInDataText: {
-    color: theme.LIGHT_PINK,
+    color: theme.generalLayout.textColor,
     fontSize: 17,
-    //fontFamily: theme.fontFamily,
+    fontFamily: theme.fontFamily,
   },
   facebookScrollText: {
     color: "black",
     fontSize: 16,
-   // fontFamily: theme.fontFamily
+   fontFamily: theme.fontFamily
   },
   dataRowDescription: {
     justifyContent: 'center', 

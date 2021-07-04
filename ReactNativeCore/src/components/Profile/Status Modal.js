@@ -6,9 +6,10 @@ import {
     Keyboard
 } from "react-native";
 import Util from '../../scripts/Util';
-import {Modal, Button, TextInput, Text} from 'react-native-paper';
+import { Modal, Button, TextInput, Text } from 'react-native-paper';
 import theme from '../../../Styles/theme';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
+const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class StatusModal extends React.Component {
     state = {
@@ -22,7 +23,8 @@ class StatusModal extends React.Component {
 
     componentDidMount() {
         this.setState({
-            userData: this.props.user
+            userData: this.props.user,
+            feedData: this.props.feedData
         });
         this.getPlaceholderColor()
     }
@@ -34,25 +36,24 @@ class StatusModal extends React.Component {
     }
 
     onStatusChange = (text) => {
-        this.setState({statusText: text});
+        this.setState({ statusText: text });
     }
 
     onSaveStatus = () => {
-        this.setState({saving: true});
+        this.setState({ saving: true });
         let status = this.state.statusText;
-        let obj = {
-            status: {
-                text: status,
-                timestamp: new Date(),
-                image: this.state.pic,
-            }
-        }
         let user = this.props.user;
-        user['status'] = obj.status;
-        let updatedUserData = user;
-        this.props.globalRefresh(updatedUserData);
-        Util.user.UpdateUser(user.email, obj, () => {
-            this.setState({saving: false});
+        let obj =  {
+          text: status,
+          checkin: false,
+          visited: false,
+          name: user.displayName,
+          time: new Date(),
+          statusImage: this.state.pic,
+          image: user.photoSource !== 'Unknown' ? user.photoSource : defPhoto.uri
+        }
+        Util.user.UpdateFeed(user.email, obj, () => {
+            this.setState({ saving: false });
             this.props.onSave();
         });
     }
@@ -61,15 +62,15 @@ class StatusModal extends React.Component {
             Keyboard.dismiss();
         }
     }
-
     handleUploadImageStatus = () => {
         this.setState({saving: true});
         Util.user.HandleUploadImage(this.props.user.isBusiness, this.props.user, (image) => {
-            this.setState({saving: false});
-            this.setState({pic: image});
+            this.setState({ 
+              saving: false,
+              pic: image
+            });
         }, true)
     }
-
     render() {     
         return(         
           <Modal 
@@ -126,19 +127,18 @@ function mapStateToProps(state) {
         user: state.userData,
         requests: state.friendRequests,
         friends: state.friendData,
+        feed: state.feedData,
         businessData: state.businessData,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        globalRefresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+        globalRefresh: (userData, feedData) => dispatch({type: 'REFRESH', data: userData, feed: feedData})
     }
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(StatusModal);
-
 
 const localStyles = StyleSheet.create({
   textInput:{
