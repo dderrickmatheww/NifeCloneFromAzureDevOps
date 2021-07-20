@@ -181,7 +181,7 @@ export default class NifeLoginModal extends Component {
     render () {
         return (
             !this.props.isReset ?
-                !this.state.isBusiness ?
+                !this.props.isBusiness ?
                     this.state.signUp ?
                         //Sign-up with Nife
                         <Modal
