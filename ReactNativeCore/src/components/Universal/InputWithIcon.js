@@ -3,7 +3,7 @@ import { View, TextInput, Text, ActivityIndicator, StyleSheet, FlatList } from '
 import {
   Avatar
 } from 'react-native-paper';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 

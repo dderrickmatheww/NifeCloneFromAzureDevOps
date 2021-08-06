@@ -3,7 +3,7 @@ import Navigator from './src/stacks/drawer';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './src/scripts/Util';
-import themeUtil from './Styles/theme'
+import themeUtil from './src/styles/theme'
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { createStore } from "redux";
 import { Provider } from 'react-redux'

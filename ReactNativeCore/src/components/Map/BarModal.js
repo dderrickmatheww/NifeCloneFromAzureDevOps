@@ -11,7 +11,7 @@ import BottomSheet from 'reanimated-bottom-sheet';
 // import { AirbnbRating } from 'react-native-ratings';
 import CheckInOutButtons from '../Universal/CheckInOutBtn';
 import * as firebase from 'firebase';
-import theme from "../../../Styles/theme";
+import theme from "../../../src/styles/theme";
 import Util from "../../scripts/Util";
 import Favorite from "../Universal/Favorite";
 import PopUpModal from "../Universal/PopUpModal";

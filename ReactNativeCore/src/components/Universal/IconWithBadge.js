@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 
 export default function IconWithBadge({ name, badgeCount, color, size, type , isDrawer}) {
   

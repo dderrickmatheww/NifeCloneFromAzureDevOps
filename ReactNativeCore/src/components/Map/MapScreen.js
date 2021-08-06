@@ -5,7 +5,7 @@ import InputWithIcon from '../Universal/InputWithIcon';
 import BarModal from './BarModal';
 import DrawerButton from '../Universal/DrawerButton';
 import Util from '../../scripts/Util';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import VisitedByCallout from './VisitedByCallout';
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';

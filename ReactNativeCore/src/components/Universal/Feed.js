@@ -14,7 +14,7 @@ import {
     Caption,
     Paragraph,
 } from 'react-native-paper';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
@@ -407,7 +407,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Feed);
 //     Caption,
 //     Paragraph,
 // } from 'react-native-paper';
-// import  theme  from '../../../Styles/theme';
+// import  theme  from '../../../src/styles/theme';
 // import Util from '../../scripts/Util';
 // import { connect } from "react-redux";
 // const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };

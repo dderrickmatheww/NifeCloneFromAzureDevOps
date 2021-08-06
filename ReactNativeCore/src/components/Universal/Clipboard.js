@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {View,  StyleSheet, Platform, TextInput} from 'react-native';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
 import {connect} from "react-redux";
 import {Ionicons} from "@expo/vector-icons";

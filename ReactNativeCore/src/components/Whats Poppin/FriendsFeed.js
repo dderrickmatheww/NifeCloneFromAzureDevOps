@@ -11,7 +11,7 @@ import {
     Avatar,
     Snackbar
 } from 'react-native-paper';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
 import Feed from '../Universal/Feed';

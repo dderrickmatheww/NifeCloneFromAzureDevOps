@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, ActivityIndicator, StyleSheet, Image} from 'react-native';
 import Util from '../../scripts/Util';
-import { styles } from '../../../Styles/style';
+import { styles } from '../../../src/styles/style';
 import DrawerButton from '../Universal/DrawerButton';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import * as firebase from 'firebase';
 import {
   Headline,

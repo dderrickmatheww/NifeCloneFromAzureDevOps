@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import IconWithBadge from './IconWithBadge';
-import theme from '../../../Styles/theme';
-import { styles } from '../../../Styles/style';
+import theme from '../../../src/styles/theme';
+import { styles } from '../../../src/styles/style';
 import Util from '../../scripts/Util';
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 

@@ -17,7 +17,7 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from '@react-navigation/drawer';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import Util from '../../scripts/Util';
 import IconWithBadge from "../Universal/IconWithBadge"
@@ -26,29 +26,27 @@ import IconWithBadge from "../Universal/IconWithBadge"
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
-
- Notifications.setNotificationHandler({
-     handleNotification: async () => ({
-         shouldShowAlert: true,
-         shouldPlaySound: false,
-         shouldSetBadge: false,
-     }),
- });
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
 
 export function DrawerContent(props) {
-        useEffect(() => {
-            const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-                console.log('addNotificationResponseReceivedListener hit');
-                if(response.notification.request.content.data.isFriendRequest){
-                    Util.user.GetUserData(firebase.auth().currentUser.email, (user)=>{
-                        props.refresh(user);
-                        props.navigation.navigate('Profile', {screen:'Friends', params:{openRequests:true}})
-                    })
-
-                }
-            });
-            return () => subscription.remove();
-        }, [])
+    useEffect(() => {
+        const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+            console.log('addNotificationResponseReceivedListener hit');
+            if(response.notification.request.content.data.isFriendRequest) {
+                Util.user.GetUserData(firebase.auth().currentUser.email, (user) => {
+                    props.refresh(user);
+                    props.navigation.navigate('Profile', { screen: 'Friends', params: { openRequests: true }});
+                });
+            }
+        });
+        return () => subscription.remove();
+    }, []);
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>

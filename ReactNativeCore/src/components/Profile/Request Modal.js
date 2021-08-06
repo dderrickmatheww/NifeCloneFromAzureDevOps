@@ -9,8 +9,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Util from '../../scripts/Util';
 import { Modal, Text, Subheading } from 'react-native-paper';
-import theme from '../../../Styles/theme';
-import { styles } from '../../../Styles/style';
+import theme from '../../../src/styles/theme';
+import { styles } from '../../../src/styles/style';
 import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();

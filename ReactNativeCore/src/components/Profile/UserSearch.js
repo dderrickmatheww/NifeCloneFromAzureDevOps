@@ -8,7 +8,7 @@ import {
   Text
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();

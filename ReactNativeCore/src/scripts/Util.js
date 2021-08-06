@@ -1375,6 +1375,7 @@ const Util = {
                 return
             },
             signOut: async () => {
+                console.log('signout')
                 firebase.auth().signOut();
             },
             passwordReset: async (email) => {

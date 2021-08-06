@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text, ScrollView } from 'react-native';
 import Util from '../../scripts/Util';
 import { Modal, Subheading, Caption, TextInput, ActivityIndicator } from 'react-native-paper';
-import { styles } from '../../../Styles/style';
-import theme from '../../../Styles/theme';
+import { styles } from '../../../src/styles/style';
+import theme from '../../../src/styles/theme';
 import * as ImagePicker from 'expo-image-picker';
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 

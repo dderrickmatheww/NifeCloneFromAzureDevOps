@@ -5,7 +5,7 @@ import {
     ActivityIndicator
 } from "react-native";
 import {Modal, Button, Text} from 'react-native-paper';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 
 export default class StatusModal extends React.Component  {
     state = {

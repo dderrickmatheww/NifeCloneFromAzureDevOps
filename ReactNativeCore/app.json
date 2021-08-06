@@ -4,7 +4,7 @@
   "expo": {
     "name": "Nife",
     "slug": "Nife",
-    "icon": "./Media/Images/UpdatedLogoN.png",
+    "icon": "./src/media/Images/UpdatedLogoN.png",
     "privacy": "unlisted",
     "version": "1.0.4",
     "entryPoint": "node_modules/expo/AppEntry.js",
@@ -14,7 +14,7 @@
       "web"
     ],
     "splash": {
-      "image": "./Media/Images/updatedLogo.png",
+      "image": "./src/media/Images/updatedLogo.png",
       "backgroundColor": "#301E48",
       "resizeMode": "contain"
     },

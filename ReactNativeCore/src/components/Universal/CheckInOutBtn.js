@@ -6,7 +6,7 @@ import {
     StyleSheet
 } from "react-native";
 import Util from '../../scripts/Util';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 import { connect } from "react-redux";
 

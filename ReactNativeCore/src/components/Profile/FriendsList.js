@@ -1,7 +1,7 @@
 import React from 'react';
 import Util from '../../scripts/Util';
 import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Platform } from 'react-native';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
 import { 

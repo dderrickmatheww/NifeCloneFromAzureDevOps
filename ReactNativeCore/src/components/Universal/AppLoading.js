@@ -1,5 +1,5 @@
 import React from 'react';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import {View, ActivityIndicator} from 'react-native';
 
 class AppLoading extends React.Component  {

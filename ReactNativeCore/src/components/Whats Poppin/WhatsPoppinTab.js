@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import getFeedData from './GetFeedData';
 import DataRow from './DataRow';
 import * as firebase from 'firebase';

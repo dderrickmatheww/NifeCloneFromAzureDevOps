@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Platform } from 'react-native';
 import { Picker } from '@react-native-community/picker'
 import Util from '../../scripts/Util';
-import { styles } from '../../../Styles/style';
+import { styles } from '../../../src/styles/style';
 import DrawerButton from '../Universal/DrawerButton';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {

@@ -6,7 +6,7 @@ import {
     TouchableHighlight,
     View
 } from "react-native";
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 
 export default class PopUpModal extends React.Component  {

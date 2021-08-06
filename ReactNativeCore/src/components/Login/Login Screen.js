@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import Util from '../../scripts/Util';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import NifeLoginModal from '../Home/LoginModal'
 import * as firebase from 'firebase';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
@@ -44,7 +44,7 @@ export default class LoginScreen extends Component {
               <Text style={styles.loggedOutText}>Login with Facebook</Text>
               <Image
                   style={styles.Logo}
-                  source={require("../Media/Images/fblogo.png")}
+                  source={require("../src/media/Images/fblogo.png")}
                 />
             </TouchableOpacity>
           </View> 

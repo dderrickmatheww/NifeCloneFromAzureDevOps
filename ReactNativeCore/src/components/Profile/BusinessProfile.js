@@ -8,8 +8,8 @@ import {
     Surface, Avatar, Text
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
-import {styles} from '../../../Styles/style';
-import theme from '../../../Styles/theme';
+import {styles} from '../../../src/styles/style';
+import theme from '../../../src/styles/theme';
 import {Ionicons} from '@expo/vector-icons';
 import StatusModal from './Status Modal';
 import Clipboard from '../Universal/Clipboard';

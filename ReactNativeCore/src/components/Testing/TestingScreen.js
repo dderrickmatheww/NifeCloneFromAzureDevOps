@@ -2,7 +2,7 @@ import React from 'react';
 import * as Notifications from 'expo-notifications'
 import { View, Text, StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import 'firebase/firestore'
 import Util from "../../scripts/Util";
 import {connect} from "react-redux";

@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
     Avatar
 } from 'react-native-paper';
-import theme from '../../../Styles/theme';
+import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 

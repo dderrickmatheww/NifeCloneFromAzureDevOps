@@ -4,7 +4,7 @@ import { createDrawerNavigator} from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import MapStack from './mapStack';
 import SettingsTab from '../components/Settings/SettingsTab';
-import theme from '../../Styles/theme';
+import theme from '../../src/styles/theme';
 import PoppinStack from './poppinStack';
 //import TestingStack from './testingStack';
 import ProfileStack from './profileStack';
@@ -143,31 +143,31 @@ class Navigator extends React.Component {
   }
 
   initializeParams = async (user) => {
-      await Util.user.VerifyUser(user, user.email, this.state.businessSignUp, (userObj) => {
-        let user = userObj;
-        this.getNeededData(user);
-        //get push notification permissions
-        Util.user.registerForPushNotificationsAsync((token) => {
-          Util.user.UpdateUser(user.email, token);
-        });
-        Permissions.askAsync(Permissions.LOCATION).then((status) => {
-          if (status.status === 'granted') {
-            Util.location.GetUserLocation(null, user);
-          }
-          else {
-            Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
-          }
-        });
+    await Util.user.VerifyUser(user, user.email, this.state.businessSignUp, (userObj) => {
+      let user = userObj;
+      this.getNeededData(user);
+      //get push notification permissions
+      Util.user.registerForPushNotificationsAsync((token) => {
+        Util.user.UpdateUser(user.email, token);
       });
+      Permissions.askAsync(Permissions.LOCATION).then((status) => {
+        if (status.status === 'granted') {
+          Util.location.GetUserLocation(null, user);
+        }
+        else {
+          Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
+        }
+      });
+    });
   }
 
   async componentDidMount() {
     //load fonts
     try {
       await Font.loadAsync({
-        Comfortaa: require('../../Media/Fonts/Comfortaa/static/Comfortaa-Regular.ttf'),
-        ComfortaaLight: require('../../Media/Fonts/Comfortaa/static/Comfortaa-Light.ttf'),
-        ComfortaaBold: require('../../Media/Fonts/Comfortaa/static/Comfortaa-Bold.ttf')
+        Comfortaa: require('../../src/media/Fonts/Comfortaa/static/Comfortaa-Regular.ttf'),
+        ComfortaaLight: require('../../src/media/Fonts/Comfortaa/static/Comfortaa-Light.ttf'),
+        ComfortaaBold: require('../../src/media/Fonts/Comfortaa/static/Comfortaa-Bold.ttf')
       });
     }
     catch (error) {

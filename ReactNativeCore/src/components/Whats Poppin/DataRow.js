@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
-import { styles } from '../../../Styles/style';
-import theme from '../../../Styles/theme';
+import { styles } from '../../../src/styles/style';
+import theme from '../../../src/styles/theme';
 import {
     Headline
 } from 'react-native-paper';
