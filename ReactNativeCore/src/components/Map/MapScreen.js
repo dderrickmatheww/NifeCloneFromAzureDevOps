@@ -127,7 +127,10 @@ class MapScreen extends React.Component  {
           //remove nife registered businesses from yelp call
           data = data.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
           //adds nife version of business data to marker data
-          nifeData.forEach((bus) => {data.push(bus)});
+          nifeData.forEach((bus) => {
+            console.log(bus);
+            data.push(bus)
+          });
 
           this.setState({
             markers: data,
@@ -174,6 +177,7 @@ class MapScreen extends React.Component  {
     var friendState = this.state.friendData;
     places.forEach(function(place){
       if(place.id == key){
+        console.log(place)
         wantedPlace = place;
         let friends = friendState;
         if(friends && friends.length > 0){
@@ -191,7 +195,7 @@ class MapScreen extends React.Component  {
         longitude: wantedPlace.coordinates.longitude,
       },
       modalProps:{
-        source:{uri: "" + wantedPlace.image_url},
+        source:{uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url},
         barName:wantedPlace.name, 
         rating:wantedPlace.rating,
         reviewCount:wantedPlace.review_count,

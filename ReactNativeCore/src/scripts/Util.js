@@ -1125,7 +1125,7 @@ const Util = {
                         var currentlyCheckIn = [];
                         if (typeof bars !== 'undefined' && bars.length > 0) {
                             bars.forEach(async (bar, index) => {
-                                if (friends.length > 0) {
+                                if (friends && friends.length > 0) {
                                     friends.forEach((friend) => {
                                         if ((friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private")) {
                                             currentlyCheckIn.push(friend);
