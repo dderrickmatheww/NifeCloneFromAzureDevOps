@@ -3,9 +3,7 @@ import {View, ScrollView, ImageBackground, ActivityIndicator, StyleSheet, Platfo
 import {
     Title,
     Caption,
-    Headline,
-    Chip,
-    Surface, Avatar, Text
+    Headline, Avatar
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
 import {styles} from '../../../Styles/style';
@@ -113,15 +111,11 @@ class BusinessProfile extends Component {
         });
     }
 
-    UploadPic = () => {
+    UploadPic = async () => {
+        console.log('Upload Pic Fired:')
         this.setState({uploading: true});
-        this.props.uploadImage((uri) => {
-            let user = this.props.userData;
-            Util.business.UpdateUser(user.email, {photoSource: uri});
-            user['photoSource'] = uri;
-            this.setState({userData: user});
-            this.props.refresh(user);
-        });
+        await Util.user.HandleUploadImage(true, this.props.currentUser, false);
+        this.setState({uploading: false});
     }
 
     render() {

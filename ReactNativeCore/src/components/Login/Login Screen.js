@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
-import NifeLoginModal from '../Home/LoginModal'
+import NifeLoginModal from './LoginModal'
 import * as firebase from 'firebase';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();

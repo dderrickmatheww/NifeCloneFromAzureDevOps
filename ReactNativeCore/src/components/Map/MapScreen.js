@@ -124,11 +124,10 @@ class MapScreen extends React.Component  {
           //Orginal data call to get markers based on user location
           this.setState({yelpBusIds: data.map(bus => bus.id)});
 
-          nifeData.forEach(bus =>{
-            if(!this.state.yelpBusIds.includes(bus.id)){
-              data.push(bus);
-            }
-          });
+          //remove nife registered businesses from yelp call
+          data = data.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
+          //adds nife version of business data to marker data
+          nifeData.forEach((bus) => {data.push(bus)});
 
           this.setState({
             markers: data,
