@@ -6,6 +6,7 @@ import BarModal from './BarModal';
 import DrawerButton from '../Universal/DrawerButton';
 import Util from '../../scripts/Util';
 import theme from '../../../Styles/theme';
+import {mapStyle} from "../../../Styles/style";
 import VisitedByCallout from './VisitedByCallout';
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -50,178 +51,7 @@ class MapScreen extends React.Component  {
     yelpBusIds:[],
   };
   
-  mapStyle = [
-    {
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.DARK
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "administrative.locality",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "stylers": [
-        {
-          "color": "#d59563",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#263c3f",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD,
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.LIGHT_PINK
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.DARK_PINK
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "transit",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#2f3948"
-        }
-      ]
-    },
-    {
-      "featureType": "transit.station",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.LIGHT_PINK
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    }
-  ];
+
 
   OnChangeMapRegion = (autoCompUpdate) => {
     Util.location.GetUserLocation(async (loc, region) => {
@@ -442,7 +272,7 @@ class MapScreen extends React.Component  {
               region={this.state.region}
               // onUserLocationChange={(e) => this.OnMapChange(e)}
               showsScale={true}
-              customMapStyle={this.mapStyle}
+              customMapStyle={mapStyle}
               minZoomLevel={14}
               maxZoomLevel={20}
               moveOnMarkerPress={false}

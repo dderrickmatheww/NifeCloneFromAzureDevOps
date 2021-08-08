@@ -68,7 +68,8 @@ class FriendsFeed extends React.Component {
         let business = this.props.business;
         let favorites = this.props.favorites;
         let friendFeedData = [];
-
+        console.log('Business events: ', business.events)
+        console.log('Business specials: ', business.events)
         if (user.status) {
             let obj = {
                 name: user.displayName,
@@ -457,7 +458,7 @@ class FriendsFeed extends React.Component {
                     this.state.modalVisible ?
                         <Modal
                             contentContainerStyle={{
-                                width: "50%",
+                                width: "75%",
                                 height: "25%",
                                 borderRadius: 10,
                                 alignSelf: "center",
@@ -591,7 +592,8 @@ const localStyles = StyleSheet.create({
         paddingHorizontal: 5,
         textAlign: "center",
         marginVertical: 5,
-        fontFamily: theme.generalLayout.font
+        width: 200,
+        fontFamily:theme.generalLayout.font
     },
     modalButtonText: {
         color: theme.generalLayout.secondaryColor,

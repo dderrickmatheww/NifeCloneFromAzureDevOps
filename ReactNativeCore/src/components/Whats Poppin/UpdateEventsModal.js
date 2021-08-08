@@ -2,13 +2,17 @@ import React  from "react";
 import {
     StyleSheet,
     View,
-    ActivityIndicator
+    ActivityIndicator, Platform
 } from "react-native";
 import Util from '../../scripts/Util';
 import {Modal, Button, TextInput, Text} from 'react-native-paper';
 import theme from '../../../Styles/theme';
+import {connect} from "react-redux";
 
-export default class StatusModal extends React.Component  {
+//TODO use clipboard component here
+// combine events and specials into one component
+
+class EventsModal extends React.Component  {
     state = {
       eventText: null,
       userData: null,
@@ -23,10 +27,10 @@ export default class StatusModal extends React.Component  {
       let text = "";
       events.forEach((event, i)=>{
         if(i != events.length - 1){
-          text += event.event + " & "
+          text += event.text + " & "
         }
         else {
-          text += event.event
+          text += event.text
         }
       });
       this.setState({eventText:text})
@@ -45,7 +49,7 @@ export default class StatusModal extends React.Component  {
         let obj = {events:[]}
         eventArray.forEach((event)=>{
           obj.events.push({
-            event: event,
+            text: event,
             uploaded: new Date()
           })
         })
@@ -63,9 +67,10 @@ export default class StatusModal extends React.Component  {
     }
 
     updateUserAsync = (business, obj) => {
-      business['events']= obj.events;
-      this.props.refresh(null, null, null, business);
-      
+        let user = this.props.user;
+        business['events']= obj.events;
+        user.businessData = business;
+        this.props.refresh(user);
     }
 
     render(){     
@@ -82,6 +87,14 @@ export default class StatusModal extends React.Component  {
                   <TextInput
                     mode={"outlined"}
                     label=""
+                    placeholder={Platform.select({
+                        ios: 'Type here...',
+                        android: ''
+                    })}
+                    placeholderTextColor={Platform.select({
+                        ios: 'white',
+                        android: 'black'
+                    })}
                     placeholder={"What events do you have coming up? ( Ex: July 4th - BeerFest &  July 10th - Live Music! )"}
                     onChangeText={text => this.onEventChange(text)}
                     style={localStyles.textInput}
@@ -111,19 +124,45 @@ export default class StatusModal extends React.Component  {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        user: state.userData,
+        friendRequests: state.friendRequests,
+        friends: state.friendData,
+        business: state.businessData,
+    }
+}
 
-const localStyles = StyleSheet.create({
-  textInput:{
-    flex:1,
-    backgroundColor: theme.generalLayout.backgroundColor,
-    color: theme.generalLayout.textColor,
-    width:"90%", 
-    height:"80%", 
-    alignSelf:"center", 
-    borderRadius: 5,
-    marginTop:5,
-    fontFamily: theme.generalLayout.font
-  },
+function mapDispatchToProps(dispatch) {
+    return {
+        refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventsModal);
+
+export const eventsSpecialsStyles = StyleSheet.create({
+    textInput: {
+        flex: 1,
+        ...Platform.select({
+            ios: {
+                backgroundColor: 'white',
+                color: theme.generalLayout.textColor,
+            },
+            android: {
+                backgroundColor: 'white',
+                color: 'black',
+            }
+        }),
+        width: "90%",
+        height: "80%",
+        alignSelf: "center",
+        borderRadius: 5,
+        marginTop: 5,
+        fontFamily: theme.generalLayout.font,
+        borderColor: theme.generalLayout.backgroundColor
+    },
   buttonText:{
     color: theme.generalLayout.textColor,
     alignSelf:"center",
@@ -134,7 +173,7 @@ const localStyles = StyleSheet.create({
     borderColor: theme.generalLayout.secondaryColor,
     borderRadius:10,
     borderWidth:1,
-    width:"50%",
+    width:"80%",
     marginBottom:10
   },
 
@@ -147,4 +186,5 @@ const localStyles = StyleSheet.create({
     alignItems:"center"
   }
 });
+const localStyles = eventsSpecialsStyles;
   

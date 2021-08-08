@@ -127,8 +127,8 @@ class Navigator extends React.Component {
   }
 
   handleUploadImage = (callback) => {
-    let isBusiness = this.state.isBusiness;
     let userData = this.props.userData;
+    let isBusiness = this.props.userData.isBusiness;
     this.setState({ uploading: true});
     Util.user.HandleUploadImage(isBusiness, userData, (resUri) => {
       this.setState({
