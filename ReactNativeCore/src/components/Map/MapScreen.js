@@ -177,7 +177,7 @@ class MapScreen extends React.Component  {
       if(place.id == key){
         wantedPlace = place;
         let friends = friendState;
-        if(friends.length > 0){
+        if(friends && friends.length > 0){
           friends.forEach((friend) => {
               if((friend.lastVisited) && (friend.lastVisited.buinessUID == places.id)){
                   tempFriendArr.push(friend);
