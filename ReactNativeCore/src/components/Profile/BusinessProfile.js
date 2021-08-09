@@ -1,5 +1,13 @@
 import React, {Component} from 'react';
-import {View, ScrollView, ImageBackground, ActivityIndicator, StyleSheet, Platform, TouchableOpacity} from 'react-native';
+import {
+    View,
+    ScrollView,
+    ImageBackground,
+    ActivityIndicator,
+    StyleSheet,
+    Platform,
+    TouchableOpacity
+} from 'react-native';
 import {
     Title,
     Caption,
@@ -20,7 +28,7 @@ const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 class BusinessProfile extends Component {
     state = {
         isLoggedin: false,
-        userData: !this.props.profileUser? this.props.currentUser : this.props.profileUser,
+        userData: !this.props.profileUser ? this.props.currentUser : this.props.profileUser,
         modalVisible: false,
         friendData: null,
         isAddingFriend: false,
@@ -61,31 +69,29 @@ class BusinessProfile extends Component {
         }
     }
 
-
-
     onDismissStatus = () => {
         this.setState({statusModalVisible: false});
     }
 
     getBusinessData = () => {
-            if (this.props.profileUser)
-                Util.business.GetBusinessByUID(this.state.userData.businessId, (data) => {
-                    console.log(data);
-                    this.setState({businessData: data});
-                    // this.getHours();
-                    Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
-                        this.setState({followerCount: count});
-                    });
-                });
-            else {
-                //console.log(this.props.businessData)
-                this.setState({businessData: this.props.businessData})
+        if (this.props.profileUser)
+            Util.business.GetBusinessByUID(this.state.userData.businessId, (data) => {
+                console.log(data);
+                this.setState({businessData: data});
                 // this.getHours();
-
                 Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
                     this.setState({followerCount: count});
                 });
-            }
+            });
+        else {
+            //console.log(this.props.businessData)
+            this.setState({businessData: this.props.businessData})
+            // this.getHours();
+
+            Util.business.GetFavoriteCount(this.state.userData.businessId, (count) => {
+                this.setState({followerCount: count});
+            });
+        }
 
     }
 
@@ -111,10 +117,16 @@ class BusinessProfile extends Component {
         });
     }
 
-    UploadPic = async () => {
+    UploadPic = () => {
         console.log('Upload Pic Fired:')
         this.setState({uploading: true});
-        await Util.user.HandleUploadImage(true, this.props.currentUser, false);
+        Util.user.HandleUploadImage(true, this.props.currentUser, (photo) => {
+            console.log("Photo: ", photo)
+            let user = this.props.currentUser;
+            user['photoSource'] = photo;
+            this.setState({userData: user});
+            this.props.refresh(user);
+        }, false);
         this.setState({uploading: false});
     }
 
@@ -140,31 +152,34 @@ class BusinessProfile extends Component {
                             <View style={{flexDirection: "column", justifyContent: "center"}}>
                                 <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
                             </View>
+
+
                             {
-
-                                <ImageBackground style={localStyles.profilePic}
-                                                 source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
-                                    {
-                                        !this.props.profileUser ?
-                                            <TouchableOpacity
-                                                style={{position: "relative", bottom: 0, left: 125 , zIndex:15}}
-                                                onPress={() => {
-                                                    this.UploadPic();
-                                                }}
-                                            >
-                                                <Ionicons size={25} color={theme.icons.color}
-                                                          name="ios-add-circle"></Ionicons>
-                                            </TouchableOpacity>
-                                            :
-                                            null
-                                    }
-                                </ImageBackground>
-
+                                !this.props.profileUser ?
+                                    <TouchableOpacity
+                                        onPress={async () => {
+                                            await this.UploadPic()
+                                        }}
+                                    >
+                                        <ImageBackground style={localStyles.profilePic}
+                                                         source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
+                                        </ImageBackground>
+                                    </TouchableOpacity>
+                                    :
+                                    <ImageBackground style={localStyles.profilePic}
+                                                     source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
+                                    </ImageBackground>
                             }
+
 
                             {/*Address and Followers */}
                             <View style={localStyles.addressCont}>
-                                <View style={{alignSelf: "center", width: "100%", textAlign:'center', marginHorizontal:'auto'}}>
+                                <View style={{
+                                    alignSelf: "center",
+                                    width: "100%",
+                                    textAlign: 'center',
+                                    marginHorizontal: 'auto'
+                                }}>
                                     {
                                         this.state.followerCount ?
                                             <Caption style={localStyles.followerCount}>
@@ -194,7 +209,8 @@ class BusinessProfile extends Component {
                                         Events:
                                     </Title>
                                 </View>
-                                <Clipboard editable={!this.props.profileUser} type={'events'} data={this.state.businessData.events} />
+                                <Clipboard editable={!this.props.profileUser} type={'events'}
+                                           data={this.state.businessData.events}/>
                                 {/*    TODO Event Adder*/}
                             </View>
                             {/* Specials */}
@@ -204,7 +220,8 @@ class BusinessProfile extends Component {
                                         Specials:
                                     </Title>
                                 </View>
-                                <Clipboard editable={!this.props.profileUser} type={'specials'} data={this.state.businessData.specials} />
+                                <Clipboard editable={!this.props.profileUser} type={'specials'}
+                                           data={this.state.businessData.specials}/>
                                 {/*    TODO Specials Adder*/}
                             </View>
 
@@ -273,8 +290,8 @@ const localStyles = StyleSheet.create({
     },
     navHeader: {
         marginTop: 25,
-        paddingHorizontal:10,
-        paddingVertical:5,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         flexDirection: "row",
         borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth: 1,
@@ -309,8 +326,8 @@ const localStyles = StyleSheet.create({
     },
     profRow: {
         marginVertical: 10,
-        flexDirection:'column',
-        zIndex:2,
+        flexDirection: 'column',
+        zIndex: 2,
     },
     descTitle: {
         fontSize: 18,
