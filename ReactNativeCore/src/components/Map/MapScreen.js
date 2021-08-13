@@ -119,19 +119,20 @@ class MapScreen extends React.Component  {
       else {
 
         Util.business.getNifeBusinessesNearby(this.props.user, (nifeData) => {
-          this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});
+          if(nifeData && nifeData.length == 0) {
+            this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});
 
-          //Orginal data call to get markers based on user location
-          this.setState({yelpBusIds: data.map(bus => bus.id)});
+            //Original data call to get markers based on user location
+            this.setState({yelpBusIds: data.map(bus => bus.id)});
 
-          //remove nife registered businesses from yelp call
-          data = data.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
-          //adds nife version of business data to marker data
-          nifeData.forEach((bus) => {
-            console.log(bus);
-            data.push(bus)
-          });
-
+            //remove nife registered businesses from yelp call
+            data = data.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
+            //adds nife version of business data to marker data
+            nifeData.forEach((bus) => {
+              console.log(bus);
+              data.push(bus)
+            });
+          }
           this.setState({
             markers: data,
             userLocation: userLocation
@@ -275,8 +276,8 @@ class MapScreen extends React.Component  {
               region={this.state.region}
               // onUserLocationChange={(e) => this.OnMapChange(e)}
               showsScale={true}
-              customMapStyle={mapStyle}
-              minZoomLevel={3}
+              customMapStyle={ mapStyle }
+              minZoomLevel={1}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
               loadingBackgroundColor={theme.generalLayout.backgroundColor}

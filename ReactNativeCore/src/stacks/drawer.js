@@ -106,9 +106,9 @@ class Navigator extends React.Component {
 
 
   firstTimeSignUp = (user) => {
-    // console.log(user);
-    // console.log('firstTimeSignUp fired');
-    // console.log(this.state.displayName,  this.state.businessState.businessName)
+    // //console.log(user);
+    // //console.log('firstTimeSignUp fired');
+    // //console.log(this.state.displayName,  this.state.businessState.businessName)
     if(this.state.displayName || this.state.businessSignUp.businessName) {
       user.updateProfile({ displayName: this.state.businessSignUp ? this.state.businessSignUp.businessName :  this.state.displayName})
       .then(() => {
@@ -140,7 +140,7 @@ class Navigator extends React.Component {
   }
 
   setIsBusiness = (bool, signUpState) => {
-    console.log(signUpState);
+    //console.log(signUpState);
     this.setState({ isBusiness: bool });
     if (signUpState) {
       this.setState({
@@ -152,7 +152,7 @@ class Navigator extends React.Component {
   }
 
   initializeParams = async (user) => {
-    console.log('initializeParams fired');
+    //console.log('initializeParams fired');
       await Util.user.VerifyUser(user, user.email, this.state.businessSignUp,(userObj) => {
         let user = userObj;
         this.getNeededData(user);
@@ -185,10 +185,10 @@ class Navigator extends React.Component {
       });
     }
     catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     await Util.user.CheckAuthStatus((user) => {
-      console.log('CheckAuthStatus fired');
+      //console.log('CheckAuthStatus fired');
 
       this.setState({ authLoaded: true });
       if (user) {
@@ -228,16 +228,14 @@ class Navigator extends React.Component {
               userData.businessData['data'] = data;
               Util.business.UpdateUser(userData.email, {data: data})
               this.props.refresh(userData);
-              console.log(data);
             })
           }
           else {
-            if(userData.friendData) {
+              // console.log("Requests:", userData.friendData.requests);
               this.props.refresh(userData);
               this.setState({
                 userChecked: true,
               });
-            }
           }
         }
         else {

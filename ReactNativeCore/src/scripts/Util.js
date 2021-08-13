@@ -147,7 +147,7 @@ const Util = {
     },
     user: {
         VerifyUser: async (user, email, business, callback) => {
-            console.log(user);
+            //console.log(user);
             let obj = {
                 user: user,
                 email: email,
@@ -189,7 +189,7 @@ const Util = {
             }
         },
         HandleUploadImage: (isBusiness, userData, callback, isStatusImage) => {
-            // console.log('got to util')
+            // //console.log('got to util')
             let userEmail = firebase.auth().currentUser.email;
             ImagePicker.getMediaLibraryPermissionsAsync()
                 .then((result) => {
@@ -223,7 +223,7 @@ const Util = {
                                             Util.user.UploadImage(uri, userEmail, (resUri) => {
 
 
-                                                // console.log(resUri);
+                                                // //console.log(resUri);
                                                 if (!isStatusImage) {
                                                     userData['photoSource'] = resUri;
                                                     Util.user.UpdateUser(userEmail, {photoSource: resUri});
@@ -1066,7 +1066,7 @@ const Util = {
                         }
                     } else {
                         // noinspection JSAnnotator
-                        console.log('is business sign up')
+                        //console.log('is business sign up')
                         try {
                             let email = signUpInfo.businessEmail;
                             let password = signUpInfo.password1
@@ -1253,11 +1253,11 @@ const Util = {
         },
         consoleLog: (funcName, type) => {
             if (type == true) {
-                console.log('\n');
-                console.log("" + funcName + " ran successfully!");
+                //console.log('\n');
+                //console.log("" + funcName + " ran successfully!");
             } else {
-                console.log('\n');
-                console.log("" + funcName + " failed.");
+                //console.log('\n');
+                //console.log("" + funcName + " failed.");
             }
         },
         compareValues: (key, order = 'asc') => {

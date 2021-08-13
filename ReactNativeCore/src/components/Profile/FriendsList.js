@@ -1,6 +1,6 @@
 import React from 'react';
 import Util from '../../scripts/Util';
-import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, ActivityIndicator, Platform, TouchableOpacity } from 'react-native';
 import theme from '../../../Styles/theme';
 import { Ionicons } from '@expo/vector-icons'; 
 import RequestModal from './Request Modal';
@@ -9,7 +9,6 @@ import {
 } from 'react-native-paper';
 import { connect } from "react-redux";
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 class FriendsList extends React.Component {
   
@@ -24,6 +23,7 @@ class FriendsList extends React.Component {
   
   //gets user and friend data
   setPropData = () => {
+    console.log('Requests friends list: ', this.props.requests)
     Util.user.CheckLoginStatus((loggedIn) => {
       this.setState({
         isLoggedin: loggedIn,
@@ -81,15 +81,15 @@ class FriendsList extends React.Component {
       (this.props.friends != null && this.props.friends != undefined) ?
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.navHeader}>
-              <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
-                <Avatar.Image 
-                      source={this.props.userData && this.props.userData.photoSource !== 'Unknown' ? {
-                          uri:  this.props.userData.photoSource  
-                      } : defPhoto}
-                      size={35}
-                  />
-              </TouchableOpacity> 
-              {/* Requests button */}
+            <TouchableOpacity onPress={this.props.onDrawerPress} style={localStyles.drawerBtn}>
+              <Avatar.Image
+                  source={this.state.userData && this.state.userData.photoSource !== 'Unknown' ? {
+                    uri:  this.state.userData.photoSource
+                  } : defPhoto}
+                  size={35}
+              />
+            </TouchableOpacity>
+            {/* Requests button */}
               {
                 this.props.requests && this.props.requests.length > 0 ?
                 <TouchableOpacity onPress={() => this.handleOpenModal()} style={localStyles.RequestOverlay}>
@@ -100,7 +100,7 @@ class FriendsList extends React.Component {
                   </Text>
                 </TouchableOpacity> : null
               }
-              
+
 
             </View>
           <View style={localStyles.HeaderCont}>
@@ -142,7 +142,7 @@ class FriendsList extends React.Component {
             <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
           </View>
           {/* keep this button at the bottom */}
-          
+
         </View>
     )
   }
@@ -185,7 +185,7 @@ const localStyles = StyleSheet.create({
 
   },
   navHeader:{
-    marginTop:25,
+    marginTop:30,
     flexDirection:"row",
     width:"98%",
     maxHeight: "10%",
@@ -283,18 +283,10 @@ const localStyles = StyleSheet.create({
     paddingBottom: "1%"
   },
   drawerBtn: {
-    ...Platform.select({
-      ios: {
-        marginTop: '8%',
-      },
-      android: {
-        marginTop: '10%',
-      },
-    }),
+    marginTop: '1%',
+    marginLeft: '3%',
     marginBottom: '3%',
-    borderWidth: 1,
-    borderColor: theme.generalLayout.secondaryColor,
-    borderRadius: 70
+    borderRadius: 70,
 },
 });
 
