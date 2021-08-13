@@ -253,7 +253,7 @@ class FriendsFeed extends React.Component {
                     }}
                     style={{position: 'absolute', bottom: 725}}
                 >
-                    Updated your {this.state.snackBarText}!
+                    Updated your { this.state.snackBarText }!
                 </Snackbar>
             </View>
         )
@@ -286,15 +286,25 @@ const localStyles = StyleSheet.create({
         borderWidth: 1,
         borderColor: theme.generalLayout.secondaryColor,
         borderRadius: 5,
-        paddingVertical: 2,
-        paddingHorizontal: 5,
+        ...Platform.select({
+            ios: {
+                paddingVertical: 10,
+                paddingHorizontal: 5,
+                marginVertical: 10,
+            },
+            android: {
+                paddingVertical: 2,
+                paddingHorizontal: 5,
+                marginVertical: 5,
+            }
+        }),
         textAlign: "center",
-        marginVertical: 5,
+        color: theme.generalLayout.textColor,
         width: 200,
         fontFamily:theme.generalLayout.font
     },
     modalButtonText: {
-        color: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
         fontSize: 20,
         textAlign: "center",
         fontFamily: theme.generalLayout.font

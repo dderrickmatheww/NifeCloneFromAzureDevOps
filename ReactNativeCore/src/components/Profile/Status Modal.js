@@ -102,10 +102,25 @@ class StatusModal extends React.Component {
                 theme={{ colors: { primary: theme.generalLayout.secondaryColor, placeholder: theme.generalLayout.textColor, text: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
                 > 
               </TextInput>
-              {
-                this.state.saving ?
-                <ActivityIndicator style={{marginVertical:5}} color={theme.loadingIcon.color} size="large" />
-                :
+                {
+                  !this.state.saving ? 
+                    <Button
+                      labelStyle={{color: theme.generalLayout.textColor}}
+                      style={localStyles.button}
+                      mode="contained"
+                      onPress={() => this.handleUploadImageStatus()}
+                      disabled={!this.state.pic ? false : true}
+                    >
+                      <Text style={{
+                          color: theme.generalLayout.textColor,
+                          fontFamily: theme.generalLayout.font
+                      }}>
+                          {!this.state.pic ? "Upload Image" : "Image Added!"}
+                      </Text>
+                    </Button> 
+                  : 
+                    <ActivityIndicator style={{marginVertical: 5}} color={theme.loadingIcon.color} size="large"/>
+                }
                 <Button 
                   labelStyle={{color: theme.generalLayout.textColor}} 
                   style={localStyles.button} 
@@ -115,7 +130,6 @@ class StatusModal extends React.Component {
                 >
                   <Text style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}>Update</Text>
                 </Button>
-              }
             </View> 
           </Modal>
         )

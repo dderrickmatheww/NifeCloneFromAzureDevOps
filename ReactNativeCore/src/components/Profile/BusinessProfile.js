@@ -118,10 +118,8 @@ class BusinessProfile extends Component {
     }
 
     UploadPic = () => {
-        console.log('Upload Pic Fired:')
         this.setState({uploading: true});
         Util.user.HandleUploadImage(true, this.props.currentUser, (photo) => {
-            console.log("Photo: ", photo)
             let user = this.props.currentUser;
             user['photoSource'] = photo;
             this.setState({userData: user});
@@ -150,10 +148,8 @@ class BusinessProfile extends Component {
                         <View style={localStyles.HeaderCont}>
                             {/*Display Name */}
                             <View style={{flexDirection: "column", justifyContent: "center"}}>
-                                <Headline style={localStyles.headerName}>{this.state.userData.displayName} </Headline>
+                                <Headline style={localStyles.headerName}>{ this.state.userData.displayName } </Headline>
                             </View>
-
-
                             {
                                 !this.props.profileUser ?
                                     <TouchableOpacity
@@ -165,13 +161,11 @@ class BusinessProfile extends Component {
                                                          source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                                         </ImageBackground>
                                     </TouchableOpacity>
-                                    :
+                                :
                                     <ImageBackground style={localStyles.profilePic}
                                                      source={{uri: this.state.userData.photoSource && this.state.userData.photoSource !== "Unknown" ? this.state.userData.photoSource : defPhoto.uri}}>
                                     </ImageBackground>
                             }
-
-
                             {/*Address and Followers */}
                             <View style={localStyles.addressCont}>
                                 <View style={{
@@ -185,17 +179,19 @@ class BusinessProfile extends Component {
                                             <Caption style={localStyles.followerCount}>
                                                 Followers: {this.state.followerCount}
                                             </Caption>
-                                            : null
+                                        : 
+                                            null
                                     }
                                 </View>
 
                                 <View style={{alignSelf: "flex-start", width: "100%"}}>
                                     {
                                         this.state.businessData.data.location ?
-                                            <Caption style={localStyles.address}>
-                                                {this.state.businessData.data.location.display_address[0] + " " + this.state.businessData.data.location.display_address[1]}
+                                            <Caption style={ localStyles.address }>
+                                                { this.state.businessData.data.location.display_address[0] + " " + this.state.businessData.data.location.display_address[1] }
                                             </Caption>
-                                            : null
+                                        : 
+                                            null
                                     }
                                 </View>
 
@@ -210,7 +206,7 @@ class BusinessProfile extends Component {
                                     </Title>
                                 </View>
                                 <Clipboard editable={!this.props.profileUser} type={'events'}
-                                           data={this.state.businessData.events}/>
+                                           data={this.state.businessData.events} />
                                 {/*    TODO Event Adder*/}
                             </View>
                             {/* Specials */}
@@ -281,7 +277,8 @@ const localStyles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: theme.generalLayout.backgroundColor,
-        elevation: 4
+        elevation: 4,
+        width: '100%'
     },
     drinksChipCont: {
         flex: 1,
@@ -355,7 +352,7 @@ const localStyles = StyleSheet.create({
     },
     loggedInContainer: {
         paddingHorizontal: 10,
-        minHeight: '100%',
+        minHeight: '100%'
     },
     loggedInSubView: {
         flex: 1,
