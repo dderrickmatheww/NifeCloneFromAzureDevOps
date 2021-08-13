@@ -2,6 +2,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const inquirer = require('inquirer');
 const path = require('path');
+require('dotenv').config();
 
 class Utils {
     constructor() {
@@ -21,7 +22,8 @@ class Utils {
                         message: "Please move the build file produced by expo to the file path MobileAppDevelopment/build/watcher! Enter 'y' or 'yes' when finished!"
                     });
                     if (answer.isFileMoved.toLowerCase() === 'yes' || answer.isFileMoved.toLowerCase() === 'y') {
-                        const cmd = `eas submit --platform=${ isApple ? 'ios' : 'android' } --path=${ isApple ? path.resolve('../watcher/ipa', 'Payload.ipa') : path.resolve('../watcher/apk', 'Payload.apk')}`
+                        this.functions.build.cmd()
+                        const cmd = this.functions.build.cmd();
                         await this.functions.build.exec({ cmd, cwd });
                     }
                     else if (answer.isFileMoved.toLowerCase() === 'no' || answer.isFileMoved.toLowerCase() === 'n') {
@@ -41,6 +43,68 @@ class Utils {
                     catch (err) {
                         this.functions.mesc.consoleLog({ msg: err });
                     }
+                },
+                cmd: () => {
+                    let cmd = '';
+                    const { isApple } = this.state;
+                    let cmds = [
+                        ' eas submit', 
+                        ' --platform=', 
+                        ' --path=', 
+                        ' --bundle-identifier='
+                    ];
+                    const appleCmds = [
+                        ' --apple-id=',
+                        ' --apple-team-id=',
+                        ' --asc-app-id='
+                        // 'EXPO_APPLE_APP_SPECIFIC_PASSWORD='
+                    ];
+                    const androidCmds = [
+
+                    ]
+                    cmds = isApple ? [...cmds, ...appleCmds ] : [...cmds, ...androidCmds ];
+                    for (let i = 0; i < cmds.length; i++) {
+                        let task = cmds[i];
+                        switch (task) {
+                            case ' eas submit': 
+                                cmd += task;
+                                break;
+                            case ' --platform=': 
+                                task = task + (isApple ? 'ios' : 'android');
+                                cmd += task;
+                                break;
+                            case ' --path=':
+                                task = task + `'${(isApple ? path.resolve('./builds/watcher/ipa', 'Payload.ipa') : path.resolve('../builds/watcher/apk', 'Payload.apk'))}'`;
+                                cmd += task;
+                                break;
+                            case ' --bundle-identifier=':
+                                task = task + 'com.virastarllc.nife';
+                                cmd += task;
+                                break;
+                            case ' --apple-id=':
+                                task = task + 'dev@nife.app';
+                                cmd += task;
+                                break;
+                            case ' --apple-team-id=':
+                                task = task + 'J3L62BUD28';
+                                cmd += task;
+                                break;
+                            case ' --asc-app-id=':
+                                task = task + '1565886883'
+                                cmd += task;
+                                break;
+                            // case 'EXPO_APPLE_APP_SPECIFIC_PASSWORD=': 
+                            //     console.log(process.env.EXPO_APPLE_APP_SPECIFIC_PASSWORD);
+                            //     task = task + process.env.EXPO_APPLE_APP_SPECIFIC_PASSWORD;
+                            //     task += cmd;
+                            //     cmd = task;
+                            //     break;
+                            default:
+                                break;
+                        }
+                    }
+                    console.log(cmd);
+                    return cmd;
                 }
             },
             deploy: {
