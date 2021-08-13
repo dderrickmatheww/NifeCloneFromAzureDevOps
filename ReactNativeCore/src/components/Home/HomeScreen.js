@@ -383,6 +383,9 @@ class FriendsFeed extends React.Component {
                         }}>Your Feed</Headline>
                     </View>
                     {
+                        // UPDATE EVENTS AND SPECIALS BUTTONS RENDERED HERE
+                        //IF NOT BUSINESS, DEFAULT TO STATUS MODAL
+                        //IF BUSINESS, THERE IS A ADDITIONAL MODAL TO CHOOSE WHAT YOU WANT TO UPDATE, (status, events, specials)
                         !this.state.userData.isBusiness ?
                             <TouchableOpacity onPress={() => this.setState({statusModalVisable: true})}
                                               style={localStyles.StatusOverlay}>
