@@ -17,26 +17,14 @@ switch (arg1) {
                 utils.functions.build.expo_build({ isApple: false });
                 break;
             default:
-                console.log(`
-                ****************************************************************
-                ****************************************************************
-                **   The second argument didn't match one of the following:   **
-                **       - 'ios'                                              **
-                **       - 'andriod'                                          **
-                ****************************************************************
-                ****************************************************************
-                `);
+                utils.functions.mesc.consoleLog({ msg: `The second argument didn't match one of the following:
+                    - 'ios'
+                    - 'andriod'`});
                 break;
         }
         break;
     default:
-        console.log(`
-        ****************************************************************
-        ****************************************************************
-        **    The first argument didn't match one of the following:   **
-        **       - 'deploy'                                           **
-        ****************************************************************
-        ****************************************************************
-        `);
+        utils.functions.mesc.consoleLog({ msg: `The first argument didn't match one of the following:
+             - 'deploy'` });
         break;
 }
