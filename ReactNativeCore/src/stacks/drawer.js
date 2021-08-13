@@ -119,8 +119,8 @@ class Navigator extends React.Component {
   }
 
   handleUploadImage = (callback) => {
-    let isBusiness = this.state.isBusiness;
     let userData = this.props.userData;
+    let isBusiness = this.props.userData.isBusiness;
     this.setState({ uploading: true});
     Util.user.HandleUploadImage(isBusiness, userData, (resUri) => {
       this.setState({
@@ -171,7 +171,7 @@ class Navigator extends React.Component {
       });
     }
     catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     await Util.user.CheckAuthStatus(async (user) => {
       this.setState({ authLoaded: true });

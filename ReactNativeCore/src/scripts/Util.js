@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 import {
     YELP_PLACE_KEY,
     ClientKey,
@@ -19,7 +19,7 @@ import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
-import { isPointWithinRadius, getDistance } from 'geolib';
+import {isPointWithinRadius, getDistance} from 'geolib';
 import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
@@ -101,7 +101,7 @@ const Util = {
                     // User that will have a friend request
                     updateFriendObj.friends[userEmail] = null;
                     Util.user.UpdateUser(friendEmail, updateFriendObj, () => {
-                        Util.user.sendFriendReqNotification(firebase.auth().currentUser.displayName, friendEmail, ()=>{
+                        Util.user.sendFriendReqNotification(firebase.auth().currentUser.displayName, friendEmail, () => {
                             Util.basicUtil.consoleLog("sendFriendReqNotification", true);
                         })
                         Util.basicUtil.consoleLog("AddFriend", true);
@@ -140,8 +140,8 @@ const Util = {
                     friends: {}
                 }
                 let friendUpdateObj = {
-                    friends:{},
-                    requests:{}
+                    friends: {},
+                    requests: {}
                 }
                 updateObj.friends[friendEmail] = answer;
                 friendUpdateObj.friends[firebase.auth().currentUser.email] = answer;
@@ -149,12 +149,11 @@ const Util = {
                 friendUpdateObj.requests[firebase.auth().currentUser.email] = false;
                 Util.user.UpdateUser(friendEmail, friendUpdateObj, () => {
                     Util.user.UpdateUser(firebase.auth().currentUser.email, updateObj, () => {
-                        if(callback)
+                        if (callback)
                             callback();
                     });
                 });
-            }
-             catch (error) {
+            } catch (error) {
                 Util.basicUtil.consoleLog("handleFriendRequest", false);
                 Util.basicUtil.Alert('Function: handleFriendRequest - Error message: ', error.message, null);
             }
@@ -165,7 +164,7 @@ const Util = {
             let obj = {
                 user: user,
                 email: email,
-                business: business ? business: null,
+                business: business ? business : null,
             };
             if (user && email) {
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/verifyUser',
@@ -208,7 +207,7 @@ const Util = {
             }
         },
         HandleUploadImage: (isBusiness, userData, callback, isStatusImage) => {
-            // console.log('got to util')
+            // //console.log('got to util')
             let userEmail = firebase.auth().currentUser.email;
             ImagePicker.getMediaLibraryPermissionsAsync()
                 .then((result) => {
@@ -218,12 +217,14 @@ const Util = {
                                 let uri = image.uri;
                                 Util.user.UploadImage(uri, userEmail, (resUri) => {
 
-                                    if(!isStatusImage) {
+                                    if (!isStatusImage) {
                                         userData['photoSource'] = resUri;
                                         Util.user.UpdateUser(userEmail, {photoSource: resUri});
                                     }
                                     if (isBusiness) {
+                                        Util.user.UpdateUser(userEmail, {photoSource: resUri});
                                         Util.business.UpdateUser(userEmail, {photoSource: resUri});
+                                        Util.business.UpdateUser(userEmail, {data: {image_url: resUri}});
                                     }
                                     if (callback) {
                                         callback(resUri);
@@ -240,8 +241,8 @@ const Util = {
                                             Util.user.UploadImage(uri, userEmail, (resUri) => {
 
 
-                                                // console.log(resUri);
-                                                if(!isStatusImage) {
+                                                // //console.log(resUri);
+                                                if (!isStatusImage) {
                                                     userData['photoSource'] = resUri;
                                                     Util.user.UpdateUser(userEmail, {photoSource: resUri});
                                                 }
@@ -684,10 +685,9 @@ const Util = {
             });
 
             let ref;
-            if(!isStatusImage) {
+            if (!isStatusImage) {
                 ref = firebase.storage().ref().child(!isProof ? email : email);
-            }
-            else {
+            } else {
                 ref = firebase.storage().ref().child(email + '/status/' + uuid.v4())
             }
 
@@ -699,12 +699,12 @@ const Util = {
                 callback(image);
             }
         },
-        registerForPushNotificationsAsync: async(cb) => {
+        registerForPushNotificationsAsync: async (cb) => {
             if (Constants.isDevice) {
-                const { status: existingStatus } = await Notifications.getPermissionsAsync();
+                const {status: existingStatus} = await Notifications.getPermissionsAsync();
                 let finalStatus = existingStatus;
                 if (existingStatus !== 'granted') {
-                    const { status } = await Notifications.requestPermissionsAsync();
+                    const {status} = await Notifications.requestPermissionsAsync();
                     finalStatus = status;
                 }
                 if (finalStatus !== 'granted') {
@@ -712,7 +712,7 @@ const Util = {
                     return;
                 }
                 const token = (await Notifications.getExpoPushTokenAsync()).data;
-                cb({ expoPushToken: token });
+                cb({expoPushToken: token});
             } else {
                 alert('Must use physical device for Push Notifications');
             }
@@ -726,7 +726,7 @@ const Util = {
                 });
             }
         },
-        sendFriendReqNotification: async(userName, friendEmail, callback) => {
+        sendFriendReqNotification: async (userName, friendEmail, callback) => {
             let obj = {
                 user: userName,
                 friendEmail: friendEmail
@@ -974,7 +974,7 @@ const Util = {
                     })
             }
         },
-        getNifeBusinessesNearby: async(user, cb) => {
+        getNifeBusinessesNearby: async (user, cb) => {
             let obj = {
                 user: user
             }
@@ -1224,7 +1224,7 @@ const Util = {
                         }
                     } else {
                         // noinspection JSAnnotator
-                        console.log('is business sign up')
+                        //console.log('is business sign up')
                         try {
                             let email = signUpInfo.businessEmail;
                             let password = signUpInfo.password1
@@ -1283,7 +1283,7 @@ const Util = {
                         var currentlyCheckIn = [];
                         if (typeof bars !== 'undefined' && bars.length > 0) {
                             bars.forEach(async (bar, index) => {
-                                if (friends.length > 0) {
+                                if (friends && friends.length > 0) {
                                     friends.forEach((friend) => {
                                         if ((friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private")) {
                                             currentlyCheckIn.push(friend);
@@ -1344,8 +1344,8 @@ const Util = {
                         Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
                     });
             },
-            getBusinessData: (id, callback) =>{
-                fetch("https://api.yelp.com/v3/businesses/"+id,
+            getBusinessData: (id, callback) => {
+                fetch("https://api.yelp.com/v3/businesses/" + id,
                     {
                         headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
                     })
@@ -1412,11 +1412,11 @@ const Util = {
         },
         consoleLog: (funcName, type) => {
             if (type == true) {
-                console.log('\n');
-                console.log("" + funcName + " ran successfully!");
+                //console.log('\n');
+                //console.log("" + funcName + " ran successfully!");
             } else {
-                console.log('\n');
-                console.log("" + funcName + " failed.");
+                //console.log('\n');
+                //console.log("" + funcName + " failed.");
             }
         },
         compareValues: (key, order = 'asc') => {
@@ -1473,10 +1473,9 @@ const Util = {
         },
         defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken,
         TouchableOpacity: () => {
-            if(Device.osName == "Android") {
+            if (Device.osName == "Android") {
                 return require('react-native-gesture-handler').TouchableOpacity;
-            }
-            else {
+            } else {
                 return require('react-native').TouchableOpacity;
             }
         },

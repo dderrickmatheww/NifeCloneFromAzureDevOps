@@ -142,7 +142,7 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.font
     },
     calloutText:{
-        color: theme.generalLayout.textColor,
+        color: theme.icons.color,
         fontFamily: theme.generalLayout.font
     },
     friendVisitedByMulti: {
@@ -154,8 +154,8 @@ const localStyles = StyleSheet.create({
     callOutMarker: {
         flex: 1,
         backgroundColor: theme.generalLayout.backgroundColor,
-        color: theme.generalLayout.textColor,
-        borderRadius: 3,
+        color: theme.icons.color,
+        borderRadius: 10,
         padding: 30,
         margin: 25,
         justifyContent: 'center',

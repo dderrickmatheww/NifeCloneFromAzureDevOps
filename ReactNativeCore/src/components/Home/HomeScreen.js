@@ -156,7 +156,7 @@ class FriendsFeed extends React.Component {
                     this.state.modalVisible ?
                         <Modal
                             contentContainerStyle={{
-                                width: "50%",
+                                width: "75%",
                                 height: "25%",
                                 borderRadius: 10,
                                 alignSelf: "center",
@@ -290,7 +290,8 @@ const localStyles = StyleSheet.create({
         paddingHorizontal: 5,
         textAlign: "center",
         marginVertical: 5,
-        fontFamily: theme.generalLayout.font
+        width: 200,
+        fontFamily:theme.generalLayout.font
     },
     modalButtonText: {
         color: theme.generalLayout.secondaryColor,

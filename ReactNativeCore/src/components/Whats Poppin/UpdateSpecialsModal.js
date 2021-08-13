@@ -1,14 +1,15 @@
 import React  from "react";
 import {
-    StyleSheet,
     View,
-    ActivityIndicator
+    ActivityIndicator, Platform
 } from "react-native";
 import Util from '../../scripts/Util';
-import {Modal, Button, TextInput, Text} from 'react-native-paper';
+import { Modal, Button, TextInput, Text } from 'react-native-paper';
 import theme from '../../../src/styles/theme';
+import { eventsSpecialsStyles } from "./UpdateEventsModal";
+import { connect } from "react-redux";
 
-export default class StatusModal extends React.Component  {
+ class SpecialsModal extends React.Component  {
     state = {
       specialText: null,
       userData:null,
@@ -25,10 +26,10 @@ export default class StatusModal extends React.Component  {
       let text = ""
       specials.forEach((special, i)=>{
         if(i != specials.length - 1){
-          text += special.special + ", "
+          text += special.text + ", "
         }
         else if(i == specials.length - 1 || specials.length == 1){
-          text += special.special
+          text += special.text
         }
         
       })
@@ -51,7 +52,7 @@ export default class StatusModal extends React.Component  {
         let obj = {specials:[]}
         specialArray.forEach((special)=>{
           obj.specials.push({
-            special: special,
+            text: special,
             uploaded: new Date()
           })
         })
@@ -69,9 +70,10 @@ export default class StatusModal extends React.Component  {
     }
 
     updateUserAsync = (business, obj) => {
+        let user = this.props.user;
       business['specials']= obj.specials;
-      this.props.refresh(null, null, null, business);
-      
+      user.businessData = business;
+      this.props.refresh(user);
     }
 
     render(){     
@@ -88,6 +90,14 @@ export default class StatusModal extends React.Component  {
                   <TextInput
                     mode={"outlined"}
                     label=""
+                    placeholder={Platform.select({
+                        ios: 'Type here...',
+                        android: ''
+                    })}
+                    placeholderTextColor={Platform.select({
+                        ios: 'white',
+                        android: 'black'
+                    })}
                     placeholder={"What drink specials are you offering? (Ex: $1 Beer, $6 Vodka)"}
                     onChangeText={text => this.onEventChange(text)}
                     style={localStyles.textInput}
@@ -120,41 +130,24 @@ export default class StatusModal extends React.Component  {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        user: state.userData,
+        friendRequests: state.friendRequests,
+        friends: state.friendData,
+        business: state.businessData,
+    }
+}
 
-const localStyles = StyleSheet.create({
-  textInput:{
-    flex:1,
-    backgroundColor: theme.generalLayout.backgroundColor,
-    color: theme.generalLayout.textColor,
-    width:"90%", 
-    height:"80%", 
-    alignSelf:"center", 
-    borderRadius: 5,
-    marginTop:5,
-    fontFamily: theme.generalLayout.font
-  },
-  buttonText:{
-    color: theme.generalLayout.textColor,
-    alignSelf:"center",
-    paddingHorizontal:5,
-    fontFamily: theme.generalLayout.font
-  },
-  button:{
-    borderColor:theme.generalLayout.secondaryColor,
-    borderRadius:10,
-    borderWidth:1,
-    width:"60%",
-    marginBottom:10
-  },
+function mapDispatchToProps(dispatch) {
+    return {
+        refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+    }
+}
 
-  viewDark:{
-    flex:1,
-    backgroundColor:theme.generalLayout.backgroundColor,
-    flexDirection:"column",
-    justifyContent:"center",
-    alignContent:"center",
-    alignItems:"center"
-  }
 
-});
+export default connect(mapStateToProps, mapDispatchToProps)(SpecialsModal);
+
+const localStyles = eventsSpecialsStyles
+
   

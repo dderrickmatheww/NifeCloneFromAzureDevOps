@@ -6,6 +6,7 @@ import BarModal from './BarModal';
 import DrawerButton from '../Universal/DrawerButton';
 import Util from '../../scripts/Util';
 import theme from '../../../src/styles/theme';
+import { mapStyle } from '../../styles/style';
 import VisitedByCallout from './VisitedByCallout';
 import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -47,178 +48,7 @@ class MapScreen extends React.Component  {
     yelpBusIds:[],
   };
   
-  mapStyle = [
-    {
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.DARK
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "administrative.locality",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "stylers": [
-        {
-          "color": "#d59563",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#263c3f",
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD,
-          "visibility":"off"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.LIGHT_PINK
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "road",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.DARK_PINK
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "transit",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": "#2f3948"
-        }
-      ]
-    },
-    {
-      "featureType": "transit.station",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [
-        {
-          "color": theme.LIGHT_PINK
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.fill",
-      "stylers": [
-        {
-          "color": theme.GOLD
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "labels.text.stroke",
-      "stylers": [
-        {
-          "color": "#242f3e"
-        }
-      ]
-    }
-  ];
+
 
   OnChangeMapRegion = (autoCompUpdate) => {
     Util.location.GetUserLocation(async (loc, region) => {
@@ -278,17 +108,20 @@ class MapScreen extends React.Component  {
       else {
 
         Util.business.getNifeBusinessesNearby(this.props.user, (nifeData) => {
-          this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});
+          if(nifeData && nifeData.length == 0) {
+            this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});
 
-          //Orginal data call to get markers based on user location
-          this.setState({yelpBusIds: data.map(bus => bus.id)});
+            //Original data call to get markers based on user location
+            this.setState({yelpBusIds: data.map(bus => bus.id)});
 
-          nifeData.forEach(bus =>{
-            if(!this.state.yelpBusIds.includes(bus.id)){
-              data.push(bus);
-            }
-          });
-
+            //remove nife registered businesses from yelp call
+            data = data.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
+            //adds nife version of business data to marker data
+            nifeData.forEach((bus) => {
+              console.log(bus);
+              data.push(bus)
+            });
+          }
           this.setState({
             markers: data,
             userLocation: userLocation
@@ -334,9 +167,10 @@ class MapScreen extends React.Component  {
     var friendState = this.state.friendData;
     places.forEach(function(place){
       if(place.id == key){
+        console.log(place)
         wantedPlace = place;
         let friends = friendState;
-        if(friends.length > 0){
+        if(friends && friends.length > 0){
           friends.forEach((friend) => {
               if((friend.lastVisited) && (friend.lastVisited.buinessUID == places.id)){
                   tempFriendArr.push(friend);
@@ -351,7 +185,7 @@ class MapScreen extends React.Component  {
         longitude: wantedPlace.coordinates.longitude,
       },
       modalProps:{
-        source:{uri: "" + wantedPlace.image_url},
+        source:{uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url},
         barName:wantedPlace.name, 
         rating:wantedPlace.rating,
         reviewCount:wantedPlace.review_count,
@@ -435,8 +269,8 @@ class MapScreen extends React.Component  {
               region={this.state.region}
               // onUserLocationChange={(e) => this.OnMapChange(e)}
               showsScale={true}
-              customMapStyle={this.mapStyle}
-              minZoomLevel={14}
+              customMapStyle={ mapStyle }
+              minZoomLevel={1}
               maxZoomLevel={20}
               moveOnMarkerPress={false}
               loadingEnabled={true}
