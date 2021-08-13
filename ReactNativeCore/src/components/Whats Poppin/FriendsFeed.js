@@ -128,7 +128,7 @@ const screen = Dimensions.get("window");
                     <StatusModal
                         isVisible={this.state.modalVisable}
                         user={this.state.userData}
-                        refresh={this.onRefresh}
+                        refresh={this.refresh}
                         onDismiss={this.onDismiss}
                         onSave={this.onSave}
                     />

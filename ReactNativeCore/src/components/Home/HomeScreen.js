@@ -64,7 +64,7 @@ class FriendsFeed extends React.Component {
             this.setState({ snackBarText: "specials" });
         }
     }
-    refresh = async (userData) => {
+    refresh = async (userData = this.state.userData) => {
         await this.props.refresh(userData, this.props.feedData);
         this.setState({ refresh: false });
     }
@@ -186,20 +186,21 @@ class FriendsFeed extends React.Component {
                     :
                         null
                 }
-                {
+                {/* Address model for the proof of address */}
+                {/* {
                     !this.state.isVerified && this.state.userData.isBusiness ?
                         <AddressProof
                             isVisible={!this.state.userData.isVerified}
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
                             onSave={() => this.onSave({ status: true })}
-                            refresh={this.onRefresh({ top: true, bottom: false })}
+                            refresh={this.refresh}
                             uploadImage={this.handleUploadImage}
                         >
                         </AddressProof>
                     :
                         null
-                }
+                } */}
                 {
                     this.state.statusModalVisable ?
                         <StatusModal
@@ -219,7 +220,7 @@ class FriendsFeed extends React.Component {
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
                             onSave={() => this.onSave({events: true})}
-                            refresh={this.onRefresh({ top: true, bottom: false })}
+                            refresh={this.refresh}
                             business={this.state.businessData}
                         >
                         </EventsModal>

@@ -299,10 +299,12 @@ const Util = {
             }
         },
         getFeed: async (obj, callback) => {
+            console.log(obj)
             if (obj && typeof obj.email !== 'undefined') {
                 obj['take'] = obj.take ? obj.take : 50;
                 obj['skip'] = obj.skip ? obj.skip : 0;
                 obj['getUserFeed'] = obj.getUserFeed ? obj.getUserFeed : false;
+                console.log(obj)
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserFeed',
                 {
                     method: 'POST',
