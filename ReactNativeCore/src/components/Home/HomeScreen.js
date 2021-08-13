@@ -16,7 +16,7 @@ import {
 import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
 import StatusModal from '../Profile/Status Modal';
-import AddressProof from '../Universal/AddressProof';
+// import AddressProof from '../Universal/AddressProof';
 import EventsModal from '../Whats Poppin/UpdateEventsModal';
 import SpecialsModal from '../Whats Poppin/UpdateSpecialsModal';
 import Feed from '../Universal/Feed';
