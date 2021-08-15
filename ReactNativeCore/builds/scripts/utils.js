@@ -14,7 +14,7 @@ class Utils {
                     const cmd =  isApple ? `expo build:ios -t archive` : `expo build:android -t apk`;
                     this.functions.mesc.consoleLog({ msg: 'Build started!' });
                     this.functions.mesc.loader();
-                    //await this.functions.build.exec({ cmd, cwd });
+                    await this.functions.build.exec({ cmd, cwd });
                     this.functions.mesc.clearLoader();
                     const answer = await this.functions.mesc.askQuestion({
                         type: 'input',
