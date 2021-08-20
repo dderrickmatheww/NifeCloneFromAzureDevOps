@@ -26,6 +26,8 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch(action.type) {
+    // if assignment starts with state, then action passed doesn't have new data for that field and no update made
+    // example: action.data ? action.data.businessData : state.businessData <- uses action to update, uses previous state for no update
     case 'REFRESH':
       return {
         userData: ( 
@@ -38,12 +40,12 @@ const reducer = (state = initialState, action) => {
               null
           ),
         friendData: ( 
-          action.data ? 
+          action.data ?
             action.data.friendData ? 
               action.data.friendData.acceptedFriends 
-            : 
-            null 
-          : 
+              :
+              null
+            :
           state.friendData ?
             state.friendData.acceptedFriends ?
                 state.friendData.acceptedFriends

@@ -52,7 +52,9 @@ class StatusModal extends React.Component {
           statusImage: this.state.pic,
           image: user.photoSource !== 'Unknown' ? user.photoSource : defPhoto.uri
         }
-        Util.user.UpdateFeed(user.email, obj, () => {
+        Util.user.UpdateFeed(user.email, obj, (data) => {
+            let user = this.props.user;
+            this.props.globalRefresh(user, data)
             this.setState({ saving: false });
             this.props.onSave();
         });
