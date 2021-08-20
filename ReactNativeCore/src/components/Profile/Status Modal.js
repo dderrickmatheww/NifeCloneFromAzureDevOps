@@ -83,7 +83,10 @@ class StatusModal extends React.Component {
               <TextInput
                 mode={"outlined"}
                 label=""
-                selectionColor={theme.generalLayout.textColor}
+                selectionColor={Platform.select({
+                    ios: theme.generalLayout.textColor,
+                    android:'black'
+                })}
                 outlineColor={theme.generalLayout.backgroundColor}
                 placeholder={Platform.select({
                   ios: 'Type here...',
@@ -99,7 +102,7 @@ class StatusModal extends React.Component {
                 multiline={true}
                 returnKeyType={'done'}
                 onKeyPress={this.handleKeyDown}
-                theme={{ colors: { primary: theme.generalLayout.secondaryColor, placeholder: theme.generalLayout.textColor, text: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
+                theme={{ colors: { primary: theme.generalLayout.secondaryColor, placeholder: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
                 > 
               </TextInput>
                 {
