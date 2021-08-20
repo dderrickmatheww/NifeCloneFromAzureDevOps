@@ -339,47 +339,37 @@ const styles = StyleSheet.create({
     width:"95%",
   },
   noEventsCont:{
-    height: "100%",
-    marginVertical: 5,
-    marginHorizontal: 5,
-    paddingBottom: 150,
-    paddingHorizontal: 5
+    height:"100%",
+    marginVertical:5,
+    marginHorizontal:5,
+    paddingBottom:150,
+    paddingHorizontal:5
   },
-  tab: {
-    width:"33%",
-    borderColor: theme.generalLayout.secondaryColor,
-    borderWidth: 1,
-    margin: 1,
-    borderRadius: 20,
-    alignContent: "center",
-    textAlign: "center",
-    padding: 1,
-    paddingBottom: 10
+  tab:{
+    width:"100%",
+    borderColor:theme.generalLayout.secondaryColor,
+    marginVertical:5
   },
   tabOff:{
-    width: "100%",
-    color: theme.loadingIcon.color,
-    paddingHorizontal:30,
-    fontFamily: theme.generalLayout.font,
-    marginTop: '10%',
-    fontSize: 13,
-    textAlign: "center"
+    width:"100%",
+    color:"gray",
+    paddingHorizontal:30
   },
   tabOn:{
-    width: "100%",
-    color: theme.generalLayout.textColor,
+    width:"100%",
+    color:theme.generalLayout.textColor,
     paddingHorizontal:30,
-    fontFamily: theme.generalLayout.font,
-    marginTop: '10%',
-    fontSize: 13,
-    textAlign: "center"
+    fontFamily: theme.generalLayout.font
   },
   tabCont:{
-    borderColor: theme.generalLayout.secondaryColor,
-    flexDirection: "row",
-    width: '100%',
-    marginTop: 15,
-    marginBottom: 10
+    borderTopWidth:1,
+    borderBottomWidth:1,
+    borderColor:theme.generalLayout.secondaryColor,
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"space-evenly",
+    marginTop:5,
+    marginBottom:10
   },
   container: {
     flex: 1,
@@ -400,7 +390,7 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     marginTop: 10,
-    justifyContent: 'center', 
+    justifyContent: 'center',
     alignItems: 'center' ,
     backgroundColor: theme.generalLayout.backgroundColor
   },
@@ -421,7 +411,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: theme.generalLayout.backgroundColor,
     height: '100%',
-    width: '100%',
     borderRightWidth: 2,
     borderLeftWidth: 2,
     borderRightColor: theme.generalLayout.secondaryColor,
@@ -449,7 +438,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: theme.generalLayout.backgroundColor
   },
-  
+
   panelSubtitle: {
     fontSize: 14,
     color: theme.generalLayout.textColor,
