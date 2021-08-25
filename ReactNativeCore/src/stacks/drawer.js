@@ -239,6 +239,14 @@ class Navigator extends React.Component {
     }
   }
 
+ 
+  Login ({route, navigation}){
+    const {user, friends, business, favorites, refresh, uploadImage} = route.params;
+    return(
+      <LoginScreen navigate={navigation} setIsBusiness={this.setIsBusiness} refresh={refresh} onSignUp={this.onSignUpStates} text={"Please login to continue!"} ></LoginScreen>
+    )
+  }
+
   render() {
     return (
       this.state.authLoaded ?
@@ -265,7 +273,8 @@ class Navigator extends React.Component {
               <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
               <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, friends: this.props.friendData,  business: this.props.businessData ? this.props.businessData : null, favorites: this.state.favoritePlaceData}}/>
               <Drawer.Screen name="Map" component={MapMain}/>
-              <Drawer.Screen name="Settings" component={Settings}  initialParams={{user:this.state.userData, friends:this.state.friendData, refresh: this.refreshFromAsync}}/>
+              <Drawer.Screen name="Settings" component={Settings}  initialParams={{ user: this.state.userData, friends: this.state.friendData, refresh: this.props.refresh }}/>
+              <Drawer.Screen name="Login" component={ this.Login }  initialParams={{ user: this.state.userData, friends: this.state.friendData, refresh: this.props.refresh }}/>
             </Drawer.Navigator>
           </NavigationContainer>
         : 

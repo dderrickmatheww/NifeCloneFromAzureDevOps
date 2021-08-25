@@ -70,8 +70,11 @@ const reducer = (state = initialState, action) => {
             : 
               {} 
           : 
-          state.friendData.requests ? 
+          state.friendData ?
+           state.friendData.requests ? 
               state.friendData.requests 
+              : 
+                {}
             : 
               {}
         ),

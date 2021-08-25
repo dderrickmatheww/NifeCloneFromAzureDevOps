@@ -1376,9 +1376,11 @@ const Util = {
             databaseInstance: () => {
                 return
             },
-            signOut: async () => {
-                console.log('signout')
+            signOut: async (callback) => {
                 firebase.auth().signOut();
+                if (callback) {
+                    callback();
+                }
             },
             passwordReset: async (email) => {
                 var auth = firebase.auth();

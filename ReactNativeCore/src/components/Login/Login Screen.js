@@ -58,6 +58,9 @@ export default class LoginScreen extends Component {
           <TouchableOpacity style={localStyles.googleLoginBtn} onPress={() => Util.dataCalls.Google.login((dataObj) => {
             this.setUserData(dataObj.user);
             this.setLoggedinStatus(dataObj);
+            if (this.props.navigate) {
+              this.props.navigate.navigate("My Feed", { screen:"Friend's Feed", params: { refresh: this.props.refresh } });
+            }
           })}>
             <Text style={localStyles.loggedOutText}>Login with Google</Text>
             <Image
@@ -115,11 +118,17 @@ export default class LoginScreen extends Component {
         <NifeLoginModal  
         setIsBusiness={this.props.setIsBusiness} 
         isBusiness={this.state.isBusiness} 
-        onDismiss={() => this.setState({modalVisible:false})} 
+        onDismiss={() => this.setState({ modalVisible: false })} 
         onSignUp={this.props.onSignUp} 
         isReset={this.state.isReset} 
         modalVisible={this.state.modalVisible} 
-        callback={() => {}}/>
+        callback={() => {
+          if (this.props.navigate) {
+            this.setState({ modalVisible: false });
+            this.props.navigate.navigate("My Feed", { screen:"Friend's Feed", params: { refresh: this.props.refresh } });
+          }
+        }}
+      />
       </View>
     );
   }

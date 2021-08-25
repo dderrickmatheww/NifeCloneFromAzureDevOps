@@ -298,7 +298,9 @@ export function DrawerContent(props) {
                         />
                     )}
                     label={()=> <Text style={styles.text}>Sign Out</Text>}
-                    onPress={() => {Util.dataCalls.Firebase.signOut()}}
+                    onPress={() => { Util.dataCalls.Firebase.signOut(() => {
+                        props.navigation.navigate('Login');
+                    })}}
                 />
             </Drawer.Section>
         </View>
