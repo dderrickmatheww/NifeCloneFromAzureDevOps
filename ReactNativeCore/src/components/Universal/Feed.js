@@ -16,6 +16,7 @@ import {
 } from 'react-native-paper';
 import theme from '../../../src/styles/theme';
 import Util from '../../scripts/Util';
+import uuid from 'react-native-uuid';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 function Feed(props) {
@@ -121,7 +122,8 @@ function Feed(props) {
                 }
             }
         }
-        friendFeedData = [...friendFeedData];
+        friendFeedData = friendFeedData ? [...friendFeedData] : [];
+        feedData = feedData ? [...feedData] : [];
         data = [...friendFeedData, ...feedData];
         data = Array.from(new Set(data.map(a => a.uid)))
         .map(uid => data.find(a => a.uid === uid))
@@ -153,7 +155,7 @@ function Feed(props) {
                     numColumns={ 1 }
                     horizontal={ false }
                     data={ feedData }
-                    keyExtractor={ item => item ? item.uid : Util.basicUtil.getUUID()}
+                    keyExtractor={ item => item ? item.uid : uuid.v4()}
                     refreshing={ refresh }
                     onEndReached={ onRefresh }
                     refreshControl={
