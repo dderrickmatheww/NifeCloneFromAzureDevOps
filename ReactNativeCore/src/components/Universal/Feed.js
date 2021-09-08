@@ -21,7 +21,7 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 function Feed(props) {
     const [ userData, setUserData ] = useState(props.userData);
-    const [ feedData, setFeedData ] = useState(props.feedData);
+    let [ feedData, setFeedData ] = useState(props.feedData);
     const [ refresh, setRefresh ] = useState(false);
     const [ skip, setSkip ] = useState(0);
 
@@ -122,12 +122,12 @@ function Feed(props) {
                 }
             }
         }
-        friendFeedData = friendFeedData ? [...friendFeedData] : [];
+        friendFeedData = friendFeedData ? [...friendFeedData.timeline] : [];
         feedData = feedData ? [...feedData] : [];
-        data = [...friendFeedData, ...feedData];
+        let data = [...friendFeedData, ...feedData];
         data = Array.from(new Set(data.map(a => a.uid)))
         .map(uid => data.find(a => a.uid === uid))
-        .sort(( a, b ) => a.time - b.time);
+        .sort(( a, b ) =>b.time - a.time);
         setFeedData([]);
         setUserData(user);
         setRefresh(false);
@@ -155,7 +155,7 @@ function Feed(props) {
                     numColumns={ 1 }
                     horizontal={ false }
                     data={ feedData }
-                    keyExtractor={ item => item ? item.uid : uuid.v4()}
+                    keyExtractor={ item => item.uid ? item.uid : uuid.v4()}
                     refreshing={ refresh }
                     onEndReached={ onRefresh }
                     refreshControl={
