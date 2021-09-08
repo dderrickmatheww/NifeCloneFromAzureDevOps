@@ -64,3 +64,4 @@ buck-out/
 
 *node_modules/
 
+*watcher/
