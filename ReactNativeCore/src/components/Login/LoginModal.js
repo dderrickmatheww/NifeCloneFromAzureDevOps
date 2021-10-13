@@ -126,12 +126,20 @@ export default class NifeLoginModal extends Component {
             Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US", (data) => {
                 console.log(data);
                 if (data.businesses && data.businesses.length > 0) {
-                    this.setState({
-                        businessId: data.businesses[0].id,
-                        coordinates: data.businesses[0].coordinates,
-                        bussinessApplicationPt2: true,
-                        businessPhone: data.businesses[0].phone,
-                    });
+                    const businessId = data.businesses[0].id;
+                    const isOnNife = (await db.collection('businesses').where('businessId', '==', businessId).get()).data();
+                    if (isOnNife) {
+                        this.setState({ verifying: false });
+                        Util.basicUtil.Alert('Nife Message', "Looks like this business is already registered with Nife! Email admin@nife.app if this is not correct.", null);
+                    }
+                    else {
+                        this.setState({
+                            businessId: data.businesses[0].id,
+                            coordinates: data.businesses[0].coordinates,
+                            bussinessApplicationPt2: true,
+                            businessPhone: data.businesses[0].phone,
+                        });
+                    }
                 } else {
                     this.setState({ verifying: false });
                     Util.basicUtil.Alert('Nife Message', "We could not find your business! Make sure your contact information matches other online sources! For more information contact admin@nife.app.", null);
