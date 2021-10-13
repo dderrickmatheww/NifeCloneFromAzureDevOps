@@ -180,15 +180,188 @@ export default class NifeLoginModal extends Component {
 
     render () {
         return (
-            !this.props.isReset ?
-                !this.props.isBusiness ?
+            this.props.isReset ?
+                // Password reset
+                <Modal
+                    visible={this.props.modalVisible}
+                    dismissable={true}
+                    onDismiss={this.props.onDismiss}
+                    contentContainerStyle={localStyles.ModalReset}
+                >
+                    <Subheading style={localStyles.Subheading}>Please enter your email to reset your password! </Subheading>
+                    <View style={localStyles.Container}>
+                        <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
+                        <TouchableOpacity
+                            onPress={() => Util.dataCalls.Firebase.passwordReset(this.state.email)}
+                            style={localStyles.nextBtn}
+                        >
+                            <Caption style={localStyles.Caption}>Reset</Caption>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
+                :
                     this.state.signUp ?
-                        //Sign-up with Nife
+                        this.props.isBusiness  ?
+                            this.state.bussinessApplicationPt2  == false ?
+                            // nife business sign up
+                                //businiess app pt 1
+                                <Modal
+                                    visible={this.props.modalVisible}
+                                    dismissable={true}
+                                    onDismiss={this.props.onDismiss}
+                                    contentContainerStyle={localStyles.Modal}
+                                >
+                                    {
+                                        !this.state.verifying ?
+                                            <View style={localStyles.Container}>
+                                                <View style={localStyles.Container}>
+                                                    <Subheading style={localStyles.Subheading}>Please fill out the information to verify your business!</Subheading>
+                                                </View>
+
+                                                <ScrollView style={{maxHeight:450}} contentContainerStyle={localStyles.Container}>
+                                                    <View>
+                                                        <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                this.setState({
+                                                                    signUp: false,
+                                                                })
+                                                            }}
+                                                            style={{
+                                                                borderColor: theme.generalLayout.secondaryColor,
+                                                                borderRadius: 10,
+                                                                alignSelf:"center",
+                                                                borderWidth: 1,
+                                                                paddingHorizontal:5,
+                                                                paddingVertical:2,
+                                                                marginTop: '5%',
+                                                                marginBottom:10,
+                                                                width: '40%',
+                                                            }}
+                                                        >
+                                                            <Caption style={localStyles.Caption}>Login</Caption>
+                                                        </TouchableOpacity>
+                                                    </View>
+
+
+                                                    <TextInput   theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
+                                                                 style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
+
+                                                    <TextInput selectionColor={theme.generalLayout.textColor}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
+                                                               style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
+
+                                                    <TextInput selectionColor={theme.generalLayout.textColor}t textContentType={"emailAddress"} secureTextEntry={false}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput}
+                                                               placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "businessEmail")} />
+
+                                                    <TextInput selectionColor={theme.generalLayout.textColor}  keyboardType={"phone-pad"} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
+                                                               style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />
+
+                                                    <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
+                                                               style={localStyles.textInput} placeholder={'Address'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "Address")} />
+
+                                                    <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
+                                                               style={localStyles.textInput} placeholder={'City'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "City")} />
+
+                                                    <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
+                                                               style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureTextEntry={false} onChangeText={(text) => this.onChangeText(text, "State")} />
+
+                                                    <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                this.setState({
+                                                                    signUp: false,
+                                                                    bussinessApplication: false
+                                                                });
+                                                                this.props.onDismiss();
+                                                            }}
+                                                            style={localStyles.nextBtn}
+                                                        >
+                                                            <Caption style={localStyles.Caption}>Back</Caption>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity
+                                                            onPress={() => {
+                                                                this.verifyBusiness(() => {
+                                                                    this.setState({
+                                                                        verifying: false,
+                                                                        bussinessApplicationPt2: true
+                                                                    });
+                                                                });
+                                                            }}
+                                                            style={localStyles.nextBtn}
+                                                        >
+                                                            <Caption style={localStyles.Caption}>Next</Caption>
+                                                        </TouchableOpacity>
+                                                    </View>
+
+
+                                                </ScrollView>
+                                            </View>
+                                            :
+                                            <View style={styles.viewDark}>
+                                                <ActivityIndicator color={theme.loadingIcon.color} size={"large"}></ActivityIndicator>
+                                            </View>
+                                    }
+                                </Modal>
+                                :
+                                // bussiness app PT 2
+                                <Modal
+                                    visible={this.props.modalVisible}
+                                    dismissable={true}
+                                    onDismiss={this.props.onDismiss}
+                                    contentContainerStyle={localStyles.ModalBusiness}
+                                >
+                                    <View style={localStyles.Container}>
+                                        <Subheading style={localStyles.Subheading}>Fill out your password please!</Subheading>
+                                    </View>
+                                    <ScrollView contentContainerStyle={localStyles.Container}>
+                                        {/* <TouchableOpacity style={localStyles.VerificationOption}
+                                onPress={()=>{
+                                    this.uploadProofImage();
+                                }}
+                            >
+                                {this.state.proofURI ?
+                                    <Caption style={localStyles.VerificationText}>ImageUploaded</Caption>
+                                    :
+                                    this.state.imageLoading ?
+                                    <ActivityIndicator color={theme.LIGHT_PINK} size={"small"}></ActivityIndicator>
+                                    :
+                                    <Caption style={localStyles.VerificationText}>Click here to upload proof of address.</Caption>
+                                }
+                            </TouchableOpacity> */}
+                                        <TextInput selectionColor={theme.generalLayout.textColor} secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
+                                        <TextInput selectionColor={theme.generalLayout.textColor} secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
+
+                                        <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    this.setState({
+                                                        signUp: false,
+                                                        bussinessApplication: false
+                                                    });
+                                                }}
+                                                style={localStyles.nextBtn}
+                                            >
+                                                <Caption style={localStyles.Caption}>Back</Caption>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    this.props.setIsBusiness(true, this.state);
+                                                    this.authenticateUser('sign-up');
+                                                }}
+                                                style={localStyles.nextBtn}
+                                            >
+                                                <Caption style={localStyles.Caption}>Sign up</Caption>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </ScrollView>
+                                </Modal>
+                        :
+                            //Sign-up with Nife
                         <Modal
-                        visible={this.props.modalVisible}
-                        dismissable={true}
-                        onDismiss={this.props.onDismiss}
-                        contentContainerStyle={localStyles.Modal}
+                            visible={this.props.modalVisible}
+                            dismissable={true}
+                            onDismiss={this.props.onDismiss}
+                            contentContainerStyle={localStyles.Modal}
                         >
                             <Subheading style={localStyles.Subheading}>Please fill out this form! </Subheading>
                             <View style={localStyles.Container}>
@@ -196,11 +369,11 @@ export default class NifeLoginModal extends Component {
                                 <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
                                 <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password1")} />
                                 <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor }}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password2")} />
-                                
+
                                 <TouchableOpacity
                                     onPress={() => this.authenticateUser('sign-up')}
                                     style={localStyles.signUpBtn}
-                                > 
+                                >
                                     <Caption style={localStyles.Caption}>Sign up</Caption>
                                 </TouchableOpacity>
                                 <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
@@ -212,7 +385,8 @@ export default class NifeLoginModal extends Component {
                                 </TouchableOpacity>
                             </View>
                         </Modal>
-                        : 
+                        :
+
                         // LOGIN WITH NIFE
                         <Modal
                             visible={this.props.modalVisible}
@@ -224,197 +398,23 @@ export default class NifeLoginModal extends Component {
                             <View style={localStyles.Container}>
                                 <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
                                 <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor} }}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                                
+
                                 <TouchableOpacity
                                     onPress={() => this.authenticateUser('login')}
                                     style={localStyles.signUpBtn}
-                                > 
+                                >
                                     <Caption style={localStyles.Caption}>Log In</Caption>
                                 </TouchableOpacity>
                                 <Text style={localStyles.loginLoginSwitchText}>Need to make an account?</Text>
                                 <TouchableOpacity
                                     onPress={() => this.setState({signUp: true})}
                                     style={localStyles.signUpBtn}
-                                > 
+                                >
                                     <Caption style={localStyles.Caption}>Sign Up</Caption>
                                 </TouchableOpacity>
                             </View>
                         </Modal>
-                :
-                     this.state.bussinessApplicationPt2  == false ?
-                        //businiess app pt 1
-                        <Modal
-                            visible={this.props.modalVisible}
-                            dismissable={true}
-                            onDismiss={this.props.onDismiss}
-                            contentContainerStyle={localStyles.Modal}
-                        >
 
-                            {
-                                !this.state.verifying ?
-                                <View style={localStyles.Container}>
-                                    <View style={localStyles.Container}>
-                                        <Subheading style={localStyles.Subheading}>Please fill out the information to verify your business!</Subheading>
-                                    </View>
-                            
-                                    <ScrollView style={{maxHeight:450}} contentContainerStyle={localStyles.Container}>
-                                        <View>
-                                            <Text style={localStyles.loginSwitchText}>Already have an account?</Text>
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    this.setState({
-                                                        isBusiness:false,
-                                                        signUp: false,
-                                                        bussinessApplicationPt2: false,
-                                                        bussinessApplication: false
-                                                    })
-                                                }}
-                                                style={{
-                                                    borderColor: theme.generalLayout.secondaryColor,
-                                                    borderRadius: 10,
-                                                    alignSelf:"center",
-                                                    borderWidth: 1,
-                                                    paddingHorizontal:5,
-                                                    paddingVertical:2,
-                                                    marginTop: '5%',
-                                                    marginBottom:10,
-                                                    width: '40%',
-                                                }}
-                                            >
-                                                <Caption style={localStyles.Caption}>Login</Caption>
-                                            </TouchableOpacity>
-                                        </View>
-
-
-                                        <TextInput   theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Business Name'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "businessName")} />
-
-                                        <TextInput selectionColor={theme.generalLayout.textColor}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Your Name'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "ownerName")} />
-
-                                        <TextInput selectionColor={theme.generalLayout.textColor}t textContentType={"emailAddress"} secureTextEntry={false}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} 
-                                        placeholder={'Email'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "businessEmail")} />
-
-                                        <TextInput selectionColor={theme.generalLayout.textColor}  keyboardType={"phone-pad"} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Phone Number'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "businessPhone")} />
-
-                                        <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'Address'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "Address")} />
-
-                                        <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'City'} returnKey={'next'} secureTextEntry={false}  onChangeText={(text) => this.onChangeText(text, "City")} />
-
-                                        <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} 
-                                        style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureTextEntry={false} onChangeText={(text) => this.onChangeText(text, "State")} />
-                                        
-                                        <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    this.setState({
-                                                        signUp: false,
-                                                        bussinessApplication: false
-                                                    });
-                                                    this.props.onDismiss();
-                                                }}
-                                                style={localStyles.nextBtn}
-                                            > 
-                                                <Caption style={localStyles.Caption}>Back</Caption>
-                                            </TouchableOpacity> 
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    this.verifyBusiness(() => {
-                                                        this.setState({ 
-                                                            verifying: false,
-                                                            bussinessApplicationPt2: true
-                                                        });
-                                                    });
-                                                }}
-                                                style={localStyles.nextBtn}
-                                            > 
-                                                <Caption style={localStyles.Caption}>Next</Caption>
-                                            </TouchableOpacity>
-                                        </View>
-
-
-                                    </ScrollView> 
-                                </View>
-                                :
-                                <View style={styles.viewDark}>
-                                    <ActivityIndicator color={theme.loadingIcon.color} size={"large"}></ActivityIndicator>
-                                </View>
-                            }
-                    </Modal> 
-                    : 
-                    // bussiness app PT 2
-                    <Modal
-                        visible={this.props.modalVisible}
-                        dismissable={true}
-                        onDismiss={this.props.onDismiss}
-                        contentContainerStyle={localStyles.ModalBusiness}
-                    >
-                        <View style={localStyles.Container}>
-                            <Subheading style={localStyles.Subheading}>Fill out your password please!</Subheading>
-                        </View>
-                        <ScrollView contentContainerStyle={localStyles.Container}>
-                            {/* <TouchableOpacity style={localStyles.VerificationOption}
-                                onPress={()=>{
-                                    this.uploadProofImage();
-                                }}
-                            > 
-                                {this.state.proofURI ? 
-                                    <Caption style={localStyles.VerificationText}>ImageUploaded</Caption>
-                                    :
-                                    this.state.imageLoading ? 
-                                    <ActivityIndicator color={theme.LIGHT_PINK} size={"small"}></ActivityIndicator>
-                                    :
-                                    <Caption style={localStyles.VerificationText}>Click here to upload proof of address.</Caption>
-                                }
-                            </TouchableOpacity> */}
-                            <TextInput selectionColor={theme.generalLayout.textColor} secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password1")} />
-                            <TextInput selectionColor={theme.generalLayout.textColor} secureTextEntry={true} textContentType={"password"}  theme={{colors:{text: theme.generalLayout.textColor}}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "password2")} />
-
-                            <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.setState({
-                                            signUp: false,
-                                            bussinessApplication: false
-                                        });
-                                    }}
-                                    style={localStyles.nextBtn}
-                                > 
-                                    <Caption style={localStyles.Caption}>Back</Caption>
-                                </TouchableOpacity> 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.props.setIsBusiness(true, this.state);
-                                        this.authenticateUser('sign-up'); 
-                                    }}
-                                    style={localStyles.nextBtn}
-                                > 
-                                    <Caption style={localStyles.Caption}>Sign up</Caption>
-                                </TouchableOpacity>
-                            </View>
-                        </ScrollView> 
-                    </Modal> 
-            :
-            <Modal
-                visible={this.props.modalVisible}
-                dismissable={true}
-                onDismiss={this.props.onDismiss}
-                contentContainerStyle={localStyles.ModalReset}
-            >
-                <Subheading style={localStyles.Subheading}>Please enter your email to reset your password! </Subheading>
-                <View style={localStyles.Container}>
-                    <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
-                    <TouchableOpacity
-                        onPress={() => Util.dataCalls.Firebase.passwordReset(this.state.email)}
-                        style={localStyles.nextBtn}
-                    > 
-                        <Caption style={localStyles.Caption}>Reset</Caption>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
         );
     }
 }
