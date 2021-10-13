@@ -7,7 +7,7 @@
     "test": "jest",
     "deploy:ios": "node ./builds/scripts/deploy.js deploy ios",
     "deploy:android": "node builds/scripts/deploy.js deploy android",
-    "dev" : "expo start"
+    "dev": "expo start"
   },
   "dependencies": {
     "@expo-google-fonts/comfortaa": "^0.1.0",

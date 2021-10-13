@@ -53,18 +53,18 @@ class MapScreen extends React.Component  {
   OnChangeMapRegion = (autoCompUpdate) => {
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
-      let boolean = this.state.searchParam != "";
+      let isSearchBar = this.state.searchParam != "";
       LATITUDE = userLocation.latitude;
       LONGITUDE = userLocation.longitude;
       let baseURL = 'https://api.yelp.com/v3/businesses/search?';
       let params;
-      if(boolean) {
-        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, boolean, this.state.searchParam, region);
+      if(isSearchBar) {
+        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, isSearchBar, this.state.searchParam, region);
       }
       else {
-        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, boolean, "", region);
+        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, isSearchBar, "", region);
       }
-      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, boolean, autoCompUpdate);
+      await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, isSearchBar, autoCompUpdate);
       this.setState({ 
         isLoaded: true,
         region: {
@@ -94,12 +94,13 @@ class MapScreen extends React.Component  {
     });
   }
 
-  gatherLocalMarkers = (friendData, userLocation, baseURL, params, boolean, autoCompUpdate) => {  
+  gatherLocalMarkers = (friendData, userLocation, baseURL, params, isSearchBar, autoCompUpdate) => {
     Util.dataCalls.Yelp.placeData(baseURL, params, friendData, (data) => {
-      if(boolean) {
+      let returnedBusinesses = data;
+      if(isSearchBar) {
         this.setState({
           userLocation: userLocation,
-          dropDownData: data
+          dropDownData: returnedBusinesses
         });
         if(autoCompUpdate) {
           autoCompUpdate(this.state.dropDownData);
@@ -108,22 +109,21 @@ class MapScreen extends React.Component  {
       else {
 
         Util.business.getNifeBusinessesNearby(this.props.user, (nifeData) => {
-          if(nifeData && nifeData.length == 0) {
+          if(nifeData && nifeData.length > 0) {
             this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});
 
             //Original data call to get markers based on user location
-            this.setState({yelpBusIds: data.map(bus => bus.id)});
+            this.setState({yelpBusIds: returnedBusinesses.map(bus => bus.id)});
 
             //remove nife registered businesses from yelp call
-            data = data.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
+            returnedBusinesses = returnedBusinesses.filter((bus) => !this.state.nifeBusinesses.includes(bus.id))
             //adds nife version of business data to marker data
             nifeData.forEach((bus) => {
-              console.log(bus);
-              data.push(bus)
+              returnedBusinesses.push(bus)
             });
           }
           this.setState({
-            markers: data,
+            markers: returnedBusinesses,
             userLocation: userLocation
           });
         });
