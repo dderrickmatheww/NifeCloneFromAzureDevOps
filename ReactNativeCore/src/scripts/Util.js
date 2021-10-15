@@ -1360,6 +1360,18 @@ const Util = {
                         Util.basicUtil.consoleLog("getBusinessData", false);
                         Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
                     });
+            },
+            isBusinessRegistered:  async (businessId) => {
+                let obj = {
+                    businessId
+                }
+                let ret = await fetch('https://us-central1-nife-75d60.cloudfunctions.net/isBusinessRegistered',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj)
+                    })
+                let isBusinessRegistered = await ret.json()
+                return isBusinessRegistered.result
             }
         },
         Firebase: {

@@ -35,6 +35,8 @@ export default class NifeLoginModal extends Component {
         isBusiness: this.props.isBusiness
     }
 
+
+
     onChangeText = (text, type) => {
         this.setState({[type]: text});
     }
@@ -115,7 +117,7 @@ export default class NifeLoginModal extends Component {
         this.setState({ password2: "" });
     }
 
-    verifyBusiness = () => {
+    verifyBusiness =  () => {
         this.setState({ verifying: true });
         let address = this.state.Address ? this.state.Address : null;
         let city = this.state.City ? this.state.City : null;
@@ -123,13 +125,14 @@ export default class NifeLoginModal extends Component {
         let name = this.state.businessName ? this.state.businessName : null;
         if(address !== null & city  !== null  & state !== null & name !== null ){
             //console.log(address, city, state, name);
-            Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US", (data) => {
-                console.log(data);
+            Util.dataCalls.Yelp.businessVerification(name, address, city, state, "US",  async (data) => {
                 if (data.businesses && data.businesses.length > 0) {
                     const businessId = data.businesses[0].id;
-                    const isOnNife = (await db.collection('businesses').where('businessId', '==', businessId).get()).data();
+                    const isOnNife = await Util.dataCalls.Yelp.isBusinessRegistered(businessId);
+
+                    console.log("isOnNife: ", isOnNife)
                     if (isOnNife) {
-                        this.setState({ verifying: false });
+                        this.setState({ verifying: false  });
                         Util.basicUtil.Alert('Nife Message', "Looks like this business is already registered with Nife! Email admin@nife.app if this is not correct.", null);
                     }
                     else {
