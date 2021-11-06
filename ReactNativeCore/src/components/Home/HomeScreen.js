@@ -32,7 +32,7 @@ class FriendsFeed extends React.Component {
         specialsModalVisable: false,
         modalVisible: false,
         userData: this.props.userData,
-        feedData: this.props.feedData,
+        feedData: this.props.feedData ? this.props.feedData : {},
         businessData: this.props.business,
         snackBarVisable: false,
         menuVisable: false,

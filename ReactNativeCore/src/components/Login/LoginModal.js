@@ -129,8 +129,6 @@ export default class NifeLoginModal extends Component {
                 if (data.businesses && data.businesses.length > 0) {
                     const businessId = data.businesses[0].id;
                     const isOnNife = await Util.dataCalls.Yelp.isBusinessRegistered(businessId);
-
-                    console.log("isOnNife: ", isOnNife)
                     if (isOnNife) {
                         this.setState({ verifying: false  });
                         Util.basicUtil.Alert('Nife Message', "Looks like this business is already registered with Nife! Email admin@nife.app if this is not correct.", null);

@@ -21,7 +21,7 @@ const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 function Feed(props) {
     const [ userData, setUserData ] = useState(props.userData);
-    let [ feedData, setFeedData ] = useState(props.feedData);
+    let [ feedData, setFeedData ] = useState(props.feedData ? props.feedData : []);
     const [ refresh, setRefresh ] = useState(false);
     const [ skip, setSkip ] = useState(0);
 
@@ -32,13 +32,11 @@ function Feed(props) {
             setRefresh(false);
         }
         if (feedData && feedData.length !== props.feedData.length) {
-            console.log('useEffect if')
             checkIfUpdate();
         }
     }, [props.userData, props.feedData]);
 
     const setUp = async (user, feed) => {
-        console.log('setUp')
         user = user.length > 0 ? user : props.userData;
         let business = props.business;
         let favorites = props.favorites;
@@ -127,7 +125,7 @@ function Feed(props) {
         let data = [...friendFeedData, ...feedData];
         data = Array.from(new Set(data.map(a => a.uid)))
         .map(uid => data.find(a => a.uid === uid))
-        .sort(( a, b ) =>b.time - a.time);
+        .sort(( a, b ) => b.time - a.time);
         setFeedData([]);
         setUserData(user);
         setRefresh(false);

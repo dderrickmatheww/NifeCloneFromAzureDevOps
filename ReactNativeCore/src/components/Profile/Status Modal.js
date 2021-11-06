@@ -50,11 +50,13 @@ class StatusModal extends React.Component {
           name: user.displayName,
           time: new Date(),
           statusImage: this.state.pic,
-          image: user.photoSource !== 'Unknown' ? user.photoSource : defPhoto.uri
+          image: user.photoSource !== 'Unknown' ? user.photoSource : defPhoto.uri,
+          isBusiness: user.isBusiness ? user.isBusiness : false,
+          userEmail: user.email
         }
         Util.user.UpdateFeed(user.email, obj, (data) => {
             let user = this.props.user;
-            this.props.globalRefresh(user, data)
+            this.props.globalRefresh(user, data);
             this.setState({ saving: false });
             this.props.onSave();
         });
@@ -206,4 +208,3 @@ const localStyles = StyleSheet.create({
     borderColor: theme.generalLayout.secondaryColor
   }
 });
-  

@@ -207,7 +207,6 @@ const Util = {
             }
         },
         HandleUploadImage: (isBusiness, userData, callback, isStatusImage) => {
-            // //console.log('got to util')
             let userEmail = firebase.auth().currentUser.email;
             ImagePicker.getMediaLibraryPermissionsAsync()
                 .then((result) => {
@@ -239,9 +238,6 @@ const Util = {
                                         .then((image) => {
                                             let uri = image.uri;
                                             Util.user.UploadImage(uri, userEmail, (resUri) => {
-
-
-                                                // //console.log(resUri);
                                                 if (!isStatusImage) {
                                                     userData['photoSource'] = resUri;
                                                     Util.user.UpdateUser(userEmail, {photoSource: resUri});
@@ -300,12 +296,10 @@ const Util = {
             }
         },
         getFeed: async (obj, callback) => {
-            console.log(obj)
             if (obj && typeof obj.email !== 'undefined') {
                 obj['take'] = obj.take ? obj.take : 50;
                 obj['skip'] = obj.skip ? obj.skip : 0;
                 obj['getUserFeed'] = obj.getUserFeed ? obj.getUserFeed : false;
-                console.log(obj)
                 await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getUserFeed',
                 {
                     method: 'POST',
@@ -350,15 +344,15 @@ const Util = {
         UpdateFeed: async (email, updateObject, callback) => {
             let db = firebase.firestore();
             let userRef = db.collection('feed').doc(email);
-            let userTimeline = await userRef.get();
+            let userFeed = await userRef.get();
             updateObject['uid'] = uuid.v4();
-            let data = userTimeline.data();
+            let data = userFeed.data();
             if (typeof updateObject !== 'undefined' && data) {
                 if (data.timeline) {
                     data.timeline.push(updateObject);
                     userRef.set(data, { merge: true })
                     .then(() => {
-                        Util.basicUtil.consoleLog('UpdateUser', true);
+                        Util.basicUtil.consoleLog('UpdateFeed', true);
                         if (callback) {
                             callback(data);
                         }
@@ -373,7 +367,7 @@ const Util = {
                     data.timeline.push(updateObject);
                     userRef.set(data, { merge: true })
                     .then(() => {
-                        Util.basicUtil.consoleLog('UpdateUser', true);
+                        Util.basicUtil.consoleLog('UpdateFeed', true);
                         if (callback) {
                             callback();
                         }
@@ -385,13 +379,14 @@ const Util = {
                 }
             }
             else {
-                userTimeline = {
+                var userFeedStatus = {
                     checkIn: {},
                     lastVisited: {},
-                    timeline: []
+                    timeline: [],
+                    isBusiness: updateObject.isBusiness
                 }
-                userTimeline.timeline.push(updateObject);
-                userRef.set(userTimeline)
+                userFeedStatus.timeline.push(updateObject);
+                userRef.set(userFeedStatus)
                 .then(() => {
                     Util.basicUtil.consoleLog('UpdateUser', true);
                     if (callback) {
@@ -1223,8 +1218,6 @@ const Util = {
                             Util.basicUtil.Alert('Nife User Sign-Up Error', message, null);
                         }
                     } else {
-                        // noinspection JSAnnotator
-                        //console.log('is business sign up')
                         try {
                             let email = signUpInfo.businessEmail;
                             let password = signUpInfo.password1
@@ -1426,11 +1419,11 @@ const Util = {
         },
         consoleLog: (funcName, type) => {
             if (type == true) {
-                //console.log('\n');
-                //console.log("" + funcName + " ran successfully!");
+                console.log('\n');
+                console.log("" + funcName + " ran successfully!");
             } else {
-                //console.log('\n');
-                //console.log("" + funcName + " failed.");
+                console.log('\n');
+                console.log("" + funcName + " failed.");
             }
         },
         compareValues: (key, order = 'asc') => {

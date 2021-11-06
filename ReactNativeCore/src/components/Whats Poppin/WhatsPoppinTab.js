@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { View, SafeAreaView, RefreshControl, ScrollView, ActivityIndicator, StyleSheet, Text, Image } from 'react-native';
 import theme from '../../../src/styles/theme';
 import getFeedData from './GetFeedData';
 import DataRow from './DataRow';
@@ -7,7 +7,9 @@ import * as firebase from 'firebase';
 import PleaseLogin from '../Universal/PleaseLogin';
 import {
     Headline,
-    Avatar
+    Avatar,
+    Caption,
+    Paragraph,
 } from 'react-native-paper';
 import Util from '../../scripts/Util';
 import { connect } from 'react-redux';
@@ -30,6 +32,7 @@ class WhatsPoppin extends React.Component  {
         EventsTab: false,
         SpecialsTab: false,
         feedLoadDone:false,
+        businessTimeline: []
     }
 
     async componentDidMount () {
@@ -154,7 +157,7 @@ class WhatsPoppin extends React.Component  {
                     </View>
                     {/* <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/> */}
                     {this.state.feedData ?
-                    this.state.feedData.countData && this.state.feedData.countData.length > 0 ?
+                    this.state.feedData.countData && this.state.feedData.countData.length > 0 || this.state.feedData.businessStatus && this.state.feedData.businessStatus.length > 0 ?
                     <ScrollView 
                         style={localStyles.dataRowScrollView}
                         refreshControl={
@@ -190,6 +193,42 @@ class WhatsPoppin extends React.Component  {
                                 />
                             ))
                         }
+
+                        {
+                            this.state.feedData.businessStatus.map(item => (
+                                <View style={ localStyles.feedDataRow }  key={ item.uid }>
+                                    <Avatar.Image source={ item.image ? { uri: item.image } : defPhoto } size={50}/>
+                                    <Text style={ localStyles.displayName }>
+                                            { item.username ? item.username : null }
+                                            { item.name }
+                                        {
+                                            this.props.user &&  this.props.user.isBusiness ?
+                                                <Caption
+                                                    style={ localStyles.feedType }>{ "   " + props.business.City + ", " + props.business.State }
+                                                </Caption> 
+                                            : 
+                                                null
+                                        }
+                                    </Text>
+                                    <Caption style={ localStyles.feedType }>{ item.visited ? "Took a visit" : item.checkedIn ? "Checked in" : item.event ? "Booked an event" : item.specials ? "Has a new special" : "Status update" }</Caption>
+                                    <View>
+                                        <Paragraph style={ localStyles.Paragraph }>{ item.text }</Paragraph>
+                                        {
+                                            item.statusImage ?
+                                                <Image
+                                                    resizeMethod="auto"
+                                                    resizeMode="contain"
+                                                    style={{ flex: 1, resizeMode:'contain', aspectRatio:1}}
+                                                    source={{ uri: item.statusImage }}
+                                                />
+                                            : 
+                                                null
+                                        }
+                                    </View>
+                                    <Caption style={localStyles.Caption}>{ Util.date.TimeSince(item.time._seconds ? item.time._seconds * 1000 : item.time.seconds * 1000) } ago</Caption>
+                                </View>
+                            ))
+                        }           
                         <View style={{ height: 120 }} />
                     </ScrollView> 
                     :
@@ -299,6 +338,171 @@ const localStyles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 10
     },
+    scrollContent: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: "98%",
+        ...Platform.select({
+            ios: {
+                paddingBottom: 120,
+            },
+            android: {
+                paddingBottom: 120,
+            },
+        })
+    },
+    viewDark: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.generalLayout.backgroundColor,
+        paddingBottom: 10
+    },
+    modalButton: {
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderWidth: 1,
+        borderColor: theme.generalLayout.secondaryColor,
+        borderRadius: 5,
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+        textAlign: "center",
+        marginVertical: 5,
+        fontFamily: theme.generalLayout.font
+    },
+    modalButtonText: {
+        color: theme.generalLayout.secondaryColor,
+        fontSize: 20,
+        textAlign: "center",
+        fontFamily: theme.generalLayout.font
+    },
+    StatusOverlay: {
+        position: "relative",
+        right: 150,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderWidth: .5,
+        borderColor: theme.generalLayout.secondaryColor,
+        borderRadius: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 8
+    },
+    Caption: {
+        color: theme.generalLayout.textColor,
+        opacity: 0.60,
+        fontFamily: theme.generalLayout.font
+    },
+    statusButton: {
+        color: theme.generalLayout.textColor,
+        fontSize: 11,
+        fontFamily: theme.generalLayout.font
+    },
+    Paragraph: {
+        color: 'white',
+        fontSize: 12,
+        marginTop: -10,
+        marginBottom: 10,
+        fontFamily: theme.generalLayout.font
+    },
+    displayName: {
+        color: 'white',
+        left: 60,
+        top: -45,
+        position: "relative",
+        fontSize: 15,
+        fontWeight: "bold",
+        fontFamily: theme.generalLayout.fontBold
+    },
+    feedType: {
+        color: 'white',
+        left: 60,
+        top: -50,
+        position: "relative",
+        fontSize: 12,
+        opacity: 0.60
+    },
+    feedDataRow: {
+        flex: 1,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderColor: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
+        borderRadius: 10,
+        borderWidth: .5,
+        marginVertical: 15,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        marginVertical: 2,
+        width: "100%",
+    },
+    loaderRow: {
+        flex: 1,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderColor: theme.generalLayout.secondaryColor,
+        color: theme.generalLayout.textColor,
+        borderRadius: 10,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        marginVertical: 2,
+        width: "100%",
+    },
+    emptyPoppinFeed: {
+        color: theme.generalLayout.textColor,
+        fontSize: 16,
+        padding: 20,
+        textAlign: "center",
+        justifyContent: "center",
+        fontFamily: theme.generalLayout.font
+    },
+    navHeader: {
+        marginTop: 12.5,
+        flexDirection: "row",
+        borderBottomColor: theme.generalLayout.secondaryColor,
+        borderBottomWidth: 1,
+        width: "98%",
+        textAlign: "center",
+        alignItems: "center",
+    },
+    DrawerOverlay: {
+        alignSelf: "flex-start",
+        opacity: 0.75,
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderRadius: 10,
+        paddingVertical: 0,
+    },
+    ScrollView: {
+        flex: 1,
+        width: "100%",
+        paddingHorizontal: "5%",
+        paddingBottom: 20,
+        paddingTop: 20,
+    },
+    drawerBtn: {
+        marginTop: '1%',
+        marginLeft: '3%',
+        marginBottom: '3%',
+        borderRadius: 70
+    },
+    safeAreaContainer: {
+        flex: 1,
+        paddingTop: "7%",
+        backgroundColor: theme.generalLayout.backgroundColor,
+    },
+    container: {
+        flex: 1,
+        marginBottom: '25%'
+    },
+    containerInfo: {
+        margin: 20
+    },
+    containerGallery: {
+        flex: 1
+    },
+    containerImage: {
+        flex: 1 / 3
+
+    },
+    image: {
+        flex: 1,
+        aspectRatio: 1 / 1
+    }
 });
 function mapStateToProps(state) {
     return {
