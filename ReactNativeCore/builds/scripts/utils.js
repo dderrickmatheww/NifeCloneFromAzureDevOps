@@ -13,7 +13,7 @@ class Utils {
                     const cwd = process.cwd();
                     const cmd =  isApple ? `expo build:ios -t archive` : `expo build:android -t apk`;
                     this.functions.mesc.consoleLog({ msg: 'Build started!' });
-                    this.functions.mesc.loader();
+                    this.functions.mesc.loader({ msg: `Building ${ this.state.isApple ? '.ipa' : '.apk' }` });
                     await this.functions.build.exec({ cmd, cwd });
                     this.functions.mesc.clearLoader();
                     const answer = await this.functions.mesc.askQuestion({
@@ -48,7 +48,8 @@ class Utils {
                     let cmd = '';
                     const { isApple } = this.state;
                     let cmds = [
-                        ' eas submit', 
+                        ` SET EXPO_APPLE_APP_SPECIFIC_PASSWORD=${process.env.EXPO_APPLE_APP_SPECIFIC_PASSWORD}`,
+                        ' eas submit',
                         ' --platform=', 
                         ' --path=', 
                         ' --bundle-identifier='
@@ -56,8 +57,8 @@ class Utils {
                     const appleCmds = [
                         ' --apple-id=',
                         ' --apple-team-id=',
-                        ' --asc-app-id='
-                        // 'EXPO_APPLE_APP_SPECIFIC_PASSWORD='
+                        ' --asc-app-id=',
+                        ' --non-interactive'
                     ];
                     const androidCmds = [
 
@@ -66,7 +67,10 @@ class Utils {
                     for (let i = 0; i < cmds.length; i++) {
                         let task = cmds[i];
                         switch (task) {
-                            case ' eas submit': 
+                            case `SET EXPO_APPLE_APP_SPECIFIC_PASSWORD=${process.env.EXPO_APPLE_APP_SPECIFIC_PASSWORD}`:
+                                cmd += task;
+                                break;
+                            case ` eas submit`:
                                 cmd += task;
                                 break;
                             case ' --platform=': 
@@ -74,7 +78,7 @@ class Utils {
                                 cmd += task;
                                 break;
                             case ' --path=':
-                                task = task + `'${(isApple ? path.resolve('./builds/watcher/ipa', 'Payload.ipa') : path.resolve('../builds/watcher/apk', 'Payload.apk'))}'`;
+                                task = task + `${(isApple ? path.resolve('./builds/watcher/ipa', 'Payload.ipa') : path.resolve('../builds/watcher/apk', 'Payload.apk'))}`;
                                 cmd += task;
                                 break;
                             case ' --bundle-identifier=':
@@ -125,11 +129,15 @@ class Utils {
 ${ msg }
                     `);
                 },
-                loader: () => {
-                    const P = ['\\', '|', '/', '-'];
+                loader: ({ msg }) => {
+                    const P = [
+                        `${ msg } please wait... \\`, 
+                        `${ msg } please wait... |`, 
+                        `${ msg } please wait... /`, 
+                        `${ msg } please wait... -`];
                     let x = 0;
                     this.state.loader = setInterval(() => {
-                        process.stdout.write(` Building ${ this.state.isApple ? '.ipa' : '.apk' } please wait... \r${P[x++]}`);
+                        process.stdout.write(`\r${P[x++]}`);
                         x %= P.length;
                     }, 250);
                 },
