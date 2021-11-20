@@ -30,7 +30,7 @@ import {connect} from "react-redux";
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent(props, {navigation}){
+function CustomDrawerContent(props, { navigation }) {
   return(
       <DrawerContent {...props} navigate={navigation}/>
   ) 
@@ -240,7 +240,7 @@ class Navigator extends React.Component {
   }
 
  
-  Login ({route, navigation}){
+  Login ({ route, navigation }){
     const {user, friends, business, favorites, refresh, uploadImage} = route.params;
     return(
       <LoginScreen navigate={navigation} setIsBusiness={this.setIsBusiness} refresh={refresh} onSignUp={this.onSignUpStates} text={"Please login to continue!"} ></LoginScreen>
@@ -265,16 +265,65 @@ class Navigator extends React.Component {
                 backgroundColor: theme.generalLayout.backgroundColor
               }}
               initialRouteName='My Feed'
-              drawerContent={props => <CustomDrawerContent {...props} uploading={this.state.uploading} uploadImage={this.handleUploadImage} refresh={this.props.refresh} requests={this.props.friendRequests} friends={this.props.friendData} user={this.props.userData}/>}
+              drawerContent={
+                props => <CustomDrawerContent 
+                    {...props } 
+                    uploading={this.state.uploading} 
+                    uploadImage={this.handleUploadImage} 
+                    refresh={this.props.refresh} 
+                    requests={this.props.friendRequests} 
+                    friends={this.props.friendData} 
+                    user={this.props.userData}
+                    setIsBusiness={this.setIsBusiness}
+                    onSignUp={this.onSignUpStates} 
+                    text={"Please login to continue!"}
+                  />
+              }
               drawerType={"front"}
               overlayColor={"rgba(32, 35, 42, 0.50)"}
             >
               {/* <Drawer.Screen name="Test" component={TestingStack} /> */}
-              <Drawer.Screen name="Profile" component={Profile} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, business: this.props.businessData ? this.props.businessData : null, requests: this.props.friendRequests }}/>
-              <Drawer.Screen name="My Feed" component={Poppin} initialParams={{ uploadImage: this.handleUploadImage, user: this.props.userData, friends: this.props.friendData,  business: this.props.businessData ? this.props.businessData : null, favorites: this.state.favoritePlaceData}}/>
-              <Drawer.Screen name="Map" component={MapMain}/>
-              <Drawer.Screen name="Settings" component={Settings}  initialParams={{ user: this.state.userData, friends: this.state.friendData, refresh: this.props.refresh }}/>
-              <Drawer.Screen name="Login" component={ this.Login }  initialParams={{ user: this.state.userData, friends: this.state.friendData, refresh: this.props.refresh }}/>
+              <Drawer.Screen 
+              name="Profile" 
+              component={Profile} 
+              initialParams={{ 
+                uploadImage: this.handleUploadImage, 
+                user: this.props.userData, 
+                business: this.props.businessData ? this.props.businessData : null, 
+                requests: this.props.friendRequests 
+              }}/>
+              <Drawer.Screen 
+              name="My Feed" 
+              component={Poppin} 
+              initialParams={{ 
+                uploadImage: this.handleUploadImage, 
+                user: this.props.userData, 
+                friends: this.props.friendData,  
+                business: this.props.businessData ? this.props.businessData : null, 
+                favorites: this.state.favoritePlaceData
+              }}/>
+              <Drawer.Screen 
+                name="Map" 
+                component={ MapMain } 
+                options={{ lazy: false }}
+                lazy={false}
+              />
+              <Drawer.Screen 
+                name="Settings" 
+                component={Settings}  
+                initialParams={{ 
+                  user: this.state.userData, 
+                  friends: this.state.friendData, 
+                  refresh: this.props.refresh 
+                }}/>
+              <Drawer.Screen 
+                name="Login" 
+                component={ this.Login }  
+                initialParams={{ 
+                  user: this.state.userData, 
+                  friends: this.state.friendData, 
+                  refresh: this.props.refresh 
+                }}/>
             </Drawer.Navigator>
           </NavigationContainer>
         : 

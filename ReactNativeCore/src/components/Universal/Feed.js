@@ -40,7 +40,9 @@ function Feed(props) {
         user = user.length > 0 ? user : props.userData;
         let business = props.business;
         let favorites = props.favorites;
-        let friendFeedData = feed.length > 0 ? feed : props.feedData;
+        let friendFeedData = (feed.length > 0) ? feed : 
+        (feed.timeline && feed.timeline.length > 0) ? feed.timeline : 
+        (props.feedData.timeline && props.feedData.timeline.length > 0) ? props.feedData.timeline : [];
         let isFriendFeed = props.isFriendFeed;
         if (!isFriendFeed) {
             //get user data
@@ -120,12 +122,14 @@ function Feed(props) {
                 }
             }
         }
-        friendFeedData = friendFeedData ? [...friendFeedData.timeline] : [];
+        friendFeedData = friendFeedData ? [...friendFeedData] : [];
         feedData = feedData ? [...feedData] : [];
-        let data = [...friendFeedData, ...feedData];
-        data = Array.from(new Set(data.map(a => a.uid)))
-        .map(uid => data.find(a => a.uid === uid))
-        .sort(( a, b ) => b.time - a.time);
+        let data = (feedData.length > 0 && friendFeedData.length > 0 ? [...friendFeedData, ...feedData] : (feedData.length > 0 ? feedData : (friendFeedData.length > 0 ? friendFeedData : [])));
+        if (data.length > 0) {
+            data = Array.from(new Set(data.map(a => a.uid)))
+            .map(uid => data.find(a => a.uid === uid))
+            .sort(( a, b ) => b.time - a.time);
+        }
         setFeedData([]);
         setUserData(user);
         setRefresh(false);

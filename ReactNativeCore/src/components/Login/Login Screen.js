@@ -12,7 +12,8 @@ export default class LoginScreen extends Component {
     isLoggedin: firebase.auth().currentUser ? true : false,
     userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
     modalVisible: false,
-    isReset: false
+    isReset: false,
+    isBusiness: false
   }
   //Set login status
   setLoggedinStatus = async (dataObj) => {
@@ -116,18 +117,18 @@ export default class LoginScreen extends Component {
           </TouchableOpacity>
         </View>
         <NifeLoginModal  
-        setIsBusiness={this.props.setIsBusiness} 
-        isBusiness={this.state.isBusiness} 
-        onDismiss={() => this.setState({ modalVisible: false })} 
-        onSignUp={this.props.onSignUp} 
-        isReset={this.state.isReset} 
-        modalVisible={this.state.modalVisible} 
-        callback={() => {
-          if (this.props.navigate) {
-            this.setState({ modalVisible: false });
-            this.props.navigate.navigate("My Feed", { screen:"Friend's Feed", params: { refresh: this.props.refresh } });
-          }
-        }}
+          setIsBusiness={this.props.setIsBusiness} 
+          isBusiness={this.state.isBusiness} 
+          onDismiss={() => this.setState({ modalVisible: false })} 
+          onSignUp={this.props.onSignUp} 
+          isReset={this.state.isReset} 
+          modalVisible={this.state.modalVisible} 
+          callback={() => {
+            if (this.props.navigate) {
+              this.setState({ modalVisible: false });
+              this.props.navigate.navigate("My Feed", { screen:"Friend's Feed", params: { refresh: this.props.refresh } });
+            }
+          }}
       />
       </View>
     );

@@ -5,7 +5,8 @@ import {
   Text,
   View,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
 // import { AirbnbRating } from 'react-native-ratings';
@@ -346,18 +347,26 @@ const styles = StyleSheet.create({
     paddingHorizontal:5
   },
   tab:{
-    width:"100%",
+    ...Platform.select({
+        ios: {
+          width: "33%",
+        },
+        android: {
+            width: "100%",
+        },
+    }),
     borderColor:theme.generalLayout.secondaryColor,
     marginVertical:5
   },
   tabOff:{
     width:"100%",
-    color:"gray",
-    paddingHorizontal:30
+    color: theme.icons.color,
+    paddingHorizontal:30,
+    fontFamily: theme.generalLayout.font
   },
   tabOn:{
     width:"100%",
-    color:theme.generalLayout.textColor,
+    color :theme.generalLayout.textColor,
     paddingHorizontal:30,
     fontFamily: theme.generalLayout.font
   },
@@ -365,7 +374,7 @@ const styles = StyleSheet.create({
     borderTopWidth:1,
     borderBottomWidth:1,
     borderColor:theme.generalLayout.secondaryColor,
-    width:"100%",
+    width: "100%",
     flexDirection:"row",
     justifyContent:"space-evenly",
     marginTop:5,

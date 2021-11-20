@@ -36,7 +36,7 @@ class WhatsPoppin extends React.Component  {
     }
 
     async componentDidMount () {
-        await this.grabFeedData();
+        this.grabFeedData();
     }
 
     rerender = this.props.navigation.addListener('focus', () => {
@@ -69,7 +69,7 @@ class WhatsPoppin extends React.Component  {
                     refresh: false,
                     isLoggedIn: firebase.auth().currentUser ? true : false,
                     user: this.props.user,
-                    feedLoadDone:true
+                    feedLoadDone: true
                 });
             });
         }
@@ -156,81 +156,75 @@ class WhatsPoppin extends React.Component  {
                         </View>
                     </View>
                     {/* <InputWithIcon styles={styles.searchBar} name={'ios-mail'} color={'black'} size={12} placeHolderText={'Search...'} returnKey={'search'} secureText={false} onChangeText={(text, type) => this.onChangeText(text, type)} type={'name'} keyboardType={'default'} value={this.state.query} onSubmit={(text, eventCount, target) => this.OnSubmit(text, eventCount, target)}/> */}
-                    {this.state.feedData ?
-                    this.state.feedData.countData && this.state.feedData.countData.length > 0 || this.state.feedData.businessStatus && this.state.feedData.businessStatus.length > 0 ?
-                    <ScrollView 
-                        style={localStyles.dataRowScrollView}
-                        refreshControl={
-                            <RefreshControl 
-                                refreshing={this.state.refresh} 
-                                onRefresh={this.onRefresh}  
-                                size={22}
-                                color={[theme.loadingIcon.color]}
-                                tintColor={theme.loadingIcon.color}
-                                title={'Loading...'}
-                                titleColor={theme.loadingIcon.textColor}
-                            />
-                        }
-                    >
-                        
-                        {
-                            this.state.feedData.countData.map(data => (
-                                <DataRow 
-                                    key={ data.buisnessUID }
-                                    buisnessUID={ data.buisnessUID }
-                                    phone={ data.buisnessData.phone }
-                                    name={ data.buisnessData.name }
-                                    barImage={ data.buisnessData.barPhoto }
-                                    address={ data.buisnessData.address ? data.buisnessData.address.split(',') : null }
-                                    lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
-                                    long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
-                                    modalVisability={ this.state.modalVisable }
-                                    userData={ data.users }
-                                    user={ this.state.user }
-                                    usersCheckedIn={ data.checkedIn }
-                                    email={this.state.user.email}
-                                    favoriteABar={(buisnessUID, boolean, buisnessName) => {this.favoriteABar(buisnessUID, boolean, buisnessName)}}
-                                />
-                            ))
-                        }
+                    {
+                    this.state.feedData ?
+                        this.state.feedData.checkInArray && this.state.feedData.checkInArray.length > 0 || 
+                        this.state.feedData.businessTimeline && this.state.feedData.businessTimeline.length > 0 ?
+                            <ScrollView 
+                                style={localStyles.dataRowScrollView}
+                                refreshControl={
+                                    <RefreshControl 
+                                        refreshing={this.state.refresh} 
+                                        onRefresh={this.onRefresh}  
+                                        size={22}
+                                        color={[theme.loadingIcon.color]}
+                                        tintColor={theme.loadingIcon.color}
+                                        title={'Loading...'}
+                                        titleColor={theme.loadingIcon.textColor}
+                                    />
+                                }
+                            >
+                                
+                                {
+                                    this.state.feedData.checkInArray.map(data => (
+                                        <DataRow 
+                                            key={ data.buisnessUID }
+                                            buisnessUID={ data.buisnessUID }
+                                            phone={ data.buisnessData.phone }
+                                            name={ data.buisnessData.name }
+                                            barImage={ data.buisnessData.barPhoto }
+                                            address={ data.buisnessData.address ? data.buisnessData.address.split(',') : null }
+                                            lat={ data.buisnessData.latAndLong.split(',')[0] ? data.buisnessData.latAndLong.split(',')[0] :  null }
+                                            long={ data.buisnessData.latAndLong.split(',')[1] ? data.buisnessData.latAndLong.split(',')[1] : null }
+                                            modalVisability={ this.state.modalVisable }
+                                            userData={ data.users }
+                                            user={ this.state.user }
+                                            usersCheckedIn={ data.checkedIn }
+                                            email={this.state.user.email}
+                                            favoriteABar={(buisnessUID, boolean, buisnessName) => {this.favoriteABar(buisnessUID, boolean, buisnessName)}}
+                                        />
+                                    ))
+                                }
 
-                        {
-                            this.state.feedData.businessStatus.map(item => (
-                                <View style={ localStyles.feedDataRow }  key={ item.uid }>
-                                    <Avatar.Image source={ item.image ? { uri: item.image } : defPhoto } size={50}/>
-                                    <Text style={ localStyles.displayName }>
-                                            { item.username ? item.username : null }
-                                            { item.name }
-                                        {
-                                            this.props.user &&  this.props.user.isBusiness ?
-                                                <Caption
-                                                    style={ localStyles.feedType }>{ "   " + props.business.City + ", " + props.business.State }
-                                                </Caption> 
-                                            : 
-                                                null
-                                        }
-                                    </Text>
-                                    <Caption style={ localStyles.feedType }>{ item.visited ? "Took a visit" : item.checkedIn ? "Checked in" : item.event ? "Booked an event" : item.specials ? "Has a new special" : "Status update" }</Caption>
-                                    <View>
-                                        <Paragraph style={ localStyles.Paragraph }>{ item.text }</Paragraph>
-                                        {
-                                            item.statusImage ?
-                                                <Image
-                                                    resizeMethod="auto"
-                                                    resizeMode="contain"
-                                                    style={{ flex: 1, resizeMode:'contain', aspectRatio:1}}
-                                                    source={{ uri: item.statusImage }}
-                                                />
-                                            : 
-                                                null
-                                        }
-                                    </View>
-                                    <Caption style={localStyles.Caption}>{ Util.date.TimeSince(item.time._seconds ? item.time._seconds * 1000 : item.time.seconds * 1000) } ago</Caption>
-                                </View>
-                            ))
-                        }           
-                        <View style={{ height: 120 }} />
-                    </ScrollView> 
+                                {
+                                    this.state.feedData.businessTimeline.map(item => (
+                                        <View style={ localStyles.feedDataRow }  key={ item.uid }>
+                                            <Avatar.Image source={ item.image ? { uri: item.image } : defPhoto } size={50}/>
+                                            <Text style={ localStyles.displayName }>
+                                                    { item.username ? item.username : null }
+                                                    { item.name }
+                                            </Text>
+                                            <Caption style={ localStyles.feedType }>{ item.visited ? "Took a visit" : item.checkedIn ? "Checked in" : item.event ? "Booked an event" : item.specials ? "Has a new special" : "Status update" }</Caption>
+                                            <View>
+                                                <Paragraph style={ localStyles.Paragraph }>{ item.text }</Paragraph>
+                                                {
+                                                    item.statusImage ?
+                                                        <Image
+                                                            resizeMethod="auto"
+                                                            resizeMode="contain"
+                                                            style={{ flex: 1, resizeMode:'contain', aspectRatio:1}}
+                                                            source={{ uri: item.statusImage }}
+                                                        />
+                                                    : 
+                                                        null
+                                                }
+                                            </View>
+                                            <Caption style={localStyles.Caption}>{ Util.date.TimeSince(item.time._seconds ? item.time._seconds * 1000 : item.time.seconds * 1000) } ago</Caption>
+                                        </View>
+                                    ))
+                                }           
+                                <View style={{ height: 120 }} />
+                            </ScrollView> 
                     :
                     <View style={localStyles.viewDark}>
                         <ScrollView 

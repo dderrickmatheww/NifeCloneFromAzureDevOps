@@ -210,8 +210,8 @@ export default class NifeLoginModal extends Component {
                 </Modal>
                 :
                     this.state.signUp ?
-                        this.props.isBusiness  ?
-                            this.state.bussinessApplicationPt2  == false ?
+                        this.props.isBusiness ?
+                            this.state.bussinessApplicationPt2 == false ?
                             // nife business sign up
                                 //businiess app pt 1
                                 <Modal

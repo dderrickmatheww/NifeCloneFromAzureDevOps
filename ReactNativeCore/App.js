@@ -4,9 +4,14 @@ import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './src/scripts/Util';
 import themeUtil from './src/styles/theme'
+
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { createStore } from "redux";
 import { Provider } from 'react-redux'
+import { LogBox } from 'react-native';
+
+// Ignore log notification by message
+LogBox.ignoreAllLogs();
 
 if (! global.btoa) {global.btoa = encode}
 if (! global.atob) {global.atob = decode}
@@ -14,7 +19,6 @@ if (! global.atob) {global.atob = decode}
 //Intialize Firebase Database
 firebase.initializeApp(Util.dataCalls.Firebase.config);
 
-console.disableYellowBox = true;
 const initialState = {
   userData: null,
   friendData: null,

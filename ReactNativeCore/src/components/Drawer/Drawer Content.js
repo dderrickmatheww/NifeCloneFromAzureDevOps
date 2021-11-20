@@ -299,7 +299,7 @@ export function DrawerContent(props) {
                     )}
                     label={()=> <Text style={styles.text}>Sign Out</Text>}
                     onPress={() => { Util.dataCalls.Firebase.signOut(() => {
-                        props.navigation.navigate('Login');
+                        props.navigation.navigate('Login', { screen: "LoginScreen", params: { setIsBusiness: props.setIsBusiness, onSignUp: props.onSignUp, text: "Please login to continue!" }});
                     })}}
                 />
             </Drawer.Section>
