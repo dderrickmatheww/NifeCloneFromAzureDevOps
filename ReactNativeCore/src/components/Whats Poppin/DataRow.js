@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, Platform } from 'react-native';
 import { styles } from '../../../src/styles/style';
 import theme from '../../../src/styles/theme';
 import {
@@ -83,18 +83,18 @@ export default class DataRow extends React.Component  {
                         </View>
                 </View>
                 <View style={localStyles.tabCont}>
-                    <TouchableOpacity style={[styles.tab]} onPress={ () => this.toggleTab({details:true}) }>
+                    <TouchableOpacity style={[localStyles.tab]} onPress={ () => this.toggleTab({details:true}) }>
                         <Text style={this.state.DetailsTab ? localStyles.tabOff : localStyles.tabOn}>
                         Details
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.toggleTab({events:true}) } style={[styles.tab, {borderRightWidth:1, borderLeftWidth:1, borderRightColor: theme.LIGHT_PINK , borderLeftColor: theme.LIGHT_PINK }]}>
+                    <TouchableOpacity onPress={() => this.toggleTab({events:true}) } style={[localStyles.tab, {borderRightWidth:1, borderLeftWidth:1, borderRightColor: theme.LIGHT_PINK , borderLeftColor: theme.LIGHT_PINK }]}>
                         <Text style={this.state.EventsTab ? localStyles.tabOff : localStyles.tabOn}>
                         Events
                         </Text>
 
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={ () => this.toggleTab({specials:true}) } style={[styles.tab]}>
+                    <TouchableOpacity onPress={ () => this.toggleTab({specials:true}) } style={[localStyles.tab]}>
                         <Text style={this.state.SpecialsTab ? localStyles.tabOff : localStyles.tabOn}>
                         Specials
                         </Text>
@@ -236,6 +236,18 @@ const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor,
         paddingHorizontal:30,
         fontFamily: theme.generalLayout.font
+      },
+      tab:{
+        ...Platform.select({
+            ios: {
+              width: "33%",
+            },
+            android: {
+                width: "100%",
+            },
+        }),
+        borderColor:theme.generalLayout.secondaryColor,
+        marginVertical:5
       },
     tabCont:{
         borderTopWidth:1,
