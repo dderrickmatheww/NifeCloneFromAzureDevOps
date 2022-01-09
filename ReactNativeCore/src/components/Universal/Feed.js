@@ -172,7 +172,7 @@ function Feed(props) {
                     }
                     renderItem={({ item }) => (
                         <View style={ localStyles.feedDataRow }>
-                            <Avatar.Image source={ item.image ? { uri: item.image } : defPhoto } size={50}/>
+                            <Avatar.Image source={ item.image && item.image !== "Unknown" ? { uri: item.image } : defPhoto } size={50}/>
                             <Text style={ localStyles.displayName }>
                                     { item.username ? item.username : null }
                                     { item.name }

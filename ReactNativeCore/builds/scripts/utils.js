@@ -8,18 +8,30 @@ class Utils {
     constructor() {
         this.functions = {
             build: {
-                expo_build: async (isApple) => {
-                    this.state.isApple = isApple;
+                expo_build: async ({ isApple, both }) => {
                     const cwd = process.cwd();
-                    const cmd =  isApple ? `expo build:ios -t archive` : `expo build:android -t apk`;
+                    let cmd;
+                    if (both) {
+                        this.state.both = both;
+                        cmd = [`expo build:ios -t archive`, `expo build:android -t apk`];
+                    }
+                    else {
+                        this.state.isApple = isApple;
+                        cmd =  isApple ? `expo build:ios -t archive` : `expo build:android -t apk`;
+                    }
                     this.functions.mesc.consoleLog({ msg: 'Build started!' });
-                    this.functions.mesc.loader({ msg: `Building ${ this.state.isApple ? '.ipa' : '.apk' }` });
-                    await this.functions.build.exec({ cmd, cwd });
+                    this.functions.mesc.loader({ msg: `Building ${ this.state.isApple ? '.ipa' : both ? 'both an .ipa (iOS) & .apk (android)' : '.apk' }` });
+                    if (typeof cmd == 'string') {
+                        await this.functions.build.exec({ cmd, cwd });
+                    }
+                    else {
+                        cmd.forEach(async (cmd) => { await this.functions.build.exec({ cmd, cwd }); });
+                    }
                     this.functions.mesc.clearLoader();
                     const answer = await this.functions.mesc.askQuestion({
                         type: 'input',
                         name: 'isFileMoved',
-                        message: "Please move the build file produced by expo to the file path MobileAppDevelopment/build/watcher! Enter 'y' or 'yes' when finished!"
+                        message: `Please move the build file produced by expo to the file path MobileAppDevelopment/ReactNativeCore/build/watcher/${ isApple ? 'ipa' : both ? 'ipa & /apk' : 'apk' }! Enter 'y' or 'yes' when finished`
                     });
                     if (answer.isFileMoved.toLowerCase() === 'yes' || answer.isFileMoved.toLowerCase() === 'y') {
                         this.functions.build.cmd()
@@ -46,7 +58,7 @@ class Utils {
                 },
                 cmd: () => {
                     let cmd = '';
-                    const { isApple } = this.state;
+                    const { isApple, both } = this.state;
                     let cmds = [
                         ` SET EXPO_APPLE_APP_SPECIFIC_PASSWORD=${process.env.EXPO_APPLE_APP_SPECIFIC_PASSWORD}`,
                         ' eas submit',
@@ -147,7 +159,9 @@ ${ msg }
             }
         }
         this.state = { 
-            loader: null
+            loader: null,
+            isApple: false,
+            both: false
         }
     }
 }

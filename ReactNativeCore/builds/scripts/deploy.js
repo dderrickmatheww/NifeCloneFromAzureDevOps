@@ -16,10 +16,14 @@ switch (arg1) {
             case 'android':
                 utils.functions.build.expo_build({ isApple: false });
                 break;
+            case 'both':
+                utils.functions.build.expo_build({ both: true });
+                break;
             default:
                 utils.functions.mesc.consoleLog({ msg: `The second argument didn't match one of the following:
                     - 'ios'
-                    - 'andriod'`});
+                    - 'andriod'
+                    - 'both'`});
                 break;
         }
         break;

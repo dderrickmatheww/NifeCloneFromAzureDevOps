@@ -107,7 +107,6 @@ class MapScreen extends React.Component  {
         }
       }
       else {
-
         Util.business.getNifeBusinessesNearby(this.props.user, (nifeData) => {
           if(nifeData && nifeData.length > 0) {
             this.setState({nifeBusinesses: nifeData.map(bus => bus.id)});

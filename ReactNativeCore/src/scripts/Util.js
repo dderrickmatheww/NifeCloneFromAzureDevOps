@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 import {
     YELP_PLACE_KEY,
     ClientKey,
@@ -19,11 +19,10 @@ import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
-import {isPointWithinRadius, getDistance} from 'geolib';
+import { isPointWithinRadius, getDistance } from 'geolib';
 import * as ImagePicker from 'expo-image-picker';
 import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
-import { proc } from 'react-native-reanimated';
 import uuid from 'react-native-uuid';
 
 // const YELP_PLACE_KEY = process.env.YelpApiKey,
@@ -416,39 +415,39 @@ const Util = {
                 address,
                 image,
                 userImage,
-                displayName
+                displayName,
+                buisnessUID,
+                email
             } = checkInObj;
             let lastVisited = {};
-            lastVisited[checkInObj.buisnessUID] = {
+            lastVisited[buisnessUID] = {
                 checkInTime: new Date(),
-                latAndLong: latAndLong,
-                privacy: privacy,
+                latAndLong,
+                privacy,
                 name: barName,
-                phone: phone,
-                address: address,
+                phone,
+                address,
                 barPhoto: image,
                 image: userImage,
                 uid: uuid.v4(),
                 username: displayName
             }
             if (!data) {
-                feed.set({
-                    [checkInObj.email]: {
-                        checkIn: {
-                            checkInTime: new Date(),
-                            latAndLong: latAndLong,
-                            buisnessUID: buisnessUID,
-                            privacy: privacy,
-                            name: barName,
-                            phone: phone,
-                            address: address,
-                            barPhoto: image,
-                            image: userImage,
-                            uid: uuid.v4(),
-                            username: displayName
-                        },
-                        lastVisited
-                    }
+                feed.doc(email).set({
+                    checkIn: {
+                        checkInTime: new Date(),
+                        latAndLong,
+                        buisnessUID,
+                        privacy,
+                        name: barName,
+                        phone,
+                        address,
+                        barPhoto: image,
+                        image: userImage,
+                        uid: uuid.v4(),
+                        username: displayName
+                    },
+                    lastVisited
                 })
                 .then(() => {
                     Util.basicUtil.consoleLog('CheckIn', true);
@@ -465,13 +464,13 @@ const Util = {
                 setLoc.set({
                     checkIn: {
                         checkInTime: new Date(),
-                        latAndLong: checkInObj.latAndLong,
-                        buisnessUID: checkInObj.buisnessUID,
-                        privacy: checkInObj.privacy,
-                        name: checkInObj.barName,
-                        phone: checkInObj.phone,
-                        address: checkInObj.address,
-                        barPhoto: checkInObj.image,
+                        latAndLong,
+                        buisnessUID,
+                        privacy,
+                        name: barName,
+                        phone,
+                        address,
+                        barPhoto: image,
                         image: userImage,
                         uid: uuid.v4(),
                         username: displayName
@@ -978,7 +977,28 @@ const Util = {
                 user: user
             }
             if (user && typeof obj.user !== 'undefined') {
-                await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getNifeBusinessesNearby',
+                if (!user.loginLocation) {
+                    Util.location.GetUserLocation(async () => {
+                        await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getNifeBusinessesNearby',
+                        {
+                            method: 'POST',
+                            body: JSON.stringify(obj)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (cb) {
+                                cb(data.result);
+                            }
+                            Util.basicUtil.consoleLog('getNifeBusinessesNearby', true);
+                        })
+                        .catch((error) => {
+                            Util.basicUtil.Alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
+                            Util.basicUtil.consoleLog('getNifeBusinessesNearby', false);
+                        });
+                    }, user);
+                }
+                else {
+                    await fetch('https://us-central1-nife-75d60.cloudfunctions.net/getNifeBusinessesNearby',
                     {
                         method: 'POST',
                         body: JSON.stringify(obj)
@@ -994,6 +1014,7 @@ const Util = {
                         Util.basicUtil.Alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
                         Util.basicUtil.consoleLog('getNifeBusinessesNearby', false);
                     });
+                }  
             }
         }
 
