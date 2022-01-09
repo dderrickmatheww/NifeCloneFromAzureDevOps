@@ -37,7 +37,6 @@ Notifications.setNotificationHandler({
 export function DrawerContent(props) {
     useEffect(() => {
         const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-            console.log('addNotificationResponseReceivedListener hit');
             if(response.notification.request.content.data.isFriendRequest) {
                 Util.user.GetUserData(firebase.auth().currentUser.email, (user) => {
                     props.refresh(user);

@@ -222,7 +222,7 @@ class FriendsFeed extends React.Component {
                             isVisible={this.state.eventModalVisable}
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
-                            onSave={() => this.onSave({events: true})}
+                            onSave={() => this.onSave({ events: true })}
                             refresh={this.refresh}
                             business={this.state.businessData}
                         >
@@ -236,7 +236,7 @@ class FriendsFeed extends React.Component {
                             isVisible={this.state.specialsModalVisable}
                             user={this.state.userData}
                             onDismiss={() => this.onDismiss()}
-                            onSave={() => this.onSave({specials: true})}
+                            onSave={() => this.onSave({ specials: true })}
                             refresh={this.refresh}
                             business={this.state.businessData}
                         >

@@ -175,8 +175,8 @@ const Util = {
                     .then(response => response.json())
                     .then(async data => {
                         if (data.error) {
-                            Util.basicUtil.Alert('Function getFeed - Error message:', data.error, null);
-                            Util.basicUtil.consoleLog('getFeed', false);
+                            Util.basicUtil.Alert('Function VerifyUser - Error message:', data.error, null);
+                            Util.basicUtil.consoleLog('VerifyUser', false);
                             return false;
                         }
                         if (callback) {
@@ -280,8 +280,8 @@ const Util = {
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
-                            Util.basicUtil.Alert('Function getFeed - Error message:', data.error, null);
-                            Util.basicUtil.consoleLog('getFeed', false);
+                            Util.basicUtil.Alert('Function GetUserData - Error message:', data.error, null);
+                            Util.basicUtil.consoleLog('GetUserData', false);
                             return false;
                         }
                         if (callback) {
@@ -347,27 +347,51 @@ const Util = {
             let userFeed = await userRef.get();
             updateObject['uid'] = uuid.v4();
             let data = userFeed.data();
-            if (typeof updateObject !== 'undefined' && data) {
-                if (data.timeline) {
-                    data.timeline.push(updateObject);
-                    userRef.set(data, { merge: true })
-                    .then(() => {
-                        Util.basicUtil.consoleLog('UpdateFeed', true);
-                        if (callback) {
-                            callback(data);
-                        }
-                    })
-                    .catch((error) => {
-                        Util.basicUtil.consoleLog('UpdateFeed', false);
-                        Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
-                    });
+            Util.location.GetUserLocation((userLocation) => { 
+                if (typeof updateObject !== 'undefined' && data) {
+                    updateObject['location'] = userLocation;
+                    if (data.timeline) {
+                        data.timeline.push(updateObject);
+                        userRef.set(data, { merge: true })
+                        .then(() => {
+                            Util.basicUtil.consoleLog('UpdateFeed', true);
+                            if (callback) {
+                                callback(data);
+                            }
+                        })
+                        .catch((error) => {
+                            Util.basicUtil.consoleLog('UpdateFeed', false);
+                            Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                        });
+                    }
+                    else {
+                        data['timeline'] = [];
+                        data.timeline.push(updateObject);
+                        userRef.set(data, { merge: true })
+                        .then(() => {
+                            Util.basicUtil.consoleLog('UpdateFeed', true);
+                            if (callback) {
+                                callback();
+                            }
+                        })
+                        .catch((error) => {
+                            Util.basicUtil.consoleLog('UpdateFeed', false);
+                            Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                        });
+                    }
                 }
                 else {
-                    data['timeline'] = [];
-                    data.timeline.push(updateObject);
-                    userRef.set(data, { merge: true })
+                    var userFeedStatus = {
+                        checkIn: {},
+                        lastVisited: {},
+                        timeline: [],
+                        isBusiness: updateObject.isBusiness,
+                    }
+                    updateObject['location'] = userLocation;
+                    userFeedStatus.timeline.push(updateObject);
+                    userRef.set(userFeedStatus)
                     .then(() => {
-                        Util.basicUtil.consoleLog('UpdateFeed', true);
+                        Util.basicUtil.consoleLog('UpdateUser', true);
                         if (callback) {
                             callback();
                         }
@@ -376,28 +400,8 @@ const Util = {
                         Util.basicUtil.consoleLog('UpdateFeed', false);
                         Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
                     });
-                }
-            }
-            else {
-                var userFeedStatus = {
-                    checkIn: {},
-                    lastVisited: {},
-                    timeline: [],
-                    isBusiness: updateObject.isBusiness
-                }
-                userFeedStatus.timeline.push(updateObject);
-                userRef.set(userFeedStatus)
-                .then(() => {
-                    Util.basicUtil.consoleLog('UpdateUser', true);
-                    if (callback) {
-                        callback();
-                    }
-                })
-                .catch((error) => {
-                    Util.basicUtil.consoleLog('UpdateFeed', false);
-                    Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
-                });
-            }
+                }   
+            });
         },
         CheckIn: async (checkInObj, callback) => {
             let db = firebase.firestore();
@@ -1044,9 +1048,22 @@ const Util = {
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
             if (!query) {
                 Util.location.GetUserLocation((userLocation) => {
-                    Util.location.checkUserCheckInCount(null, userLocation, (dataObj) => {
-                        returnData(dataObj)
+                    let obj = {
+                        userLocation: userLocation
+                    }
+                    fetch('https://us-central1-nife-75d60.cloudfunctions.net/whatsPoppinFeed',
+                    {
+                        method: 'POST',
+                        body: JSON.stringify(obj)
                     })
+                    .then(response => response.json())
+                    .then(data => {
+                        returnData(data.result);
+                        Util.basicUtil.consoleLog('GrabWhatsPoppinFeed', true);
+                    }).catch((error) => {
+                        Util.basicUtil.Alert('Function GrabWhatsPoppinFeed - Error message:', error.message, null);
+                        Util.basicUtil.consoleLog('GrabWhatsPoppinFeed', false);
+                    });
                 });
             }
         },
@@ -1057,7 +1074,7 @@ const Util = {
                 userLocation: userLocation
             }
             if (userLocation) {
-                fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInCount',
+                fetch('https://us-central1-nife-75d60.cloudfunctions.net/checkInForBuisness',
                     {
                         method: 'POST',
                         body: JSON.stringify(obj)

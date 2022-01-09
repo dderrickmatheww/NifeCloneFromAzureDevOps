@@ -22,7 +22,7 @@ const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 class BarModal extends React.Component  {
 
   state = {
-    userData: firebase.auth().currentUser ? firebase.auth().currentUser : null,
+    userData: this.props.user,
     isVisible: this.props.isVisible ? true : false,
     distance: null,
     checkedIn: "",
@@ -31,7 +31,8 @@ class BarModal extends React.Component  {
     SpecialsTab: false,
     businessData: null,
     loadingBusiness: false,
-    navModal: false
+    navModal: false,
+    distanceBetween: 0.0
   }
 
   toggleModal = (boolean) => {
@@ -39,26 +40,23 @@ class BarModal extends React.Component  {
   }
 
   toggleNavModal = (boolean) => {
-    this.setState({navModal: boolean});
+    this.setState({ navModal: boolean });
   }
 
   componentDidMount() {
-    this.setState({userData: this.props.user});
     Util.location.DistanceBetween(this.props.latitude, this.props.longitude, this.props.userLocation, (distance) => {
-      distance = distance.toFixed(1);
-      this.setState({
-        distanceBetween: distance
+      let parsedDistance = distance.toFixed(1);
+      this.setState({ loadingBusiness: true });
+      Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
+        Util.business.GetBusinessByUID(this.props.buisnessUID, (data) => {
+          this.setState({
+            distanceBetween: parsedDistance,
+            businessData: data,
+            checkedIn: dataObj.length,
+            loadingBusiness: false
+          });
+        });
       });
-    });
-    Util.location.checkUserCheckInCount(this.props.buisnessUID, this.props.userLocation, (dataObj) => {
-      this.setState({
-        checkedIn: dataObj.length
-      });
-    });
-    this.setState({loadingBusiness: true});
-    Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-      this.setState({businessData: data});
-      this.setState({loadingBusiness: false});
     });
   }
 

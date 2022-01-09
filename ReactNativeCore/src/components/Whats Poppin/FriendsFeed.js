@@ -39,7 +39,7 @@ const screen = Dimensions.get("window");
     onSave = (updated) => {
         let { status, events, specials} = updated;
         this.setState({
-            statusModalVisable: false, 
+            modalVisable: false, 
             snackBarVisable: true
         });
         if (status) {
@@ -130,7 +130,7 @@ const screen = Dimensions.get("window");
                         user={this.state.userData}
                         refresh={this.refresh}
                         onDismiss={this.onDismiss}
-                        onSave={this.onSave}
+                        onSave={() => this.onSave({ status: true })}
                     />
                   :
                     null

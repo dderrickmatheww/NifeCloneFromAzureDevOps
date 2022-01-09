@@ -12,11 +12,6 @@ import { connect } from "react-redux";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 // const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 var { width, height } = Dimensions.get('window');
-var ASPECT_RATIO = width / height;
-var LATITUDE_DELTA = 0.0922;
-var LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-var LATITUDE;
-var LONGITUDE;
 
 class MapScreen extends React.Component  {
  
@@ -46,32 +41,37 @@ class MapScreen extends React.Component  {
     isSearch: false,
     nifeBusinesses:[],
     yelpBusIds:[],
+    LATITUDE_DELTA: 0.0922,
+    LONGITUDE_DELTA: 0.0922 * (width / height),
+    LATITUDE: null,
+    LONGITUDE: null
   };
   
 
 
   OnChangeMapRegion = (autoCompUpdate) => {
+   
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
       let isSearchBar = this.state.searchParam != "";
-      LATITUDE = userLocation.latitude;
-      LONGITUDE = userLocation.longitude;
+      this.setState({ LATITUDE: userLocation.latitude });
+      this.setState({ LONGITUDE: userLocation.longitude });
       let baseURL = 'https://api.yelp.com/v3/businesses/search?';
       let params;
       if(isSearchBar) {
-        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, isSearchBar, this.state.searchParam, region);
+        params = Util.dataCalls.Yelp.buildParameters(this.state.LATITUDE, this.state.LONGITUDE, 40000, isSearchBar, this.state.searchParam, region);
       }
       else {
-        params = Util.dataCalls.Yelp.buildParameters(LATITUDE, LONGITUDE, 40000, isSearchBar, "", region);
+        params = Util.dataCalls.Yelp.buildParameters(this.state.LATITUDE, this.state.LONGITUDE, 40000, isSearchBar, "", region);
       }
       await this.gatherLocalMarkers(this.state.friendData, userLocation, baseURL, params, isSearchBar, autoCompUpdate);
       this.setState({ 
         isLoaded: true,
         region: {
-          latitude: LATITUDE,
-          longitude: LONGITUDE,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
+          latitude: this.state.LATITUDE,
+          longitude: this.state.LONGITUDE,
+          latitudeDelta: this.state.LATITUDE_DELTA,
+          longitudeDelta: this.state.LONGITUDE_DELTA
         }
       });
     });
@@ -80,15 +80,15 @@ class MapScreen extends React.Component  {
   recenter = ( ) => {
     Util.location.GetUserLocation(async (loc, region) => {
       let userLocation = loc.coords;
-      LATITUDE = userLocation.latitude;
-      LONGITUDE = userLocation.longitude;
+      this.setState({ LATITUDE: userLocation.latitude });
+      this.setState({ LONGITUDE: userLocation.longitude });
       this.setState({
         isLoaded: true,
         region: {
-          latitude: LATITUDE,
-          longitude: LONGITUDE,
-          latitudeDelta: LATITUDE_DELTA,
-          longitudeDelta: LONGITUDE_DELTA
+          latitude: this.state.LATITUDE,
+          longitude: this.state.LONGITUDE,
+          latitudeDelta: this.state.LATITUDE_DELTA,
+          longitudeDelta: this.state.LONGITUDE_DELTA
         }
       });
     });
@@ -166,8 +166,7 @@ class MapScreen extends React.Component  {
     var wantedPlace;
     var friendState = this.state.friendData;
     places.forEach(function(place){
-      if(place.id == key){
-        console.log(place)
+      if(place.id == key) {
         wantedPlace = place;
         let friends = friendState;
         if(friends && friends.length > 0){
@@ -183,16 +182,18 @@ class MapScreen extends React.Component  {
       region: {
         latitude: wantedPlace.coordinates.latitude,
         longitude: wantedPlace.coordinates.longitude,
+        latitudeDelta: this.state.LATITUDE_DELTA,
+        longitudeDelta: this.state.LONGITUDE_DELTA
       },
       modalProps:{
-        source:{uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url},
-        barName:wantedPlace.name, 
-        rating:wantedPlace.rating,
-        reviewCount:wantedPlace.review_count,
+        source: { uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url },
+        barName: wantedPlace.name, 
+        rating: wantedPlace.rating,
+        reviewCount: wantedPlace.review_count,
         price: wantedPlace.price,
         phone: wantedPlace.display_phone,
         closed: wantedPlace.is_closed,
-        address: ""+ wantedPlace.location.display_address[0] + ", " + wantedPlace.location.display_address[1],
+        address: `${wantedPlace.location.display_address[0]}, ${wantedPlace.location.display_address[1]}`,
         id: wantedPlace.id,
         friendsData: tempFriendArr,
         longitude: wantedPlace.coordinates.longitude,
@@ -220,7 +221,7 @@ class MapScreen extends React.Component  {
   
   generateFriendBubbles = (friend) => {
     return(
-      <Image style={localStyles.friendPic} source={{uri:friend.item.photoSource}}/>
+      <Image style={ localStyles.friendPic } source={{ uri: friend.item.photoSource }}/>
     )
   }
   
