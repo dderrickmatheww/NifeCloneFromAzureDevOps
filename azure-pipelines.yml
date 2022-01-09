@@ -16,6 +16,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    npm install
     node builds/scripts/deploy.js deploy ios
     node builds/scripts/deploy.js deploy android
   displayName: 'Run build scripts'
