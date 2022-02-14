@@ -346,6 +346,66 @@ const Util = {
             let userFeed = await userRef.get();
             updateObject['uid'] = uuid.v4();
             let data = userFeed.data();
+            if (updateObject.isBusiness) {
+                Util.location.getBusinessLocation(
+                    ({ loc }) => {
+                    if (typeof updateObject !== 'undefined' && data) {
+                        updateObject['location'] = loc;
+                        if (data.timeline) {
+                            data.timeline.push(updateObject);
+                            userRef.set(data, { merge: true })
+                            .then(() => {
+                                Util.basicUtil.consoleLog('UpdateFeed', true);
+                                if (callback) {
+                                    callback(data);
+                                }
+                            })
+                            .catch((error) => {
+                                Util.basicUtil.consoleLog('UpdateFeed', false);
+                                Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                            });
+                        }
+                        else {
+                            data['timeline'] = [];
+                            data.timeline.push(updateObject);
+                            userRef.set(data, { merge: true })
+                            .then(() => {
+                                Util.basicUtil.consoleLog('UpdateFeed', true);
+                                if (callback) {
+                                    callback();
+                                }
+                            })
+                            .catch((error) => {
+                                Util.basicUtil.consoleLog('UpdateFeed', false);
+                                Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                            });
+                        }
+                    }
+                    else {
+                        var userFeedStatus = {
+                            checkIn: {},
+                            lastVisited: {},
+                            timeline: [],
+                            isBusiness: updateObject.isBusiness,
+                        }
+                            updateObject['location'] = loc;
+                            userFeedStatus.timeline.push(updateObject);
+                            userRef.set(userFeedStatus)
+                                .then(() => {
+                                    Util.basicUtil.consoleLog('UpdateUser', true);
+                                    if (callback) {
+                                        callback();
+                                    }
+                                })
+                                .catch((error) => {
+                                    Util.basicUtil.consoleLog('UpdateFeed', false);
+                                    Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                                });
+                        } 
+                    }
+                );
+            } 
+            // Util.location.GetUserLocation((userLocation))
             Util.location.GetUserLocation((userLocation) => { 
                 if (typeof updateObject !== 'undefined' && data) {
                     updateObject['location'] = userLocation;
@@ -1065,6 +1125,21 @@ const Util = {
                     Util.basicUtil.consoleLog('GetUserLocation', false);
                     Util.basicUtil.Alert('Function GetUserLocation - Error message:', error.message, null);
                 });
+        },
+
+        // async call - async waiting on db.collection below
+        GetBusinessLocation: async (returnData, user) => {
+            try {
+                const businessRef =  await db.collection('businesses').doc(user.email);
+                // properties inside curly brackets are being pulled from object called businessRef
+                // in this case we're destructuring the property called coordinates then setting it to a variable called loc
+                const { coordinates: loc } = businessRef;
+                returnData({ loc });
+            }
+            catch(error) {
+                Util.basicUtil.consoleLog('GetBusinessLocation', false);
+                Util.basicUtil.Alert('Function GetBusinessLocation > ReverseGeocode - Error message:', error.message, null);
+            }
         },
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
             if (!query) {

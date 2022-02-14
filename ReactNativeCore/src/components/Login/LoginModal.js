@@ -7,6 +7,8 @@ import theme from '../../../src/styles/theme';
 import * as ImagePicker from 'expo-image-picker';
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
+
+
 export default class NifeLoginModal extends Component {
 
     state = {
@@ -378,7 +380,10 @@ export default class NifeLoginModal extends Component {
                                 <TextInput secureTextEntry={false} selectionColor={theme.generalLayout.textColor} textContentType={"emailAddress"}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Email'} returnKey={'next'} secureText={false}  onChangeText={(text) => this.onChangeText(text, "email")} />
                                 <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor }}}  placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password1")} />
                                 <TextInput secureTextEntry={true} selectionColor={theme.generalLayout.textColor} textContentType={"password"}  theme={{ colors: { text: theme.generalLayout.textColor }}} placeholderTextColor={theme.generalLayout.textColor} style={localStyles.textInput} placeholder={'Confirm Password'} returnKey={'next'}  onChangeText={(text) => this.onChangeText(text, "password2")} />
-
+                                
+    
+        
+                                
                                 <TouchableOpacity
                                     onPress={() => this.authenticateUser('sign-up')}
                                     style={localStyles.signUpBtn}
