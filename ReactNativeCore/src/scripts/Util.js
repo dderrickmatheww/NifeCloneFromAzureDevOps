@@ -347,8 +347,7 @@ const Util = {
             updateObject['uid'] = uuid.v4();
             let data = userFeed.data();
             if (updateObject.isBusiness) {
-                Util.location.getBusinessLocation(
-                    ({ loc }) => {
+                Util.location.getBusinessLocation(({ loc }) => {
                     if (typeof updateObject !== 'undefined' && data) {
                         updateObject['location'] = loc;
                         if (data.timeline) {
