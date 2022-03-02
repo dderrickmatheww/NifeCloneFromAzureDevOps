@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text, ScrollView } from 'react-native';
 import Util from '../../scripts/Util';
-import { Modal, Subheading, Caption, TextInput, ActivityIndicator } from 'react-native-paper';
+import { Modal, Subheading, Caption, TextInput, ActivityIndicator, Checkbox } from 'react-native-paper';
 import { styles } from '../../../src/styles/style';
 import theme from '../../../src/styles/theme';
 import * as ImagePicker from 'expo-image-picker';
+import { Linking } from 'react-native'; 
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
-
-
 
 export default class NifeLoginModal extends Component {
 
@@ -34,7 +33,9 @@ export default class NifeLoginModal extends Component {
         imageLoading: false,
         verifying: false,
         isReset: false,
-        isBusiness: this.props.isBusiness
+        isBusiness: this.props.isBusiness,
+        isChecked: false,
+        
     }
 
 
@@ -275,6 +276,27 @@ export default class NifeLoginModal extends Component {
 
                                                     <TextInput selectionColor={theme.generalLayout.textColor} theme={{colors:{text:theme.generalLayout.textColor}}}  placeholderTextColor={theme.generalLayout.textColor}
                                                                style={localStyles.textInput} placeholder={'State'} returnKey={'next'} secureTextEntry={false} onChangeText={(text) => this.onChangeText(text, "State")} />
+                                                
+                                                    <Text style={{color: 'white', paddingTop: 10, paddingBottom: 10, marginLeft:30, marginRight:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                                                        You must read and agree to the following terms. Select ok to continue.
+                                                    </Text>
+
+                                                    <Text style={{ color: theme.icons.color, paddingTop: 10, marginLeft:30, marginRight:15}}
+                                                        onPress={() => Linking.openURL('http://google.com')}>
+                                                    Google Terms Link
+                                                    </Text>
+
+                                                    <View style={{ marginLeft:20, flexDirection: 'row'}}>
+                                                        <Text style={{color:theme.generalLayout.textColor, marginTop: 10, marginLeft:10 }}>Click the checkbox to agree</Text>
+                                                    <Checkbox 
+                                                        uncheckedColor={theme.generalLayout.textColor}
+                                                        color={theme.icons.color}
+                                                        status={this.state.isChecked ? 'checked' : 'unchecked'}
+                                                        onPress={() => {
+                                                            this.setState({ isChecked: !this.state.isChecked });
+                                                        }}
+                                                    />
+                                                    </View>
 
                                                     <View style={{flexDirection: 'row', padding: '5%', margin: '5%', alignItems: 'center', justifyContent: 'center' }}>
                                                         <TouchableOpacity
@@ -291,12 +313,16 @@ export default class NifeLoginModal extends Component {
                                                         </TouchableOpacity>
                                                         <TouchableOpacity
                                                             onPress={() => {
-                                                                this.verifyBusiness(() => {
-                                                                    this.setState({
-                                                                        verifying: false,
-                                                                        bussinessApplicationPt2: true
+                                                                if (this.state.isChecked == false) {
+                                                                    Util.basicUtil.Alert('Nife Message', "Please fill out all required feilds (Address, City, State, Name, and you must agree to terms by 'clicking' the checkbox) in this form!", null);
+                                                                } else {
+                                                                    this.verifyBusiness(() => {
+                                                                        this.setState({
+                                                                            verifying: false,
+                                                                            bussinessApplicationPt2: true
+                                                                        });
                                                                     });
-                                                                });
+                                                                } 
                                                             }}
                                                             style={localStyles.nextBtn}
                                                         >
@@ -432,6 +458,7 @@ export default class NifeLoginModal extends Component {
         );
     }
 }
+
 const localStyles = StyleSheet.create({
     VerificationText:{
         color: theme.generalLayout.textColor, 
