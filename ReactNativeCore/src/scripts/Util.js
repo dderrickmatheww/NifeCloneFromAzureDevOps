@@ -58,10 +58,10 @@ const Util = {
                         if (callback) {
                             callback(data.result, userEmail);
                         }
-                        Util.basicUtil.consoleLog('GetFriends', true);
+                        logger('GetFriends', true);
                     }).catch((error) => {
-                    Util.basicUtil.Alert('Function GetFriends - Error message:', error.message, null);
-                    Util.basicUtil.consoleLog('GetFriends', false);
+                    alert('Function GetFriends - Error message:', error.message, null);
+                    logger('GetFriends', false);
                 });
             }
         },
@@ -77,10 +77,10 @@ const Util = {
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('FilterFriends', true);
+                        logger('FilterFriends', true);
                     }).catch((error) => {
-                    Util.basicUtil.Alert('Function FilterFriends - Error message:', error.message, null);
-                    Util.basicUtil.consoleLog('FilterFriends', false);
+                    alert('Function FilterFriends - Error message:', error.message, null);
+                    logger('FilterFriends', false);
                 });
             }
         },
@@ -93,7 +93,7 @@ const Util = {
                 // User that requested the friend
                 updateUserObj.friends[friendEmail] = true;
                 Util.user.UpdateUser(userEmail, updateUserObj, () => {
-                    Util.basicUtil.consoleLog("AddFriend", true);
+                    logger("AddFriend", true);
                     let updateFriendObj = {
                         friends: {}
                     }
@@ -101,17 +101,17 @@ const Util = {
                     updateFriendObj.friends[userEmail] = null;
                     Util.user.UpdateUser(friendEmail, updateFriendObj, () => {
                         Util.user.sendFriendReqNotification(firebase.auth().currentUser.displayName, friendEmail, () => {
-                            Util.basicUtil.consoleLog("sendFriendReqNotification", true);
+                            logger("sendFriendReqNotification", true);
                         })
-                        Util.basicUtil.consoleLog("AddFriend", true);
+                        logger("AddFriend", true);
                     });
                 });
                 if (callback) {
                     callback();
                 }
             } catch (error) {
-                Util.basicUtil.consoleLog("AddFriend", false);
-                Util.basicUtil.Alert('Function: AddFriend - Error message: ', error.message, null);
+                logger("AddFriend", false);
+                alert('Function: AddFriend - Error message: ', error.message, null);
             }
         },
         sendFriendRequest: function (friendEmail, callback) {
@@ -129,8 +129,8 @@ const Util = {
                 });
 
             } catch (error) {
-                Util.basicUtil.consoleLog("sendFriendRequest", false);
-                Util.basicUtil.Alert('Function: sendFriendRequest - Error message: ', error.message, null);
+                logger("sendFriendRequest", false);
+                alert('Function: sendFriendRequest - Error message: ', error.message, null);
             }
         },
         handleFriendRequest: function (friendEmail, answer, callback) {
@@ -153,8 +153,8 @@ const Util = {
                     });
                 });
             } catch (error) {
-                Util.basicUtil.consoleLog("handleFriendRequest", false);
-                Util.basicUtil.Alert('Function: handleFriendRequest - Error message: ', error.message, null);
+                logger("handleFriendRequest", false);
+                alert('Function: handleFriendRequest - Error message: ', error.message, null);
             }
         },
     },
@@ -174,17 +174,17 @@ const Util = {
                     .then(response => response.json())
                     .then(async data => {
                         if (data.error) {
-                            Util.basicUtil.Alert('Function VerifyUser - Error message:', data.error, null);
-                            Util.basicUtil.consoleLog('VerifyUser', false);
+                            alert('Function VerifyUser - Error message:', data.error, null);
+                            logger('VerifyUser', false);
                             return false;
                         }
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('VerifyUser', true);
+                        logger('VerifyUser', true);
                     }).catch((error) => {
-                        Util.basicUtil.Alert('Function VerifyUser - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog('VerifyUser', false);
+                        alert('Function VerifyUser - Error message:', error.message, null);
+                        logger('VerifyUser', false);
                     });
             }
         },
@@ -262,8 +262,8 @@ const Util = {
                     }
                 });
             } catch (error) {
-                Util.basicUtil.Alert('Function CheckAuthStatus - Error message:', error, null);
-                Util.basicUtil.consoleLog('CheckAuthStatus', false);
+                alert('Function CheckAuthStatus - Error message:', error, null);
+                logger('CheckAuthStatus', false);
             }
         },
         GetUserData: async (email, callback) => {
@@ -279,18 +279,18 @@ const Util = {
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
-                            Util.basicUtil.Alert('Function GetUserData - Error message:', data.error, null);
-                            Util.basicUtil.consoleLog('GetUserData', false);
+                            alert('Function GetUserData - Error message:', data.error, null);
+                            logger('GetUserData', false);
                             return false;
                         }
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('GetUserData', true);
+                        logger('GetUserData', true);
                     })
                     .catch((error) => {
-                        Util.basicUtil.Alert('Function GetUserData - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog('GetUserData', false);
+                        alert('Function GetUserData - Error message:', error.message, null);
+                        logger('GetUserData', false);
                     });
             }
         },
@@ -307,18 +307,18 @@ const Util = {
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        Util.basicUtil.Alert('Function getFeed - Error message:', data.error, null);
-                        Util.basicUtil.consoleLog('getFeed', false);
+                        alert('Function getFeed - Error message:', data.error, null);
+                        logger('getFeed', false);
                         return false;
                     }
                     if (callback) {
                         callback(data.result);
                     }
-                    Util.basicUtil.consoleLog('getFeed', true);
+                    logger('getFeed', true);
                 })
                 .catch((error) => {
-                    Util.basicUtil.Alert('Function getFeed - Error message:', error.message, null);
-                    Util.basicUtil.consoleLog('getFeed', false);
+                    alert('Function getFeed - Error message:', error.message, null);
+                    logger('getFeed', false);
                 });
             }
         },
@@ -329,14 +329,14 @@ const Util = {
             if (typeof updateObject !== 'undefined') {
                 userRef.set(updateObject, { merge: true })
                 .then(() => {
-                    Util.basicUtil.consoleLog('UpdateUser', true);
+                    logger('UpdateUser', true);
                     if (callback) {
                         callback();
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('UpdateUser', false);
-                    Util.basicUtil.Alert('Function UpdateUser - Error message:', error.message, null);
+                    logger('UpdateUser', false);
+                    alert('Function UpdateUser - Error message:', error.message, null);
                 });
             }
         },
@@ -353,14 +353,14 @@ const Util = {
                         data.timeline.push(updateObject);
                         userRef.set(data, { merge: true })
                         .then(() => {
-                            Util.basicUtil.consoleLog('UpdateFeed', true);
+                            logger('UpdateFeed', true);
                             if (callback) {
                                 callback(data);
                             }
                         })
                         .catch((error) => {
-                            Util.basicUtil.consoleLog('UpdateFeed', false);
-                            Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                            logger('UpdateFeed', false);
+                            alert('Function UpdateFeed - Error message:', error.message, null);
                         });
                     }
                     else {
@@ -368,14 +368,14 @@ const Util = {
                         data.timeline.push(updateObject);
                         userRef.set(data, { merge: true })
                         .then(() => {
-                            Util.basicUtil.consoleLog('UpdateFeed', true);
+                            logger('UpdateFeed', true);
                             if (callback) {
                                 callback();
                             }
                         })
                         .catch((error) => {
-                            Util.basicUtil.consoleLog('UpdateFeed', false);
-                            Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                            logger('UpdateFeed', false);
+                            alert('Function UpdateFeed - Error message:', error.message, null);
                         });
                     }
                 }
@@ -390,14 +390,14 @@ const Util = {
                     userFeedStatus.timeline.push(updateObject);
                     userRef.set(userFeedStatus)
                     .then(() => {
-                        Util.basicUtil.consoleLog('UpdateUser', true);
+                        logger('UpdateUser', true);
                         if (callback) {
                             callback();
                         }
                     })
                     .catch((error) => {
-                        Util.basicUtil.consoleLog('UpdateFeed', false);
-                        Util.basicUtil.Alert('Function UpdateFeed - Error message:', error.message, null);
+                        logger('UpdateFeed', false);
+                        alert('Function UpdateFeed - Error message:', error.message, null);
                     });
                 }   
             });
@@ -450,14 +450,14 @@ const Util = {
                     lastVisited
                 })
                 .then(() => {
-                    Util.basicUtil.consoleLog('CheckIn', true);
+                    logger('CheckIn', true);
                     if (callback) {
                         callback('true');
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('CheckIn', false);
-                    Util.basicUtil.Alert('Function CheckIn - Error message:', error.message, null);
+                    logger('CheckIn', false);
+                    alert('Function CheckIn - Error message:', error.message, null);
                 });
             }
             else {
@@ -481,14 +481,14 @@ const Util = {
                     merge: true
                 })
                 .then(() => {
-                    Util.basicUtil.consoleLog('CheckIn', true);
+                    logger('CheckIn', true);
                     if (callback) {
                         callback('true');
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('CheckIn', false);
-                    Util.basicUtil.Alert('Function CheckIn - Error message:', error.message, null);
+                    logger('CheckIn', false);
+                    alert('Function CheckIn - Error message:', error.message, null);
                 });
             }
         },
@@ -511,14 +511,14 @@ const Util = {
                     merge: true
                 })
                 .then(() => {
-                    Util.basicUtil.consoleLog('CheckOut', true);
+                    logger('CheckOut', true);
                     if (callback) {
                         callback('false');
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('CheckOut', false);
-                    Util.basicUtil.Alert('Function CheckOut - Error message:', error.message, null);
+                    logger('CheckOut', false);
+                    alert('Function CheckOut - Error message:', error.message, null);
                 });
         },
         IsUserCheckedIn: (email, buisnessUID, callback) => {
@@ -536,10 +536,10 @@ const Util = {
                         }
                     }
                 });
-                Util.basicUtil.consoleLog('IsUserCheckedIn', true);
+                logger('IsUserCheckedIn', true);
             } catch (error) {
-                Util.basicUtil.consoleLog('IsUserCheckedIn', false);
-                Util.basicUtil.Alert('Function IsUserCheckedIn - Error message:', error.message, null);
+                logger('IsUserCheckedIn', false);
+                alert('Function IsUserCheckedIn - Error message:', error.message, null);
             }
         },
         setFavorite: async (user, buisnessUID, boolean, buisnessName, callback) => {
@@ -566,14 +566,14 @@ const Util = {
                             merge: true
                         })
                         .then(() => {
-                            Util.basicUtil.consoleLog('setFavorite', true);
+                            logger('setFavorite', true);
                             if (callback) {
                                 callback(true, false);
                             }
                         })
                         .catch((error) => {
-                            Util.basicUtil.consoleLog('setFavorite', false);
-                            Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
+                            logger('setFavorite', false);
+                            alert('Function setFavorite - Error message:', error.message, null);
                         });
                 } else {
                     // Remove the 'capital' field from the document
@@ -585,14 +585,14 @@ const Util = {
                         favoritePlaces: favoritePlaces
                     })
                         .then(() => {
-                            Util.basicUtil.consoleLog('setFavorite', true);
+                            logger('setFavorite', true);
                             if (callback) {
                                 callback(false, false);
                             }
                         })
                         .catch((error) => {
-                            Util.basicUtil.consoleLog('setFavorite', false);
-                            Util.basicUtil.Alert('Function setFavorite - Error message:', error.message, null);
+                            logger('setFavorite', false);
+                            alert('Function setFavorite - Error message:', error.message, null);
                         });
                 }
             }
@@ -616,7 +616,7 @@ const Util = {
                     }
                 }
             } else {
-                Util.basicUtil.Alert('Function isFavorited - Error message:', 'No User Data Found', null);
+                alert('Function isFavorited - Error message:', 'No User Data Found', null);
                 if (callback) {
                     callback(false);
                 }
@@ -644,23 +644,23 @@ const Util = {
                                     wantedUsers.push(user);
                                 }
                             });
-                            Util.basicUtil.consoleLog('QueryUsers', true);
+                            logger('QueryUsers', true);
                             if (callback) {
                                 callback(wantedUsers);
                             }
                         } else {
-                            Util.basicUtil.consoleLog('QueryUsers just no users', true);
+                            logger('QueryUsers just no users', true);
                             if (callback) {
                                 callback([]);
                             }
                         }
                     } else {
-                        Util.basicUtil.consoleLog('QueryUsers', false);
+                        logger('QueryUsers', false);
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('QueryUsers', false);
-                    Util.basicUtil.Alert('Function QueryPublicUsers - Error message:', error.message, null);
+                    logger('QueryUsers', false);
+                    alert('Function QueryPublicUsers - Error message:', error.message, null);
                 });
         },
         GenerateQRCode: (userEmail) => {
@@ -740,10 +740,10 @@ const Util = {
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('VerifyUser', true);
+                        logger('VerifyUser', true);
                     }).catch((error) => {
-                        Util.basicUtil.Alert('Function VerifyUser - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog('VerifyUser', false);
+                        alert('Function VerifyUser - Error message:', error.message, null);
+                        logger('VerifyUser', false);
                     });
             }
         }
@@ -756,7 +756,7 @@ const Util = {
                     resolve(xhr.response);
                 };
                 xhr.onerror = function (e) {
-                    Util.basicUtil.Alert('Function UploadAddressProof - Error message:', e.message, null);
+                    alert('Function UploadAddressProof - Error message:', e.message, null);
                     reject(new TypeError('Network request failed'));
                 };
                 xhr.responseType = 'blob';
@@ -783,7 +783,7 @@ const Util = {
                 .then((data) => {
                     if (data.data()) {
                         let dbUser = data.data();
-                        Util.basicUtil.consoleLog('businessesVerifyUser', true);
+                        logger('businessesVerifyUser', true);
                         if (callback) {
                             callback(dbUser);
                         }
@@ -800,8 +800,8 @@ const Util = {
                     }
                 })
                 .catch((err) => {
-                    Util.basicUtil.consoleLog('Businesses - VerifyUser', false);
-                    Util.basicUtil.Alert('Function Businesses - VerifyUser - Error message:', err.message, null);
+                    logger('Businesses - VerifyUser', false);
+                    alert('Function Businesses - VerifyUser - Error message:', err.message, null);
                 })
         },
         BuildBusinessSchema: (obj, signUpState, isBusinessTable) => {
@@ -854,10 +854,10 @@ const Util = {
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('GetBusinessData', true);
+                        logger('GetBusinessData', true);
                     }).catch((error) => {
-                    Util.basicUtil.consoleLog('GetBusinessData', false);
-                    Util.basicUtil.Alert('Function GetBusinessData - Error message:', error.message, null);
+                    logger('GetBusinessData', false);
+                    alert('Function GetBusinessData - Error message:', error.message, null);
                 });
             }
         },
@@ -866,14 +866,14 @@ const Util = {
             let userRef = db.collection('businesses').doc(email);
             userRef.set(updateObject, { merge: true })
                 .then(() => {
-                    Util.basicUtil.consoleLog('Updatebusinesses', true);
+                    logger('Updatebusinesses', true);
                     if (callback) {
                         callback();
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('Updatebusinesses', false);
-                    Util.basicUtil.Alert('Function Updatebusinesses - Error message:', error.message, null);
+                    logger('Updatebusinesses', false);
+                    alert('Function Updatebusinesses - Error message:', error.message, null);
                 });
         },
         GetBusinessesByUserFavorites: (favArr, callback) => {
@@ -891,10 +891,10 @@ const Util = {
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', true);
+                        logger('GetBusinessesByUserFavorites', true);
                     }).catch((error) => {
-                    Util.basicUtil.consoleLog('GetBusinessesByUserFavorites', false);
-                    Util.basicUtil.Alert('Function GetBusinessesByUserFavorites - Error message:', error.message, null);
+                    logger('GetBusinessesByUserFavorites', false);
+                    alert('Function GetBusinessesByUserFavorites - Error message:', error.message, null);
                 });
             }
         },
@@ -916,10 +916,10 @@ const Util = {
                         callback(false);
                     }
                 }
-                Util.basicUtil.consoleLog("GetBusinessByUID", true);
+                logger("GetBusinessByUID", true);
             } catch (error) {
-                Util.basicUtil.Alert('Function GetBusinessByUID - Error message:', error.message, null);
-                Util.basicUtil.consoleLog("GetBusinessByUID", false);
+                alert('Function GetBusinessByUID - Error message:', error.message, null);
+                logger("GetBusinessByUID", false);
                 if (callback) {
                     callback(false);
                 }
@@ -938,17 +938,17 @@ const Util = {
                         if (callback) {
                             callback(tempArr.length);
                         }
-                        Util.basicUtil.consoleLog("Favorite Count ", true);
+                        logger("Favorite Count ", true);
                     } else {
                         if (callback) {
                             callback(0);
                         }
-                        Util.basicUtil.consoleLog("Favorite Count ", true);
+                        logger("Favorite Count ", true);
                     }
                 })
                 .catch((error) => {
-                    Util.basicUtil.Alert('Function GetFavoriteCount - Error message:', error.message, null);
-                    Util.basicUtil.consoleLog("Favorite Count ", false);
+                    alert('Function GetFavoriteCount - Error message:', error.message, null);
+                    logger("Favorite Count ", false);
                 });
         },
         SendProofEmail: async (email, image) => {
@@ -964,11 +964,11 @@ const Util = {
                     })
                     .then(response => response.json())
                     .then(() => {
-                        Util.basicUtil.consoleLog('SendProofEmail', true);
+                        logger('SendProofEmail', true);
                     })
                     .catch((error) => {
-                        Util.basicUtil.Alert('Function SendProofEmail - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog("SendProofEmail", false);
+                        alert('Function SendProofEmail - Error message:', error.message, null);
+                        logger("SendProofEmail", false);
                     })
             }
         },
@@ -989,11 +989,11 @@ const Util = {
                             if (cb) {
                                 cb(data.result);
                             }
-                            Util.basicUtil.consoleLog('getNifeBusinessesNearby', true);
+                            logger('getNifeBusinessesNearby', true);
                         })
                         .catch((error) => {
-                            Util.basicUtil.Alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
-                            Util.basicUtil.consoleLog('getNifeBusinessesNearby', false);
+                            alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
+                            logger('getNifeBusinessesNearby', false);
                         });
                     }, user);
                 }
@@ -1008,11 +1008,11 @@ const Util = {
                         if (cb) {
                             cb(data.result);
                         }
-                        Util.basicUtil.consoleLog('getNifeBusinessesNearby', true);
+                        logger('getNifeBusinessesNearby', true);
                     })
                     .catch((error) => {
-                        Util.basicUtil.Alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog('getNifeBusinessesNearby', false);
+                        alert('Function getNifeBusinessesNearby - Error message:', error.message, null);
+                        logger('getNifeBusinessesNearby', false);
                     });
                 }  
             }
@@ -1036,10 +1036,10 @@ const Util = {
                         if (callback) {
                             callback(data.result);
                         }
-                        Util.basicUtil.consoleLog('SaveLocation', true);
+                        logger('SaveLocation', true);
                     }).catch((error) => {
-                    Util.basicUtil.consoleLog('SaveLocation', false);
-                    Util.basicUtil.Alert('Function SaveLocation - Error message:', error.message, null);
+                    logger('SaveLocation', false);
+                    alert('Function SaveLocation - Error message:', error.message, null);
                 });
             }
         },
@@ -1051,19 +1051,19 @@ const Util = {
                     if (user) {
                         Util.location.SaveLocation(user.email, location);
                     }
-                    Util.basicUtil.consoleLog('GetUserLocation', true);
+                    logger('GetUserLocation', true);
                     if (returnData) {
                         returnData(loc, region);
                     }
                 })
                     .catch((error) => {
-                        Util.basicUtil.consoleLog('GetUserLocation', false);
-                        Util.basicUtil.Alert('Function GetUserLocation > ReverseGeocode - Error message:', error.message, null);
+                        logger('GetUserLocation', false);
+                        alert('Function GetUserLocation > ReverseGeocode - Error message:', error.message, null);
                     });
             })
                 .catch((error) => {
-                    Util.basicUtil.consoleLog('GetUserLocation', false);
-                    Util.basicUtil.Alert('Function GetUserLocation - Error message:', error.message, null);
+                    logger('GetUserLocation', false);
+                    alert('Function GetUserLocation - Error message:', error.message, null);
                 });
         },
         GrabWhatsPoppinFeed: async (query, email, returnData) => {
@@ -1080,10 +1080,10 @@ const Util = {
                     .then(response => response.json())
                     .then(data => {
                         returnData(data.result);
-                        Util.basicUtil.consoleLog('GrabWhatsPoppinFeed', true);
+                        logger('GrabWhatsPoppinFeed', true);
                     }).catch((error) => {
-                        Util.basicUtil.Alert('Function GrabWhatsPoppinFeed - Error message:', error.message, null);
-                        Util.basicUtil.consoleLog('GrabWhatsPoppinFeed', false);
+                        alert('Function GrabWhatsPoppinFeed - Error message:', error.message, null);
+                        logger('GrabWhatsPoppinFeed', false);
                     });
                 });
             }
@@ -1103,10 +1103,10 @@ const Util = {
                     .then(response => response.json())
                     .then(async data => {
                         returnData(data.result);
-                        Util.basicUtil.consoleLog('checkUserCheckInCount', true);
+                        logger('checkUserCheckInCount', true);
                     }).catch((error) => {
-                    Util.basicUtil.Alert('Function checkUserCheckInCount - Error message:', error.message, null);
-                    Util.basicUtil.consoleLog('checkUserCheckInCount', false);
+                    alert('Function checkUserCheckInCount - Error message:', error.message, null);
+                    logger('checkUserCheckInCount', false);
                 });
             }
         },
@@ -1190,45 +1190,14 @@ const Util = {
                 // Util.basicUtil.consoleLog('TimeSince', true);
                 return "a few seconds";
             } catch (error) {
-                Util.basicUtil.consoleLog('TimeSince', false);
-                Util.basicUtil.Alert('Function TimeSince - Error message:', e.message, null);
+                logger('TimeSince', false);
+                alert('Function TimeSince - Error message:', e.message, null);
             }
         }
     },
     dataCalls: {
         Google: {
-            login: async function (callback) {
-                let dataObj = {};
-                try {
-                    let result = await Google.logInAsync({
-                        androidClientId: AndroidClientKey,
-                        iosClientId: IOSClientKey,
-                        clientId: ClientKey,
-                        androidStandaloneAppClientId: AndroidClientKey,
-                        iosStandaloneAppClientId: IOSClientKeyStandAlone 
-                    });
-                    if (result.type === 'success') {
-                        /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
-                        const googleCredential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
-                        await firebase.auth().signInWithCredential(googleCredential)
-                            .catch((error) => {
-                                Util.basicUtil.consoleLog("Google's login", false);
-                                Util.basicUtil.Alert('Google Login Error', error.message, null);
-                            });
-                        dataObj['user'] = firebase.auth().currentUser;
-                        dataObj['data'] = firebase.auth();
-                        Util.basicUtil.consoleLog("Google's login", true);
-                        if (callback) {
-                            callback(dataObj);
-                        }
-                    } else {
-                        //Handles cancel
-                    }
-                } catch ({message}) {
-                    Util.basicUtil.consoleLog("Google's login", false);
-                    Util.basicUtil.Alert('Google Login Error', message, null);
-                }
-            }
+
         },
         Nife: {
             login: async function (signUpInfo, loginInfo, callback) {
@@ -1241,19 +1210,19 @@ const Util = {
                             let password = signUpInfo.password1;
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                                 .catch(function (error) {
-                                    Util.basicUtil.consoleLog("Nife's sign-up", false);
-                                    Util.basicUtil.Alert('Nife User Sign-Up Error', error.message, null);
+                                    logger("Nife's sign-up", false);
+                                    alert('Nife User Sign-Up Error', error.message, null);
                                 });
                             dataObj['data'] = firebase.auth().currentUser;
                             dataObj['token'] = null;
                             dataObj['user'] = firebase.auth().currentUser;
-                            Util.basicUtil.consoleLog("Nife's User sign-up", true);
+                            logger("Nife's User sign-up", true);
                             if (callback) {
                                 callback(dataObj);
                             }
                         } catch ({message}) {
-                            Util.basicUtil.consoleLog("Nife's User sign-up", false);
-                            Util.basicUtil.Alert('Nife User Sign-Up Error', message, null);
+                            logger("Nife's User sign-up", false);
+                            alert('Nife User Sign-Up Error', message, null);
                         }
                     } else {
                         try {
@@ -1261,19 +1230,19 @@ const Util = {
                             let password = signUpInfo.password1
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                                 .catch(function (error) {
-                                    Util.basicUtil.consoleLog("Nife's Business sign-up", false);
-                                    Util.basicUtil.Alert('Nife Sign-Up Error', error.message, null);
+                                    logger("Nife's Business sign-up", false);
+                                    alert('Nife Sign-Up Error', error.message, null);
                                 });
                             dataObj['data'] = firebase.auth().currentUser;
                             dataObj['token'] = null;
                             dataObj['user'] = firebase.auth().currentUser;
-                            Util.basicUtil.consoleLog("Nife's Business sign-up", true);
+                            logger("Nife's Business sign-up", true);
                             if (callback) {
                                 callback(dataObj);
                             }
                         } catch ({message}) {
-                            Util.basicUtil.consoleLog("Nife's Business sign-up", false);
-                            Util.basicUtil.Alert('Nife Sign-Up Error', message, null);
+                            logger("Nife's Business sign-up", false);
+                            alert('Nife Sign-Up Error', message, null);
                         }
                     }
                 } else {
@@ -1282,19 +1251,19 @@ const Util = {
                         let password = loginInfo.password1
                         firebase.auth().signInWithEmailAndPassword(email, password)
                             .catch(function (error) {
-                                Util.basicUtil.consoleLog("Nife's login", false);
-                                Util.basicUtil.Alert('Nife Login Error', error.message, null);
+                                logger("Nife's login", false);
+                                alert('Nife Login Error', error.message, null);
                             });
                         dataObj['data'] = firebase.auth().currentUser;
                         dataObj['token'] = null;
                         dataObj['user'] = firebase.auth().currentUser;
-                        Util.basicUtil.consoleLog("Nife's login", true);
+                        logger("Nife's login", true);
                         if (callback) {
                             callback(dataObj);
                         }
                     } catch ({message}) {
-                        Util.basicUtil.consoleLog("Nife's login", false);
-                        Util.basicUtil.Alert('Nife Login Error', message, null);
+                        logger("Nife's login", false);
+                        alert('Nife Login Error', message, null);
                     }
                 }
             }
@@ -1332,12 +1301,12 @@ const Util = {
                                 }
                             });
                         }
-                        Util.basicUtil.consoleLog("Yelp's placeData", true);
+                        logger("Yelp's placeData", true);
                         returnData(response.businesses);
                     })
                     .catch((err) => {
-                        Util.basicUtil.consoleLog("Yelp's placeData", false);
-                        Util.basicUtil.Alert('Map Business Data Error (API Y PlaceData)', err.message, null);
+                        logger("Yelp's placeData", false);
+                        alert('Map Business Data Error (API Y PlaceData)', err.message, null);
                     });
             },
             buildParameters: (lat, long, radius, isQuery, term, region) => {
@@ -1365,14 +1334,14 @@ const Util = {
                     })
                     .then((data) => data.json())
                     .then((response) => {
-                        Util.basicUtil.consoleLog("businessPhoneVerification", true);
+                        logger("businessPhoneVerification", true);
                         if (callback) {
                             callback(response);
                         }
                     })
                     .catch((err) => {
-                        Util.basicUtil.consoleLog("businessPhoneVerification", false);
-                        Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
+                        logger("businessPhoneVerification", false);
+                        alert('Business Verification Error (API Y Businesses)', err.message, null);
                     });
             },
             getBusinessData: (id, callback) => {
@@ -1382,14 +1351,14 @@ const Util = {
                     })
                     .then((data) => data.json())
                     .then((response) => {
-                        Util.basicUtil.consoleLog("getBusinessData", true);
+                        logger("getBusinessData", true);
                         if (callback) {
                             callback(response);
                         }
                     })
                     .catch((err) => {
-                        Util.basicUtil.consoleLog("getBusinessData", false);
-                        Util.basicUtil.Alert('Business Verification Error (API Y Businesses)', err.message, null);
+                        logger("getBusinessData", false);
+                        alert('Business Verification Error (API Y Businesses)', err.message, null);
                     });
             },
             isBusinessRegistered:  async (businessId) => {
@@ -1428,11 +1397,11 @@ const Util = {
             passwordReset: async (email) => {
                 var auth = firebase.auth();
                 auth.sendPasswordResetEmail(email).then(function () {
-                    Util.basicUtil.consoleLog("Firebase's Reset Password", true);
-                    Util.basicUtil.Alert('Nife - Reset Password', 'Email was sent! Please check your email for further directions!', null);
+                    logger("Firebase's Reset Password", true);
+                    alert('Nife - Reset Password', 'Email was sent! Please check your email for further directions!', null);
                 }).catch(function (error) {
-                    Util.basicUtil.consoleLog("Firebase's Reset Password", false);
-                    Util.basicUtil.Alert('Firebase Reset Password', error.message, null);
+                    logger("Firebase's Reset Password", false);
+                    alert('Firebase Reset Password', error.message, null);
                 });
             }
         },
@@ -1455,15 +1424,7 @@ const Util = {
                 callback(dataObj);
             }
         },
-        consoleLog: (funcName, type) => {
-            if (type == true) {
-                console.log('\n');
-                console.log("" + funcName + " ran successfully!");
-            } else {
-                console.log('\n');
-                console.log("" + funcName + " failed.");
-            }
-        },
+
         compareValues: (key, order = 'asc') => {
             return function innerSort(a, b) {
                 if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
@@ -1487,20 +1448,7 @@ const Util = {
                 );
             };
         },
-        Alert: (title, message, okFunction) => {
-            Alert.alert(
-                title,
-                message,
-                [
-                    {
-                        text: "OK",
-                        onPress: okFunction ? okFunction() : () => {
-                        }
-                    }
-                ],
-                {cancelable: false}
-            );
-        },
+
         getMiles: (i) => {
             return i * 0.000621371192;
         },
@@ -1531,6 +1479,31 @@ const Util = {
         },
         getUUID: () => uuid.v4()
     }
+}
+
+export const logger = (funcName, type) => {
+    if (type === true) {
+        console.log('\n');
+        console.log("" + funcName + " ran successfully!");
+    } else {
+        console.log('\n');
+        console.log("" + funcName + " failed.");
+    }
+}
+
+export const alert = (title, message, okFunction) => {
+    Alert.alert(
+        title,
+        message,
+        [
+            {
+                text: "OK",
+                onPress: okFunction ? okFunction() : () => {
+                }
+            }
+        ],
+        {cancelable: false}
+    );
 }
 
 export default Util;

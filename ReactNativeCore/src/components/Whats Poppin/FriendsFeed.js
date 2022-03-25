@@ -88,8 +88,8 @@ const screen = Dimensions.get("window");
                             }, true);
                         })
                         .catch((error) => {
-                            Util.basicUtil.Alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
-                            Util.basicUtil.consoleLog('HomeScreen/handleUploadImage', false);
+                            Util.basicUtil.alert('Function HomeScreen/handleUploadImage - Error message:', error.message, null);
+                            Util.basicUtil.logger('HomeScreen/handleUploadImage', false);
                         });
                 } 
                 else {

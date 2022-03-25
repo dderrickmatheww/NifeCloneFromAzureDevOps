@@ -35,8 +35,6 @@ export default class NifeLoginModal extends Component {
         isBusiness: this.props.isBusiness
     }
 
-
-
     onChangeText = (text, type) => {
         this.setState({[type]: text});
     }
@@ -46,16 +44,16 @@ export default class NifeLoginModal extends Component {
             if(this.state.password1 === this.state.password2) {
                 if (!this.state.businessEmail) {
                     if(!this.state.email || !this.state.password1 || !this.state.displayName) {
-                        Util.basicUtil.Alert('Nife Message', "Please make sure all fields are filled out!", null);
+                        Util.basicUtil.alert('Nife Message', "Please make sure all fields are filled out!", null);
                     }
                     else if (this.state.password1.length < 8) {
-                        Util.basicUtil.Alert('Nife Message', "Your password must be great than eight characters!", null);
+                        Util.basicUtil.alert('Nife Message', "Your password must be great than eight characters!", null);
                     }
                     else {
                         this.props.onSignUp(this.state);
                         Util.dataCalls.Nife.login(this.state, null, (dataObj, error) => {
                             if(error) {
-                                Util.basicUtil.Alert('Nife Message', error.message, null);
+                                Util.basicUtil.alert('Nife Message', error.message, null);
                                 this.resetPasswordField();
                             } 
                             else {
@@ -66,16 +64,16 @@ export default class NifeLoginModal extends Component {
                 }
                 else {
                     if(!this.state.businessEmail || !this.state.password1 || !this.state.businessName) {
-                        Util.basicUtil.Alert('Nife Message', "Please enter correct sign-up information!", null);
+                        Util.basicUtil.alert('Nife Message', "Please enter correct sign-up information!", null);
                     }
                     else if (this.state.password1.length < 8) {
-                        Util.basicUtil.Alert('Nife Message', "Your password must be great than eight characters!", null);
+                        Util.basicUtil.alert('Nife Message', "Your password must be great than eight characters!", null);
                     }
                     else {
                         this.props.onSignUp(this.state);
                         Util.dataCalls.Nife.login(this.state, null, (dataObj, error) => {
                             if(error) {
-                                Util.basicUtil.Alert('Nife Error Message', error.message, null);
+                                Util.basicUtil.alert('Nife Error Message', error.message, null);
                                 this.resetPasswordField();
                             } 
                             else {
@@ -86,17 +84,17 @@ export default class NifeLoginModal extends Component {
                 }
             }
             else {
-                Util.basicUtil.Alert('Nife Message', "Your passwords do not match. Please try again. :)", null);
+                Util.basicUtil.alert('Nife Message', "Your passwords do not match. Please try again. :)", null);
             }
         } 
         else {
             if(!this.state.email || !this.state.password1) {
-                Util.basicUtil.Alert('Nife Message', "Please enter correct sign-up information!", null);
+                Util.basicUtil.alert('Nife Message', "Please enter correct sign-up information!", null);
             }
             else {
                 Util.dataCalls.Nife.login(null, this.state, (dataObj, error) => {
                     if(error) {
-                        Util.basicUtil.Alert('Nife Error Message', error.message, null);
+                        Util.basicUtil.alert('Nife Error Message', error.message, null);
                         this.resetPasswordField();
                     } 
                     else {
@@ -131,7 +129,7 @@ export default class NifeLoginModal extends Component {
                     const isOnNife = await Util.dataCalls.Yelp.isBusinessRegistered(businessId);
                     if (isOnNife) {
                         this.setState({ verifying: false  });
-                        Util.basicUtil.Alert('Nife Message', "Looks like this business is already registered with Nife! Email admin@nife.app if this is not correct.", null);
+                        Util.basicUtil.alert('Nife Message', "Looks like this business is already registered with Nife! Email admin@nife.app if this is not correct.", null);
                     }
                     else {
                         this.setState({
@@ -143,13 +141,13 @@ export default class NifeLoginModal extends Component {
                     }
                 } else {
                     this.setState({ verifying: false });
-                    Util.basicUtil.Alert('Nife Message', "We could not find your business! Make sure your contact information matches other online sources! For more information contact admin@nife.app.", null);
+                    Util.basicUtil.alert('Nife Message', "We could not find your business! Make sure your contact information matches other online sources! For more information contact admin@nife.app.", null);
                 }
             });
         }
         else {
             this.setState({ verifying: false });
-            Util.basicUtil.Alert('Nife Message', "Please fill out all required feilds (Address, City, State, and Name) in this form!", null);
+            Util.basicUtil.alert('Nife Message', "Please fill out all required feilds (Address, City, State, and Name) in this form!", null);
         }
     }
 

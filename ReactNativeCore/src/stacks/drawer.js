@@ -155,7 +155,7 @@ class Navigator extends React.Component {
           Util.location.GetUserLocation(null, user);
         }
         else {
-          Util.basicUtil.Alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
+          Util.basicUtil.alert('Nife Message', 'Nife is used primary based on location. We use your location to show you event going on around your current location! For more information please see our privacy statement, thank you for downloading!', null);
         }
       });
     });
@@ -249,92 +249,93 @@ class Navigator extends React.Component {
 
   render() {
     return (
-      this.state.authLoaded ?
-        this.props.userData ?
-          <NavigationContainer>
-            <Drawer.Navigator
-              drawerContentOptions={{
-                activeTintColor: theme.generalLayout.backgroundColor,
-                inactiveTintColor: theme.loadingIcon.color,
-                labelStyle: {
-                  color: theme.generalLayout.textColor,
-                  fontFamily: theme.generalLayout.font
-                }
-              }}
-              drawerStyle={{ 
-                backgroundColor: theme.generalLayout.backgroundColor
-              }}
-              initialRouteName='My Feed'
-              drawerContent={
-                props => <CustomDrawerContent 
-                    {...props } 
-                    uploading={this.state.uploading} 
-                    uploadImage={this.handleUploadImage} 
-                    refresh={this.props.refresh} 
-                    requests={this.props.friendRequests} 
-                    friends={this.props.friendData} 
-                    user={this.props.userData}
-                    setIsBusiness={this.setIsBusiness}
-                    onSignUp={this.onSignUpStates} 
-                    text={"Please login to continue!"}
-                  />
-              }
-              drawerType={"front"}
-              overlayColor={"rgba(32, 35, 42, 0.50)"}
-            >
-              {/* <Drawer.Screen name="Test" component={TestingStack} /> */}
-              <Drawer.Screen 
-              name="Profile" 
-              component={Profile} 
-              initialParams={{ 
-                uploadImage: this.handleUploadImage, 
-                user: this.props.userData, 
-                business: this.props.businessData ? this.props.businessData : null, 
-                requests: this.props.friendRequests 
-              }}/>
-              <Drawer.Screen 
-              name="My Feed" 
-              component={Poppin} 
-              initialParams={{ 
-                uploadImage: this.handleUploadImage, 
-                user: this.props.userData, 
-                friends: this.props.friendData,  
-                business: this.props.businessData ? this.props.businessData : null, 
-                favorites: this.state.favoritePlaceData
-              }}/>
-              <Drawer.Screen 
-                name="Map" 
-                component={ MapMain } 
-                options={{ lazy: false }}
-                lazy={false}
-              />
-              <Drawer.Screen 
-                name="Settings" 
-                component={Settings}  
-                initialParams={{ 
-                  user: this.state.userData, 
-                  friends: this.state.friendData, 
-                  refresh: this.props.refresh 
-                }}/>
-              <Drawer.Screen 
-                name="Login" 
-                component={ this.Login }  
-                initialParams={{ 
-                  user: this.state.userData, 
-                  friends: this.state.friendData, 
-                  refresh: this.props.refresh 
-                }}/>
-            </Drawer.Navigator>
-          </NavigationContainer>
-        : 
-            this.state.userExists ? 
-              <View style={localStyles.viewDark}>
-                <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
-              </View> 
-            :
-              <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
-      :
-        <Loading></Loading>
+        <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
+      // this.state.authLoaded ?
+      //   this.props.userData ?
+      //     <NavigationContainer>
+      //       <Drawer.Navigator
+      //         drawerContentOptions={{
+      //           activeTintColor: theme.generalLayout.backgroundColor,
+      //           inactiveTintColor: theme.loadingIcon.color,
+      //           labelStyle: {
+      //             color: theme.generalLayout.textColor,
+      //             fontFamily: theme.generalLayout.font
+      //           }
+      //         }}
+      //         drawerStyle={{
+      //           backgroundColor: theme.generalLayout.backgroundColor
+      //         }}
+      //         initialRouteName='My Feed'
+      //         drawerContent={
+      //           props => <CustomDrawerContent
+      //               {...props }
+      //               uploading={this.state.uploading}
+      //               uploadImage={this.handleUploadImage}
+      //               refresh={this.props.refresh}
+      //               requests={this.props.friendRequests}
+      //               friends={this.props.friendData}
+      //               user={this.props.userData}
+      //               setIsBusiness={this.setIsBusiness}
+      //               onSignUp={this.onSignUpStates}
+      //               text={"Please login to continue!"}
+      //             />
+      //         }
+      //         drawerType={"front"}
+      //         overlayColor={"rgba(32, 35, 42, 0.50)"}
+      //       >
+      //         {/* <Drawer.Screen name="Test" component={TestingStack} /> */}
+      //         <Drawer.Screen
+      //         name="Profile"
+      //         component={Profile}
+      //         initialParams={{
+      //           uploadImage: this.handleUploadImage,
+      //           user: this.props.userData,
+      //           business: this.props.businessData ? this.props.businessData : null,
+      //           requests: this.props.friendRequests
+      //         }}/>
+      //         <Drawer.Screen
+      //         name="My Feed"
+      //         component={Poppin}
+      //         initialParams={{
+      //           uploadImage: this.handleUploadImage,
+      //           user: this.props.userData,
+      //           friends: this.props.friendData,
+      //           business: this.props.businessData ? this.props.businessData : null,
+      //           favorites: this.state.favoritePlaceData
+      //         }}/>
+      //         <Drawer.Screen
+      //           name="Map"
+      //           component={ MapMain }
+      //           options={{ lazy: false }}
+      //           lazy={false}
+      //         />
+      //         <Drawer.Screen
+      //           name="Settings"
+      //           component={Settings}
+      //           initialParams={{
+      //             user: this.state.userData,
+      //             friends: this.state.friendData,
+      //             refresh: this.props.refresh
+      //           }}/>
+      //         <Drawer.Screen
+      //           name="Login"
+      //           component={ this.Login }
+      //           initialParams={{
+      //             user: this.state.userData,
+      //             friends: this.state.friendData,
+      //             refresh: this.props.refresh
+      //           }}/>
+      //       </Drawer.Navigator>
+      //     </NavigationContainer>
+      //   :
+      //       this.state.userExists ?
+      //         <View style={localStyles.viewDark}>
+      //           <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
+      //         </View>
+      //       :
+      //         <LoginScreen setIsBusiness={this.setIsBusiness} onSignUp={this.onSignUpStates} text={"Please login to continue!"}></LoginScreen>
+      // :
+      //   <Loading></Loading>
     );
   }
 }

@@ -62,7 +62,7 @@ class EventsModal extends React.Component  {
         });
       }
       else{
-        Util.basicUtil.Alert('Nife Error Message', 'Please enter events if you wish to update them!');
+        Util.basicUtil.alert('Nife Error Message', 'Please enter events if you wish to update them!');
       }
     }
 

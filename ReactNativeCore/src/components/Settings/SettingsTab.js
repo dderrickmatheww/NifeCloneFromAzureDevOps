@@ -59,7 +59,7 @@ class SettingsTab extends Component {
    handleSwitch (obj) {
      if(obj.searchPrivacy){
        if(!this.state.searchPrivacy == true){
-        Util.basicUtil.Alert('Search Privacy Update!', "Users can no longer search for you. Friends will have to add you with a QR Code.", null);
+        Util.basicUtil.alert('Search Privacy Update!', "Users can no longer search for you. Friends will have to add you with a QR Code.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["searchPrivacy"] = !this.state.searchPrivacy
@@ -74,7 +74,7 @@ class SettingsTab extends Component {
     }
     if(obj.favoritingPrivacy){
       if(!this.state.favoritingPrivacy == true){
-        Util.basicUtil.Alert('Favorite Places Privacy Update!', "Users can no longer see your favorite places when they navigate to your profile. ", null);
+        Util.basicUtil.alert('Favorite Places Privacy Update!', "Users can no longer see your favorite places when they navigate to your profile. ", null);
       }
       let user = this.state.userData;
        user['privacySettings']["favoritingPrivacy"] = !this.state.favoritingPrivacy
@@ -90,7 +90,7 @@ class SettingsTab extends Component {
 
     if(obj.checkInPrivacy){
       if(!this.state.checkInPrivacy == true){
-        Util.basicUtil.Alert('Check In Privacy Update!', "Users can no longer see where or when you have checked in on their maps and their feeds.", null);
+        Util.basicUtil.alert('Check In Privacy Update!', "Users can no longer see where or when you have checked in on their maps and their feeds.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["checkInPrivacy"] = !this.state.checkInPrivacy
@@ -106,7 +106,7 @@ class SettingsTab extends Component {
 
     if(obj.visitedPrivacy){
       if(!this.state.visitedPrivacy == true){
-        Util.basicUtil.Alert('Last Visited Privacy Update!', "Users can no longer see places you visited recently on their feeds.", null);
+        Util.basicUtil.alert('Last Visited Privacy Update!', "Users can no longer see places you visited recently on their feeds.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["visitedPrivacy"] = !this.state.visitedPrivacy
@@ -122,7 +122,7 @@ class SettingsTab extends Component {
 
     if(obj.orientationPrivacy){
       if(!this.state.orientationPrivacy == true){
-        Util.basicUtil.Alert('Sexual Orientation Privacy Update!', "Users can no longer see your sexual orientation on your profile.", null);
+        Util.basicUtil.alert('Sexual Orientation Privacy Update!', "Users can no longer see your sexual orientation on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["orientationPrivacy"] = !this.state.orientationPrivacy
@@ -138,7 +138,7 @@ class SettingsTab extends Component {
 
     if(obj.DOBPrivacy){
       if(!this.state.DOBPrivacy == true){
-        Util.basicUtil.Alert('Age Privacy Update!', "Users can no longer see your age on your profile.", null);
+        Util.basicUtil.alert('Age Privacy Update!', "Users can no longer see your age on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["DOBPrivacy"] = !this.state.DOBPrivacy
@@ -154,7 +154,7 @@ class SettingsTab extends Component {
 
     if(obj.genderPrivacy){
       if(!this.state.genderPrivacy == true){
-        Util.basicUtil.Alert('Gender Privacy Update!', "Users can no longer see your gender on your profile.", null);
+        Util.basicUtil.alert('Gender Privacy Update!', "Users can no longer see your gender on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["genderPrivacy"] = !this.state.genderPrivacy
@@ -169,7 +169,7 @@ class SettingsTab extends Component {
     }
     if(obj.locationPrivacy){
       if(!this.state.locationPrivacy == true) {
-        Util.basicUtil.Alert('Location Privacy Update!', "Users can no longer see your location on your profile.", null);
+        Util.basicUtil.alert('Location Privacy Update!', "Users can no longer see your location on your profile.", null);
        }
        let user = this.state.userData;
        user['privacySettings']["locationPrivacy"] = !this.state.locationPrivacy
