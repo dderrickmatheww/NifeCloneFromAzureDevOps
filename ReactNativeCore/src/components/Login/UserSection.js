@@ -15,7 +15,6 @@ export class UserSection extends Component {
             </View>
             <View style={localStyles.googleButtonContainer}>
                 <TouchableOpacity style={localStyles.googleLoginBtn} onPress={() => {
-                    console.log('is this working!?!?!?!??!?!')
                     this.props.googleLogin()
                 }}>
                     <Text style={localStyles.loggedOutText}>Login with Google</Text>

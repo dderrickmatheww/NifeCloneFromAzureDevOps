@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Navigator from './src/stacks/drawer';
+import NifeApp from './src/components/Nife';
 import {decode, encode} from 'base-64';
 import * as firebase from 'firebase';
 import Util from './src/scripts/Util';
@@ -114,7 +114,7 @@ export default function App() {
       theme={theme}
     >
       <Provider store={store}>
-        <Navigator />
+        <NifeApp />
       </Provider>
     </PaperProvider>
   );
