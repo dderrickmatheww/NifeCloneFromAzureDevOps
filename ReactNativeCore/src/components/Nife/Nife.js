@@ -16,7 +16,7 @@ import {updateUser} from "../../utils/api/users";
 import {initiateAuthObserver, loadFonts} from './helpers'
 import {Loading} from "../Loading";
 
-//TODO update redux state
+//TODO update store state
 
 // const Drawer = createDrawerNavigator();
 
