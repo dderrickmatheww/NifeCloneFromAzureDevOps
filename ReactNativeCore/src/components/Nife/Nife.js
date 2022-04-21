@@ -14,6 +14,7 @@ import LoginScreen from "../Login/LoginScreen";
 import * as Font from 'expo-font';
 import {updateUser} from "../../utils/api/users";
 import {initiateAuthObserver, loadFonts} from './helpers'
+import {Loading} from "../Loading";
 
 //TODO update redux state
 
@@ -40,9 +41,14 @@ class NifeApp extends React.Component {
     favoritePlaceData: null,
     notification: null,
   }
+
+  handleAuthChange = async ({authLoaded}) => {
+    this.setState({authLoaded})
+  }
+
   async componentDidMount() {
     try {
-      await initiateAuthObserver(this.props.refresh, this.setState);
+      await initiateAuthObserver(this.props.refresh, this.handleAuthChange);
       await loadFonts()
     }
     catch (error) {
@@ -53,12 +59,15 @@ class NifeApp extends React.Component {
 
   render() {
     return (
-        this.props.userData ?
-            <View style={{flex: 1, padding: 25}}>
-              <Text> YOOOOOOOOOOOOOOOO</Text>
-            </View> :
-            <LoginScreen />
-    );
+        this.state.authLoaded ?
+            this.props.userData ?
+              <View style={{flex: 1, padding: 25}}>
+                <Text> YOOOOOOOOOOOOOOOO</Text>
+              </View> :
+              <LoginScreen />
+            :
+            <Loading />
+      );
   }
 }
 

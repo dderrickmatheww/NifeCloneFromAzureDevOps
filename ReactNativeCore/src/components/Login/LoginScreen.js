@@ -28,14 +28,6 @@ export default class LoginScreen extends Component {
         isBusiness: false,
         formScreen: formScreens.main
     }
-    //Set login status
-    setLoggedinStatus = async (dataObj) => {
-        this.setState({isLoggedin: dataObj.data ? true : false});
-    }
-    //Set user data
-    setUserData = async (dataObj) => {
-        this.setState({userData: dataObj.user});
-    }
 
     logout = async () => {
         this.setState({isLoggedin: false});
@@ -43,13 +35,7 @@ export default class LoginScreen extends Component {
     }
 
     handleGoogleClick = async () => {
-        console.log('handleGoogleClick')
-        const data = await googleLogin()
-        await this.setUserData(data.user);
-        await this.setLoggedinStatus(data);
-        if (this.props.navigate) {
-            this.props.navigate.navigate("My Feed", {screen: "Friend's Feed", params: {refresh: this.props.refresh}});
-        }
+        await googleLogin()
     }
 
     handleNifeLogin = () => {
@@ -122,7 +108,7 @@ export default class LoginScreen extends Component {
                         </View>
                         {/*BODY*/}
                         <UserSection googleLogin={this.handleGoogleClick} onPress1={this.handleNifeLogin}/>
-                        <BusinessSection onPress={this.handleBusinessLogin}/>
+                        {/*<BusinessSection onPress={this.handleBusinessLogin}/>*/}
                         <ForgotButton onPress={this.handleForgotPassword}/>
                     </View>
                 );
@@ -141,13 +127,13 @@ export default class LoginScreen extends Component {
                         handleBackToLogin={this.handleBackToLogin}
                     />
                 );
-            case formScreens.businessSignUp:
-                return (
-                    <BusinessSignUpForm
-                        handleSignUp={this.processUserSignUp}
-                        handleBackToLogin={this.handleBackToLogin}
-                    />
-                );
+            // case formScreens.businessSignUp:
+            //     return (
+            //         <BusinessSignUpForm
+            //             handleSignUp={this.processUserSignUp}
+            //             handleBackToLogin={this.handleBackToLogin}
+            //         />
+            //     );
         }
 
     }

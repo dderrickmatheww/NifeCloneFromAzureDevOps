@@ -6,7 +6,7 @@ import themeUtil from './src/styles/theme'
 import {Provider as PaperProvider } from 'react-native-paper';
 import { Provider } from 'react-redux'
 import { LogBox } from 'react-native';
-import {store} from "./src/store";
+import {store} from "./src/redux/store";
 import {paperTheme} from "./src/styles/paperTheme";
 
 // Ignore log notification by message

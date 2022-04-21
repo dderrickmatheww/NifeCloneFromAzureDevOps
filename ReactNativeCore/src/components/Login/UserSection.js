@@ -9,9 +9,9 @@ export class UserSection extends Component {
         return (
         <>
             <View style={localStyles.subHeaderContainer}>
-                <Text style={localStyles.subHeaderText}>
-                    Users
-                </Text>
+                {/*<Text style={localStyles.subHeaderText}>*/}
+                {/*    Users*/}
+                {/*</Text>*/}
             </View>
             <View style={localStyles.googleButtonContainer}>
                 <TouchableOpacity style={localStyles.googleLoginBtn} onPress={() => {

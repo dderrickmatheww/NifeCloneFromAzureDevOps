@@ -11,18 +11,19 @@ export const loadFonts = async () => {
     });
 }
 
-export const initiateAuthObserver = async (refresh, setState) => {
+export const initiateAuthObserver = async (refresh, handleAuthChange) => {
     onAuthStateChanged(auth, async user => {
-        setState({authLoaded: false})
+        console.log('onAuthStateChanged')
         if(user){
             console.log('initiateAuthObserver: ', {user});
             refresh(user, []);
-            setState({authLoaded: true})
+            handleAuthChange({authLoaded: true})
             //TODO SAVE LOCATION AND EMAIL
             const {email} = user;
             await updateUser({email});
         } else {
             refresh(null, []);
+            handleAuthChange({authLoaded: true})
         }
     });
 }
