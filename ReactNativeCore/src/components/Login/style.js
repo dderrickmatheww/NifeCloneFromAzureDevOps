@@ -223,7 +223,7 @@ export const localStyles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         paddingHorizontal: 5,
-        width:"90%",
+        minWidth:"90%",
         height: 50,
         alignSelf:"center",
         marginVertical:2,

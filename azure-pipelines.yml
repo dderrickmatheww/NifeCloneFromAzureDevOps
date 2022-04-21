@@ -19,4 +19,4 @@ steps:
     npm install
     node builds/scripts/deploy.js deploy ios
     node builds/scripts/deploy.js deploy android
-  displayName: 'Run build scripts'
+  displayName: 'Run build utils'

@@ -15,7 +15,6 @@ import {
     measurementId,
     photoUrlToken
 } from 'react-native-dotenv';
-import * as firebase from 'firebase';
 import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
@@ -1200,14 +1199,11 @@ const Util = {
 
         },
         Nife: {
-            login: async function (signUpInfo, loginInfo, callback) {
+            login: async function ({email, password}, loginInfo, callback) {
                 let dataObj = {};
                 // Listen for authentication state to change.
                 if (signUpInfo) {
-                    if (!signUpInfo.businessEmail) {
                         try {
-                            let email = signUpInfo.email;
-                            let password = signUpInfo.password1;
                             firebase.auth().createUserWithEmailAndPassword(email, password)
                                 .catch(function (error) {
                                     logger("Nife's sign-up", false);
@@ -1224,49 +1220,8 @@ const Util = {
                             logger("Nife's User sign-up", false);
                             alert('Nife User Sign-Up Error', message, null);
                         }
-                    } else {
-                        try {
-                            let email = signUpInfo.businessEmail;
-                            let password = signUpInfo.password1
-                            firebase.auth().createUserWithEmailAndPassword(email, password)
-                                .catch(function (error) {
-                                    logger("Nife's Business sign-up", false);
-                                    alert('Nife Sign-Up Error', error.message, null);
-                                });
-                            dataObj['data'] = firebase.auth().currentUser;
-                            dataObj['token'] = null;
-                            dataObj['user'] = firebase.auth().currentUser;
-                            logger("Nife's Business sign-up", true);
-                            if (callback) {
-                                callback(dataObj);
-                            }
-                        } catch ({message}) {
-                            logger("Nife's Business sign-up", false);
-                            alert('Nife Sign-Up Error', message, null);
-                        }
-                    }
-                } else {
-                    try {
-                        let email = loginInfo.email;
-                        let password = loginInfo.password1
-                        firebase.auth().signInWithEmailAndPassword(email, password)
-                            .catch(function (error) {
-                                logger("Nife's login", false);
-                                alert('Nife Login Error', error.message, null);
-                            });
-                        dataObj['data'] = firebase.auth().currentUser;
-                        dataObj['token'] = null;
-                        dataObj['user'] = firebase.auth().currentUser;
-                        logger("Nife's login", true);
-                        if (callback) {
-                            callback(dataObj);
-                        }
-                    } catch ({message}) {
-                        logger("Nife's login", false);
-                        alert('Nife Login Error', message, null);
-                    }
                 }
-            }
+
         },
         Yelp: {
             placeData: (baseUrl, params, friendData, returnData) => {
@@ -1480,6 +1435,7 @@ const Util = {
         getUUID: () => uuid.v4()
     }
 }
+}
 
 export const logger = (funcName, type) => {
     if (type === true) {
@@ -1505,5 +1461,24 @@ export const alert = (title, message, okFunction) => {
         {cancelable: false}
     );
 }
+
+export const passwordValidation = (pass1, pass2) => {
+    console.log(pass1, pass2)
+    const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+    if(pass1 !== pass2){
+        alert('Password Validation Failed!', 'Passwords do not match!');
+        return false;
+    }
+    if(strongRegex.test(pass1)){
+        return true
+    } else {
+        alert('Password Validation Failed!',
+            'Passwords must contain 1 lower case letter, 1 uppercase letter,' +
+            ' one number and one special symbol (!@#$%^&*)!');
+        return false;
+    }
+}
+
+export const defaultPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken
 
 export default Util;

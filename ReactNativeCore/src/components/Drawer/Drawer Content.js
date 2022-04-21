@@ -19,7 +19,7 @@
 // } from '@react-navigation/drawer';
 // import theme from '../../../src/styles/theme';
 // import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
-// import Util from '../../scripts/Util';
+// import Util from '../../utils/Util';
 // import IconWithBadge from "../Universal/IconWithBadge"
 //  import * as Notifications from "expo-notifications";
 //  import * as firebase from "firebase";
