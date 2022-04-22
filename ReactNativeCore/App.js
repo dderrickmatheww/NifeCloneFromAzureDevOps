@@ -1,8 +1,6 @@
 import * as React from 'react';
 import NifeApp from './src/components/Nife/Nife';
 import {decode, encode} from 'base-64';
-import themeUtil from './src/styles/theme'
-
 import {Provider as PaperProvider } from 'react-native-paper';
 import { Provider } from 'react-redux'
 import { LogBox } from 'react-native';

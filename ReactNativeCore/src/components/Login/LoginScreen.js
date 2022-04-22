@@ -9,7 +9,7 @@ import {LoginForm} from "./LoginForm";
 import {auth, firebaseSignUp } from "../../utils/firebase";
 import {UserSignUpForm} from "./UserSignUpForm";
 import {BusinessSignUpForm} from "./BusinessSignUpForm";
-import {passwordValidation} from "../../utils/Util";
+import {passwordValidation} from "../../utils/util";
 
 const formScreens = Object.freeze({
     main: 'main',

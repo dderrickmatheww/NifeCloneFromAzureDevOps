@@ -13,7 +13,7 @@ import {
     appId,
     measurementId,
 } from 'react-native-dotenv';
-import {alert, logger} from "./Util";
+import {alert, logger} from "./util";
 import {updateUser} from "./api/users";
 
 export const emailProvider = new EmailAuthProvider();
@@ -43,7 +43,7 @@ export const firebaseSignUp = async ({email, password, displayName}) => {
             let { type, accessToken, user, idToken }= await createUserWithEmailAndPassword(auth, email, password)
             logger("Nife's User sign-up", true);
             const {uid, phoneNumber, photoURL} = user
-            await updateUser({
+            const data = await updateUser({
                 email,
                 userUID: uid,
                 phoneNumber,
@@ -51,7 +51,7 @@ export const firebaseSignUp = async ({email, password, displayName}) => {
                 created: new Date(),
                 lastModified: new Date(),
             });
-            return user
+            return data
         } catch ({message}) {
             logger("Nife's User sign-up", false);
             alert('Nife User Sign-Up Error', message, null);
@@ -65,12 +65,12 @@ export const fireBaseLogin = async (email, password)=> {
             let { type, accessToken, user, idToken }= await signInWithEmailAndPassword(auth, email, password)
             logger("Nife's User sign-up", true);
             const {uid, phoneNumber, photoURL} = user
-            await updateUser({
+            const data = await updateUser({
                 email,
                 phoneNumber,
                 lastModified: new Date(),
             });
-            return user
+            return data
         } catch ({message}) {
             logger("Nife's User sign-up", false);
             alert('Nife User Sign-Up Error', message, null);

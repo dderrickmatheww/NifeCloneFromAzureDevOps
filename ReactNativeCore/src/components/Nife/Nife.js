@@ -5,7 +5,7 @@ import { View, Text } from 'react-native'
 // import Util from "../utils/Util";
 // // import {DrawerContent} from "./Drawer/Drawer Content";
 import {connect} from "react-redux";
-import Util, {alert} from "../../utils/Util";
+import Util, {alert} from "../../utils/util";
 import {
   onAuthStateChanged,
 } from 'firebase/auth';
@@ -15,6 +15,7 @@ import * as Font from 'expo-font';
 import {updateUser} from "../../utils/api/users";
 import {initiateAuthObserver, loadFonts} from './helpers'
 import {Loading} from "../Loading";
+import DrawerComponent from "../Drawer/Drawer";
 
 //TODO update store state
 
@@ -61,9 +62,7 @@ class NifeApp extends React.Component {
     return (
         this.state.authLoaded ?
             this.props.userData ?
-              <View style={{flex: 1, padding: 25}}>
-                <Text> YOOOOOOOOOOOOOOOO</Text>
-              </View> :
+              <DrawerComponent />:
               <LoginScreen />
             :
             <Loading />

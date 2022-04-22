@@ -4,7 +4,7 @@ import {
     signInWithCredential,
     GoogleAuthProvider
 } from 'firebase/auth';
-import {logger, alert} from "./Util";
+import {logger, alert} from "./util";
 import {updateUser} from "./api/users";
 import {auth} from "./firebase";
 
@@ -23,13 +23,13 @@ export const googleLogin =  async () => {
             const googleCredential = GoogleAuthProvider.credential(idToken, accessToken);
             await signInWithCredential(auth, googleCredential)
             const {email, phoneNumber, uid} = user;
-            await updateUser({
+            const data = await updateUser({
                 email,
                 phoneNumber,
                 lastModified: new Date(),
                 userUid: uid
             });
-            return user;
+            return data;
         } else {
             logger("Google's login canceled", false);
         }

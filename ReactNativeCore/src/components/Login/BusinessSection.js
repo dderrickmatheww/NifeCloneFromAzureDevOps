@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Image, Text, View, TouchableOpacity} from "react-native";
 import * as PropTypes from "prop-types";
 import {localStyles} from "./style";
-import Util, {defaultPhotoUrl} from "../../utils/Util";
+import Util, {defaultPhotoUrl} from "../../utils/util";
 const defPhoto = { uri: defaultPhotoUrl };
 
 export class BusinessSection extends Component {

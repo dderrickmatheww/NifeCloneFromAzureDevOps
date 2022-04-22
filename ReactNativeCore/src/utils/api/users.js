@@ -1,20 +1,19 @@
 import {client} from './client'
 import {auth} from "../firebase";
-import {alert} from "../Util";
+import {alert} from "../util";
 
 export const updateUser = async (user) => {
     // TODO write getToken func
     const token = 'token'
-    console.log(client);
     try {
-        console.log('updateUser fired!')
-        return await client.post('/updateUser', {
+        const {data} = await client.post('/updateUser', {
             user
         },{
             headers:{
                 authorization: `Bearer ${token}`
             }
-        })
+        });
+        return data
     } catch (e) {
         console.log(e);
         alert('API ERROR!', 'An Error occurred! Please restart!')
