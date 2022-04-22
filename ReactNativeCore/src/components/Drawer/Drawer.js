@@ -3,15 +3,16 @@ import {View, Text} from 'react-native'
 import {NavigationContainer} from "@react-navigation/native";
 import {createDrawerNavigator} from "@react-navigation/drawer";
 import {drawerContentOptions, drawerStyle, overlayColor} from "./style";
-import {Map} from "../Map/Map";
+import Map from "../Map/Map";
+import {connect} from "react-redux";
 
 const Drawer = createDrawerNavigator();
 
 
-const INITIAL_ROUTE = 'Map'
-const DRAWER_TYPE = 'front'
+const INITIAL_ROUTE = 'Map';
+const DRAWER_TYPE = 'front';
 
-export default class DrawerComponent extends React.Component {
+class DrawerComponent extends React.Component {
  render() {
      return (
          <NavigationContainer>
@@ -39,3 +40,18 @@ export default class DrawerComponent extends React.Component {
      )
  }
 }
+
+function mapStateToProps(state){
+    return {
+        ...state
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
+        yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DrawerComponent);

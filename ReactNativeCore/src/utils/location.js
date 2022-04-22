@@ -1,5 +1,6 @@
 import * as Location from "expo-location";
 import {alert} from "./util";
+import {getDistance} from "geolib";
 
 const getLocationPermission = async () => {
     const status = await Location.requestForegroundPermissionsAsync()
@@ -20,4 +21,20 @@ export const getUserLocation = async () => {
         const {coords} = await Location.getCurrentPositionAsync({enableHighAccuracy: true})
         return coords
     }
+}
+
+export const distanceBetween = async (lat, long, userLocation) => {
+    const MILES_PER_METER = 0.00062137119223733
+    // getDistance returns distance in meters
+    return getDistance(
+        {
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude
+        },
+        {
+            latitude: lat,
+            longitude: long
+        },
+        1
+    ) * MILES_PER_METER
 }

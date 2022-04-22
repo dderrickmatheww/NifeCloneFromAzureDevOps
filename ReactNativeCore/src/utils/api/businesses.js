@@ -2,12 +2,12 @@ import {client} from './client'
 import {auth} from "../firebase";
 import {alert} from "../util";
 
-export const updateUser = async (user) => {
+export const getBusiness = async (uuid) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/updateUser', {
-            user
+        const {data} = await client.post('/getBusiness', {
+            uuid
         },{
             headers:{
                 authorization: `Bearer ${token}`
@@ -21,13 +21,12 @@ export const updateUser = async (user) => {
     }
 }
 
-
-export const updateOrDeleteFavorites = async (user, business, isAdding, id) => {
+export const getBusinessCheckIns = async (uuid) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/updateOrDeleteFavorites', {
-            user
+        const {data} = await client.post('/getBusinessCheckIns', {
+            uuid
         },{
             headers:{
                 authorization: `Bearer ${token}`

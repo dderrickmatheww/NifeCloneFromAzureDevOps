@@ -1143,17 +1143,7 @@ const Util = {
         },
         DistanceBetween: (lat, long, userLocation, returnData) => {
             returnData(
-                getDistance(
-                    {
-                        latitude: userLocation.latitude,
-                        longitude: userLocation.longitude
-                    },
-                    {
-                        latitude: lat,
-                        longitude: long
-                    },
-                    1
-                ) * 0.00062137119223733
+
             );
         }
     },
