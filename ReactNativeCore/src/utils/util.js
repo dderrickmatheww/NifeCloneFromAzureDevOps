@@ -1351,6 +1351,8 @@ const Util = {
             }
         },
     },
+
+},
     basicUtil: {
         mergeObject: (obj1, obj2) => {
             for (var attr in obj2) {
@@ -1411,7 +1413,7 @@ const Util = {
         },
         defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken,
         TouchableOpacity: () => {
-            if (Device.osName == "Android") {
+            if (Device.osName === "Android") {
                 return require('react-native-gesture-handler').TouchableOpacity;
             } else {
                 return require('react-native').TouchableOpacity;
@@ -1420,11 +1422,10 @@ const Util = {
         VerticalLoader: ({layoutMeasurement, contentOffset, contentSize}) => {
             const paddingToBottom = 20;
             return layoutMeasurement.height + contentOffset.y >=
-              contentSize.height - paddingToBottom;
+                contentSize.height - paddingToBottom;
         },
         getUUID: () => uuid.v4()
     }
-}
 }
 
 export const logger = (funcName, type) => {

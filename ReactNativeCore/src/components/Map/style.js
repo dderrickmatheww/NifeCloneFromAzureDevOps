@@ -456,16 +456,14 @@ export const barStyles = StyleSheet.create({
         paddingHorizontal:5
     },
     tab:{
-        ...Platform.select({
-            ios: {
-                width: "33%",
-            },
-            android: {
-                width: "100%",
-            },
-        }),
         borderColor:theme.generalLayout.secondaryColor,
         marginVertical:5
+    },
+    middleTab: {
+        borderRightWidth: 1,
+        borderLeftWidth: 1,
+        borderRightColor: theme.generalLayout.secondaryColor,
+        borderLeftColor: theme.generalLayout.secondaryColor
     },
     tabOff:{
         width:"100%",

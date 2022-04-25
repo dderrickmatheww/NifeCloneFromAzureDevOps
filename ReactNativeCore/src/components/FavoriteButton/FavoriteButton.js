@@ -8,22 +8,17 @@ import IconWithBadge from "../IconWithBadge/IconWithBadge";
 export default class Favorite extends React.Component  {
 
     state= {
-        isFavorited: false,
+        isFavorited: this.props.user.user_favorite_places.some(place => place.business === this.props.businessUID),
         loading: true
     }
 
     componentDidMount() {
-        Util.user.isFavorited(this.props.buisnessUID, this.props.user, (boolean) => {
-            this.setState({
-                isFavorited: boolean,
-                loading: false
-            })
-        });
+
     }
 
     handlePress = (bool) =>{
         this.setState({isFavorited: bool});
-        this.props.favoriteTrigg(this.props.buisnessUID, bool, this.props.buisnessName);
+        this.props.favoriteTrigg(this.props.user.uuid, this.props.buisnessUID, bool);
     }
 
     render() {
@@ -41,7 +36,7 @@ export default class Favorite extends React.Component  {
                             <TouchableOpacity
                                 onPress={() => this.handlePress(true)}
                             >
-                                <IconWithBadge name={'staro'} badgeCount={0} color={theme.icons.color} size={30} type={'AntDesign'} />
+                                <IconWithBadge name={'star'} badgeCount={0} color={theme.icons.color} size={30} type={'AntDesign'} />
                             </TouchableOpacity>
                         :
                         <View style={styles.viewDark}>
