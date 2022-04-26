@@ -35,6 +35,7 @@ class DrawerComponent extends React.Component {
                      // options={{ lazy: false }}
                      lazy={false}
                  />
+
              </Drawer.Navigator>
          </NavigationContainer>
      )

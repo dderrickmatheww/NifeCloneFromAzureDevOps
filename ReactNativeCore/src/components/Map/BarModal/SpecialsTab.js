@@ -11,11 +11,11 @@ export function SpecialsTab(props) {
     }}>
         {
             props.businessData ?
-                props.businessData.specials && props.businessData.specials.length > 0 ?
-                    props.businessData.specials.map((special, i) => (
+                props.specials && props.specials.length > 0 ?
+                    props.specials.map((special, i) => (
                         <View key={i} style={barStyles.eventCont}>
                             <Text style={barStyles.eventText}>
-                                {special.text}
+                                {special.description}
                             </Text>
                         </View>
                     ))
@@ -24,8 +24,6 @@ export function SpecialsTab(props) {
                         <Text style={barStyles.noEventsText}>No specials out yet!</Text>
                     </View>
                 :
-                props.loadingBusiness ?
-                    <ActivityIndicator color={theme.loadingIcon.color} size="large"/> :
                     <View style={barStyles.noEventsCont}>
                         <Text style={barStyles.noEventsText}>This business has not registered for
                             Nife yet, let them know!</Text>

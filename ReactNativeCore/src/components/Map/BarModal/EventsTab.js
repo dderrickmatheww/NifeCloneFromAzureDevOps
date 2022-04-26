@@ -12,11 +12,11 @@ export function EventsTab(props) {
         }}>
             {
                 props.businessData ?
-                    props.businessData.events && props.businessData.events.length > 0?
-                        props.businessData.events.map((event, i) => (
+                    props.events && props.events.length > 0?
+                        props.events.map((event, i) => (
                             <View key={i} style={barStyles.eventCont}>
                                 <Text style={barStyles.eventText}>
-                                    {event.text}
+                                    {event.description}
                                 </Text>
                             </View>
                         ))
@@ -25,8 +25,6 @@ export function EventsTab(props) {
                             <Text style={barStyles.noEventsText}>No events planned yet!</Text>
                         </View>
                     :
-                    props.loadingBusiness ?
-                        <ActivityIndicator color={theme.loadingIcon.color} size="large"/> :
                         <View style={barStyles.noEventsCont}>
                             <Text style={barStyles.noEventsText}>This business has not registered
                                 for Nife yet, let them know!</Text>

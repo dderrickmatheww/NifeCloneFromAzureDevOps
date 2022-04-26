@@ -12,6 +12,8 @@ import {getUserLocation, MILES_PER_METER} from "../../utils/location";
 import {RecenterButton} from "./RecenterButton";
 import DrawerButton from "../Drawer/DrawerButton";
 import BarModal from "./BarModal/BarModal";
+import BusinessSearchBar from "../BusinessSearchBar/BusinessSearchBar";
+import {searchBusinesses} from "../../utils/api/businesses";
 const { width, height } = Dimensions.get('window');
 
 const latitudeDelta = 0.0922;
@@ -40,7 +42,10 @@ class Map extends React.Component  {
             id: "#",
             friendData: '#',
             distance: 0,
+            business: null,
         },
+        searchParam: "",
+        dropDownData:null,
     }
 
     gatherMarkers = async () => {
@@ -48,6 +53,10 @@ class Map extends React.Component  {
         this.setState({
             markers: places, loading: false
         })
+    }
+
+    toggleModal = (boolean) => {
+        this.setState({isModalVisible:boolean })
     }
 
     openBarModal = (e, placeId) => {
@@ -60,6 +69,7 @@ class Map extends React.Component  {
                 longitudeDelta,
             },
             modalProps:{
+                business: wantedPlace,
                 source: { uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url },
                 barName: wantedPlace.name,
                 rating: wantedPlace.rating,
@@ -98,6 +108,17 @@ class Map extends React.Component  {
         return (
             this.state.region && this.props.userData && !this.state.loading && this.state.markers ? <View style={localStyles.container}>
                 <View style={localStyles.mapContainer}>
+                    <View style={localStyles.autoCompContainer}>
+                        <BusinessSearchBar
+                            name={'ios-mail'}
+                            color={theme.generalLayout.textColor}
+                            styles={localStyles.font}
+                            value={this.state.searchParam}
+                            handleBarSelect={this.openBarModal}
+                            latitude={this.state.region.latitude}
+                            longitude={this.state.region.longitude}
+                        />
+                    </View>
                     <MapView
                         style={localStyles.map}
                         provider={PROVIDER_GOOGLE}
@@ -145,6 +166,7 @@ class Map extends React.Component  {
                             refresh={this.props.refresh}
                             navigation={this.props.navigation}
                             friendData={this.props.friends}
+                            business={this.state.modalProps.business}
                         /> : null
                     }
                     <DrawerButton
