@@ -18,7 +18,7 @@ import PopUpModal from "../Universal/PopUpModal";
 import { connect } from "react-redux";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
-class BarModal extends React.Component  {
+class BarModal extends React.Component {
 
   state = {
     userData: this.props.user,

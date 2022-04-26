@@ -64,7 +64,8 @@ class Utils {
                         ' eas submit',
                         ' --platform=', 
                         ' --path=', 
-                        ' --bundle-identifier='
+                        ' --bundle-identifier=',
+                        ' --verbose'
                     ];
                     const appleCmds = [
                         ' --apple-id=',
@@ -90,7 +91,7 @@ class Utils {
                                 cmd += task;
                                 break;
                             case ' --path=':
-                                task = task + `${(isApple ? path.resolve('./builds/watcher/ipa', 'Payload.ipa') : path.resolve('../builds/watcher/apk', 'Payload.apk'))}`;
+                                task = task + `${(isApple ? path.resolve('./builds/watcher/ipa', 'Payload.ipa') : path.resolve('./builds/watcher/apk', 'Payload.apk'))}`;
                                 cmd += task;
                                 break;
                             case ' --bundle-identifier=':

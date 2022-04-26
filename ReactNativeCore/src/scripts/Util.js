@@ -6,7 +6,7 @@ import {
     IOSClientKeyStandAlone,
     IOSClientKey,
     apiKey,
-    authDomain,
+    authDomain, 
     databaseURL,
     projectId,
     storageBucket,
