@@ -4,17 +4,14 @@ import {
     View,
 } from 'react-native';
 import BottomSheet from 'reanimated-bottom-sheet';
-import theme from "../../../styles/theme";
 import Util from "../../../utils/util";
 import {connect} from "react-redux";
 import {barStyles} from "../style";
-import {distanceBetween} from "../../../utils/location";
 import {getBusiness, getBusinessCheckIns} from "../../../utils/api/businesses";
 import Favorite from "../../FavoriteButton/FavoriteButton";
 import {EventsTab} from "./EventsTab";
 import {SpecialsTab} from "./SpecialsTab";
 import {DetailsTab} from "./DetailsTab";
-import {updateOrDeleteFavorites} from "../../../utils/api/users";
 
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
@@ -36,17 +33,28 @@ class BarModal extends React.Component {
         businessData: null,
         loadingBusiness: false,
         navModal: false,
-        distanceBetween: 0.0
+        distanceBetween: 0.0,
+        events: null,
+        specials: null,
     }
 
     toggleModal = (boolean) => {
         this.props.toggleModal(boolean);
     }
 
+    getEventsAndSpecials = async (businessData) => {
+        if(businessData){
+            const events = businessData.business_events.filter(event => event.eventtype === 'Event')
+            const specials = businessData.business_events.filter(event => event.eventtype === 'Special')
+            this.setState({events, specials})
+        }
+    }
+
     async componentDidMount() {
         this.setState({loadingBusiness: true});
         let checkIns = await getBusinessCheckIns(this.props.buisnessUID);
         let businessData = await getBusiness(this.props.buisnessUID)
+        await this.getEventsAndSpecials(businessData)
         this.setState({
             businessData,
             checkedIn: checkIns.length,
@@ -54,27 +62,24 @@ class BarModal extends React.Component {
         });
     }
 
-    favoriteABar = async (user, business, bool) => {
-        await updateOrDeleteFavorites(user, business, bool);
-    }
 
     renderTabState = () => {
         switch(this.state.tabState){
             case "details":
                 return (
-                    <DetailsTab source={this.props.source} checkedIn={this.state.checkedIn}
+                    <DetailsTab business={this.props.business} source={this.props.source} checkIns={this.props.user.user_check_ins}
                                 userData={this.state.userData} barName={this.props.barName}
-                                buisnessUID={this.props.buisnessUID} latitude={this.props.latitude}
+                                businessUID={this.props.buisnessUID} latitude={this.props.latitude}
                                 longitude={this.props.longitude} address={this.props.address}
                                 phone={this.props.phone} closed={this.props.closed}/>
                 )
             case "events":
                 return (
-                    <EventsTab businessData={this.state.businessData} loadingBusiness={this.state.loadingBusiness}/>
+                    <EventsTab events={this.state.events} businessData={this.state.businessData}/>
                 )
             case "specials":
                 return (
-                    <SpecialsTab businessData={this.state.businessData} loadingBusiness={this.state.loadingBusiness}/>
+                    <SpecialsTab specials={this.state.specials} businessData={this.state.businessData}/>
                 )
         }
     }
@@ -89,7 +94,6 @@ class BarModal extends React.Component {
 
                     <View style={{position: "relative"}}>
                         <Favorite
-                            favoriteTrigg={(user, business, bool) => this.favoriteABar(user, business, bool)}
                             user={this.props.user} buisnessUID={this.props.buisnessUID}
                             buisnessName={this.props.barName}/>
                     </View>

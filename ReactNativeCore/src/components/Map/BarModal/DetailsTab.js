@@ -12,37 +12,18 @@ export function DetailsTab(props) {
         />
 
         {
-            !props.checkedIn === "" || props.checkedIn === 0 ?
-                props.checkedIn === 1 ?
+                props.checkIns.length === 1 ?
                     <Text style={barStyles.ratingText}>
-                        There is {props.checkedIn} person here!
+                        There is {props.checkIns.length} person here!
                     </Text>
                     :
                     <Text style={barStyles.ratingText}>
-                        There are {props.checkedIn} people here!
+                        There are {props.checkIns.length} people here!
                     </Text>
-                :
-                <View style={barStyles.activityIndicator}>
-                    <ActivityIndicator
-                        size={"large"}
-                        color={theme.loadingIcon.color}
-                    />
-                </View>
+
         }
-        {/*{!props.userData.isBusiness ?*/}
-        {/*    <View style={barStyles.panelButton}>*/}
-        {/*        <CheckInOutButtons*/}
-        {/*            email={props.userData.email}*/}
-        {/*            barName={props.barName}*/}
-        {/*            buisnessUID={props.buisnessUID}*/}
-        {/*            latitude={props.latitude}*/}
-        {/*            longitude={props.longitude}*/}
-        {/*            address={props.address}*/}
-        {/*            phone={props.phone}*/}
-        {/*            source={props.source}*/}
-        {/*            closed={props.closed}*/}
-        {/*        />*/}
-        {/*    </View*/}
-        {/*    > : null}*/}
+        {!props.userData.isBusiness ?
+            <CheckInOutButtons business={props.business}  checkIns={props.checkIns}   businessUID={props.businessUID} />: null
+        }
     </View>;
 }

@@ -9,8 +9,8 @@ export function MapMarker(props) {
 
         pinColor={theme.generalLayout.secondaryColor} // this.state.nifeBusinesses.includes(marker.id) ? theme.icons.color :
 
-        calloutOffset={{x: 0.5, y: 0.25}}
-        calloutAnchor={{x: 0.5, y: 0.25}}
+        calloutOffset={{x: 2, y: 0.25}}
+        calloutAnchor={{x: 2, y: 0.25}}
     >
         <Callout
             tooltip={true}
