@@ -35,6 +35,7 @@ class CheckInOutButtons extends React.Component  {
         await deleteCheckIn(this.state.checkIn.id);
         this.setState({loading:false, checkIn: null})
         await this.refreshUser()
+        await this.props.handleCheckIns();
     }
 
     handleCheckIn = async (isPrivate) => {
@@ -46,14 +47,16 @@ class CheckInOutButtons extends React.Component  {
             this.props.business.coordinates.longitude,
             {latitude, longitude}
         )
-        if(distance <= HUNDRED_FT_IN_MILES){
-            const checkIn = await createCheckIn(this.props.userData.uuid, this.props.businessUID, isPrivate);
+        // if(distance <= HUNDRED_FT_IN_MILES){
+            const checkIn = await createCheckIn(this.props.userData.id, this.props.businessUID, isPrivate);
             this.setState({loading:false, checkIn})
             await this.refreshUser()
-        } else {
-            alert('Check In Error!', 'Must be within 100ft to check in.')
-            this.setState({ loading: false });
-        }
+            await this.props.handleCheckIns();
+
+        // } else {
+        //     alert('Check In Error!', 'Must be within 100ft to check in.')
+        //     this.setState({ loading: false });
+        // }
 
     }
 

@@ -50,14 +50,20 @@ class BarModal extends React.Component {
         }
     }
 
+    handleCheckIns = async () => {
+        let checkIns = await getBusinessCheckIns(this.props.buisnessUID);
+        this.setState({
+            checkedIn: checkIns.length,
+        });
+    }
+
     async componentDidMount() {
         this.setState({loadingBusiness: true});
-        let checkIns = await getBusinessCheckIns(this.props.buisnessUID);
         let businessData = await getBusiness(this.props.buisnessUID)
+        await this.handleCheckIns();
         await this.getEventsAndSpecials(businessData)
         this.setState({
             businessData,
-            checkedIn: checkIns.length,
             loadingBusiness: false
         });
     }
@@ -67,11 +73,14 @@ class BarModal extends React.Component {
         switch(this.state.tabState){
             case "details":
                 return (
-                    <DetailsTab business={this.props.business} source={this.props.source} checkIns={this.props.user.user_check_ins}
+                    <DetailsTab business={this.props.business} source={this.props.source} checkIns={this.state.checkedIn}
+                                userCheckIns={this.props.user.user_check_ins}
                                 userData={this.state.userData} barName={this.props.barName}
                                 businessUID={this.props.buisnessUID} latitude={this.props.latitude}
                                 longitude={this.props.longitude} address={this.props.address}
-                                phone={this.props.phone} closed={this.props.closed}/>
+                                phone={this.props.phone} closed={this.props.closed}
+                                handleCheckIns={this.handleCheckIns}
+                    />
                 )
             case "events":
                 return (
