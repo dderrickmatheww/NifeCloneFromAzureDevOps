@@ -23,20 +23,21 @@ export default class VisitedByCallout extends React.Component {
                         <View style={callOutStyles.friendVisitedByMulti}>
                             {
                                 this.props.friendCheckIns.map((friend, i) => (
+                                    i <= 5 ?
                                     <View key={i} style={callOutStyles.multiAvatar}>
                                         {
                                             <Avatar.Image
                                                     source={{uri: friend.users.photoSource}}
                                                     size={30}
                                                     style={{
-                                                        right: i * 0.2,
+                                                        right: i * 0.3,
                                                         borderWidth: 1.5,
                                                         borderColor: theme.generalLayout.secondaryColor,
-                                                        marginLeft: -10
+                                                        marginLeft: -15
                                                     }}
                                                 />
                                         }
-                                    </ View>
+                                    </ View> : null
                                 ))
                             }
                             <Text style={callOutStyles.friendText}>

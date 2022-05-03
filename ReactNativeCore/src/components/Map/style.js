@@ -406,6 +406,7 @@ export const callOutStyles = StyleSheet.create({
         top: '5%',
         justifyContent: 'center',
         alignContent: 'center',
+        paddingHorizontal: -5
     },
 
     friendVisitedBy: {
