@@ -48,15 +48,16 @@ class Map extends React.Component {
         searchParam: "",
         dropDownData: null,
         friendCheckIns: null,
+        friendsLastVisited: null
     }
 
     handleGetFriendCheckIns = async () => {
         const friends = this.props.userData.user_friends.map(friend => friend.friendId);
-        const checkIns = await getFriendCheckIns(friends);
+        const {checkIns, lastVisited} = await getFriendCheckIns(friends);
         this.setState({
-            friendCheckIns: checkIns
+            friendCheckIns: checkIns,
+            friendsLastVisited: lastVisited
         })
-        console.log(checkIns)
     }
 
     gatherMarkers = async () => {
@@ -68,6 +69,10 @@ class Map extends React.Component {
 
     getBarCheckIns = (id) => {
         return this.state.friendCheckIns.filter(checkIn => checkIn.business === id)
+    }
+
+    getBarLastVisited = (id) => {
+        return this.state.friendsLastVisited.filter(checkIn => checkIn.business === id)
     }
 
     toggleModal = (boolean) => {
@@ -156,10 +161,15 @@ class Map extends React.Component {
                             loadingBackgroundColor={theme.generalLayout.backgroundColor}
                         >
                             {this.state.markers.map(marker => (
-                                <MapMarker key={marker.id} friendCheckIns={this.getBarCheckIns(marker.id)}  marker={marker} userData={this.props.userData}
-                                           onPress={(e) => {
-                                               this.openBarModal(e, marker.id)
-                                           }}/>
+                                <MapMarker
+                                    key={marker.id} friendCheckIns={this.getBarCheckIns(marker.id)}
+                                    friendLastVisited={this.getBarLastVisited(marker.id)}
+                                    marker={marker}
+                                    userData={this.props.userData}
+                                    onPress={(e) => {
+                                        this.openBarModal(e, marker.id)
+                                    }}
+                                />
                             ))}
                         </MapView>
                         <RecenterButton onPress={this.recenter}/>

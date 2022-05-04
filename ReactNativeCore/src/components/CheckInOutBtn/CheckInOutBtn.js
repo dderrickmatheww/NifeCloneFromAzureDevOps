@@ -12,6 +12,7 @@ class CheckInOutButtons extends React.Component  {
         checkedIn: null,
         loading:  false,
         checkIn: null,
+        checkedInSomewhereElse: null,
     }
     async componentDidMount() {
         await this.isUserCheckedIn();
@@ -19,10 +20,14 @@ class CheckInOutButtons extends React.Component  {
 
     isUserCheckedIn = async () => {
         this.setState({ loading: true });
-        const isCheckedIn = this.props.checkIns.some(place => place.business === this.props.businessUID)
-        const checkIn = this.props.checkIns.find(place => place.business === this.props.businessUID)
-        this.setState({loading: false, checkedIn: isCheckedIn, checkIn})
-
+        const userCheckIn = this.props.userData.user_check_ins
+        if(userCheckIn) {
+            const isCheckedIn = userCheckIn.business === this.props.businessUID;
+            const checkIn = this.props.userData.user_check_ins;
+            const checkedInSomewhereElse = !isCheckedIn && this.props.userData.user_check_ins
+            this.setState({loading: false, checkedIn: isCheckedIn, checkIn, checkedInSomewhereElse})
+        }
+        this.setState({loading: false})
     }
 
     refreshUser = async () => {
@@ -47,23 +52,26 @@ class CheckInOutButtons extends React.Component  {
             this.props.business.coordinates.longitude,
             {latitude, longitude}
         )
-        // if(distance <= HUNDRED_FT_IN_MILES){
+        if(distance <= HUNDRED_FT_IN_MILES){
+            if(this.state.checkedInSomewhereElse){
+                await deleteCheckIn(this.state.checkIn.id);
+            }
             const checkIn = await createCheckIn(this.props.userData.id, this.props.businessUID, isPrivate);
             this.setState({loading:false, checkIn})
             await this.refreshUser()
             await this.props.handleCheckIns();
 
-        // } else {
-        //     alert('Check In Error!', 'Must be within 100ft to check in.')
-        //     this.setState({ loading: false });
-        // }
+        } else {
+            alert('Check In Error!', 'Must be within 100ft to check in.')
+            this.setState({ loading: false });
+        }
 
     }
 
     render(){
         return(
             !this.state.loading ?
-                this.state.checkIn ?
+                this.state.checkIn && !this.state.checkedInSomewhereElse ?
                     <View style={localStyles.checkOutContainer}>
                         <TouchableOpacity
                             onPress={this.handleCheckOuts}

@@ -6,11 +6,19 @@ import {Avatar} from "react-native-paper";
 
 export default class VisitedByCallout extends React.Component {
 
-    determineText(friendCheckIns){
+    determineCheckInText(friendCheckIns){
         if(friendCheckIns.length === 1){
             return '1 friend is currently here!'
         } else {
             return `${friendCheckIns.length} friends are currently here!`
+        }
+    }
+
+    determineLastVisitedText(lastVisited){
+        if(lastVisited.length === 1){
+            return '1 friend visited here recently!'
+        } else {
+            return `${lastVisited.length} visited recently!!`
         }
     }
 
@@ -19,7 +27,7 @@ export default class VisitedByCallout extends React.Component {
             <View style={callOutStyles.callOutMarker}>
                 <Text style={[callOutStyles.calloutText,]}>{this.props.marker.name}</Text>
                 {
-                    this.props.friendCheckIns ?
+                    this.props.friendCheckIns.length > 0 ?
                         <View style={callOutStyles.friendVisitedByMulti}>
                             {
                                 this.props.friendCheckIns.map((friend, i) => (
@@ -41,11 +49,40 @@ export default class VisitedByCallout extends React.Component {
                                 ))
                             }
                             <Text style={callOutStyles.friendText}>
-                                {this.determineText(this.props.friendCheckIns)}
+                                {this.determineCheckInText(this.props.friendCheckIns)}
                             </Text>
                         </View>
                         :
-                        <ActivityIndicator size="large" color={theme.loadingIcon.color}/>
+                        null
+                }
+                {
+                    this.props.friendLastVisited.length > 0 ?
+                        <View style={callOutStyles.friendVisitedByMulti}>
+                            {
+                                this.props.friendCheckIns.map((friend, i) => (
+                                    i <= 5 ?
+                                        <View key={i} style={callOutStyles.multiAvatar}>
+                                            {
+                                                <Avatar.Image
+                                                    source={{uri: friend.users.photoSource}}
+                                                    size={30}
+                                                    style={{
+                                                        right: i * 0.3,
+                                                        borderWidth: 1.5,
+                                                        borderColor: theme.generalLayout.secondaryColor,
+                                                        marginLeft: -15
+                                                    }}
+                                                />
+                                            }
+                                        </ View> : null
+                                ))
+                            }
+                            <Text style={callOutStyles.friendText}>
+                                {this.determineLastVisitedText(this.props.friendLastVisited)}
+                            </Text>
+                        </View>
+                        :
+                        null
                 }
             </View>
         )
