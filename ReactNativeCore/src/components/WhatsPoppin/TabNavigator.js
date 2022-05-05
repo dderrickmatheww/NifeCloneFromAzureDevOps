@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, ActivityIndicator, StyleSheet, Platform} from 'react-native';
+import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import WhatsPoppin from '../components/Whats Poppin/WhatsPoppinTab';
-import PostFeed from './PostFeed';
-import IconWithBadge from '../components/Universal/IconWithBadge';
-import theme from '../../src/styles/theme';
+//import WhatsPoppin from '../components/Whats Poppin/WhatsPoppinTab';
+import PostFeed from './PostFeed/PostFeed';
+import IconWithBadge from '../IconWithBadge/IconWithBadge';
+import theme from '../../styles/theme';
+import { connect } from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +48,6 @@ class WhatsPoppinNavigator extends React.Component {
                 borderBottomColor:'transparent',
                 borderTopColor:'transparent',
                 borderTopWidth: 0,
-                position: 'absolute',
                 color: theme.icons.tabIcon.textColor,
                 fontFamily: theme.generalLayout.font,
                 bottom: 0,
@@ -64,9 +64,9 @@ class WhatsPoppinNavigator extends React.Component {
             }}
             initialRouteName="My Feed"
           >
-            <Tab.Screen name="My Feed" component={<PostFeed />} />
+            <Tab.Screen name="My Feed" component={ PostFeed } />
             {/**{!this.props.user.isBusiness ? <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/> : null} */}
-            <Tab.Screen name="What's Poppin'" component={<WhatsPoppin />} />
+            {/* <Tab.Screen name="What's Poppin'" component={<WhatsPoppin />} /> */}
           </Tab.Navigator> 
         :
         <View style={localStyles.viewDark}>

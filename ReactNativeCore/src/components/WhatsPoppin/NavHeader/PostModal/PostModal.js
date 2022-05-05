@@ -5,8 +5,9 @@ import {
     View
 } from "react-native";
 import { Modal, Text } from 'react-native-paper';
-import theme from '../../styles/theme';
+import theme from '../../../../styles/theme';
 import { connect } from "react-redux";
+import StatusModal from "./StatusModel";
 
 class PostModal extends React.Component {
 
@@ -14,8 +15,22 @@ class PostModal extends React.Component {
     userData: this.props.userData,
     feedData: this.props.feedData,
     modalType: "",
-    modalVisability: false
+    mainModal: this.props.isVisible,
+    statusModal: {
+      type: "",
+      visability: false
+    },
   };
+
+  componentDidMount() {
+    this.setState({ 
+      statusModal: {
+        type: "",
+        visability: false
+      }
+    })
+    console.log(this.props.user)
+  }
 
   render() {     
     return(         
@@ -26,12 +41,14 @@ class PostModal extends React.Component {
           borderRadius: 50, 
           alignSelf: "center"
         }}
-        visible={this.props.isVisible}
+        visible={this.state.mainModal}
         dismissable={true}
         onDismiss={() => {
           this.setState({ 
-            modalType: "",
-            modalVisability: false
+            statusModal: {
+              type: "",
+              visability: false
+            }
           });
           this.props.onDismiss();
         }}
@@ -66,7 +83,7 @@ class PostModal extends React.Component {
                   </Text>
               </TouchableOpacity>
               <StatusModal 
-                modalType={ this.state.modalType } 
+                modalType={ this.state.statusModal.type } 
                 isVisible={ this.state.modalVisability }
               />
             </View>

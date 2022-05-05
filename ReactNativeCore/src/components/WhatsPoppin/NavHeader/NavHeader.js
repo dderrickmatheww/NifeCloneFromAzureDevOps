@@ -2,17 +2,16 @@ import React from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity,
+    TouchableOpacity
 } from 'react-native';
 import {
     Text,
-    Headline,
+    Headline
 } from 'react-native-paper';
 import theme from '../../../styles/theme';
 import { connect } from "react-redux";
 import DrawerButton from "../../Drawer/DrawerButton";
-import PostModal from "./PostModal/PostModal";
-import NotificationSnackBar from "./NotificationSnackBar";
+
 
 class NavHeader extends React.Component {
 
@@ -21,52 +20,65 @@ class NavHeader extends React.Component {
         notificationSnackBar: false,
         userData: this.props.userData,
         feedData: this.props.feedData,
-        isBusiness: this.props.userData.businessId != null
+        isBusiness: this.props.userData.businessId != null,
+        modalType: "",
+        statusModal: {
+            type: "",
+            visability: false
+        },
     }
 
     render() {
         return (
             <View style={localStyles.navHeader}>
-                <DrawerButton
-                    userPhoto={this.state.userData.photoSource}
-                    drawerButtonColor={theme.generalLayout.secondaryColor}
-                    onPress={this.props.navigation.openDrawer}
-                />
-                <View style={{ width: "100%" }}>
+                <View style={localStyles.navHeaderColOne}>
+                    <DrawerButton
+                        userPhoto={this.state.userData.photoSource}
+                        drawerButtonColor={theme.generalLayout.secondaryColor}
+                        onPress={this.props.navigation.openDrawer}
+                    />
+                </View>
+
+                <View  style={localStyles.navHeaderColTwo}>
                     <Headline style={{
                         color: theme.generalLayout.textColor,
                         fontFamily: theme.generalLayout.fontBold,
-                        marginLeft: '5%',
-                        marginBottom: '2%'
-                    }}>Your Feed</Headline>
+                        width: '150%'
+                    }}>
+                        Your Feed
+                    </Headline>
                 </View>
-                <TouchableOpacity 
-                    onPress={() => this.setState({ isVisable: true })}
-                    style={localStyles.StatusOverlay}
-                >
-                    <Text 
-                        style={localStyles.statusButton}
+
+                <View  style={localStyles.navHeaderColTwo}>
+                    <TouchableOpacity 
+                        onPress={() => this.props.modalTrigger({ postModal: true })}
+                        style={localStyles.StatusOverlay}
                     >
-                        { this.state.isBusiness ? 'Update...' : 'Update Status' }
-                    </Text>
-                </TouchableOpacity>
-                <PostModal 
-                    isVisable={this.state.postModal}
-                    onDismiss={() => this.setState({ isVisable: false, notificationSnackBar: true })}
-                />
-                <NotificationSnackBar 
-                    isVisable={this.state.notificationSnackBar}
-                    onDismiss={() => this.setState({ notificationSnackBar: false })}
-                />
+                        <Text 
+                            style={localStyles.statusButton}
+                        >
+                            { this.state.isBusiness ? 'Update...' : 'Update Status' }
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
 }
 
 const localStyles = StyleSheet.create({
+    navHeaderColOne: {
+        width: "10.0%", 
+        padding: '4%',
+        margin: '3%'
+    },
+    navHeaderColTwo: {
+        width: "37.5%", 
+        padding: '2%',
+        margin: '3%'
+    },
     StatusOverlay: {
         position: "relative",
-        right: 150,
         backgroundColor: theme.generalLayout.backgroundColor,
         borderWidth: .5,
         borderColor: theme.generalLayout.secondaryColor,
@@ -76,18 +88,99 @@ const localStyles = StyleSheet.create({
     },
     statusButton: {
         color: theme.generalLayout.textColor,
-        fontSize: 11,
+        fontSize: 13,
+        textAlign: 'center',
         fontFamily: theme.generalLayout.font
     },
     navHeader: {
-        marginTop: 12.5,
         flexDirection: "row",
         borderBottomColor: theme.generalLayout.secondaryColor,
         borderBottomWidth: 1,
-        width: "98%",
+        width: "100%",
         textAlign: "center",
         alignItems: "center",
-    }
+    },
+    textInput:{
+        flex: 1,
+        ...Platform.select({
+          ios: {
+            backgroundColor: theme.generalLayout.backgroundColor,
+            color: theme.generalLayout.textColor,
+          },
+          android:{
+            backgroundColor: 'white',
+            color: 'black',
+          }
+        }),
+        width:"90%", 
+        height:"80%", 
+        alignSelf:"center", 
+        borderRadius: 5,
+        marginTop:5,
+        fontFamily: theme.generalLayout.font,
+      },
+      buttonText:{
+        color: theme.generalLayout.textColor,
+        alignSelf:"center",
+        paddingHorizontal: 5,
+        fontFamily: theme.generalLayout.font
+      },
+      button:{
+        borderColor: theme.generalLayout.secondaryColor,
+        borderRadius:10,
+        borderWidth:1,
+        width:"50%",
+        marginBottom: 20
+      },
+      viewDark:{
+        flex: 1,
+        height: '60%',
+        backgroundColor: theme.generalLayout.backgroundColor,
+        flexDirection:"column",
+        justifyContent:"center",
+        alignContent:"center",
+        alignItems:"center",
+        color: theme.generalLayout.textColor,
+        borderRadius: 15,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: theme.generalLayout.secondaryColor
+      },
+      modalButton: {
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderWidth: 1,
+        borderColor: theme.generalLayout.secondaryColor,
+        borderRadius: 5,
+        ...Platform.select({
+            ios: {
+                paddingVertical: 10,
+                paddingHorizontal: 5,
+                marginVertical: 10,
+            },
+            android: {
+                paddingVertical: 2,
+                paddingHorizontal: 5,
+                marginVertical: 5,
+            }
+        }),
+        textAlign: "center",
+        color: theme.generalLayout.textColor,
+        width: 200,
+        fontFamily:theme.generalLayout.font
+      },
+      modalButtonText: {
+          color: theme.generalLayout.textColor,
+          fontSize: 20,
+          textAlign: "center",
+          fontFamily: theme.generalLayout.font
+      },
+      viewDark: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.generalLayout.backgroundColor,
+        paddingBottom: 10
+      },
 });
 
 function mapStateToProps(state){

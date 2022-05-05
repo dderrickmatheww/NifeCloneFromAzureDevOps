@@ -13,6 +13,7 @@ export const updatePostById = async (postId) => {
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -25,13 +26,14 @@ export const getPosts = async (userId) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/getPosts', {
+        const { data }  = await client.post('/getPosts', {
             userId
         },{
             headers:{
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -44,11 +46,12 @@ export const getPostsPaginated = async (postObj) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/getPostsPaginated', postObj, {
+        const { data } = await client.post('/getPostsPaginated', postObj, {
             headers:{
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -61,13 +64,14 @@ export const getPostsById = async (postId) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/getPosts', {
+        const { data } = await client.post('/getPosts', {
             postId
         },{
             headers:{
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -80,13 +84,14 @@ export const deletePostsById = async (postId) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/getPosts', {
+        const { data } = await client.post('/getPosts', {
             postId
         },{
             headers:{
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -95,15 +100,24 @@ export const deletePostsById = async (postId) => {
     }
 }
 
-export const createPost = async (postObj) => {
+export const createPost = async (description, type, image, businessId, latitude, longitude, userId) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const {data} = await client.post('/createPost', postObj, {
+        const { data } = await client.post('/createPost', {
+            description,
+            type,
+            image,
+            businessId,
+            latitude,
+            longitude,
+            userId
+        }, {
             headers:{
                 authorization: `Bearer ${token}`
             }
         });
+        console.log(data);
         return data
     } catch (e) {
         console.log(e);

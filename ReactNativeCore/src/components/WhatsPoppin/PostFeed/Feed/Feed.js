@@ -13,12 +13,12 @@ import {
     Caption,
     Paragraph,
 } from 'react-native-paper';
-import theme from '../../../src/styles/theme';
-import Util from '../../scripts/Util';
-import { getPostsPaginated } from '../../../utils/api/posts';
+import theme from '../../../../styles/theme';
+import Util from '../../../../utils/util';;
+import { getPostsPaginated } from '../../../../utils/api/posts';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
-class PostFeed extends React.Component {
+class Feed extends React.Component {
 
     state = {
         feedData: this.props.feedData,
@@ -181,4 +181,4 @@ function mapDispatchToProps(dispatch){
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostFeed);
+export default connect(mapStateToProps, mapDispatchToProps)(Feed);

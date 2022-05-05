@@ -1,14 +1,14 @@
-import React from "react";
+import * as React from "react";
 import {
-    StyleSheet, Platform,
+    StyleSheet, 
+    Platform,
     View,
-    ActivityIndicator,
     Keyboard
 } from "react-native";
-import Util from '../../scripts/Util';
-import { Button, TextInput, Text } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { createPost, getPostsPaginated } from '../../../../utils/api/posts';
-import theme from '../../styles/theme';
+import { uploadImage } from '../../../../utils/api/users';
+import theme from '../../../../styles/theme';
 import { connect } from "react-redux";
 
 class StatusModel extends React.Component {
@@ -21,28 +21,19 @@ class StatusModel extends React.Component {
       image: null
     };
 
-    onSaveStatus = () => {
+    onSaveStatus = async () => {
         this.setState({ saving: true });
-        const { userData, image } = this.state;
-        const { modalType } = this.props;
+        const { userData, image, description } = this.state;
+        const { modalType: type } = this.props;
         const { businessId, latitude, longitude, id: userId } = userData;
-        const postObj =  {
-            description,
-            created: new Date(),
-            type: modalType,
-            image,
-            businessId,
-            latitude,
-            longitude,
-            userId
-        }
-        await createPost(postObj);
+        console.log(description, type, image, businessId, latitude, longitude, userId);
+        await createPost(description, type, image, businessId, latitude, longitude, userId);
         const feedData = await getPostsPaginated({ userId, take: 50, skip: 0 });
         this.props.refresh(userData, feedData);
         this.setState({ saving: false });
     }
 
-    uploadImageStatus = () => {
+    uploadImageStatus = async () => {
         this.setState({ saving: true });
         const { email } = this.state.userData;
         const image = await uploadImage(email);
@@ -58,11 +49,12 @@ class StatusModel extends React.Component {
                 <TextInput
                     mode={"outlined"}
                     label=""
+                    disabled={false}
                     selectionColor={Platform.select({
                         ios: theme.generalLayout.textColor,
                         android:'black'
                     })}
-                    outlineColor={theme.generalLayout.backgroundColor}
+                    outlineColor={theme.generalLayout.textColor}
                     placeholder={Platform.select({
                         ios: 'Type here...',
                         android:''
@@ -81,27 +73,27 @@ class StatusModel extends React.Component {
                             Keyboard.dismiss();
                         }
                     }}
-                    theme={{ colors: { primary: theme.generalLayout.secondaryColor, placeholder: theme.generalLayout.textColor, underlineColor: 'transparent' } }}
+                    theme={{ 
+                        colors: { 
+                            primary: theme.generalLayout.secondaryColor, 
+                            placeholder: theme.generalLayout.textColor, 
+                            underlineColor: 'transparent',
+                            text: theme.generalLayout.textColor
+                        } 
+                    }}
                 /> 
-                {
-                    this.state.saving ? 
-                        <ActivityIndicator style={{ marginVertical: 5 }} color={theme.loadingIcon.color} size="large"/>
-                    : 
-                        <Button
-                            labelStyle={{ color: theme.generalLayout.textColor }}
-                            style={localStyles.button}
-                            mode="contained"
-                            onPress={this.uploadImageStatus}
-                            disabled={!this.state.image ? false : true}
-                        >
-                            <Text style={{
-                                color: theme.generalLayout.textColor,
-                                fontFamily: theme.generalLayout.font
-                            }}>
-                                {!this.state.image ? "Upload a Picture!" : "Picture Added!"}
-                            </Text>
-                        </Button> 
-                }
+                <Button
+                    labelStyle={{ color: theme.generalLayout.textColor }}
+                    style={localStyles.button}
+                    contentStyle={{ width: '100%'}}
+                    icon="camera"
+                    loading={this.state.saving}
+                    mode="contained"
+                    onPress={this.uploadImageStatus}
+                    disabled={!this.state.image ? false : true}
+                >
+                    {!this.state.image ? "Upload a Picture!" : "Picture Added!"}
+                </Button> 
                 <Button 
                     labelStyle={{color: theme.generalLayout.textColor}} 
                     style={localStyles.button} 
@@ -109,11 +101,7 @@ class StatusModel extends React.Component {
                     mode="contained" 
                     onPress={this.onSaveStatus}
                 >
-                    <Text 
-                        style={{color: theme.generalLayout.textColor, fontFamily: theme.generalLayout.font}}
-                    >
                         { `Post ${this.props.modalType === "EVENT" ? "Event" : this.props.modalType === "SPECIAL" ? "Special" : ""}`}
-                    </Text>
                 </Button>
             </View> 
         )
@@ -152,22 +140,29 @@ const localStyles = StyleSheet.create({
     height:"80%", 
     alignSelf:"center", 
     borderRadius: 5,
-    marginTop:5,
-    fontFamily: theme.generalLayout.font,
+    color: theme.generalLayout.textColor,
+    borderColor: theme.generalLayout.secondaryColor,
+    marginTop: 5,
+    fontFamily: theme.generalLayout.font
+  },
+  buttonContainer: {
+    width: "75%",
+    alignContent: "center",
+    justifyContent: "center",
+    marginTop: '100%'
   },
   button: {
     borderColor: theme.generalLayout.secondaryColor,
     borderRadius:10,
-    borderWidth:1,
-    width:"50%",
-    marginBottom: 20
+    borderWidth: 1,
+    marginBottom: '7%',
+    width: '75%',
+    alignSelf: "center"
   },
   viewDark:{
-    flex: 1,
+    width: '100%',
+    height: '100%',
     backgroundColor: theme.generalLayout.backgroundColor,
-    flexDirection:"column",
-    justifyContent:"center",
-    alignContent:"center",
     alignItems:"center",
     color: theme.generalLayout.textColor,
     borderRadius: 15,

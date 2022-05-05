@@ -3,7 +3,7 @@ import {
     getAuth, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import {
     apiKey,
@@ -37,7 +37,7 @@ const Firebase = initializeApp(firebaseConfig)
 export default Firebase;
 export const auth = getAuth(Firebase);
 export const db = getFirestore(Firebase);
-const storage = getStorage(Firebase);
+export const storage = getStorage(Firebase);
 
 export const firebaseSignUp = async ({email, password, displayName}) => {
     console.log(email, password)
@@ -81,25 +81,34 @@ export const fireBaseLogin = async (email, password)=> {
     }
 }
 
-export const firebaseStorageUpload = async (photoUri, email, photoKey) => {
+export const firebaseStorageUpload = async (uri, photoKey) => {
     try {
         const blob = await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function () {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function (e) {
-                alert('API ERROR!', 'An Error occurred! Please restart!');
-                reject(new TypeError('Network request failed'));
-            };
-            xhr.responseType = 'blob';
-            xhr.open('GET', photoUri, true);
-            xhr.send(null);
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    alert('API ERROR!', 'An Error occurred! Please restart!');
+                    reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', uri, true);
+                xhr.send(null);
+            }
+            catch ({ message }) {
+                logger("Nife's Storage Upload", false);
+                alert('Nife Storage Upload Error', message, null);
+            }
         });
-        const storageRef = ref(storage, `${email}/${photoKey}`);
-        const snapshot = await uploadBytes(storageRef, blob);
-        const imageUrl = await snapshot.ref.getDownloadURL();
-        return imageUrl;
+        console.log('blob - ' + blob);
+        const storageRef = ref(storage, photoKey);
+        console.log('Storage Ref - ' + storageRef);
+        const upload = await uploadBytes(storageRef, blob);
+        blob.close();
+        console.log('upload - ' + upload);
+        return await getDownloadURL(storageRef);
     }
     catch ({ message }) {
         logger("Nife's Storage Upload", false);

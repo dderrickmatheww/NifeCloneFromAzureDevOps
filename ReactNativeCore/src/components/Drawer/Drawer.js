@@ -5,11 +5,12 @@ import {createDrawerNavigator} from "@react-navigation/drawer";
 import {drawerContentOptions, drawerStyle, overlayColor} from "./style";
 import Map from "../Map/Map";
 import {connect} from "react-redux";
+import WhatsPoppinNavigator from "../WhatsPoppin/TabNavigator";
 
 const Drawer = createDrawerNavigator();
 
 
-const INITIAL_ROUTE = 'Map';
+const INITIAL_ROUTE = 'WhatsPoppin';
 const DRAWER_TYPE = 'front';
 
 class DrawerComponent extends React.Component {
@@ -35,6 +36,13 @@ class DrawerComponent extends React.Component {
                      // options={{ lazy: false }}
                      lazy={false}
                  />
+
+                <Drawer.Screen
+                     name="WhatsPoppin"
+                     component={ WhatsPoppinNavigator }
+                     // options={{ lazy: false }}
+                     lazy={false}
+                 /> 
 
              </Drawer.Navigator>
          </NavigationContainer>

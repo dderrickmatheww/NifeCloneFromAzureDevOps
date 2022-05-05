@@ -1,8 +1,9 @@
 import { client } from './client'
 import { auth } from "../firebase";
-import { alert } from "../util";
+import { alert, logger } from "../util";
 import * as ImagePicker from 'expo-image-picker';
 import { firebaseStorageUpload } from "../../utils/firebase";
+import uuid from 'react-native-uuid';
 
 export const updateUser = async (user) => {
     // TODO write getToken func
@@ -112,22 +113,14 @@ export const deleteCheckIn = async (id) => {
 
 export const uploadImage = async (email) => {
     try {
-        const [status, requestPermission] = await ImagePicker.useMediaLibraryPermissions()
-        if (status == "granted") {
-            const image = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                aspect: [4, 3],
-                quality: 1,
-            })
-            const photoUri = image.uri;
-            const imageUrl = await firebaseStorageUpload(photoUri, email, photoUri);
-            return imageUrl;
-        } 
+        const { status } = await ImagePicker.getCameraRollPermissionsAsync();
+        if (status === "granted") {
+            const { uri } = await ImagePicker.launchImageLibraryAsync();
+            console.log(uri + " get");
+            return await firebaseStorageUpload(uri, uuid.v4());
+        }
         else {
-            this.setState({
-                isVerified: false
-            });
+            return false;
         }
     }
     catch ({ message }) {

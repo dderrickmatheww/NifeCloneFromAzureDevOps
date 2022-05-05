@@ -62,7 +62,8 @@ class NifeApp extends React.Component {
     return (
         this.state.authLoaded ?
             this.props.userData ?
-              <DrawerComponent />:
+              <DrawerComponent />
+              :
               <LoginScreen />
             :
             <Loading />
