@@ -12,6 +12,7 @@ export const UserSignUpForm = ({processUserSignUp, handleBackToLogin}) => {
     const [email, setEmail] = useState('mattdpalumbo@gmail.com')
     const [password1, setPassword1] = useState('Chicago1!')
     const [password2, setPassword2] = useState('Chicago1!')
+    const [eula, setEula] = useState(false)
 
     return (
         <KeyboardAwareScrollView
@@ -45,9 +46,33 @@ export const UserSignUpForm = ({processUserSignUp, handleBackToLogin}) => {
                            placeholderTextColor={theme.generalLayout.fadedText} style={localStyles.textInput}
                            placeholder={'Confirm Password'} returnKey={'next'}
                            onChangeText={(text) => setPassword2(text)}/>
+                
+                <Text style={{color: 'white', paddingTop: 10, paddingBottom: 10, marginLeft:30, marginRight:15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                           You must read and agree to the following terms. Select ok to continue.
+                </Text>
+                <Text style={{ color: theme.icons.color, paddingTop: 10, marginLeft:30, marginRight:15}}
+                           onPress={() => Linking.openURL('http://google.com')}>
+                           Google Terms Link
+                </Text>
+
+                <View style={{ marginLeft:20, flexDirection: 'row'}}>
+                <Text style={{color:theme.generalLayout.textColor, marginTop: 10, marginLeft:10 }}>Click the checkbox to agree
+                </Text>
+                <Checkbox 
+                    uncheckedColor={theme.generalLayout.textColor}
+                    color={theme.icons.color}
+                    status={eula ? 'checked' : 'unchecked'}
+                    onPress={() => setEula(!eula)}
+                />
+                </View> 
+
+                {/*  --- if they click the checkbox, we need to store a bool as true in EULA in Users Table
+                     --- redux state management for ischecked equivalent ??
+                     --- 
+                */}
 
                 <TouchableOpacity
-                    onPress={() => processUserSignUp({email, password1, password2, displayName})}
+                    onPress={() => processUserSignUp({email, password1, password2, displayName, eula})}
                     style={localStyles.signUpBtn}
                 >
                     <Caption style={localStyles.Caption}>Sign up</Caption>
