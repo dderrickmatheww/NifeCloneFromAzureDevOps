@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
 import { createPost, getPostsPaginated } from '../../../../utils/api/posts';
+import { getUserById } from '../../../../utils/api/users';
 import { uploadImage } from '../../../../utils/api/users';
 import theme from '../../../../styles/theme';
 import { connect } from "react-redux";
@@ -26,10 +27,9 @@ class StatusModel extends React.Component {
         const { userData, image, description } = this.state;
         const { modalType: type } = this.props;
         const { businessId, latitude, longitude, id: userId } = userData;
-        console.log(description, type, image, businessId, latitude, longitude, userId);
         await createPost(description, type, image, businessId, latitude, longitude, userId);
-        const feedData = await getPostsPaginated({ userId, take: 50, skip: 0 });
-        this.props.refresh(userData, feedData);
+        updatedUserData = await getPosts(userId);
+        this.props.refresh(userData);
         this.setState({ saving: false });
     }
 

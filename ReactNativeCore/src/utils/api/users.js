@@ -43,6 +43,24 @@ export const getUser = async (email) => {
     }
 }
 
+export const getUserById = async (userId) => {
+    // TODO send UUID instead of email
+    const token = 'token'
+    try {
+        const {data} = await client.post('/getUser', {
+            userId
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}
 
 export const updateOrDeleteFavorites = async (user, business, isAdding, id) => {
     // if not adding, add id to update obj
@@ -113,7 +131,7 @@ export const deleteCheckIn = async (id) => {
 
 export const uploadImage = async (email) => {
     try {
-        const { status } = await ImagePicker.getCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
         if (status === "granted") {
             const { uri } = await ImagePicker.launchImageLibraryAsync();
             console.log(uri + " get");

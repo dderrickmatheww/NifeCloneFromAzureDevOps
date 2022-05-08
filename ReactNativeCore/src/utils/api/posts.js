@@ -111,7 +111,8 @@ export const createPost = async (description, type, image, businessId, latitude,
             businessId,
             latitude,
             longitude,
-            userId
+            userId,
+            created: new Date()
         }, {
             headers:{
                 authorization: `Bearer ${token}`

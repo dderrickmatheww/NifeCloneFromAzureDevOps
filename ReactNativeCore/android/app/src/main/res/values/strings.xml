@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ReactNativeCore</string>
-    <string name="facebook_app_id">2910411615715770</string>
-<string name="fb_login_protocol_scheme">fb2910411615715770</string>
+  <string name="app_name">Nife</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
 </resources>

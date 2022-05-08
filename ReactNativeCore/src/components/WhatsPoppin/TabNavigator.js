@@ -12,8 +12,7 @@ const Tab = createBottomTabNavigator();
 class WhatsPoppinNavigator extends React.Component {
   
   state = {
-    userData: this.props.userData,
-    friendData: this.props.friendData
+    userData: this.props.userData
   }
 
   render() {
@@ -70,7 +69,7 @@ class WhatsPoppinNavigator extends React.Component {
           </Tab.Navigator> 
         :
         <View style={localStyles.viewDark}>
-          <ActivityIndicator size="large" color={theme.loadingIcon.color}></ActivityIndicator>
+          <ActivityIndicator size="large" color={ theme.loadingIcon.color }></ActivityIndicator>
         </View> 
     )
   }

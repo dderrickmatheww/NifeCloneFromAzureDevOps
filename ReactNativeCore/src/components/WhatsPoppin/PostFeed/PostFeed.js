@@ -34,7 +34,9 @@ class PostFeed extends React.Component {
         return (
             <View style={localStyles.safeAreaContainer}>
                 <NavHeader navigation={this.props.navigation} modalTrigger={(modalToggle) => this.setState(modalToggle)} />
-                <Feed />
+                <View style={{ height: '90%' }}>
+                    <Feed />
+                </View>
                 <Provider>
                     <Portal>
                         <Modal 
@@ -110,7 +112,8 @@ const localStyles = StyleSheet.create({
         flex: 1,
         paddingTop: "7%",
         backgroundColor: theme.generalLayout.backgroundColor,
-        width: '100%'
+        width: '100%',
+        height: '100%'
     },
     modalContainer: {
         flex: 1,
