@@ -100,7 +100,7 @@ class PostFeed extends React.Component {
                                     <StatusModal
                                         isVisible={ this.props.postModal }
                                         modalType={ "STATUS" }
-                                        onDismiss={tonDismiss}
+                                        onDismiss={this.onDismiss}
                                     />
                             }
                         </Modal>

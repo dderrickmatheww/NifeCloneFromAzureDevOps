@@ -27,7 +27,7 @@ export default class VisitedByCallout extends React.Component {
             <View style={callOutStyles.callOutMarker}>
                 <Text style={[callOutStyles.calloutText,]}>{this.props.marker.name}</Text>
                 {
-                    this.props.friendCheckIns.length > 0 ?
+                    this.props.friendCheckIns ?
                         <View style={callOutStyles.friendVisitedByMulti}>
                             {
                                 this.props.friendCheckIns.map((friend, i) => (
@@ -56,7 +56,7 @@ export default class VisitedByCallout extends React.Component {
                         null
                 }
                 {
-                    this.props.friendLastVisited.length > 0 ?
+                    this.props.friendLastVisited ?
                         <View style={callOutStyles.friendVisitedByMulti}>
                             {
                                 this.props.friendCheckIns.map((friend, i) => (

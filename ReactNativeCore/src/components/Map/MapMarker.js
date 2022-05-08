@@ -18,18 +18,12 @@ export function MapMarker(props) {
             onPress={props.onPress}
             style={{justifyContent: "center", alignContent: "center"}}
         >
-            {
-                props.friendCheckIns && props.friendLastVisited ?
-                    <VisitedByCallout
-                        marker={props.marker}
-                        friendCheckIns={props.friendCheckIns}
-                        friendLastVisited={props.friendLastVisited}
-                        business={props.marker.id}
-                    />
-                :
-                    null
-            }
-                
+            <VisitedByCallout
+                marker={props.marker}
+                friendCheckIns={props.friendCheckIns}
+                friendLastVisited={props.friendLastVisited}
+                business={props.marker.id}
+            />
         </Callout>
     </ Marker>);
 }

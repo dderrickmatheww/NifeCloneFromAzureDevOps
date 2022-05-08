@@ -2,9 +2,7 @@ import { createStore } from "redux";
 
 const initialState = {
     userData: null, 
-    friendData: null, 
-    friendRequests: null, 
-    businessData: null, 
+    businessData: null,
     yelpData: null, 
     feedData: []
 }
