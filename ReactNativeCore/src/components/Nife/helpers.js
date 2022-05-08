@@ -15,15 +15,16 @@ export const loadFonts = async () => {
 export const initiateAuthObserver = async (refresh, handleAuthChange) => {
     onAuthStateChanged(auth, async user => {
         console.log('onAuthStateChanged')
-        if(user){
-            handleAuthChange({authLoaded: true})
+        const { email } = user;
+        if (email) {
             //TODO SAVE LOCATION AND EMAIL
-            const {email} = user;
             const {latitude, longitude} = await getUserLocation();
-            let data = await updateUser({email, latitude, longitude});
-            refresh(data, [])
-        } else {
-            refresh(null, []);
+            const userData = await updateUser({ email, latitude, longitude });
+            refresh({ userData });
+            handleAuthChange({authLoaded: true});
+        } 
+        else {
+            refreshUserData(null);
             handleAuthChange({authLoaded: true})
         }
     });

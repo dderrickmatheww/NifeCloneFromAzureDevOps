@@ -6,15 +6,11 @@ import {Subheading, Caption } from 'react-native-paper';
 import theme from "../../styles/theme";
 import {localStyles} from "./style";
 import {BackButton} from "../BackButton/BackButton";
-import {fireBaseLogin} from "../../utils/firebase";
 
-
-export const LoginForm = ({backToMain, handleSignUp}) => {
+export const LoginForm = ({ backToMain, handleSignUp, processUserLogin }) => {
     const [email, setEmail] = useState('mattdpalumbo@gmail.com');
     const [password, setPassword] = useState('Chicago1!');
-    const handleLogin = async () => {
-       await fireBaseLogin(email, password);
-    }
+    
     return (
         <KeyboardAwareScrollView
             resetScrollToCoords={{ x: 0, y: 0 }}
@@ -43,7 +39,7 @@ export const LoginForm = ({backToMain, handleSignUp}) => {
                            returnKey={'next'}
                            onChangeText={(text) => setPassword(text)}
                 />
-                <TouchableOpacity onPress={handleLogin} style={localStyles.signUpBtn}
+                <TouchableOpacity onPress={() => processUserLogin(email, password)} style={localStyles.signUpBtn}
                 >
                     <Caption style={localStyles.Caption}>Log In</Caption>
                 </TouchableOpacity>

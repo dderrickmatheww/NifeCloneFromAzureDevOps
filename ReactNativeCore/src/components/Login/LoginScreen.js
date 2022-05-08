@@ -1,15 +1,16 @@
-import React, {Component} from 'react';
-import {View, Text,} from 'react-native';
-import {googleLogin} from "../../utils/google";
-import {UserSection} from "./UserSection";
-import {BusinessSection} from "./BusinessSection";
-import {ForgotButton} from "./ForgotButton";
-import {localStyles} from "./style";
-import {LoginForm} from "./LoginForm";
-import {auth, firebaseSignUp } from "../../utils/firebase";
-import {UserSignUpForm} from "./UserSignUpForm";
-import {BusinessSignUpForm} from "./BusinessSignUpForm";
-import {passwordValidation} from "../../utils/util";
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import { googleLogin } from "../../utils/google";
+import { UserSection } from "./UserSection";
+import { BusinessSection } from "./BusinessSection";
+import { ForgotButton } from "./ForgotButton";
+import { localStyles } from "./style";
+import { LoginForm } from "./LoginForm";
+import { auth, firebaseSignUp, fireBaseLogin } from "../../utils/firebase";
+import { UserSignUpForm } from "./UserSignUpForm";
+import { BusinessSignUpForm } from "./BusinessSignUpForm";
+import { passwordValidation } from "../../utils/util";
+import { connect } from 'react-redux';
 
 const formScreens = Object.freeze({
     main: 'main',
@@ -19,7 +20,7 @@ const formScreens = Object.freeze({
     forgotPassword: 'forgotPassword'
 })
 
-export default class LoginScreen extends Component {
+export class LoginScreen extends Component {
 
     state = {
         isLoggedin: !!auth.currentUser,
@@ -65,6 +66,7 @@ export default class LoginScreen extends Component {
             formScreen: formScreens.forgotPassword
         });
     }
+
     handleSignUp = () => {
         if(this.state.isBusiness){
             this.setState({
@@ -76,6 +78,7 @@ export default class LoginScreen extends Component {
             });
         }
     }
+
     handleBackToLogin = () => {
         this.setState({
             formScreen: formScreens.login
@@ -87,15 +90,19 @@ export default class LoginScreen extends Component {
         const validPassword = passwordValidation(password1, password2);
         if(validPassword)
         {
-            const user = await firebaseSignUp({email, password: password1, displayName});
-            console.log('User: ',user);
+            const userData = await firebaseSignUp({email, password: password1, displayName});
+            this.props.refresh({ userData });
         }
     }
+
+    processUserLogin = async (email, password) => {
+        const userData = await fireBaseLogin(email, password);
+        this.props.refresh({ userData });
+     }
 
     processBusinessSignUp = () => {
 
     }
-
 
     render() {
         switch (this.state.formScreen) {
@@ -117,6 +124,7 @@ export default class LoginScreen extends Component {
                     <LoginForm
                         backToMain={this.handleBackToMain}
                         handleSignUp={this.handleSignUp}
+                        processUserLogin={this.processUserLogin}
                         isBusiness={this.state.isBusiness}
                     />
                 );
@@ -138,3 +146,23 @@ export default class LoginScreen extends Component {
 
     }
 }
+
+function mapStateToProps(state){
+    return {
+        ...state
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)( LoginScreen );

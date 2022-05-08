@@ -46,7 +46,7 @@ class PostFeed extends React.Component {
             <View style={localStyles.safeAreaContainer}>
                 <NavHeader navigation={this.props.navigation} modalTrigger={(modalToggle) => this.setState(modalToggle)} />
                 <View style={{ height: '90%' }}>
-                    <Feed type={"My Feed"} />
+                    <Feed type={"Whats Poppin"} />
                 </View>
                 <Provider>
                     <Portal>

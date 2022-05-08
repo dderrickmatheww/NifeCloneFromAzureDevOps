@@ -6,7 +6,7 @@ import {
     Keyboard
 } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
-import { createPost, getPostsPaginated } from '../../../../utils/api/posts';
+import { createPost, getPostsPaginated, getPosts } from '../../../../utils/api/posts';
 import { getUserById } from '../../../../utils/api/users';
 import { uploadImage } from '../../../../utils/api/users';
 import theme from '../../../../styles/theme';
@@ -15,27 +15,29 @@ import { connect } from "react-redux";
 class StatusModel extends React.Component {
 
     state = {
-      userData: this.props.userData,
-      feedData: this.props.feedData,
       description: null,
       saving: false,
-      image: null
+      image: null,
+      skip: 0,
+      take: 50
     };
 
     onSaveStatus = async () => {
         this.setState({ saving: true });
-        const { userData, image, description } = this.state;
-        const { modalType: type } = this.props;
+        let { image, description, skip, take } = this.state;
+        const { modalType: type, userData } = this.props;
         const { businessId, latitude, longitude, id: userId } = userData;
         await createPost(description, type, image, businessId, latitude, longitude, userId);
-        updatedUserData = await getPosts(userId);
-        this.props.refresh(userData);
+        skip += 50;
+        const feedData = await await getPosts(userId);
+        this.props.refresh({ feedData });
         this.setState({ saving: false });
+        this.props.onDismiss();
     }
 
     uploadImageStatus = async () => {
         this.setState({ saving: true });
-        const { email } = this.state.userData;
+        const { email } = this.props.userData;
         const image = await uploadImage(email);
         this.setState({
             saving: false,
@@ -114,10 +116,15 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch) {
     return {
-        refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
-        yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
     }
 }
 

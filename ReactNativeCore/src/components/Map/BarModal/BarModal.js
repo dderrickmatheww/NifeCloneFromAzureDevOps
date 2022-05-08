@@ -25,7 +25,7 @@ const tabState = Object.freeze({
 class BarModal extends React.Component {
 
     state = {
-        userData: this.props.user,
+        userData: this.props.userData,
         isVisible: !!this.props.isVisible,
         distance: null,
         checkedIn: "",
@@ -74,8 +74,8 @@ class BarModal extends React.Component {
             case "details":
                 return (
                     <DetailsTab business={this.props.business} source={this.props.source} checkIns={this.state.checkedIn}
-                                userCheckIns={this.props.user.user_check_ins}
-                                userData={this.state.userData} barName={this.props.barName}
+                                userCheckIns={this.props.userData.user_check_ins}
+                                userData={this.props.userData} barName={this.props.barName}
                                 businessUID={this.props.buisnessUID} latitude={this.props.latitude}
                                 longitude={this.props.longitude} address={this.props.address}
                                 phone={this.props.phone} closed={this.props.closed}
@@ -103,7 +103,7 @@ class BarModal extends React.Component {
 
                     <View style={{position: "relative"}}>
                         <Favorite
-                            user={this.props.user} buisnessUID={this.props.buisnessUID}
+                            userData={this.props.userData} buisnessUID={this.props.buisnessUID}
                             buisnessName={this.props.barName}/>
                     </View>
 
@@ -171,16 +171,19 @@ class BarModal extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        user: state.userData,
-        friendRequests: state.friendRequests,
-        friends: state.friendData,
-        businessData: state.businessData,
+        ...state
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        refresh: (userData) => dispatch({type: 'REFRESH', data: userData})
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
     }
 }
 

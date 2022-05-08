@@ -53,15 +53,24 @@ class Map extends React.Component {
 
     handleGetFriendCheckIns = async () => {
         const friends = this.props.userData.user_friends.map(friend => friend.friendId);
-        const {checkIns, lastVisited} = await getFriendCheckIns(friends);
-        this.setState({
-            friendCheckIns: checkIns,
-            friendsLastVisited: lastVisited
-        })
+        if (friends) {
+            const {checkIns, lastVisited} = await getFriendCheckIns(friends);
+            this.setState({
+                friendCheckIns: checkIns,
+                friendsLastVisited: lastVisited
+            })
+        }
+        else {
+            this.setState({
+                friendCheckIns: null,
+                friendsLastVisited: null
+            })
+        }
     }
 
     gatherMarkers = async () => {
-        let places = await getBusinessesNearby(this.state.region)
+        let places = await getBusinessesNearby(this.state.region);
+        this.props.refresh({  })
         this.setState({
             markers: places, loading: false
         })
@@ -127,7 +136,7 @@ class Map extends React.Component {
 
     render() {
         return (
-            this.state.region && this.props.userData && !this.state.loading && this.state.markers && this.state.friendCheckIns ?
+            this.state.region && this.props.userData && !this.state.loading && this.state.markers ?
                 <View style={localStyles.container}>
                     <View style={localStyles.mapContainer}>
                         <View style={localStyles.autoCompContainer}>
@@ -162,8 +171,9 @@ class Map extends React.Component {
                         >
                             {this.state.markers.map(marker => (
                                 <MapMarker
-                                    key={marker.id} friendCheckIns={this.getBarCheckIns(marker.id)}
-                                    friendLastVisited={this.getBarLastVisited(marker.id)}
+                                    key={marker.id} 
+                                    friendCheckIns={this.state.friendCheckIns ? this.getBarCheckIns(marker.id) : null}
+                                    friendLastVisited={this.state.friendCheckIns ? this.getBarLastVisited(marker.id) : null}
                                     marker={marker}
                                     userData={this.props.userData}
                                     onPress={(e) => {
@@ -190,7 +200,7 @@ class Map extends React.Component {
                                 latitude={this.state.modalProps.latitude}
                                 longitude={this.state.modalProps.longitude}
                                 distance={this.state.modalProps.distance}
-                                user={this.state.userData}
+                                user={this.props.userData}
                                 refresh={this.props.refresh}
                                 navigation={this.props.navigation}
                                 friendData={this.props.friends}
@@ -216,9 +226,15 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        refresh: (userData, feedData) => dispatch({type: 'REFRESH', data: userData, feed: feedData}),
-        yelpDataRefresh: (data) => dispatch({type: 'YELPDATA', data: data}),
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
     }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(Map);

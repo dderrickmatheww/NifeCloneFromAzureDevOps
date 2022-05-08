@@ -6,10 +6,11 @@ import Util from '../../utils/util';
 import IconWithBadge from "../IconWithBadge/IconWithBadge";
 import {updateOrDeleteFavorites} from "../../utils/api/users";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+import { connect } from "react-redux";
 
-export default class Favorite extends React.Component  {
+class Favorite extends React.Component  {
 
-    state= {
+    state = {
         isFavorited: false,
         loading: false,
         favorite: null
@@ -19,17 +20,16 @@ export default class Favorite extends React.Component  {
         await this.gatherFavoriteInfo()
     }
     gatherFavoriteInfo = async () => {
-        const favorited = this.props.user.user_favorite_places.some(place => place.business == this.props.buisnessUID)
-        const favoritePlace = this.props.user.user_favorite_places.find(place => place.business === this.props.buisnessUID)
+        const favorited = this.props.userData.user_favorite_places.some(place => place.business == this.props.buisnessUID)
+        const favoritePlace = this.props.userData.user_favorite_places.find(place => place.business === this.props.buisnessUID)
         this.setState({isFavorited: favorited, favorite: favoritePlace})
     }
 
     handlePress = async (isAdding) =>{
         console.log('isAdding: ', isAdding)
         this.setState({isFavorited: isAdding, loading:true});
-        await updateOrDeleteFavorites(this.props.user.uuid, this.props.buisnessUID, isAdding, this.state.favorite?.id);
+        await updateOrDeleteFavorites(this.props.userData.uuid, this.props.buisnessUID, isAdding, this.state.favorite?.id);
         this.setState({loading:false});
-
     }
 
     render() {
@@ -62,3 +62,23 @@ export default class Favorite extends React.Component  {
         )
     }
 }
+
+function mapStateToProps(state){
+    return {
+        ...state
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Favorite);

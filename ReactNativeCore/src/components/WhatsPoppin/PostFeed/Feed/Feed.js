@@ -16,7 +16,7 @@ import {
 } from 'react-native-paper';
 import theme from '../../../../styles/theme';
 import Util from '../../../../utils/util';
-import { getPostsPaginated } from '../../../../utils/api/posts';
+import { getPosts } from '../../../../utils/api/posts';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class Feed extends React.Component {
@@ -25,6 +25,7 @@ class Feed extends React.Component {
         feedData: this.props.feedData,
         userData: this.props.userData,
         businessData : this.props.buisnessData,
+        type: this.props.type,
         refresh: false,
         take: 50,
         skip: 0
@@ -32,16 +33,10 @@ class Feed extends React.Component {
 
     onRefresh = async () => {
         this.setState({ refresh: true });
-        const { userData, skip, take } = this.state;
-        const { id } = userData;
-        skip += 50;
-        const postObj = {
-            skip,
-            take,
-            userId: id
-        };
-        const feedData = await getPostsPaginated(postObj);
-        this.props.feedData(feedData);
+        const { userData } = this.props;
+        const { id: userId } = userData;
+        const feedData = await getPosts(userId);
+        this.props.refresh({ feedData });
         this.setState({
             refresh: false
         });
@@ -54,7 +49,7 @@ class Feed extends React.Component {
                     numColumns={ 1 }
                     style={ localStyles.feed }
                     horizontal={ false }
-                    data={ this.state.userData.user_posts }
+                    data={ this.props.feedData }
                     keyExtractor={ item => item.id }
                     refreshing={ this.state.refresh }
                     onEndReached={ this.onRefresh }
@@ -176,11 +171,15 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch) {
     return {
-        userData: userData => dispatch({ type:'USERDATA', data: userData }),
-        feedData: feedData => dispatch({ type: 'FEEDDATA', data: feedData }),
-        yelpDataRefresh: data => dispatch({ type:'YELPDATA', data: data }),
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
     }
 }
 

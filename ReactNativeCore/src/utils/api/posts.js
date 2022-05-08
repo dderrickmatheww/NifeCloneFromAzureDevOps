@@ -42,11 +42,15 @@ export const getPosts = async (userId) => {
     }
 }
 
-export const getPostsPaginated = async (postObj) => {
+export const getPostsPaginated = async (skip, take, userId) => {
     // TODO write getToken func
     const token = 'token'
     try {
-        const { data } = await client.post('/getPostsPaginated', postObj, {
+        const { data } = await client.post('/getPostsPaginated', {
+            skip,
+            take,
+            userId
+        }, {
             headers:{
                 authorization: `Bearer ${token}`
             }

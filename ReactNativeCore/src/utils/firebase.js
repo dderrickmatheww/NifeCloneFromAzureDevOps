@@ -66,7 +66,7 @@ export const fireBaseLogin = async (email, password)=> {
     if (email && password) {
         try {
             let { type, accessToken, user, idToken }= await signInWithEmailAndPassword(auth, email, password)
-            logger("Nife's User sign-up", true);
+            logger("Nife's User Login", true);
             const {uid, phoneNumber, photoURL} = user
             const data = await updateUser({
                 email,
@@ -75,8 +75,8 @@ export const fireBaseLogin = async (email, password)=> {
             });
             return data
         } catch ({message}) {
-            logger("Nife's User sign-up", false);
-            alert('Nife User Sign-Up Error', message, null);
+            logger("Nife's User Login", false);
+            alert('Nife User Login Error', message, null);
         }
     }
 }

@@ -33,7 +33,7 @@ class NifeApp extends React.Component {
   }
 
   handleAuthChange = async ({authLoaded}) => {
-    this.setState({authLoaded})
+    this.setState({ authLoaded })
   }
 
   async componentDidMount() {
@@ -67,10 +67,15 @@ function mapStateToProps(state){
   }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch) {
   return {
-    refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
-    yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
+      refresh: ({ userData, feedData }) => dispatch({ 
+          type:'REFRESH', 
+          data: {
+              userData,
+              feedData 
+          }
+      })
   }
 }
 
