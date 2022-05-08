@@ -402,14 +402,38 @@ export const callOutStyles = StyleSheet.create({
         marginTop: "2%",
         marginBottom: "1%",
     },
-    calloutText: {
-        fontSize: 16,
-        fontWeight: "bold",
-        textAlign: "center",
-        textDecorationLine: "underline",
-        color: theme.generalLayout.textColor,
-    }
+    multiAvatar: {
+        top: '5%',
+        justifyContent: 'center',
+        alignContent: 'center',
+        paddingHorizontal: -5
+    },
 
+    friendVisitedBy: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+    singleAvatar: {
+        top: '11%',
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+    friendText: {
+        color: theme.generalLayout.textColor,
+        margin: 10,
+        marginTop: 30,
+        fontFamily: theme.generalLayout.font
+    },
+    calloutText:{
+        color: theme.icons.color,
+        fontFamily: theme.generalLayout.font
+    },
+    friendVisitedByMulti: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
 });
 
 export const barStyles = StyleSheet.create({

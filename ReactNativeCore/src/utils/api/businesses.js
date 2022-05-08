@@ -59,16 +59,18 @@ export const getBusinessCheckIns = async (uuid) => {
     }
 }
 
-export const sendVerificationEmail = async (postObj) => {
+export const getFriendCheckIns = async ( friends) => {
     // TODO write getToken func
-    const token = 'token';
+    const token = 'token'
     try {
-        const { data } = await client.post('/sendVerificationEmail', postObj, {
+        const {data} = await client.post('/getFriendCheckIns', {
+            friends
+        },{
             headers:{
                 authorization: `Bearer ${token}`
             }
         });
-        return data;
+        return data
     } catch (e) {
         console.log(e);
         alert('API ERROR!', 'An Error occurred! Please restart!')

@@ -13,28 +13,29 @@ import {RecenterButton} from "./RecenterButton";
 import DrawerButton from "../Drawer/DrawerButton";
 import BarModal from "./BarModal/BarModal";
 import BusinessSearchBar from "../BusinessSearchBar/BusinessSearchBar";
-import {searchBusinesses} from "../../utils/api/businesses";
-const { width, height } = Dimensions.get('window');
+import {getFriendCheckIns, searchBusinesses} from "../../utils/api/businesses";
+
+const {width, height} = Dimensions.get('window');
 
 const latitudeDelta = 0.0922;
-const longitudeDelta =  0.0922 * (width / height);
+const longitudeDelta = 0.0922 * (width / height);
 
-class Map extends React.Component  {
-    state ={
+class Map extends React.Component {
+    state = {
         region: {
-            longitude:this.props.userData.longitude,
-            latitude:this.props.userData.latitude,
+            longitude: this.props.userData.longitude,
+            latitude: this.props.userData.latitude,
             latitudeDelta,
             longitudeDelta
         },
         markers: [],
         loading: true,
         isModalVisible: false,
-        modalProps:{
-            source:{uri:"#"},
-            barName:"#",
-            rating:"#",
-            reviewCount:"#",
+        modalProps: {
+            source: {uri: "#"},
+            barName: "#",
+            rating: "#",
+            reviewCount: "#",
             price: "#",
             phone: "#",
             closed: "#",
@@ -45,7 +46,18 @@ class Map extends React.Component  {
             business: null,
         },
         searchParam: "",
-        dropDownData:null,
+        dropDownData: null,
+        friendCheckIns: null,
+        friendsLastVisited: null
+    }
+
+    handleGetFriendCheckIns = async () => {
+        const friends = this.props.userData.user_friends.map(friend => friend.friendId);
+        const {checkIns, lastVisited} = await getFriendCheckIns(friends);
+        this.setState({
+            friendCheckIns: checkIns,
+            friendsLastVisited: lastVisited
+        })
     }
 
     gatherMarkers = async () => {
@@ -55,8 +67,16 @@ class Map extends React.Component  {
         })
     }
 
+    getBarCheckIns = (id) => {
+        return this.state.friendCheckIns.filter(checkIn => checkIn.business === id)
+    }
+
+    getBarLastVisited = (id) => {
+        return this.state.friendsLastVisited.filter(checkIn => checkIn.business === id)
+    }
+
     toggleModal = (boolean) => {
-        this.setState({isModalVisible:boolean })
+        this.setState({isModalVisible: boolean})
     }
 
     openBarModal = (e, placeId) => {
@@ -68,9 +88,9 @@ class Map extends React.Component  {
                 latitudeDelta,
                 longitudeDelta,
             },
-            modalProps:{
+            modalProps: {
                 business: wantedPlace,
-                source: { uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url },
+                source: {uri: wantedPlace.photoSource ? wantedPlace.photoSource : wantedPlace.image_url},
                 barName: wantedPlace.name,
                 rating: wantedPlace.rating,
                 reviewCount: wantedPlace.review_count,
@@ -102,93 +122,102 @@ class Map extends React.Component  {
 
     async componentDidMount() {
         await this.gatherMarkers()
+        await this.handleGetFriendCheckIns()
     }
 
     render() {
         return (
-            this.state.region && this.props.userData && !this.state.loading && this.state.markers ? <View style={localStyles.container}>
-                <View style={localStyles.mapContainer}>
-                    <View style={localStyles.autoCompContainer}>
-                        <BusinessSearchBar
-                            name={'ios-mail'}
-                            color={theme.generalLayout.textColor}
-                            styles={localStyles.font}
-                            value={this.state.searchParam}
-                            handleBarSelect={this.openBarModal}
-                            latitude={this.state.region.latitude}
-                            longitude={this.state.region.longitude}
+            this.state.region && this.props.userData && !this.state.loading && this.state.markers && this.state.friendCheckIns ?
+                <View style={localStyles.container}>
+                    <View style={localStyles.mapContainer}>
+                        <View style={localStyles.autoCompContainer}>
+                            <BusinessSearchBar
+                                name={'ios-mail'}
+                                color={theme.generalLayout.textColor}
+                                styles={localStyles.font}
+                                value={this.state.searchParam}
+                                handleBarSelect={this.openBarModal}
+                                latitude={this.state.region.latitude}
+                                longitude={this.state.region.longitude}
+                            />
+                        </View>
+                        <MapView
+                            style={localStyles.map}
+                            provider={PROVIDER_GOOGLE}
+                            showsMyLocationButton={false}
+                            showsCompass={false}
+                            showsUserLocation={true}
+                            showsPointsOfInterest={false}
+                            userLocationUpdateInterval={1000}
+                            region={this.state.region}
+                            // onUserLocationChange={(e) => this.OnMapChange(e)}
+                            showsScale={true}
+                            customMapStyle={mapStyle}
+                            minZoomLevel={1}
+                            maxZoomLevel={20}
+                            moveOnMarkerPress={false}
+                            loadingEnabled={true}
+                            loadingIndicatorColor={theme.loadingIcon.color}
+                            loadingBackgroundColor={theme.generalLayout.backgroundColor}
+                        >
+                            {this.state.markers.map(marker => (
+                                <MapMarker
+                                    key={marker.id} friendCheckIns={this.getBarCheckIns(marker.id)}
+                                    friendLastVisited={this.getBarLastVisited(marker.id)}
+                                    marker={marker}
+                                    userData={this.props.userData}
+                                    onPress={(e) => {
+                                        this.openBarModal(e, marker.id)
+                                    }}
+                                />
+                            ))}
+                        </MapView>
+                        <RecenterButton onPress={this.recenter}/>
+                        {this.state.isModalVisible ?
+                            <BarModal
+                                isVisible={this.state.isModalVisible}
+                                source={this.state.modalProps.source}
+                                userLocation={this.state.region}
+                                barName={this.state.modalProps.barName}
+                                rating={this.state.modalProps.rating}
+                                reviewCount={this.state.modalProps.reviewCount}
+                                price={this.state.modalProps.price}
+                                phone={this.state.modalProps.phone}
+                                closed={this.state.modalProps.closed}
+                                address={this.state.modalProps.address}
+                                toggleModal={(boolean) => this.toggleModal(boolean)}
+                                buisnessUID={this.state.modalProps.id}
+                                latitude={this.state.modalProps.latitude}
+                                longitude={this.state.modalProps.longitude}
+                                distance={this.state.modalProps.distance}
+                                user={this.state.userData}
+                                refresh={this.props.refresh}
+                                navigation={this.props.navigation}
+                                friendData={this.props.friends}
+                                business={this.state.modalProps.business}
+                            /> : null
+                        }
+                        <DrawerButton
+                            userPhoto={this.props.userData.photoSource}
+                            drawerButtonColor={theme.generalLayout.secondaryColor}
+                            onPress={this.props.navigation.openDrawer}
                         />
                     </View>
-                    <MapView
-                        style={localStyles.map}
-                        provider={PROVIDER_GOOGLE}
-                        showsMyLocationButton={false}
-                        showsCompass={false}
-                        showsUserLocation={true}
-                        showsPointsOfInterest={false}
-                        userLocationUpdateInterval={1000}
-                        region={this.state.region}
-                        // onUserLocationChange={(e) => this.OnMapChange(e)}
-                        showsScale={true}
-                        customMapStyle={mapStyle}
-                        minZoomLevel={1}
-                        maxZoomLevel={20}
-                        moveOnMarkerPress={false}
-                        loadingEnabled={true}
-                        loadingIndicatorColor={theme.loadingIcon.color}
-                        loadingBackgroundColor={theme.generalLayout.backgroundColor}
-                    >
-                        {this.state.markers.map(marker => (
-                            <MapMarker key={marker.id} marker={marker} onPress={(e) => {
-                                this.openBarModal(e, marker.id)
-                            }}/>
-                        ))}
-                    </MapView>
-                    <RecenterButton onPress={this.recenter}/>
-                    { this.state.isModalVisible ?
-                        <BarModal
-                            isVisible={this.state.isModalVisible}
-                            source={this.state.modalProps.source}
-                            userLocation={this.state.region}
-                            barName={this.state.modalProps.barName}
-                            rating={this.state.modalProps.rating}
-                            reviewCount={this.state.modalProps.reviewCount}
-                            price={this.state.modalProps.price}
-                            phone={this.state.modalProps.phone}
-                            closed={this.state.modalProps.closed}
-                            address={this.state.modalProps.address}
-                            toggleModal={(boolean) => this.toggleModal(boolean)}
-                            buisnessUID={this.state.modalProps.id}
-                            latitude={this.state.modalProps.latitude}
-                            longitude={this.state.modalProps.longitude}
-                            distance={this.state.modalProps.distance}
-                            user={this.state.userData}
-                            refresh={this.props.refresh}
-                            navigation={this.props.navigation}
-                            friendData={this.props.friends}
-                            business={this.state.modalProps.business}
-                        /> : null
-                    }
-                    <DrawerButton
-                        userPhoto={this.props.userData.photoSource}
-                        drawerButtonColor={theme.generalLayout.secondaryColor}
-                        onPress={this.props.navigation.openDrawer}
-                    />
-                </View>
-            </View> : <Loading />
+                </View> : <Loading/>
         )
     }
 }
-function mapStateToProps(state){
+
+function mapStateToProps(state) {
     return {
         ...state
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch) {
     return {
-        refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
-        yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
+        refresh: (userData, feedData) => dispatch({type: 'REFRESH', data: userData, feed: feedData}),
+        yelpDataRefresh: (data) => dispatch({type: 'YELPDATA', data: data}),
     }
 }
 

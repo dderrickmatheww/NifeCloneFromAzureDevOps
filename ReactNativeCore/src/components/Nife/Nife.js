@@ -1,18 +1,7 @@
 import * as React from 'react';
-import { View, Text } from 'react-native'
-// import { createDrawerNavigator} from '@react-navigation/drawer';
-// import { NavigationContainer } from '@react-navigation/native';
-// import Util from "../utils/Util";
-// // import {DrawerContent} from "./Drawer/Drawer Content";
 import {connect} from "react-redux";
-import Util, {alert} from "../../utils/util";
-import {
-  onAuthStateChanged,
-} from 'firebase/auth';
-import { auth } from "../../utils/firebase"
+import {alert} from "../../utils/util";
 import LoginScreen from "../Login/LoginScreen";
-import * as Font from 'expo-font';
-import {updateUser} from "../../utils/api/users";
 import {initiateAuthObserver, loadFonts} from './helpers'
 import {Loading} from "../Loading";
 import DrawerComponent from "../Drawer/Drawer";

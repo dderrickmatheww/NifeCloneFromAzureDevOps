@@ -22,7 +22,6 @@ export const getUserLocation = async () => {
     let hasPermission = await getLocationPermission()
     if(hasPermission){
         const data = await Location.getCurrentPositionAsync({enableHighAccuracy: true})
-        console.log('data: ', data);
         const {coords} = data;
         return coords
     }
