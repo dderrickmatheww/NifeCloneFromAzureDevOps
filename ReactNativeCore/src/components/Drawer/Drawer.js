@@ -26,7 +26,12 @@ class DrawerComponent extends React.Component {
                 initialRouteName={INITIAL_ROUTE}
                 drawerType={DRAWER_TYPE}
                 drawerContent={props => (
-                    <DrawerContent {...props} user={this.props.userData} friends={this.props.userData.user_friends}/>
+                    <DrawerContent
+                        {...props}
+                        user={this.props.userData}
+                        friends={this.props.userData.user_friends}
+                        refresh={this.props.refresh}
+                    />
                 )}
              >
                  <Drawer.Screen

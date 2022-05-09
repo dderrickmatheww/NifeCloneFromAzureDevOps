@@ -16,6 +16,7 @@ import {Ionicons, MaterialCommunityIcons} from '@expo/vector-icons';
 import * as Notifications from "expo-notifications";
 import {UserInfoSection} from "./UserInfoSection";
 import {styles} from "./style";
+import {auth} from "../../../utils/firebase";
 
 
 Notifications.setNotificationHandler({
@@ -78,7 +79,10 @@ export function DrawerContent(props) {
                         />
                     )}
                     label={() => <Text style={styles.text}>Sign Out</Text>}
-                    onPress={() => { }}
+                    onPress={async () => {
+                        props.refresh({userData: null})
+                        await auth.signOut()
+                    }}
                 />
             </Drawer.Section>
         </View>
