@@ -98,7 +98,7 @@ class StatusModel extends React.Component {
                 </Button> 
                 <Button 
                     labelStyle={{color: theme.generalLayout.textColor}} 
-                    style={localStyles.button} 
+                    style={localStyles.button}
                     icon={"check"}
                     mode="contained" 
                     onPress={this.onSaveStatus}
@@ -159,9 +159,6 @@ const localStyles = StyleSheet.create({
     marginTop: '100%'
   },
   button: {
-    borderColor: theme.generalLayout.secondaryColor,
-    borderRadius:10,
-    borderWidth: 1,
     marginBottom: '7%',
     width: '75%',
     alignSelf: "center"
@@ -174,7 +171,6 @@ const localStyles = StyleSheet.create({
     color: theme.generalLayout.textColor,
     borderRadius: 15,
     padding: 10,
-    borderWidth: 1,
     borderColor: theme.generalLayout.secondaryColor
   }
 });

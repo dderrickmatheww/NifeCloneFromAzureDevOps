@@ -6,11 +6,12 @@ import {drawerContentOptions, drawerStyle, overlayColor} from "./style";
 import Map from "../Map/Map";
 import {connect} from "react-redux";
 import WhatsPoppinNavigator from "../WhatsPoppin/TabNavigator";
+import {DrawerContent} from "./Drawer Content/Drawer Content";
 
 const Drawer = createDrawerNavigator();
 
 
-const INITIAL_ROUTE = 'WhatsPoppin';
+const INITIAL_ROUTE = 'Map';
 const DRAWER_TYPE = 'front';
 
 class DrawerComponent extends React.Component {
@@ -25,9 +26,7 @@ class DrawerComponent extends React.Component {
                 initialRouteName={INITIAL_ROUTE}
                 drawerType={DRAWER_TYPE}
                 drawerContent={props => (
-                    <View style={{flex: 1, padding: 25}}>
-                        <Text>DRAWER CONTENT BABY</Text>
-                    </View>
+                    <DrawerContent {...props} user={this.props.userData} friends={this.props.userData.user_friends}/>
                 )}
              >
                  <Drawer.Screen
