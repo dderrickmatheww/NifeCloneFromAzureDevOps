@@ -1,15 +1,14 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, Platform } from 'react-native';
-import { styles } from '../../../src/styles/style';
-import theme from '../../../src/styles/theme';
+import { View, Text, Image, ScrollView, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import theme from '../../../../styles/theme';
 import {
     Headline
 } from 'react-native-paper';
-import Favorite from '../Universal/Favorite';
-import Util from '../../scripts/Util';
-const TouchableOpacity = Util.basicUtil.TouchableOpacity();
+import Favorite from '../../../FavoriteButton/FavoriteButton';
+import { connect } from "react-redux";
 
-export default class DataRow extends React.Component  {
+class DataRow extends React.Component  {
+
     state = {
         modalVisable: false,
         refresh: false,
@@ -17,15 +16,7 @@ export default class DataRow extends React.Component  {
         EventsTab: false,
         SpecialsTab: false,
         loadingBusiness:false,
-        businessData:null
-    }
-
-    componentDidMount(){
-        this.setState({loadingBusiness: true});
-        Util.business.GetBusinessByUID(this.props.buisnessUID, (data)=>{
-          this.setState({businessData: data});
-          this.setState({loadingBusiness: false});
-        });
+        businessData: null
     }
 
     toggleTab = (tabstate) => {
@@ -69,31 +60,39 @@ export default class DataRow extends React.Component  {
 
     render() {
         return (
-            <View style={styles.dataRowContainer}>
+            <View style={localStyles.dataRowContainer}>
+              
                 <View style={localStyles.navHeader}>
-                        <Image
-                            style={localStyles.LogoData}
-                            source={{uri: this.props.barImage }}
-                        />
-                        <View style={{width:"45%", textAlign:"center", alignSelf:"center", margin: '2%'}}>
-                            <Headline style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 14 }}>{this.props.name}</Headline>
-                        </View>
-                        <View style={localStyles.DrawerOverlay}>
-                            <Favorite favoriteTrigg={(buisnessUID, boolean, buisnessName) => {this.props.favoriteABar(buisnessUID, boolean, buisnessName)}} user={this.props.user} buisnessUID={this.props.buisnessUID} buisnessName={this.props.name}/>
-                        </View>
+
+                  <Image
+                      style={localStyles.LogoData}
+                      source={{uri: this.props.barImage }}
+                  />
+
+                  <View style={{width:"45%", textAlign:"center", alignSelf:"center", margin: '2%'}}>
+                      <Headline style={{color:theme.generalLayout.textColor, fontFamily: theme.generalLayout.font, fontSize: 14 }}>{this.props.name}</Headline>
+                  </View>
+
+                  <View style={localStyles.DrawerOverlay}>
+                    <Favorite userData={this.props.userData} buisnessUID={this.props.buisnessUID} buisnessName={this.props.name} />
+                  </View>
+
                 </View>
+
                 <View style={localStyles.tabCont}>
+
                     <TouchableOpacity style={[localStyles.tab]} onPress={ () => this.toggleTab({details:true}) }>
                         <Text style={this.state.DetailsTab ? localStyles.tabOff : localStyles.tabOn}>
-                        Details
+                          Details
                         </Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => this.toggleTab({events:true}) } style={[localStyles.tab, {borderRightWidth:1, borderLeftWidth:1, borderRightColor: theme.LIGHT_PINK , borderLeftColor: theme.LIGHT_PINK }]}>
                         <Text style={this.state.EventsTab ? localStyles.tabOff : localStyles.tabOn}>
-                        Events
+                          Events
                         </Text>
-
                     </TouchableOpacity>
+
                     <TouchableOpacity onPress={ () => this.toggleTab({specials:true}) } style={[localStyles.tab]}>
                         <Text style={this.state.SpecialsTab ? localStyles.tabOff : localStyles.tabOn}>
                         Specials
@@ -103,94 +102,104 @@ export default class DataRow extends React.Component  {
                 { this.state.DetailsTab ?
                     <View>
                     {
-                        this.props.address && typeof this.props.address[0] !== 'undefined' ?
-                            <Text style={styles.facebookDataText}>
-                                {this.props.address[0]} {"\n"}
-                                {this.props.address[1] + ', ' + this.props.address[2]} {"\n"}
-                                Phone #: {this.props.phone} {"\n"}
+                        this.props.address ?
+                            <Text style={localStyles.facebookDataText}>
+                                { this.props.address } {"\n"} {"\n"}
+                                Phone #: {this.props.phone} {"\n"} {"\n"}
                             </Text>
                         :
-                        <Text style={styles.facebookDataText}>
+                        <Text style={localStyles.facebookDataText}>
                             No address available!
                         </Text>
                     }
                     { 
                         this.props.usersCheckedIn > 1 ? 
-                            <Text style={styles.checkedInDataText}>
+                            <Text style={localStyles.checkedInDataText}>
                                 There are {this.props.usersCheckedIn} people currently here!
                             </Text>
                         : 
-                            <Text style={styles.checkedInDataText}>
+                            <Text style={localStyles.checkedInDataText}>
                                 There is {this.props.usersCheckedIn} person currently here! 
                             </Text>
                     }
                     </View>  : null
                 } 
-                { this.state.EventsTab ?
-                    <View style={{flex:1}}>
-                        <ScrollView style={{flex:1,width:"100%", zIndex:100}} contentContainerStyle={{flex:1,justifyContent:"flex-start",alignItems:'center'}}>
+                { 
+                  this.state.EventsTab ?
+                    <View style={{ flex: 1 }}>
+                        <ScrollView style={{flex:1,width:"100%", zIndex:100}} contentContainerStyle={{ flex: 1, justifyContent: "flex-start", alignItems: 'center' }}>
                         {
-                            this.state.businessData ? 
-                                this.state.businessData.events.length > 0 ?
-                                this.state.businessData.events.map((event, i)=>(
-                                    <View  key={i} style={localStyles.eventCont}>
+                          this.props.events.length > 0 ?
+                            this.props.events.filter(obj => obj.type.toUpperCase() == "EVENT").map(( event, i ) => (
+                                <View  key={i} style={localStyles.eventCont}>
+                                  <Text  style={localStyles.eventText}>
+                                      { event.description }
+                                  </Text>
+                                </View>
+                            ))
+                          :
+                            <View style={localStyles.noEventsCont}>
+                                <Text style={localStyles.noEventsText}>No events planned yet!</Text>
+                            </View>
+                        }
+                        </ScrollView>
+                    </View>
+                  : 
+                    null  
+                } 
+                { 
+                  this.state.SpecialsTab ?
+                    <View style={{ flex: 1 }}>
+                        <ScrollView style={{flex:1,width:"100%", zIndex:100}} contentContainerStyle={{ flex: 1, justifyContent: "flex-start", alignItems: 'center' }}>
+                          {
+                            this.props.events.length > 0 ?
+                              this.props.events.filter(obj => obj.type.toUpperCase() == "SPECIAL").map(( event, i ) => (
+                                  <View  key={i} style={localStyles.eventCont}>
                                     <Text  style={localStyles.eventText}>
-                                        {event.event}
+                                        { event.description }
                                     </Text>
-                                    </View>
-                                ))
-                                :
-                                <View style={localStyles.noEventsCont}>
-                                    <Text style={localStyles.noEventsText}>No events planned yet!</Text>
-                                </View>
+                                  </View>
+                              ))
                             :
-                            this.state.loadingBusiness ?
-                              <ActivityIndicator color={theme.loadingIcon.color} size="large"></ActivityIndicator> 
-                            : 
                               <View style={localStyles.noEventsCont}>
-                                  <Text style={localStyles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
+                                  <Text style={localStyles.noEventsText}>No events planned yet!</Text>
                               </View>
-                        }
+                          }
                         </ScrollView>
                     </View>
-                    :null  
+                  :
+                    null
                 } 
-                { this.state.SpecialsTab ?
-                    <View style={{flex:1}}>
-                        <ScrollView style={{flex:1,width:"100%"}} contentContainerStyle={{flex:1,justifyContent:"center",alignItems:'center'}}>
-                        {
-                            this.state.businessData ? 
-                                this.state.businessData.specials.length > 0 ?
-                                this.state.businessData.specials.map((special, i)=>(
-                                    <View key={i} style={localStyles.specialsCont}>
-                                      <Text  style={localStyles.eventText}>
-                                        {special.special}
-                                      </Text>
-                                    </View>
-                                  ))
-                                :
-                                <View style={localStyles.noEventsCont}>
-                                    <Text style={localStyles.noEventsText}>No events planned yet!</Text>
-                                </View>
-                            :
-                            this.state.loadingBusiness ?
-                              <ActivityIndicator color={theme.loadingIcon.color} size="large"></ActivityIndicator> 
-                            : 
-                              <View style={localStyles.noEventsCont}>
-                                  <Text style={localStyles.noEventsText}>This business has not registered for Nife yet, let them know!</Text>
-                              </View>
-                        }
-                        </ScrollView>
-                    </View>
-                    :null
-                } 
-                
             </View>
         )
     }
 }
 
 const localStyles = StyleSheet.create({ 
+  dataRowContainer: {
+    flex: 1,
+    justifyContent: 'center', 
+    alignItems: 'center' ,
+    backgroundColor: '#20232a',
+    marginVertical:2,
+    backgroundColor: theme.DARK,
+    padding: 15,
+    borderRadius: 15,
+    width: '100%',
+    borderColor: theme.LIGHT_PINK,
+    borderWidth: 1
+  },
+  facebookDataText: {
+    color: theme.generalLayout.textColor,
+    fontSize: 11,
+    fontFamily: theme.fontFamily,
+    alignSelf:"center"
+  },
+  checkedInDataText: {
+    color: theme.generalLayout.textColor,
+    fontSize: 17,
+    fontFamily: theme.fontFamily,
+  },
     eventCont:{
         justifyContent:"center",
         borderRadius:5,
@@ -286,3 +295,23 @@ const localStyles = StyleSheet.create({
         alignItems:"center",
       },
 })
+
+function mapStateToProps(state){
+  return {
+      ...state
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+      refresh: ({ userData, feedData }) => dispatch({ 
+          type:'REFRESH', 
+          data: {
+              userData,
+              feedData 
+          }
+      })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DataRow);

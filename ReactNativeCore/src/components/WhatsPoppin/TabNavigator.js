@@ -12,12 +12,11 @@ const Tab = createBottomTabNavigator();
 class WhatsPoppinNavigator extends React.Component {
   
   state = {
-    userData: this.props.userData
   }
 
   render() {
     return(
-      this.state.userData ? 
+      this.props.userData ? 
         <Tab.Navigator
             screenOptions={({ route }) => ({
               tabBarIcon: ({ color, size }) => {
@@ -63,9 +62,9 @@ class WhatsPoppinNavigator extends React.Component {
             }}
             initialRouteName="My Feed"
           >
-            <Tab.Screen name="My Feed" component={ PostFeed } />
+            <Tab.Screen name="My Feed" component={ PostFeed } initialParams={{ type: "My Feed" }} />
             {/**{!this.props.user.isBusiness ? <Tab.Screen name="Friend's Feed" component={Friends} initialParams={{user:this.props.user, friends:this.props.friends, refresh:this.props.refresh}}/> : null} */}
-            {/* <Tab.Screen name="What's Poppin'" component={<WhatsPoppin />} /> */}
+            <Tab.Screen name="What's Poppin'" component={ PostFeed } initialParams={{ type: "WhatsPoppin" }} />
           </Tab.Navigator> 
         :
         <View style={localStyles.viewDark}>

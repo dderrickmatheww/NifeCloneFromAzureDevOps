@@ -69,11 +69,11 @@ class Map extends React.Component {
     }
 
     gatherMarkers = async () => {
-        let places = await getBusinessesNearby(this.state.region);
-        this.props.refresh({  })
+        const yelpData = await getBusinessesNearby(this.state.region);
+        this.props.refresh({ yelpData });
         this.setState({
-            markers: places, loading: false
-        })
+            markers: yelpData, loading: false
+        });
     }
 
     getBarCheckIns = (id) => {

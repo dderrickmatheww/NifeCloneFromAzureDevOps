@@ -7,7 +7,6 @@ import {
 } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
 import { createPost, getPostsPaginated, getPosts } from '../../../../utils/api/posts';
-import { getUserById } from '../../../../utils/api/users';
 import { uploadImage } from '../../../../utils/api/users';
 import theme from '../../../../styles/theme';
 import { connect } from "react-redux";
@@ -28,8 +27,7 @@ class StatusModel extends React.Component {
         const { modalType: type, userData } = this.props;
         const { businessId, latitude, longitude, id: userId } = userData;
         await createPost(description, type, image, businessId, latitude, longitude, userId);
-        skip += 50;
-        const feedData = await await getPosts(userId);
+        const feedData = await getPosts(userId);
         this.props.refresh({ feedData });
         this.setState({ saving: false });
         this.props.onDismiss();
@@ -110,26 +108,6 @@ class StatusModel extends React.Component {
     }
 }
 
-function mapStateToProps(state){
-    return {
-        ...state
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        refresh: ({ userData, feedData }) => dispatch({ 
-            type:'REFRESH', 
-            data: {
-                userData,
-                feedData 
-            }
-        })
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(StatusModel);
-
 const localStyles = StyleSheet.create({
   textInput:{
     flex: 1,
@@ -178,3 +156,23 @@ const localStyles = StyleSheet.create({
     borderColor: theme.generalLayout.secondaryColor
   }
 });
+
+function mapStateToProps(state){
+    return {
+        ...state
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StatusModel);

@@ -6,7 +6,8 @@ const initialState = {
     friendRequests: null, 
     businessData: null, 
     yelpData: null, 
-    feedData: []
+    feedData: [],
+    whatsPoppinData: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -18,7 +19,8 @@ const reducer = (state = initialState, action) => {
             return {
                 userData: (action.data.userData ? action.data.userData : state.userData),
                 yelpData: (action.data.yelpData ? action.data.yelpData : state.yelpData),
-                feedData: (action.data.feedData ? action.data.feedData : state.feedData)
+                feedData: (action.data.feedData ? action.data.feedData : state.feedData),
+                whatsPoppinData: (action.data.whatsPoppinData ? action.data.whatsPoppinData : state.whatsPoppinData)
             }
     }
     return state;

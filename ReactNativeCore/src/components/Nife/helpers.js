@@ -21,10 +21,10 @@ export const initiateAuthObserver = async (refresh, handleAuthChange) => {
             const {latitude, longitude} = await getUserLocation();
             const userData = await updateUser({ email, latitude, longitude });
             refresh({ userData });
-            handleAuthChange({authLoaded: true});
+            handleAuthChange({ authLoaded: true });
         } 
         else {
-            refreshUserData(null);
+            refresh(null);
             handleAuthChange({authLoaded: true})
         }
     });

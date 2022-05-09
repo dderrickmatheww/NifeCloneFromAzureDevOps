@@ -16,16 +16,7 @@ import DrawerButton from "../../Drawer/DrawerButton";
 class NavHeader extends React.Component {
 
     state = {
-        postModal: false,
-        notificationSnackBar: false,
-        userData: this.props.userData,
-        feedData: this.props.feedData,
-        isBusiness: this.props.userData.businessId != null,
-        modalType: "",
-        statusModal: {
-            type: "",
-            visability: false
-        },
+        isBusiness: this.props.userData.businessId != null
     }
 
     render() {
@@ -33,34 +24,37 @@ class NavHeader extends React.Component {
             <View style={localStyles.navHeader}>
                 <View style={localStyles.navHeaderColOne}>
                     <DrawerButton
-                        userPhoto={this.state.userData.photoSource}
+                        userPhoto={this.props.userData.photoSource}
                         drawerButtonColor={theme.generalLayout.secondaryColor}
                         onPress={this.props.navigation.openDrawer}
                     />
                 </View>
-
                 <View  style={localStyles.navHeaderColTwo}>
                     <Headline style={{
                         color: theme.generalLayout.textColor,
                         fontFamily: theme.generalLayout.fontBold,
                         width: '150%'
                     }}>
-                        Your Feed
+                       { this.props.type === "My Feed" ? "My Feed": "What's Poppin'" }
                     </Headline>
                 </View>
-
-                <View  style={localStyles.navHeaderColTwo}>
-                    <TouchableOpacity 
-                        onPress={() => this.props.modalTrigger({ postModal: true })}
-                        style={localStyles.StatusOverlay}
-                    >
-                        <Text 
-                            style={localStyles.statusButton}
-                        >
-                            { this.state.isBusiness ? 'Update...' : 'Update Status' }
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                { 
+                    this.props.type === "My Feed" ? 
+                        <View  style={localStyles.navHeaderColTwo}>
+                            <TouchableOpacity 
+                                onPress={() => this.props.modalTrigger({ postModal: true })}
+                                style={localStyles.StatusOverlay}
+                            >
+                                <Text 
+                                    style={localStyles.statusButton}
+                                >
+                                    { this.state.isBusiness ? 'Update...' : 'Update Status' }
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    : 
+                        null 
+                }
             </View>
         )
     }
@@ -189,10 +183,15 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(dispatch) {
     return {
-        refresh: (userData, feedData) => dispatch({ type:'REFRESH', data: userData, feed: feedData }),
-        yelpDataRefresh: (data) => dispatch({ type:'YELPDATA', data: data }),
+        refresh: ({ userData, feedData }) => dispatch({ 
+            type:'REFRESH', 
+            data: {
+                userData,
+                feedData 
+            }
+        })
     }
 }
 

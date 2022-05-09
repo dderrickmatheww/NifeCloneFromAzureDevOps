@@ -4,7 +4,7 @@ import theme from '../../../src/styles/theme';
 import { styles } from '../../styles/style';
 import Util from '../../utils/util';
 import IconWithBadge from "../IconWithBadge/IconWithBadge";
-import {updateOrDeleteFavorites} from "../../utils/api/users";
+import { updateOrDeleteFavorites } from "../../utils/api/users";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 import { connect } from "react-redux";
 

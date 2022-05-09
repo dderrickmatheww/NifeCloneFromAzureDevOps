@@ -8,7 +8,7 @@ import Feed from './Feed/Feed';
 import NavHeader from '../NavHeader/NavHeader';
 import theme from '../../../styles/theme';
 import { connect } from "react-redux";
-import StatusModal from "../NavHeader/PostModal/StatusModel";
+import StatusModal from "../NavHeader/StatusModal/StatusModel";
 import NotificationSnackBar from "../NavHeader/NotificationSnackBar";
 import {
     Text,
@@ -18,11 +18,10 @@ import {
 } from 'react-native-paper';
 
 class PostFeed extends React.Component {
+    
     state = {
         postModal: false,
         notificationSnackBar: false,
-        userData: this.props.userData,
-        feedData: this.props.feedData,
         isBusiness: this.props.userData.businessId != null,
         modalType: "",
         statusModal: {
@@ -44,68 +43,88 @@ class PostFeed extends React.Component {
     render() {
         return (
             <View style={localStyles.safeAreaContainer}>
-                <NavHeader navigation={this.props.navigation} modalTrigger={(modalToggle) => this.setState(modalToggle)} />
+                <NavHeader type={ this.props.route.params.type } navigation={this.props.navigation} modalTrigger={(modalToggle) => this.setState(modalToggle)} />
                 <View style={{ height: '90%' }}>
-                    <Feed type={"My Feed"} />
+                    <Feed type={ this.props.route.params.type } />
                 </View>
-                <Provider>
-                    <Portal>
-                        <Modal 
-                        contentContainerStyle={{
-                            alignSelf: "center",
-                            width: '90%',
-                            height: '75%'
-                        }}
-                        style={localStyles.modalContainer}
-                        visible={this.state.postModal}
-                        dismissable={true}
-                        onDismiss={this.onDismiss}
-                    >
-                        {
-                            this.state.userData.businessId != null ?
-                                    <>
-                                        <TouchableOpacity 
-                                            onPress={() => this.setState({ modalType: "STATUS", modalVisability: true })}
-                                            style={localStyles.modalButton}
-                                        >
-                                            <Text style={localStyles.modalButtonText}>
-                                                Update Status
-                                            </Text>
-                                        </TouchableOpacity>
+                {
+                    this.props.route.params.type === "My Feed" ?
+                        <Provider>
+                            <Portal>
+                                <Modal 
+                                    contentContainerStyle={{
+                                        alignSelf: "center",
+                                        width: '90%',
+                                        height: '75%'
+                                    }}
+                                    style={localStyles.modalContainer}
+                                    visible={this.state.postModal}
+                                    dismissable={true}
+                                    onDismiss={this.onDismiss}
+                                >
+                                {
+                                    this.props.userData.businessId != null ?
+                                        <>
+                                            <TouchableOpacity 
+                                                onPress={() => this.setState({ 
+                                                    statusModel: {
+                                                        type: "STATUS",
+                                                        modalVisability: true
+                                                    }
+                                                })}
+                                                style={localStyles.modalButton}
+                                            >
+                                                <Text style={localStyles.modalButtonText}>
+                                                    Update Status
+                                                </Text>
+                                            </TouchableOpacity>
 
-                                        <TouchableOpacity 
-                                            onPress={() => this.setState({ modalType: "EVENT", modalVisability: true })}
-                                            style={localStyles.modalButton}
-                                        >
-                                            <Text style={localStyles.modalButtonText}>
-                                                Update Events
-                                            </Text>
-                                        </TouchableOpacity>
+                                            <TouchableOpacity 
+                                                onPress={() => this.setState({ 
+                                                    statusModel: {
+                                                        type: "EVENT",
+                                                        modalVisability: true
+                                                    }
+                                                })}
+                                                style={localStyles.modalButton}
+                                            >
+                                                <Text style={localStyles.modalButtonText}>
+                                                    Update Events
+                                                </Text>
+                                            </TouchableOpacity>
 
-                                        <TouchableOpacity 
-                                            onPress={() => this.setState({ modalType: "SPECIAL", modalVisability: true })}
-                                            style={localStyles.modalButton}
-                                        >
-                                            <Text style={localStyles.modalButtonText}>
-                                                Update Specials
-                                            </Text>
-                                        </TouchableOpacity>
-                                        <StatusModal 
-                                            modalType={ this.state.statusModal.type } 
-                                            isVisible={ this.state.modalVisability }
+                                            <TouchableOpacity 
+                                                onPress={() => this.setState({ 
+                                                    statusModel: {
+                                                        type: "SPECIAL",
+                                                        modalVisability: true
+                                                    }
+                                                })}
+                                                style={localStyles.modalButton}
+                                            >
+                                                <Text style={localStyles.modalButtonText}>
+                                                    Update Specials
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <StatusModal 
+                                                isVisible={ this.state.statusModal.modalVisability }
+                                                modalType={ this.state.statusModal.type }
+                                                onDismiss={this.onDismiss}
+                                            />
+                                        </>
+                                    :
+                                        <StatusModal
+                                            isVisible={ this.props.postModal }
+                                            modalType={ "STATUS" }
                                             onDismiss={this.onDismiss}
                                         />
-                                    </>
-                            :
-                                    <StatusModal
-                                        isVisible={ this.props.postModal }
-                                        modalType={ "STATUS" }
-                                        onDismiss={tonDismiss}
-                                    />
-                            }
-                        </Modal>
-                    </Portal>
-                </Provider>
+                                    }
+                                </Modal>
+                            </Portal>
+                        </Provider>
+                    :
+                        null
+                }
             </View>
         )
     }
