@@ -2,8 +2,7 @@ import {Callout, Marker} from "react-native-maps";
 import theme from "../../styles/theme";
 import * as React from "react";
 import VisitedByCallout from "./VisitedByCallout";
-import {useState} from "react";
-import {getFriendCheckIns} from "../../utils/api/businesses";
+
 
 export function MapMarker(props) {
     return (<Marker

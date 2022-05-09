@@ -31,8 +31,8 @@ class CheckInOutButtons extends React.Component  {
     }
 
     refreshUser = async () => {
-        const user = await getUser(this.props.userData.email)
-        this.props.refresh(user, []);
+        const userData = await getUser(this.props.userData.email)
+        this.props.refresh({userData});
     }
 
     handleCheckOuts = async () => {

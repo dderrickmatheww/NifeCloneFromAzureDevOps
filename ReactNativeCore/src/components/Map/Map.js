@@ -70,7 +70,6 @@ class Map extends React.Component {
 
     gatherMarkers = async () => {
         let places = await getBusinessesNearby(this.state.region);
-        this.props.refresh({  })
         this.setState({
             markers: places, loading: false
         })
