@@ -8,7 +8,7 @@ export function MapMarker(props) {
     return (<Marker
         coordinate={{latitude: props.marker.coordinates.latitude, longitude: props.marker.coordinates.longitude}}
 
-        pinColor={theme.generalLayout.secondaryColor} // this.state.nifeBusinesses.includes(marker.id) ? theme.icons.color :
+        pinColor={props.isNifeBusiness ? theme.icons.color : theme.generalLayout.secondaryColor}
         calloutOffset={{x: 2, y: 0.25}}
         calloutAnchor={{x: 2, y: 0.25}}
     >

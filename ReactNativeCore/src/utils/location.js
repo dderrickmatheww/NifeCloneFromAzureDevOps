@@ -27,6 +27,10 @@ export const getUserLocation = async () => {
     }
 }
 
+export const getUserRegion = async (location) => {
+    return await Location.reverseGeocodeAsync(location)
+}
+
 export const distanceBetween = async (lat, long, userLocation) => {
     return getDistance(
         {
