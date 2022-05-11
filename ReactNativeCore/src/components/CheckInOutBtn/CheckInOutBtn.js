@@ -31,8 +31,8 @@ class CheckInOutButtons extends React.Component  {
     }
 
     refreshUser = async () => {
-        const user = await getUser(this.props.userData.email)
-        this.props.refresh(user, []);
+        const userData = await getUser(this.props.userData.email)
+        this.props.refresh({userData});
     }
 
     handleCheckOuts = async () => {
@@ -52,19 +52,19 @@ class CheckInOutButtons extends React.Component  {
             this.props.business.coordinates.longitude,
             {latitude, longitude}
         )
-        if(distance <= HUNDRED_FT_IN_MILES){
+        // if(distance <= HUNDRED_FT_IN_MILES){
             if(this.state.checkedInSomewhereElse){
                 await deleteCheckIn(this.state.checkIn.id);
             }
-            const checkIn = await createCheckIn(this.props.userData.id, this.props.businessUID, isPrivate);
+            const checkIn = await createCheckIn(this.props.userData.id, this.props.businessUID, isPrivate, this.props.business.name);
             this.setState({loading:false, checkIn})
             await this.refreshUser()
             await this.props.handleCheckIns();
 
-        } else {
-            alert('Check In Error!', 'Must be within 100ft to check in.')
-            this.setState({ loading: false });
-        }
+        // } else {
+        //     alert('Check In Error!', 'Must be within 100ft to check in.')
+        //     this.setState({ loading: false });
+        // }
 
     }
 

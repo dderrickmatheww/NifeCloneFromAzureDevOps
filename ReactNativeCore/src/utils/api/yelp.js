@@ -12,7 +12,6 @@ export const getBusinessesNearby = async ({latitude, longitude}) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log('Businesses: ', data.length)
         return data
     } catch (e) {
         console.log(e);

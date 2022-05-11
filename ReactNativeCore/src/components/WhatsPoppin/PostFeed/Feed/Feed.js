@@ -1,11 +1,11 @@
 import React from 'react';
-import { 
-    StyleSheet, 
-    View, 
+import {
+    StyleSheet,
+    View,
     SafeAreaView,
-    Text, 
-    Image, 
-    FlatList, 
+    Text,
+    Image,
+    FlatList,
     RefreshControl
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -52,7 +52,7 @@ class Feed extends React.Component {
 
     render() {
         return (
-            <SafeAreaView style={ localStyles.containerGallery }>
+            <SafeAreaView style={localStyles.containerGallery}>
                 <FlatList
                     numColumns={ 1 }
                     horizontal={ false }
@@ -61,12 +61,12 @@ class Feed extends React.Component {
                     refreshing={ this.state.refresh }
                     refreshControl={
                         <RefreshControl
-                            refreshing={ this.state.refresh }
-                            onRefresh={ this.onRefresh }
-                            size={ 22 }
+                            refreshing={this.state.refresh}
+                            onRefresh={this.onRefresh}
+                            size={22}
                             title="Loading.."
-                            tintColor={ theme.loadingIcon.color }
-                            titleColor={ theme.generalLayout.textColor }
+                            tintColor={theme.loadingIcon.color}
+                            titleColor={theme.generalLayout.textColor}
                         />
                     }
                     renderItem={({ item }) => (
@@ -130,6 +130,11 @@ class Feed extends React.Component {
 }
 
 const localStyles = StyleSheet.create({
+    feed: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingTop: 5,
+    },
     Caption: {
         color: theme.generalLayout.textColor,
         opacity: 0.60,
@@ -166,10 +171,9 @@ const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor,
         borderRadius: 10,
         borderWidth: .5,
-        marginVertical: 15,
+        marginVertical: 5,
         paddingVertical: 10,
         paddingHorizontal: 10,
-        marginVertical: 2,
         width: "100%",
         height: '100%'
     },
@@ -188,7 +192,7 @@ const localStyles = StyleSheet.create({
     }
 });
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
     return {
         ...state
     }

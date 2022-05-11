@@ -88,13 +88,13 @@ export const updateOrDeleteFavorites = async (user, business, isAdding, id) => {
     }
 }
 
-export const createCheckIn = async (user, business, isPrivate) => {
+export const createCheckIn = async (user, business, isPrivate, businessName) => {
     // if not adding, add id to update obj
     console.log('createCheckIn')
     const token = 'token'
     try {
         const {data} = await client.post('/createCheckIn', {
-            user, business, isPrivate
+            user, business, isPrivate, businessName
         },{
             headers:{
                 authorization: `Bearer ${token}`

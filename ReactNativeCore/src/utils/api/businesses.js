@@ -77,3 +77,22 @@ export const getFriendCheckIns = async ( friends) => {
         throw Error(e.message);
     }
 }
+
+export const getNifeBusinessesByState = async (state) => {
+    // TODO write getToken func
+    const token = 'token'
+    try {
+        const {data} = await client.post('/getNifeBusinessesByState', {
+            state
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}

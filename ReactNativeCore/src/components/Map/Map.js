@@ -8,12 +8,12 @@ import {Loading} from "../Loading";
 import {connect} from "react-redux";
 import {getBusinessesNearby} from "../../utils/api/yelp";
 import {MapMarker} from "./MapMarker";
-import {getUserLocation, MILES_PER_METER} from "../../utils/location";
+import {getUserLocation, getUserRegion, MILES_PER_METER} from "../../utils/location";
 import {RecenterButton} from "./RecenterButton";
 import DrawerButton from "../Drawer/DrawerButton";
 import BarModal from "./BarModal/BarModal";
 import BusinessSearchBar from "../BusinessSearchBar/BusinessSearchBar";
-import {getFriendCheckIns, searchBusinesses} from "../../utils/api/businesses";
+import {getFriendCheckIns, getNifeBusinessesByState, searchBusinesses} from "../../utils/api/businesses";
 
 const {width, height} = Dimensions.get('window');
 
@@ -48,7 +48,8 @@ class Map extends React.Component {
         searchParam: "",
         dropDownData: null,
         friendCheckIns: null,
-        friendsLastVisited: null
+        friendsLastVisited: null,
+        nifeBusinesses: [{uuid: -1}],
     }
 
     handleGetFriendCheckIns = async () => {
@@ -129,7 +130,22 @@ class Map extends React.Component {
         })
     }
 
+    isNifeBusiness = (id) => {
+        return this.state.nifeBusinesses.some(bus => bus.uuid === id);
+    }
+
+    gatherNifeBusinesses = async () => {
+        const location = await getUserRegion({
+            latitude:this.state.region.latitude,
+            longitude:this.state.region.longitude,
+        })
+        const {region} = location[0];
+        const nifeBusinesses = await getNifeBusinessesByState(region)
+        this.setState({nifeBusinesses})
+    }
+
     async componentDidMount() {
+        await this.gatherNifeBusinesses();
         await this.gatherMarkers()
         await this.handleGetFriendCheckIns()
     }
@@ -171,7 +187,8 @@ class Map extends React.Component {
                         >
                             {this.state.markers.map(marker => (
                                 <MapMarker
-                                    key={marker.id} 
+                                    key={marker.id}
+                                    isNifeBusiness={this.isNifeBusiness(marker.id)}
                                     friendCheckIns={this.state.friendCheckIns ? this.getBarCheckIns(marker.id) : null}
                                     friendLastVisited={this.state.friendCheckIns ? this.getBarLastVisited(marker.id) : null}
                                     marker={marker}
