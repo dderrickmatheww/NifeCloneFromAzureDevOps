@@ -12,21 +12,22 @@ export const loadFonts = async () => {
     });
 }
 
-export const initiateAuthObserver = async (refresh, handleAuthChange) => {
+export const initiateAuthObserver = async (refresh, updateState) => {
     onAuthStateChanged(auth, async user => {
         console.log('onAuthStateChanged')
+        updateState({authLoaded: false, userData: null})
         if (user) {
             const { email } = user;
             //TODO SAVE LOCATION AND EMAIL
             const {latitude, longitude} = await getUserLocation();
             const userData = await updateUser({ email, latitude, longitude });
             refresh({ userData });
-            handleAuthChange({authLoaded: true});
+            updateState({authLoaded: true, userData});
         } 
         else {
             console.log('user not found')
-            handleAuthChange({authLoaded: true})
-            refresh({userData:null});
+            updateState({authLoaded: true, userData: null});
+            refresh({userData: null});
         }
     });
 }

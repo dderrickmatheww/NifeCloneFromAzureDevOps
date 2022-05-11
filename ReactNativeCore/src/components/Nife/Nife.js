@@ -32,13 +32,13 @@ class NifeApp extends React.Component {
     notification: null,
   }
 
-  handleAuthChange = async ({authLoaded}) => {
-    this.setState({ authLoaded })
+  updateState = async ({authLoaded, userData}) => {
+    this.setState({ authLoaded, userData })
   }
 
   async componentDidMount() {
     try {
-      await initiateAuthObserver(this.props.refresh, this.handleAuthChange);
+      await initiateAuthObserver(this.props.refresh, this.updateState);
       await loadFonts()
     }
     catch (error) {
@@ -49,8 +49,9 @@ class NifeApp extends React.Component {
 
   render() {
     return (
+        // have to use state.userData instead of props.userData because it wouldn't render correctly
         this.state.authLoaded ?
-            this.props.userData ?
+            this.state.userData ?
               <DrawerComponent />
               :
               <LoginScreen />
