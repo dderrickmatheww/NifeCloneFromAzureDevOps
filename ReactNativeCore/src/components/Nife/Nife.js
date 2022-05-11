@@ -5,6 +5,7 @@ import LoginScreen from "../Login/LoginScreen";
 import {initiateAuthObserver, loadFonts} from './helpers'
 import {Loading} from "../Loading";
 import DrawerComponent from "../Drawer/Drawer";
+import {updateUser} from "../../utils/api/users";
 
 //TODO update store state
 
@@ -70,7 +71,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return {
-      refresh: ({ userData, feedData }) => dispatch({ 
+      refresh: ({ userData, feedData }) => dispatch({
           type:'REFRESH', 
           data: {
               userData,

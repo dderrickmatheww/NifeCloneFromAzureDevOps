@@ -7,6 +7,7 @@ import Map from "../Map/Map";
 import {connect} from "react-redux";
 import WhatsPoppinNavigator from "../WhatsPoppin/TabNavigator";
 import {DrawerContent} from "./Drawer Content/Drawer Content";
+import {updateUser} from "../../utils/api/users";
 
 const Drawer = createDrawerNavigator();
 
@@ -15,7 +16,8 @@ const INITIAL_ROUTE = 'Map';
 const DRAWER_TYPE = 'front';
 
 class DrawerComponent extends React.Component {
- render() {
+
+    render() {
      return (
          <NavigationContainer>
 
