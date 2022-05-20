@@ -9,13 +9,13 @@ import theme from '../../../src/styles/theme';
 export default function IconWithBadge({ name, badgeCount, color, size, type , isDrawer}) {
   
     return (
-      <View style={{ width: 30, height: size, marginLeft:isDrawer?12:0}}>
+      <View style={{ height: size}}>
         {
-          type == 'Ionicons' ?
+          type === 'Ionicons' ?
             <Ionicons name={name} size={size} color={color} />
-          : type == 'FontAwesome5' ?
+          : type === 'FontAwesome5' ?
             <FontAwesome5 name={name} size={size} color={color} />
-          : type == 'FontAwesome' ?
+          : type === 'FontAwesome' ?
             <FontAwesome name={name} size={size} color={color} />
           :
             <AntDesign name={name} size={size} color={color}/>

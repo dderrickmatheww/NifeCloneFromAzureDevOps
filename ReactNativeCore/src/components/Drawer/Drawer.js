@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import WhatsPoppinNavigator from "../WhatsPoppin/TabNavigator";
 import {DrawerContent} from "./Drawer Content/Drawer Content";
 import {updateUser} from "../../utils/api/users";
+import ProfileNavigator from "../Profile/ProfileNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -48,7 +49,14 @@ class DrawerComponent extends React.Component {
                      component={ WhatsPoppinNavigator }
                      // options={{ lazy: false }}
                      lazy={false}
-                 /> 
+                 />
+
+                 <Drawer.Screen
+                     name="Profile"
+                     component={ ProfileNavigator }
+                     // options={{ lazy: false }}
+                     lazy={false}
+                 />
 
              </Drawer.Navigator>
          </NavigationContainer>
