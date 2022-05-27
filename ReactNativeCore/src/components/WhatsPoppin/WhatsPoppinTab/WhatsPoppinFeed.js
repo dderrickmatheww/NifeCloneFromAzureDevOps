@@ -8,7 +8,7 @@ import Feed from './Feed/Feed';
 import NavHeader from '../NavHeader/NavHeader';
 import theme from '../../../styles/theme';
 import { connect } from "react-redux";
-import StatusModal from "../NavHeader/PostModal/StatusModel";
+import StatusModal from "../../StatusModel/StatusModel";
 import NotificationSnackBar from "../NavHeader/NotificationSnackBar";
 import {
     Text,
@@ -100,7 +100,7 @@ class PostFeed extends React.Component {
                                     <StatusModal
                                         isVisible={ this.props.postModal }
                                         modalType={ "STATUS" }
-                                        onDismiss={tonDismiss}
+                                        onDismiss={this.onDismiss}
                                     />
                             }
                         </Modal>

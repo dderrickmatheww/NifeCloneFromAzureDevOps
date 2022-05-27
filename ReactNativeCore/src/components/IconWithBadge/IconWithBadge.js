@@ -9,7 +9,7 @@ import theme from '../../../src/styles/theme';
 export default function IconWithBadge({ name, badgeCount, color, size, type , isDrawer}) {
   
     return (
-      <View style={{ height: size}}>
+      <View style={{ height: size, width: size}}>
         {
           type === 'Ionicons' ?
             <Ionicons name={name} size={size} color={color} />

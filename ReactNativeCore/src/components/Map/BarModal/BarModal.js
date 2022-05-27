@@ -101,7 +101,7 @@ class BarModal extends React.Component {
                         <Text style={barStyles.panelTitle}>{this.props.barName}</Text>
                     </View>
 
-                    <View style={{position: "relative"}}>
+                    <View >
                         <Favorite
                             userData={this.props.userData} buisnessUID={this.props.buisnessUID}
                             buisnessName={this.props.barName}/>

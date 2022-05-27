@@ -87,12 +87,9 @@ export const firebaseStorageUpload = async (uri, photoKey) => {
                 alert('Nife Storage Upload Error', message, null);
             }
         });
-        console.log('blob - ' + blob);
         const storageRef = ref(storage, photoKey);
-        console.log('Storage Ref - ' + storageRef);
-        const upload = await uploadBytes(storageRef, blob);
+        await uploadBytes(storageRef, blob);
         blob.close();
-        console.log('upload - ' + upload);
         return await getDownloadURL(storageRef);
     }
     catch ({ message }) {

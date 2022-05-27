@@ -7,7 +7,7 @@ import {
 import { Modal, Text } from 'react-native-paper';
 import theme from '../../../../styles/theme';
 import { connect } from "react-redux";
-import StatusModal from "./StatusModel";
+import StatusModal from "../../../StatusModel/StatusModel";
 
 class PostModal extends React.Component {
 
@@ -186,12 +186,5 @@ const localStyles = StyleSheet.create({
       fontSize: 20,
       textAlign: "center",
       fontFamily: theme.generalLayout.font
-  },
-  viewDark: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: theme.generalLayout.backgroundColor,
-    paddingBottom: 10
   },
 });

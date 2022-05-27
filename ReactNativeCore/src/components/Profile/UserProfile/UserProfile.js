@@ -1,25 +1,24 @@
 import React, {Component} from 'react';
 import {
     View,
-    ScrollView,
+    ScrollView, Modal,
 } from 'react-native';
 import {connect} from "react-redux";
 import {Loading} from "../../Loading";
-import {getUser} from "../../../utils/api/users";
+import {getUser, updateUser, uploadImage} from "../../../utils/api/users";
 import {localStyles} from "./style";
 import UserProfileHeader from "./UserProfileHeader";
 import {ProfilePicture} from "../ProfilePicture";
-import * as PropTypes from "prop-types";
 import {NoProfilePicture} from "../NoProfilePicture";
 import {UserInformation} from "../UserInformation";
 import {getUserRegion} from "../../../utils/location";
 import {LocationAndFriends} from "./LocationAndFriends";
 import {ProfileStatus} from "./ProfileStatus";
 import {ProfileBio} from "./ProfileBio";
-
-
-
-ProfileBio.propTypes = {userData: PropTypes.any};
+import {FavoriteDrinks} from "./FavoriteDrinks";
+import {FavoriteBars} from "./FavoriteBars";
+import {Portal, Provider} from "react-native-paper";
+import StatusModal from "../../StatusModel/StatusModel";
 
 class UserProfile extends Component {
 
@@ -31,6 +30,7 @@ class UserProfile extends Component {
         isAddingFriend: false,
         uploading: false,
         region: null,
+        statusModalVisible: false,
     }
 
     async getUserInfo() {
@@ -75,8 +75,12 @@ class UserProfile extends Component {
         return gender.charAt(0).toUpperCase() + gender.slice(1);
     }
 
-    UploadPic = () => {
+    UploadPic = async () => {
         this.setState({uploading: true})
+        const email = this.props.route.params.email
+        const photoSource = await uploadImage();
+        await updateUser({ email,  photoSource});
+        await this.getUserInfo()
         this.setState({uploading: false})
     }
 
@@ -91,6 +95,10 @@ class UserProfile extends Component {
         })
         const {region} = location[0];
         this.setState({region});
+    }
+
+    onDismiss(){
+        this.setState({statusModalVisible: false})
     }
 
     async componentDidMount() {
@@ -131,14 +139,14 @@ class UserProfile extends Component {
                                     <ProfilePicture
                                         userData={this.state.userData}
                                         isCurrentUser={this.state.isCurrentUser}
-                                        onPress={() => {
-                                            this.UploadPic();
+                                        onPress={async () => {
+                                            await this.UploadPic();
                                         }}
                                     />
                                     :
                                     <NoProfilePicture
-                                        onPress={() => {
-                                            this.UploadPic()
+                                        onPress={async () => {
+                                            await this.UploadPic()
                                         }}
                                         uploading={this.state.uploading}
                                     />
@@ -155,15 +163,47 @@ class UserProfile extends Component {
                             {/* status */}
                             <ProfileStatus currentUser={this.state.isCurrentUser}
                                            onPress={() => this.setState({statusModalVisible: true})}
-                                           userData={this.state.userData}/>
+                                           userData={this.state.userData}
+                            />
                             {/* bio */}
                             <ProfileBio userData={this.state.userData}/>
 
                             {/*    TODO add favorite bars/drinks back */}
+                            <FavoriteDrinks userData={this.state.userData}/>
+                            <FavoriteBars userData={this.state.userData}/>
 
                         </View>
 
                     </ScrollView>
+                    {
+                        // <Provider>
+                        //     <Portal>
+                        //         <Modal
+                        //             contentContainerStyle={{
+                        //                 alignSelf: "center",
+                        //                 width: 250,
+                        //                 height: 250,
+                        //                 margin: 25,
+                        //             }}
+                        //             style={ {
+                        //                 flex: 1,
+                        //                 width: 250,
+                        //                 height: 250,
+                        //                 margin: 25,
+                        //             }}
+                        //             visible={this.state.statusModalVisible}
+                        //             dismissable={true}
+                        //             onDismiss={this.onDismiss}
+                        //         >
+                        //             <StatusModal
+                        //                 isVisible={ this.props.statusModalVisible }
+                        //                 modalType={ "STATUS" }
+                        //                 onDismiss={this.onDismiss}
+                        //             />
+                        //         </Modal>
+                        //     </Portal>
+                        // </Provider>
+                    }
                 </View>
                 : <Loading/>
         );

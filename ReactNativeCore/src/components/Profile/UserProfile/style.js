@@ -39,9 +39,9 @@ export const localStyles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        alignItems: 'center',
         backgroundColor: theme.generalLayout.backgroundColor,
-        elevation: 4
+        width: '100%',
+        height: '100%'
     },
     drinksChipCont: {
         flex: 1,

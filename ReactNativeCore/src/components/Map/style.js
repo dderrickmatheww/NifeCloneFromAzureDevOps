@@ -274,7 +274,6 @@ export const callOutStyles = StyleSheet.create({
         margin: 25,
         justifyContent: 'center',
         alignContent: 'center',
-        maxWidth: '60%',
         borderRadius: 20,
         borderColor: theme.generalLayout.secondaryColor,
         borderWidth: 1
