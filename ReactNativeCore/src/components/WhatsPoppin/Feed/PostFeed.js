@@ -8,8 +8,8 @@ import Feed from './Feed';
 import NavHeader from '../Navigation/NavHeader';
 import theme from '../../../styles/theme';
 import { connect } from "react-redux";
-import StatusModal from "../Feed/StatusModel";
-import NotificationSnackBar from "../Feed/NotificationSnackBar";
+import StatusModal from "../../StatusModal/StatusModal";
+import NotificationSnackBar from "./NotificationSnackBar";
 import {
     Text,
     Modal,
