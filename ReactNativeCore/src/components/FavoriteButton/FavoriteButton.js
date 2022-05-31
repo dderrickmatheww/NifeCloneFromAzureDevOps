@@ -21,7 +21,8 @@ class Favorite extends React.Component  {
     }
 
     gatherFavoriteInfo = async () => {
-        const favorited = this.props.userData.user_favorite_places.some(place => place.business == this.props.buisnessUID)
+        console.log(this.props.userData.user_favorite_places);
+        const favorited = this.props.userData.user_favorite_places.some(place => place.business === this.props.buisnessUID)
         const favoritePlace = this.props.userData.user_favorite_places.find(place => place.business === this.props.buisnessUID)
         this.setState({isFavorited: favorited, favorite: favoritePlace})
     }

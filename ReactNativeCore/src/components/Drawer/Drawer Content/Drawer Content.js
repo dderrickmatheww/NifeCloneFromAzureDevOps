@@ -17,6 +17,7 @@ import * as Notifications from "expo-notifications";
 import {UserInfoSection} from "./UserInfoSection";
 import {styles} from "./style";
 import {auth} from "../../../utils/firebase";
+import IconWithBadge from "../../IconWithBadge/IconWithBadge";
 
 
 Notifications.setNotificationHandler({
@@ -29,6 +30,7 @@ Notifications.setNotificationHandler({
 
 
 export function DrawerContent(props) {
+    const requestsCount = props.user.user_friends.filter(friend => friend.isRequest).length
     return (
         <View style={{flex: 1}}>
             <DrawerContentScrollView {...props}>
@@ -51,6 +53,30 @@ export function DrawerContent(props) {
                                     )}
                                     label={() => <Text style={styles.text}>Home</Text>}
                                     onPress={() => props.navigation.navigate('WhatsPoppin')}
+                        />
+                        <DrawerItem style={styles.text}
+                                    icon={() => (
+                                        <IconWithBadge
+                                            name={'ios-person'}
+                                            color={theme.icons.color}
+                                            size={20}
+                                            type="Ionicons"
+                                            isDrawer={true}
+                                            badgeCount={requestsCount}
+                                        />
+                                    )}
+                                    label={() => <Text style={styles.text}>Profile</Text>}
+                                    onPress={() => props.navigation.navigate(
+                                        'Profile',
+                                        {
+                                            screen:'UserProfile',
+                                            params: {
+                                                email: props.user.email,
+                                                openDrawer: props.navigation.openDrawer,
+                                                navigate: props.navigation.navigate
+                                            }
+                                        }
+                                    )}
                         />
                         <DrawerItem
                             icon={() => (

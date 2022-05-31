@@ -12,20 +12,21 @@ export const loadFonts = async () => {
     });
 }
 
-export const initiateAuthObserver = async (refresh, handleAuthChange) => {
+export const initiateAuthObserver = async (refresh, updateState, callback) => {
     onAuthStateChanged(auth, async user => {
         console.log('onAuthStateChanged')
+        updateState({authLoaded: false, userData: null})
         if (user) {
-            const { email } = user;
+            const { email, uid } = user;
             //TODO SAVE LOCATION AND EMAIL
             const {latitude, longitude} = await getUserLocation();
-            const userData = await updateUser({ email, latitude, longitude });
+            const lowerEmail = email.toLowerCase()
+            const userData = await updateUser({ email: lowerEmail, latitude, longitude, uuid: uid });
             refresh({ userData });
-            handleAuthChange({ authLoaded: true });
+            updateState({ authLoaded: true, userData });
         } 
         else {
-            console.log('user not found')
-            handleAuthChange({ authLoaded: true })
+            updateState({ authLoaded: true, userData: null });
             refresh({ userData: null });
         }
     });

@@ -2,7 +2,7 @@ import { client } from './client'
 import { auth } from "../firebase";
 import { alert, logger } from "../util";
 import * as ImagePicker from 'expo-image-picker';
-import { firebaseStorageUpload } from "../../utils/firebase";
+import { firebaseStorageUpload } from "../firebase";
 import uuid from 'react-native-uuid';
 
 export const updateUser = async (user) => {
@@ -62,11 +62,11 @@ export const getUserById = async (userId) => {
     }
 }
 
-export const updateOrDeleteFavorites = async (user, business, isAdding, id) => {
+export const updateOrDeleteFavorites = async (user, business, businessName,isAdding, id) => {
     // if not adding, add id to update obj
     console.log('updateOrDeleteFavorites')
     let update = {
-        user, business, isAdding
+        user, business, isAdding, businessName
     }
     if(!isAdding){
         update = {...update, id}
@@ -129,9 +129,11 @@ export const deleteCheckIn = async (id) => {
 }
 
 
-export const uploadImage = async (email) => {
+export const uploadImage = async () => {
     try {
+        await ImagePicker.requestMediaLibraryPermissionsAsync()
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
+        console.log(status)
         if (status === "granted") {
             const { uri } = await ImagePicker.launchImageLibraryAsync();
             console.log(uri + " get");
