@@ -8,10 +8,10 @@ import {BackButton} from "../BackButton/BackButton";
 
 
 export const UserSignUpForm = ({processUserSignUp, handleBackToLogin}) => {
-    const [displayName, setDisplayName] = useState('Matt')
-    const [email, setEmail] = useState('mattdpalumbo@gmail.com')
-    const [password1, setPassword1] = useState('Chicago1!')
-    const [password2, setPassword2] = useState('Chicago1!')
+    const [displayName, setDisplayName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password1, setPassword1] = useState('')
+    const [password2, setPassword2] = useState('')
 
     return (
         <KeyboardAwareScrollView

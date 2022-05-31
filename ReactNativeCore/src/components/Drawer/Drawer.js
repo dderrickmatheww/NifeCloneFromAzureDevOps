@@ -7,6 +7,8 @@ import Map from "../Map/Map";
 import {connect} from "react-redux";
 import WhatsPoppinNavigator from "../WhatsPoppin/Navigation/TabNavigator";
 import {DrawerContent} from "./Drawer Content/Drawer Content";
+import {updateUser} from "../../utils/api/users";
+import ProfileNavigator from "../Profile/ProfileNavigator";
 
 const Drawer = createDrawerNavigator();
 
@@ -15,7 +17,8 @@ const INITIAL_ROUTE = 'Map';
 const DRAWER_TYPE = 'front';
 
 class DrawerComponent extends React.Component {
- render() {
+
+    render() {
      return (
          <NavigationContainer>
 
@@ -46,7 +49,14 @@ class DrawerComponent extends React.Component {
                      component={ WhatsPoppinNavigator }
                      // options={{ lazy: false }}
                      lazy={false}
-                 /> 
+                 />
+
+                 <Drawer.Screen
+                     name="Profile"
+                     component={ ProfileNavigator }
+                     // options={{ lazy: false }}
+                     lazy={false}
+                 />
 
              </Drawer.Navigator>
          </NavigationContainer>

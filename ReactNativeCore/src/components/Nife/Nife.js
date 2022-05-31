@@ -5,6 +5,7 @@ import LoginScreen from "../Login/LoginScreen";
 import {initiateAuthObserver, loadFonts} from './helpers'
 import {Loading} from "../Loading";
 import DrawerComponent from "../Drawer/Drawer";
+import {updateUser} from "../../utils/api/users";
 
 //TODO update store state
 
@@ -32,13 +33,13 @@ class NifeApp extends React.Component {
     notification: null,
   }
 
-  handleAuthChange = async ({authLoaded}) => {
-    this.setState({ authLoaded })
+  updateState = async ({authLoaded, userData}) => {
+    this.setState({ authLoaded, userData })
   }
 
   async componentDidMount() {
     try {
-      await initiateAuthObserver(this.props.refresh, this.handleAuthChange);
+      await initiateAuthObserver(this.props.refresh, this.updateState);
       await loadFonts()
     }
     catch (error) {
@@ -49,8 +50,9 @@ class NifeApp extends React.Component {
 
   render() {
     return (
+        // have to use state.userData instead of props.userData because it wouldn't render correctly
         this.state.authLoaded ?
-            this.props.userData ?
+            this.state.userData ?
               <DrawerComponent />
               :
               <LoginScreen />
@@ -69,7 +71,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return {
-      refresh: ({ userData, feedData }) => dispatch({ 
+      refresh: ({ userData, feedData }) => dispatch({
           type:'REFRESH', 
           data: {
               userData,

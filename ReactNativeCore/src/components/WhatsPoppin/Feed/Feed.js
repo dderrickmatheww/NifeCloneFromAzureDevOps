@@ -25,7 +25,6 @@ import { getWhatsPoppinFeed } from '../../../utils/api/whatsPoppin';
 import { getUser } from '../../../utils/api/users';
 import { withinRadius } from '../../../utils/location';
 import DataRow from './DataRow';
-import { black } from 'react-native-paper/lib/typescript/src/styles/colors';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class Feed extends React.Component {

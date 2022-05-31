@@ -90,14 +90,12 @@ export class LoginScreen extends Component {
         const validPassword = passwordValidation(password1, password2);
         if(validPassword)
         {
-            const userData = await firebaseSignUp({email, password: password1, displayName});
-            this.props.refresh({ userData });
+            await firebaseSignUp({email, password: password1, displayName});
         }
     }
 
     processUserLogin = async (email, password) => {
-        const userData = await fireBaseLogin(email, password);
-        this.props.refresh({ userData });
+        await fireBaseLogin(email, password);
      }
 
     processBusinessSignUp = () => {
@@ -155,11 +153,12 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
     return {
-        refresh: ({ userData, feedData }) => dispatch({ 
+        refresh: ({ userData, feedData, displayName }) => dispatch({
             type:'REFRESH', 
             data: {
                 userData,
-                feedData 
+                feedData,
+                displayName
             }
         })
     }

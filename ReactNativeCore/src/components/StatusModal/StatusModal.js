@@ -6,12 +6,12 @@ import {
     Keyboard
 } from "react-native";
 import { Button, TextInput } from 'react-native-paper';
-import { createPost, getPostsPaginated, getPosts } from '../../../utils/api/posts';
-import { uploadImage } from '../../../utils/api/users';
-import theme from '../../../styles/theme';
+import { createPost, getPostsPaginated, getPosts } from '../../utils/api/posts';
+import { uploadImage } from '../../utils/api/users';
+import theme from '../../styles/theme';
 import { connect } from "react-redux";
 
-class StatusModel extends React.Component {
+class StatusModal extends React.Component {
 
     state = {
       description: null,
@@ -171,4 +171,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StatusModel);
+export default connect(mapStateToProps, mapDispatchToProps)(StatusModal);
