@@ -14,12 +14,18 @@ import {
     Avatar,
     Caption,
     Paragraph,
+    Button,
+    Menu,
+    Provider
 } from 'react-native-paper';
-import theme from '../../../../styles/theme';
-import Util from '../../../../utils/util';
-import { getPosts } from '../../../../utils/api/posts';
-import { getWhatsPoppinFeed } from '../../../../utils/api/whatsPoppin';
+import theme from '../../../styles/theme';
+import Util from '../../../utils/util';
+import { getPosts } from '../../../utils/api/posts';
+import { getWhatsPoppinFeed } from '../../../utils/api/whatsPoppin';
+import { getUser } from '../../../utils/api/users';
+import { withinRadius } from '../../../utils/location';
 import DataRow from './DataRow';
+import { black } from 'react-native-paper/lib/typescript/src/styles/colors';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class Feed extends React.Component {
@@ -28,26 +34,49 @@ class Feed extends React.Component {
         type: this.props.type,
         refresh: false,
         take: 50,
-        skip: 0
+        skip: 0,
+        menuVisability: false
     }
 
     onRefresh = async () => {
         this.setState({ refresh: true });
         const { userData, type } = this.props;
-        const { id: userId } = userData;
+        const { id: userId, latitude, longitude, email } = userData;
+        const userLocation = {
+            userLat: parseFloat(latitude),
+            userLong: parseFloat(longitude)
+        };
         if (type == "My Feed") {
             const feedData = await getPosts(userId);
             this.props.refresh({ feedData });
         }
         else {
-            const whatsPoppinData = await getWhatsPoppinFeed(userId);
-            this.props.refresh({ whatsPoppinData });
+            let whatsPoppinData = await getWhatsPoppinFeed({ ...userLocation });
+            whatsPoppinData = whatsPoppinData.filter(obj => withinRadius({ ...userLocation, busLat: parseFloat(obj.latitude), busLong: parseFloat(obj.longitude) }));
+            const userData = await getUser(email);
+            this.props.refresh({ userData, whatsPoppinData });
         }
         this.setState({ refresh: false });
     }
 
     componentDidMount() {
         this.onRefresh();
+    }
+
+    handleMenuOpen = () => {
+        this.setState({
+            menuVisability: true
+        });
+    }
+
+    handleMenuClose = () => {
+        this.setState({
+            menuVisability: false
+        });
+    }
+
+    handleReport = () => {
+
     }
 
     render() {
@@ -80,8 +109,8 @@ class Feed extends React.Component {
                                         //Instead of using business address use coords to create a calculation of how far away the bar is from the user
                                         //Will be coming from the checkin table
                                         this.props.userData && this.props.userData.businessId != null ?
-                                            <Caption
-                                                style={ localStyles.feedType }>{ this.props.businessData.address }
+                                            <Caption style={ localStyles.feedType }>
+                                                { this.props.businessData.address }
                                             </Caption> 
                                         : 
                                             null
@@ -94,6 +123,21 @@ class Feed extends React.Component {
                                     item.type === "SPECIALS" ? "Has a new special" : 
                                     "Status update"}
                                 </Caption>
+                                <Provider>
+                                    <View style={ localStyles.reportBtn }>
+                                        <Menu
+                                            visible={this.state.menuVisability}
+                                            onDismiss={this.handleMenuClose}
+                                            anchor={<Button onPress={this.handleMenuOpen}>...</Button>}
+                                            style={{ backgroundColor: 'white' }}
+                                        >
+                                            <Menu.Item contentStyle={{ color: 'black' }} onPress={this.handleReport} title="Report Post" />
+                                            {/* <Menu.Item onPress={() => {}} title="Item 2" />
+                                            <Divider />
+                                            <Menu.Item onPress={() => {}} title="Item 3" /> */}
+                                        </Menu>
+                                    </View>
+                                </Provider>
                                 <Paragraph style={ localStyles.Paragraph }>{ item.description }</Paragraph>
                                 {
                                     item.image ?
@@ -155,6 +199,15 @@ const localStyles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
         fontFamily: theme.generalLayout.fontBold
+    },
+    reportBtn: {
+        color: 'white',
+        left: '82.5%',
+        width: 0,
+        top: -80,
+        position: "relative",
+        fontWeight: "bold",
+        fontFamily: theme.generalLayout.fontBold,
     },
     feedType: {
         color: 'white',

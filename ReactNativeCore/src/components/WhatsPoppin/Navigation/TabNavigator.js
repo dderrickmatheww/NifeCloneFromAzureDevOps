@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-//import WhatsPoppin from '../components/Whats Poppin/WhatsPoppinTab';
-import PostFeed from './PostFeed/PostFeed';
-import IconWithBadge from '../IconWithBadge/IconWithBadge';
-import theme from '../../styles/theme';
+import PostFeed from '../Feed/PostFeed';
+import IconWithBadge from '../../IconWithBadge/IconWithBadge';
+import theme from '../../../styles/theme';
 import { connect } from 'react-redux';
 
 const Tab = createBottomTabNavigator();

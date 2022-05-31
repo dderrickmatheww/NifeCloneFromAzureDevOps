@@ -13,7 +13,6 @@ export const updatePostById = async (postId) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -33,7 +32,6 @@ export const getPosts = async (userId) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -55,7 +53,6 @@ export const getPostsPaginated = async (skip, take, userId) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -75,7 +72,6 @@ export const getPostsById = async (postId) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -95,7 +91,6 @@ export const deletePostsById = async (postId) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);
@@ -122,7 +117,6 @@ export const createPost = async (description, type, image, businessId, latitude,
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);

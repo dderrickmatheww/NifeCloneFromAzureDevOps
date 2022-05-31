@@ -1,6 +1,6 @@
 import * as Location from "expo-location";
-import {alert} from "./util";
-import {getDistance} from "geolib";
+import { alert } from "./util";
+import { getDistance, isPointWithinRadius } from "geolib";
 
 
 export const MILES_PER_METER = 0.00062137119223733
@@ -43,4 +43,18 @@ export const distanceBetween = async (lat, long, userLocation) => {
         },
         1
     ) * MILES_PER_METER
+}
+
+export const withinRadius = ({ busLat, busLong, userLat, userLong }) => {
+    return isPointWithinRadius(
+        {
+            latitude: busLat,
+            longitude: busLong
+        }, 
+        {
+            latitude: userLat,
+            longitude: userLong
+        }, 
+        32187
+    ); 
 }

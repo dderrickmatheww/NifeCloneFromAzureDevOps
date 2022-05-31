@@ -4,12 +4,12 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
-import Feed from './Feed/Feed';
-import NavHeader from '../NavHeader/NavHeader';
+import Feed from './Feed';
+import NavHeader from '../Navigation/NavHeader';
 import theme from '../../../styles/theme';
 import { connect } from "react-redux";
-import StatusModal from "../NavHeader/StatusModal/StatusModel";
-import NotificationSnackBar from "../NavHeader/NotificationSnackBar";
+import StatusModal from "../Feed/StatusModel";
+import NotificationSnackBar from "../Feed/NotificationSnackBar";
 import {
     Text,
     Modal,

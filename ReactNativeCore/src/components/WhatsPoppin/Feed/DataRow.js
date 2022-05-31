@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, Platform, TouchableOpacity } from 'react-native';
-import theme from '../../../../styles/theme';
+import theme from '../../../styles/theme';
 import {
     Headline
 } from 'react-native-paper';
-import Favorite from '../../../FavoriteButton/FavoriteButton';
+import Favorite from '../../FavoriteButton/FavoriteButton';
 import { connect } from "react-redux";
 
 class DataRow extends React.Component  {

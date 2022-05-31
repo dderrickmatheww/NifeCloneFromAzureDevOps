@@ -4,7 +4,7 @@ import theme from '../../../src/styles/theme';
 import { styles } from '../../styles/style';
 import Util from '../../utils/util';
 import IconWithBadge from "../IconWithBadge/IconWithBadge";
-import { updateOrDeleteFavorites } from "../../utils/api/users";
+import { updateOrDeleteFavorites, getUser } from "../../utils/api/users";
 const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 import { connect } from "react-redux";
 
@@ -19,6 +19,7 @@ class Favorite extends React.Component  {
     async componentDidMount() {
         await this.gatherFavoriteInfo()
     }
+
     gatherFavoriteInfo = async () => {
         const favorited = this.props.userData.user_favorite_places.some(place => place.business == this.props.buisnessUID)
         const favoritePlace = this.props.userData.user_favorite_places.find(place => place.business === this.props.buisnessUID)
@@ -26,10 +27,9 @@ class Favorite extends React.Component  {
     }
 
     handlePress = async (isAdding) =>{
-        console.log('isAdding: ', isAdding)
-        this.setState({isFavorited: isAdding, loading:true});
+        this.setState({ isFavorited: isAdding, loading: true });
         await updateOrDeleteFavorites(this.props.userData.uuid, this.props.buisnessUID, isAdding, this.state.favorite?.id);
-        this.setState({loading:false});
+        this.setState({ loading: false });
     }
 
     render() {
@@ -71,11 +71,10 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
     return {
-        refresh: ({ userData, feedData }) => dispatch({ 
+        refresh: ({ userData }) => dispatch({ 
             type:'REFRESH', 
             data: {
-                userData,
-                feedData 
+                userData
             }
         })
     }

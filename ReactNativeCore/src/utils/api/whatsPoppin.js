@@ -14,7 +14,6 @@ export const getWhatsPoppinFeed = async (latitude, longitude) => {
                 authorization: `Bearer ${token}`
             }
         });
-        console.log(data);
         return data
     } catch (e) {
         console.log(e);

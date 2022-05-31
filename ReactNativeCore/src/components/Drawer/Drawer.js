@@ -5,7 +5,7 @@ import {createDrawerNavigator} from "@react-navigation/drawer";
 import {drawerContentOptions, drawerStyle, overlayColor} from "./style";
 import Map from "../Map/Map";
 import {connect} from "react-redux";
-import WhatsPoppinNavigator from "../WhatsPoppin/TabNavigator";
+import WhatsPoppinNavigator from "../WhatsPoppin/Navigation/TabNavigator";
 import {DrawerContent} from "./Drawer Content/Drawer Content";
 
 const Drawer = createDrawerNavigator();
