@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import {
     Drawer,
+    List
 } from 'react-native-paper';
 import {
     DrawerContentScrollView,
@@ -54,30 +55,63 @@ export function DrawerContent(props) {
                                     label={() => <Text style={styles.text}>Home</Text>}
                                     onPress={() => props.navigation.navigate('WhatsPoppin')}
                         />
-                        <DrawerItem style={styles.text}
-                                    icon={() => (
-                                        <IconWithBadge
-                                            name={'ios-person'}
-                                            color={theme.icons.color}
-                                            size={20}
-                                            type="Ionicons"
-                                            isDrawer={true}
-                                            badgeCount={requestsCount}
-                                        />
-                                    )}
-                                    label={() => <Text style={styles.text}>Profile</Text>}
-                                    onPress={() => props.navigation.navigate(
-                                        'Profile',
-                                        {
-                                            screen:'UserProfile',
-                                            params: {
-                                                email: props.user.email,
-                                                openDrawer: props.navigation.openDrawer,
-                                                navigate: props.navigation.navigate
+                        <List.Accordion
+                            titleStyle={{color: theme.icons.textColor}}
+                            title="      You"
+                            left={() =>(
+                                <Ionicons style={{marginLeft: 10}} name={'ios-person'} size={20} color={theme.icons.color} />)}
+                            theme={{colors: {text: theme.icons.color}}}
+                        >
+                            <DrawerItem style={styles.text}
+                                        icon={() => (
+                                            <IconWithBadge
+                                                name={'ios-person'}
+                                                color={theme.icons.color}
+                                                size={20}
+                                                type="Ionicons"
+                                                isDrawer={true}
+                                            />
+                                        )}
+                                        label={() => <Text style={styles.text}>Profile</Text>}
+                                        onPress={() => props.navigation.navigate(
+                                            'Profile',
+                                            {
+                                                screen: 'UserProfile',
+                                                params: {
+                                                    email: props.user.email,
+                                                    openDrawer: props.navigation.openDrawer,
+                                                    navigate: props.navigation.navigate
+                                                }
                                             }
-                                        }
-                                    )}
-                        />
+                                        )}
+                            />
+                            <DrawerItem style={styles.text}
+                                        icon={() => (
+                                            <IconWithBadge
+                                                name={'ios-people'}
+                                                color={theme.icons.color}
+                                                size={20}
+                                                type="Ionicons"
+                                                isDrawer={true}
+                                                badgeCount={requestsCount}
+                                            />
+                                        )}
+                                        label={() => <Text style={styles.text}>Friends</Text>}
+                                        onPress={() => props.navigation.navigate(
+                                            'Profile',
+                                            {
+                                                screen: 'Friends',
+                                                params: {
+                                                    email: props.user.email,
+                                                    openDrawer: props.navigation.openDrawer,
+                                                    navigate: props.navigation.navigate
+                                                }
+                                            }
+                                        )}
+                            />
+
+                        </List.Accordion>
+
                         <DrawerItem
                             icon={() => (
                                 <Ionicons

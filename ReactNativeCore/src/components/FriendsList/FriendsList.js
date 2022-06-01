@@ -53,11 +53,6 @@ class FriendsList extends React.Component {
       this.state.friends && !this.state.loading ?
         <View style={localStyles.loggedInContainer}>
           <View style={localStyles.navHeader}>
-            <DrawerButton
-                userPhoto={this.props.userData.photoSource}
-                drawerButtonColor={theme.generalLayout.secondaryColor}
-                onPress={this.props.navigation.openDrawer}
-            />
             {/* Requests button */}
               {
                 this.state.requests && this.state.requests.length > 0 ?
@@ -165,7 +160,7 @@ const localStyles = StyleSheet.create({
 
   },
   navHeader:{
-    marginTop:30,
+    marginTop:55,
     flexDirection:"row",
     width:"98%",
     maxHeight: "10%",
@@ -207,20 +202,20 @@ const localStyles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 50,
-    marginLeft: '20%'
+    marginLeft: 15
   },
   friendCont: {
+    flex: 1,
     flexDirection: "row",
+    backgroundColor: theme.generalLayout.backgroundColor,
     borderColor: theme.generalLayout.secondaryColor,
-    borderRadius: 50,
-    width: '100%',
-    borderWidth: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '5%',
-    padding: '3%',
-    paddingBottom: '5%'
-
+    color: theme.generalLayout.textColor,
+    borderRadius: 10,
+    borderWidth: .5,
+    marginVertical: 5,
+    paddingVertical: 10,
+    width: "100%",
+    height: '100%'
   },
   name: {
     fontSize: 18,
