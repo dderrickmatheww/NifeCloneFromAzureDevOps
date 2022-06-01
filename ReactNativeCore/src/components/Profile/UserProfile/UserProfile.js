@@ -25,7 +25,7 @@ class UserProfile extends Component {
     state = {
         loading: false,
         userData: null,
-        isCurrentUser: true,
+        isCurrentUser: false,
         areFriends: false,
         isAddingFriend: false,
         uploading: false,
@@ -35,6 +35,7 @@ class UserProfile extends Component {
 
     async getUserInfo() {
         const userEmail = this.props.route.params.email;
+        console.log(userEmail)
         const userData = await getUser(userEmail)
         this.setState({userData})
     }
@@ -47,7 +48,7 @@ class UserProfile extends Component {
 
     async areFriends() {
         this.setState({
-            areFriends: this.state.userData.user_friends.some(friend => friend.id === this.props.currentUser.id)
+            areFriends: this.state.userData.user_friends.some(friend => friend.friendId === this.props.currentUser.id)
         })
     }
 
@@ -93,7 +94,7 @@ class UserProfile extends Component {
             latitude: this.state.userData.latitude,
             longitude: this.state.userData.longitude,
         })
-        const {region} = location[0];
+        const region = location[0] ? location[0].region : false;
         this.setState({region});
     }
 
@@ -104,9 +105,9 @@ class UserProfile extends Component {
     async componentDidMount() {
         this.setState({loading: true})
         await this.getUserInfo()
-        await this.isCurrentUser;
+        await this.isCurrentUser();
         if (!this.state.isCurrentUser) {
-            await this.areFriends
+            await this.areFriends()
         }
         await this.getRegion();
         this.setState({loading: false})
@@ -155,7 +156,7 @@ class UserProfile extends Component {
                             <LocationAndFriends
                                 userData={this.state.userData} region={this.state.region}
                                 currentUser={this.state.isCurrentUser}
-                                onPress={() => this.props.route.navigate('Profile', {screen: 'Friends'})}
+                                onPress={() => this.props.navigation.navigate('Profile', {screen: 'Friends'})}
                                 friendsLength={this.getFriendsLength()}
                             />
                         </View>

@@ -60,7 +60,7 @@ export const styles = StyleSheet.create({
     },
     text: {
         color: theme.generalLayout.textColor,
-        fontFamily: theme.generalLayout.font
+        fontFamily: theme.generalLayout.font,
     },
     drawerSection: {
         marginTop: 15,

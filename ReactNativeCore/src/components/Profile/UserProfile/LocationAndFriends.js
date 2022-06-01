@@ -8,7 +8,7 @@ export class LocationAndFriends extends Component {
         return <View style={localStyles.LocAndFriends}>
             <View style={{alignSelf: "flex-start", width: "50%"}}>
                 {
-                    !this.props.userData.privacySettings?.locationPrivacy ?
+                    !this.props.userData.privacySettings?.locationPrivacy && this.props.region ?
                         <Caption style={localStyles.FriendCount}>
                             {this.props.region}
                         </Caption>
