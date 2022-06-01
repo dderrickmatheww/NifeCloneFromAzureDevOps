@@ -30,7 +30,7 @@ Notifications.setNotificationHandler({
 
 
 export function DrawerContent(props) {
-    const requestsCount = props.user.user_friends.filter(friend => friend.isRequest).length
+    const requestsCount = props.friends ? props.friends.filter(friend => friend.isRequest).length : 0;
     return (
         <View style={{flex: 1}}>
             <DrawerContentScrollView {...props}>

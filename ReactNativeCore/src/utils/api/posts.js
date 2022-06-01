@@ -2,14 +2,17 @@ import { client } from './client'
 import { auth } from "../firebase";
 import { alert } from "../util";
 
-export const updatePostById = async (postId) => {
+export const updatePostById = async (postId, description, image, isFlagged) => {
     // TODO write getToken func
     const token = 'token'
     try {
         const { data } = await client.post('/updatePostById', {
-            postId
+            postId,
+            description,
+            image,
+            isFlagged
         },{
-            headers:{
+            headers: {
                 authorization: `Bearer ${token}`
             }
         });

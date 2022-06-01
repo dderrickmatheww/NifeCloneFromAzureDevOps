@@ -13,17 +13,15 @@ import uuid from 'react-native-uuid';
 import { 
     Avatar,
     Caption,
-    Paragraph,
-    Button,
-    Menu,
-    Provider
+    Paragraph
 } from 'react-native-paper';
 import theme from '../../../styles/theme';
 import Util from '../../../utils/util';
-import { getPosts } from '../../../utils/api/posts';
+import { getPosts, updatePostById } from '../../../utils/api/posts';
 import { getWhatsPoppinFeed } from '../../../utils/api/whatsPoppin';
 import { getUser } from '../../../utils/api/users';
 import { withinRadius } from '../../../utils/location';
+import { NifeMenu } from '../../NifeMenu/NifeMenu';
 import DataRow from './DataRow';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
@@ -62,20 +60,12 @@ class Feed extends React.Component {
         this.onRefresh();
     }
 
-    handleMenuOpen = () => {
-        this.setState({
-            menuVisability: true
-        });
-    }
-
-    handleMenuClose = () => {
-        this.setState({
-            menuVisability: false
-        });
-    }
-
-    handleReport = () => {
-
+    handleReport = (id) => {
+        const posts = this.props.type == "My Feed" ? this.props.feedData : this.props.whatsPoppinData;
+        const post = posts.find(obj => obj.id === id);
+        const { id: postId, image, description } = post;
+        const isFlagged = '1';
+        updatePostById(postId, description, image, isFlagged);
     }
 
     render() {
@@ -122,21 +112,7 @@ class Feed extends React.Component {
                                     item.type === "SPECIALS" ? "Has a new special" : 
                                     "Status update"}
                                 </Caption>
-                                <Provider>
-                                    <View style={ localStyles.reportBtn }>
-                                        <Menu
-                                            visible={this.state.menuVisability}
-                                            onDismiss={this.handleMenuClose}
-                                            anchor={<Button onPress={this.handleMenuOpen}>...</Button>}
-                                            style={{ backgroundColor: 'white' }}
-                                        >
-                                            <Menu.Item contentStyle={{ color: 'black' }} onPress={this.handleReport} title="Report Post" />
-                                            {/* <Menu.Item onPress={() => {}} title="Item 2" />
-                                            <Divider />
-                                            <Menu.Item onPress={() => {}} title="Item 3" /> */}
-                                        </Menu>
-                                    </View>
-                                </Provider>
+                                <NifeMenu options={[{ title: "Report", onPress: this.handleReport, icon: "account-alert", id: item.id }]} />
                                 <Paragraph style={ localStyles.Paragraph }>{ item.description }</Paragraph>
                                 {
                                     item.image ?
@@ -200,6 +176,7 @@ const localStyles = StyleSheet.create({
         fontFamily: theme.generalLayout.fontBold
     },
     reportBtn: {
+        flex: 1,
         color: 'white',
         left: '82.5%',
         width: 0,
