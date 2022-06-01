@@ -92,14 +92,27 @@ class FriendsList extends React.Component {
         </View>
         :
         <View style={localStyles.loggedInContainer}>
+          <View style={localStyles.navHeader}>
+            {/* Requests button */}
+            {
+              this.state.requests && this.state.requests.length > 0 ?
+                  <TouchableOpacity onPress={() => this.handleOpenModal()} style={localStyles.RequestOverlay}>
+                    <Ionicons style={{paddingHorizontal:2, paddingVertical:0}} name="ios-notifications" size={20} color={theme.icons.color}/>
+
+                    <Text style={localStyles.Requests}>
+                      {this.state.requests.length} Requests
+                    </Text>
+                  </TouchableOpacity> : null
+            }
+          </View>
           <View style={localStyles.HeaderCont}>
             <Image style={localStyles.profilePic} source={ this.props.userData.photoSource  ? {uri:this.props.userData.photoSource }  : defPhoto} />
             <Text style={localStyles.Header}>Your Friends</Text>
             <Text style={localStyles.FriendCount}>Loading Friends...</Text>
           </View>
-          <View style={localStyles.loggedInSubView}>
+          <ScrollView style={localStyles.ScrollView}>
             <ActivityIndicator size="large" color={theme.loadingIcon.color}/>
-          </View>
+          </ScrollView>
           {/* keep this button at the bottom */}
 
         </View>

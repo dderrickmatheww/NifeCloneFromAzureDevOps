@@ -55,7 +55,9 @@ export const localStyles = StyleSheet.create({
         borderBottomWidth: 1,
         width: "98%",
         minHeight: 50,
-        alignItems:"center"
+        alignItems:"center",
+        justifyContent: "flex-end",
+        paddingVertical: 10,
     },
     EditOverlay: {
         position: "relative",
@@ -75,7 +77,7 @@ export const localStyles = StyleSheet.create({
     },
     AddFriendOverlay: {
         position: "relative",
-        left: 195,
+        minHeight: 25,
         alignSelf: "flex-end",
         opacity: 0.75,
         backgroundColor: theme.generalLayout.backgroundColor,
