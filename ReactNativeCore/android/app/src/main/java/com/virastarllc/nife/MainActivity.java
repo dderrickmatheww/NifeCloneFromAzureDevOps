@@ -1,4 +1,4 @@
-package com.virastarllc.nife;
+package com.nifellc.nife;
 
 import android.os.Bundle;
 

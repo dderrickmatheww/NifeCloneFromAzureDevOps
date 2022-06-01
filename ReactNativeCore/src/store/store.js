@@ -6,7 +6,7 @@ const initialState = {
     yelpData: null, 
     feedData: [],
     whatsPoppinData: [],
-    displayName: null,
+    //displayName: null,
 }
 
 const reducer = (state = initialState, action) => {
@@ -20,7 +20,7 @@ const reducer = (state = initialState, action) => {
                 yelpData: (action.data.yelpData ? action.data.yelpData : state.yelpData),
                 feedData: (action.data.feedData ? action.data.feedData : state.feedData),
                 whatsPoppinData: (action.data.whatsPoppinData ? action.data.whatsPoppinData : state.whatsPoppinData),
-                displayName: (action.data.displayName ?  action.data.displayName : state.displayName)
+                //displayName: (action.data.displayName ?  action.data.displayName : state.displayName)
             }
     }
     return state;

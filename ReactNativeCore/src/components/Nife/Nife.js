@@ -41,6 +41,7 @@ class NifeApp extends React.Component {
     try {
       await initiateAuthObserver(this.props.refresh, this.updateState);
       await loadFonts()
+      console.log('Fonts')
     }
     catch (error) {
       alert('NIFE ERROR!', 'ERROR LOADING USER INFO PLEASE RESTART');

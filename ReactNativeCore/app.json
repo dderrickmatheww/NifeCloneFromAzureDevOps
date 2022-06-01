@@ -13,21 +13,13 @@
       "android",
       "web"
     ],
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
-        }
-      ]
-    ],
     "splash": {
       "image": "./src/media/Images/updatedLogo.png",
       "backgroundColor": "#301E48",
       "resizeMode": "contain"
     },
     "ios": {
-      "bundleIdentifier": "com.virastarllc.nife",
+      "bundleIdentifier": "com.nifellc.nife",
       "buildNumber": "1.1.1",
       "config": {
         "googleMapsApiKey": "AIzaSyDMhTqk52JopkK1kT4YBtUYKm7cWy2rvao",
@@ -37,7 +29,7 @@
       }
     },
     "android": {
-      "package": "com.virastarllc.nife",
+      "package": "com.nifellc.nife",
       "userInterfaceStyle": "dark",
       "versionCode": 22,
       "config": {
@@ -66,8 +58,7 @@
         "jsx",
         "json",
         "wasm",
-        "svg",
-        "cjs"
+        "svg"
       ]
     }
   },

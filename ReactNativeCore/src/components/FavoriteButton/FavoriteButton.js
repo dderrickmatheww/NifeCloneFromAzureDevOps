@@ -27,17 +27,10 @@ class Favorite extends React.Component  {
         this.setState({isFavorited: favorited, favorite: favoritePlace})
     }
 
-    handlePress = async (isAdding) =>{
-<<<<<<< HEAD
+    handlePress = async (isAdding) => {
         this.setState({ isFavorited: isAdding, loading: true });
-        await updateOrDeleteFavorites(this.props.userData.uuid, this.props.buisnessUID, isAdding, this.state.favorite?.id);
-        this.setState({ loading: false });
-=======
-        console.log('isAdding: ', isAdding)
-        this.setState({isFavorited: isAdding, loading:true});
         await updateOrDeleteFavorites(this.props.userData.id, this.props.buisnessUID, this.props.buisnessName,isAdding, this.state.favorite?.id);
-        this.setState({loading:false});
->>>>>>> refactor-clean-up
+        this.setState({ loading: false });
     }
 
     render() {

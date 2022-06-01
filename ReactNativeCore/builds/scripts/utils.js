@@ -94,7 +94,7 @@ class Utils {
                                 cmd += task;
                                 break;
                             case ' --bundle-identifier=':
-                                task = task + 'com.virastarllc.nife';
+                                task = task + 'com.nifellc.nife';
                                 cmd += task;
                                 break;
                             case ' --apple-id=':

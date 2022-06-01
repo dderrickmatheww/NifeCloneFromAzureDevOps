@@ -17,18 +17,19 @@ export const initiateAuthObserver = async (refresh, updateState, callback) => {
         console.log('onAuthStateChanged')
         updateState({authLoaded: false, userData: null})
         if (user) {
+            console.log(user);
             const { email, uid } = user;
             //TODO SAVE LOCATION AND EMAIL
             const {latitude, longitude} = await getUserLocation();
             const lowerEmail = email.toLowerCase()
             const userData = await updateUser({ email: lowerEmail, latitude, longitude, uuid: uid });
             refresh({ userData });
-            handleAuthChange({ authLoaded: true });
+            updateState({authLoaded: true, userData});
         } 
         else {
             console.log('user not found')
-            handleAuthChange({ authLoaded: true })
-            refresh({ userData: null });
+            updateState({authLoaded: true, userData: null});
+            refresh({userData: null});
         }
     });
 }
