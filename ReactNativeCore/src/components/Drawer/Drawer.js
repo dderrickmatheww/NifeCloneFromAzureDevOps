@@ -10,6 +10,8 @@ import {DrawerContent} from "./Drawer Content/Drawer Content";
 import {updateUser} from "../../utils/api/users";
 import ProfileNavigator from "../Profile/ProfileNavigator";
 import QRCode from "../QRCode/QRCode";
+import { navigationRef } from './RootNavigation';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -21,7 +23,7 @@ class DrawerComponent extends React.Component {
 
     render() {
      return (
-         <NavigationContainer>
+         <NavigationContainer ref={navigationRef}>
 
              <Drawer.Navigator
                 drawerContentOptions={drawerContentOptions}
@@ -34,7 +36,7 @@ class DrawerComponent extends React.Component {
                         {...props}
                         user={this.props.userData}
                         requests={this.props.userData.user_friends_user_friends_friendIdTousers}
-                        friends={this.props.userData.user_friends}
+                        friends={this.props.userData.user_friends.filter(friend => friend.isFriend)}
                         refresh={this.props.refresh}
                     />
                 )}
