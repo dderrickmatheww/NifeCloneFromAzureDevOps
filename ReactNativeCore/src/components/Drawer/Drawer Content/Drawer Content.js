@@ -31,7 +31,7 @@ Notifications.setNotificationHandler({
 
 
 export function DrawerContent(props) {
-    const requestsCount = props.friends ? props.friends.filter(friend => friend.isRequest).length : 0;
+    const requestsCount = props.requests ? props.requests.filter(friend => friend.isRequest).length : 0;
     return (
         <View style={{flex: 1}}>
             <DrawerContentScrollView {...props}>
@@ -41,6 +41,7 @@ export function DrawerContent(props) {
                         onPress={() => props.uploadImage(() => null)}
                         uploading={props.uploading}
                         friends={props.friends}
+                        navigate={props.navigation.navigate}
                     />
 
                     <Drawer.Section style={styles.drawerSection}>

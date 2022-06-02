@@ -45,7 +45,7 @@ export function UserInfoSection(props) {
             {!props.user.isBusiness ?
                 <View style={styles.section}>
                     <TouchableOpacity
-                        // onPress={ () =>  props.navigation.navigate('Profile', {screen:'QRCode'})  }
+                        onPress={ () =>  props.navigate('QRCode')  }
                         style={{
                             zIndex: 10,
                             alignSelf: "flex-end",

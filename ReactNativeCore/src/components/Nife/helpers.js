@@ -26,8 +26,8 @@ export const initiateAuthObserver = async (refresh, updateState, callback) => {
         } 
         else {
             console.log('user not found')
-            refresh({userData: []});
-            updateState({authLoaded: true, userData: []});
+            refresh({userData: null});
+            updateState({authLoaded: true, userData: null});
         }
     });
 }

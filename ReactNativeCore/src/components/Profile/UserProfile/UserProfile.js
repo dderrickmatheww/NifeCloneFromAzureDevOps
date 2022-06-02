@@ -17,8 +17,8 @@ import {ProfileStatus} from "./ProfileStatus";
 import {ProfileBio} from "./ProfileBio";
 import {FavoriteDrinks} from "./FavoriteDrinks";
 import {FavoriteBars} from "./FavoriteBars";
-import {Portal, Provider} from "react-native-paper";
-import StatusModal from "../../StatusModal/StatusModal";
+import {createFriendRequest} from "../../../utils/api/friend.requests";
+import {deleteUserFriendship} from "../../../utils/api/friends";
 
 class UserProfile extends Component {
 
@@ -48,19 +48,31 @@ class UserProfile extends Component {
 
     async areFriends() {
         this.setState({
-            areFriends: this.state.userData.user_friends.some(friend => friend.friendId === this.props.currentUser.id)
+            areFriends:
+                this.state.userData.user_friends.some(friend => friend.friendId === this.props.currentUser.id) ||
+                this.props.currentUser.user_friends.some(friend => friend.friendId === this.state.userData.id)
         })
     }
 
     async addFriend() {
-        this.setState({isAddingFriend: true})
-        console.log('Add Friend')
-        this.setState({isAddingFriend: false})
+        this.setState({loading: true})
+        await createFriendRequest({
+            userId: this.props.currentUser.id,
+            friendId: this.state.userData.id,
+        })
+        await this.getUserInfo()
+        this.setState({areFriends: true})
+        this.setState({loading: false})
     }
 
     async removeFriend() {
         this.setState({loading: true})
-        console.log('Add Friend')
+        await deleteUserFriendship({
+            userId: this.props.currentUser.id,
+            friendId: this.state.userData.id,
+        })
+        await this.getUserInfo()
+        this.setState({areFriends: false})
         this.setState({loading: false})
     }
 

@@ -662,11 +662,7 @@ const Util = {
                     alert('Function QueryPublicUsers - Error message:', error.message, null);
                 });
         },
-        GenerateQRCode: (userEmail) => {
-            let email = encodeURI(userEmail);
-            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data=" + email + "&size=500x500&bgcolor=301E48&color=F1BF42"
-            return QRSource;
-        },
+
         UploadImage: async (uri, email, callback, isProof, isStatusImage) => {
             const blob = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();

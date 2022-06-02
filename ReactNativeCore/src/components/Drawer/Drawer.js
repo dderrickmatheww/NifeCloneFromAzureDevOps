@@ -9,6 +9,7 @@ import WhatsPoppinNavigator from "../WhatsPoppin/Navigation/TabNavigator";
 import {DrawerContent} from "./Drawer Content/Drawer Content";
 import {updateUser} from "../../utils/api/users";
 import ProfileNavigator from "../Profile/ProfileNavigator";
+import QRCode from "../QRCode/QRCode";
 
 const Drawer = createDrawerNavigator();
 
@@ -32,6 +33,7 @@ class DrawerComponent extends React.Component {
                     <DrawerContent
                         {...props}
                         user={this.props.userData}
+                        requests={this.props.userData.user_friends_user_friends_friendIdTousers}
                         friends={this.props.userData.user_friends}
                         refresh={this.props.refresh}
                     />
@@ -54,6 +56,12 @@ class DrawerComponent extends React.Component {
                  <Drawer.Screen
                      name="Profile"
                      component={ ProfileNavigator }
+                     // options={{ lazy: false }}
+                     lazy={false}
+                 />
+                 <Drawer.Screen
+                     name="QRCode"
+                     component={ QRCode }
                      // options={{ lazy: false }}
                      lazy={false}
                  />
