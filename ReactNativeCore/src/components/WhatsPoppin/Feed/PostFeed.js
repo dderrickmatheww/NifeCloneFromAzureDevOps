@@ -23,20 +23,15 @@ class PostFeed extends React.Component {
         postModal: false,
         notificationSnackBar: false,
         isBusiness: this.props.userData.businessId != null,
-        modalType: "",
-        statusModal: {
-            type: "",
-            visability: false
-        },
+        type: "",
+        visability: false
     } 
 
     onDismiss = () => {
         this.setState({ 
             postModal: false,
-            statusModal: {
-                type: "",
-                visability: false
-            }
+            type: "",
+            visability: false
         });
     }
 
@@ -55,7 +50,7 @@ class PostFeed extends React.Component {
                                     contentContainerStyle={{
                                         alignSelf: "center",
                                         width: '90%',
-                                        height: '75%'
+                                        height: '60%'
                                     }}
                                     style={localStyles.modalContainer}
                                     visible={this.state.postModal}
@@ -65,52 +60,58 @@ class PostFeed extends React.Component {
                                 {
                                     this.props.userData.businessId != null ?
                                         <>
-                                            <TouchableOpacity 
-                                                onPress={() => this.setState({ 
-                                                    statusModel: {
-                                                        type: "STATUS",
-                                                        modalVisability: true
-                                                    }
-                                                })}
-                                                style={localStyles.modalButton}
-                                            >
-                                                <Text style={localStyles.modalButtonText}>
-                                                    Update Status
-                                                </Text>
-                                            </TouchableOpacity>
+                                        { 
+                                            this.state.type == "" ?
+                                                <>
+                                                    <TouchableOpacity 
+                                                        onPress={() => this.setState({ 
+                                                            type: "STATUS",
+                                                            modalVisability: true
+                                                        })}
+                                                        style={localStyles.modalButton}
+                                                    >
+                                                        <Text style={localStyles.modalButtonText}>
+                                                            Update Status
+                                                        </Text>
+                                                    </TouchableOpacity>
 
-                                            <TouchableOpacity 
-                                                onPress={() => this.setState({ 
-                                                    statusModel: {
-                                                        type: "EVENT",
-                                                        modalVisability: true
-                                                    }
-                                                })}
-                                                style={localStyles.modalButton}
-                                            >
-                                                <Text style={localStyles.modalButtonText}>
-                                                    Update Events
-                                                </Text>
-                                            </TouchableOpacity>
+                                                    <TouchableOpacity 
+                                                        onPress={() => this.setState({ 
+                                                            type: "EVENT",
+                                                            modalVisability: true
+                                                        })}
+                                                        style={localStyles.modalButton}
+                                                    >
+                                                        <Text style={localStyles.modalButtonText}>
+                                                            Update Events
+                                                        </Text>
+                                                    </TouchableOpacity>
 
-                                            <TouchableOpacity 
-                                                onPress={() => this.setState({ 
-                                                    statusModel: {
-                                                        type: "SPECIAL",
-                                                        modalVisability: true
-                                                    }
-                                                })}
-                                                style={localStyles.modalButton}
-                                            >
-                                                <Text style={localStyles.modalButtonText}>
-                                                    Update Specials
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <StatusModal 
-                                                isVisible={ this.state.statusModal.modalVisability }
-                                                modalType={ this.state.statusModal.type }
-                                                onDismiss={this.onDismiss}
-                                            />
+                                                    <TouchableOpacity 
+                                                        onPress={() => this.setState({ 
+                                                            type: "SPECIAL",
+                                                            modalVisability: true
+                                                        })}
+                                                        style={localStyles.modalButton}
+                                                    >
+                                                        <Text style={localStyles.modalButtonText}>
+                                                            Update Specials
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </>
+                                            :
+                                                null
+                                        }
+                                        { 
+                                            this.state.type != "" ?
+                                                <StatusModal 
+                                                    isVisible={ this.state.modalVisability }
+                                                    modalType={ this.state.type }
+                                                    onDismiss={this.onDismiss}
+                                                />
+                                            :
+                                                null
+                                        }
                                         </>
                                     :
                                         <StatusModal
@@ -143,7 +144,23 @@ const localStyles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%'
-    }
+    },
+    modalButton: {
+        backgroundColor: theme.generalLayout.backgroundColor,
+        borderWidth: 1,
+        borderColor: theme.generalLayout.secondaryColor,
+        borderRadius: 5,
+        padding: '5%',
+        textAlign: "center",
+        margin: '10%',
+        fontFamily: theme.generalLayout.font
+    },
+    modalButtonText: {
+        color: theme.generalLayout.textColor,
+        fontSize: 20,
+        textAlign: "center",
+        fontFamily: theme.generalLayout.font
+    },
 });
 
 function mapStateToProps(state){

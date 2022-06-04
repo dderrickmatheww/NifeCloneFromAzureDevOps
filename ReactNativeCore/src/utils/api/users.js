@@ -1,8 +1,7 @@
 import { client } from './client'
-import { auth } from "../firebase";
 import { alert, logger } from "../util";
 import * as ImagePicker from 'expo-image-picker';
-import { firebaseStorageUpload } from "../firebase";
+import { firebaseStorageUpload, auth } from "../firebase";
 import uuid from 'react-native-uuid';
 
 export const updateUser = async (user) => {
@@ -133,11 +132,14 @@ export const uploadImage = async () => {
     try {
         await ImagePicker.requestMediaLibraryPermissionsAsync()
         const { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
-        console.log(status)
         if (status === "granted") {
             const { uri } = await ImagePicker.launchImageLibraryAsync();
-            console.log(uri + " get");
-            return await firebaseStorageUpload(uri, uuid.v4());
+            if (auth.currentUser) {
+                return await firebaseStorageUpload(uri, uuid.v4());
+            }
+            else {
+                return uri;
+            }
         }
         else {
             return false;

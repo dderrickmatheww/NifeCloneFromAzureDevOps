@@ -23,6 +23,7 @@ import { getUser } from '../../../utils/api/users';
 import { withinRadius } from '../../../utils/location';
 import { NifeMenu } from '../../NifeMenu/NifeMenu';
 import DataRow from './DataRow';
+import { getBusiness } from '../../../utils/api/businesses';
 const defPhoto = { uri: Util.basicUtil.defaultPhotoUrl };
 
 class Feed extends React.Component {
@@ -49,7 +50,8 @@ class Feed extends React.Component {
         }
         else {
             let whatsPoppinData = await getWhatsPoppinFeed({ ...userLocation });
-            whatsPoppinData = whatsPoppinData.filter(obj => withinRadius({ ...userLocation, busLat: parseFloat(obj.latitude), busLong: parseFloat(obj.longitude) }));
+            console.log(whatsPoppinData)
+            //whatsPoppinData = whatsPoppinData.filter(obj => withinRadius({ ...userLocation, busLat: parseFloat(obj.latitude), busLong: parseFloat(obj.longitude) }));
             const userData = await getUser(email);
             this.props.refresh({ userData, whatsPoppinData });
         }
@@ -92,40 +94,49 @@ class Feed extends React.Component {
                             <View style={ localStyles.feedDataRow }>
                                 <Avatar.Image source={ item.photoSource ? { uri: item.photoSource } : defPhoto } size={50}/>
                                 <Text style={ localStyles.displayName }>
-                                    { item.displayName ? item.displayName : null }
-                                    { item.name }
+                                    { this.props.businessData.displayName ? this.props.businessData.displayName : item.displayName ? item.displayName : null }
+                                </Text>
                                     {
                                         //Instead of using business address use coords to create a calculation of how far away the bar is from the user
                                         //Will be coming from the checkin table
                                         this.props.userData && this.props.userData.businessId != null ?
-                                            <Caption style={ localStyles.feedType }>
-                                                { this.props.businessData.address }
+                                            <Caption style={ localStyles.address }>
+                                                { 
+                                                    `${this.props.businessData.street}, ${ this.props.businessData.city } ${ this.props.businessData.zip }` 
+                                                }
                                             </Caption> 
                                         : 
                                             null
                                     }
-                                </Text>
+                                
                                 <Caption style={ localStyles.feedType }>
-                                    {item.type === "LASTVISITED" ? `Took a visit to ${ item.businessName }` : 
-                                    item.type === "CHECKIN" ? `Checked into ${ item.businessName }` : 
-                                    item.type === "EVENT" ? "Booked an event" : 
-                                    item.type === "SPECIALS" ? "Has a new special" : 
-                                    "Status update"}
+                                    {
+                                        item.type === "LASTVISITED" ? `Took a visit to ${ item.businessName }` : 
+                                        item.type === "CHECKIN" ? `Checked into ${ item.businessName }` : 
+                                        item.type === "EVENT" ? "Booked an event" : 
+                                        item.type === "SPECIAL" ? "Has a new special" : 
+                                        "Status update"
+                                    }
                                 </Caption>
-                                <NifeMenu options={[{ title: "Report", onPress: this.handleReport, icon: "account-alert", id: item.id }]} />
                                 <Paragraph style={ localStyles.Paragraph }>{ item.description }</Paragraph>
                                 {
                                     item.image ?
                                         <Image
-                                            resizeMethod="auto"
                                             resizeMode="contain"
-                                            style={{ flex: 1, resizeMode: 'contain', aspectRatio: 1}}
+                                            style={{ 
+                                                flex: 1, 
+                                                aspectRatio: 1, 
+                                                marginTop: '5%',
+                                                marginBottom: '5%',
+                                                width: '100%'
+                                            }}
                                             source={{ uri: item.image }}
                                         />
                                     : 
                                         null
                                 }
                                 <Caption style={localStyles.Caption}>{ Util.date.TimeSince(new Date(item.created).getTime()) } ago</Caption>
+                                <NifeMenu options={[{ title: "Report", onPress: this.handleReport, icon: "account-alert", id: item.id }]} />
                             </View>
                         :
                             <DataRow 
@@ -161,9 +172,9 @@ const localStyles = StyleSheet.create({
     },
     Paragraph: {
         color: 'white',
+        paddingLeft: '1%',
+        top: 0,
         fontSize: 12,
-        marginTop: -10,
-        marginBottom: 10,
         fontFamily: theme.generalLayout.font
     },
     displayName: {
@@ -173,7 +184,10 @@ const localStyles = StyleSheet.create({
         position: "relative",
         fontSize: 15,
         fontWeight: "bold",
-        fontFamily: theme.generalLayout.fontBold
+        fontFamily: theme.generalLayout.fontBold,
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10
     },
     reportBtn: {
         flex: 1,
@@ -185,13 +199,27 @@ const localStyles = StyleSheet.create({
         fontWeight: "bold",
         fontFamily: theme.generalLayout.fontBold,
     },
-    feedType: {
+    address: {
         color: 'white',
         left: 60,
-        top: -50,
+        top: -40,
         position: "relative",
         fontSize: 12,
-        opacity: 0.60
+        opacity: 0.60,
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10
+    },
+    feedType: {
+        color: theme.icons.color,
+        left: 60,
+        top: -40,
+        position: "relative",
+        fontSize: 16,
+        opacity: 0.60,
+        textShadowColor: 'rgba(0, 0, 0, 0.75)',
+        textShadowOffset: { width: -1, height: 1 },
+        textShadowRadius: 10
     },
     feedDataRow: {
         flex: 1,

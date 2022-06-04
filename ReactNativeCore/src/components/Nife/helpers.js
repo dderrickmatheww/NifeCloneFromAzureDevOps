@@ -1,7 +1,8 @@
 import * as Font from "expo-font";
 import {onAuthStateChanged} from "firebase/auth";
 import {auth} from "../../utils/firebase";
-import {updateUser} from "../../utils/api/users";;
+import {updateUser} from "../../utils/api/users";
+import {updateBusiness} from "../../utils/api/businesses";
 import {getUserLocation} from "../../utils/location";
 
 export const loadFonts = async () => {
@@ -17,17 +18,24 @@ export const initiateAuthObserver = async (refresh, updateState, callback) => {
         console.log('onAuthStateChanged')
         if (user) {
             const { email, uid } = user;
-            //TODO SAVE LOCATION AND EMAIL
-            const {latitude, longitude} = await getUserLocation();
-            const lowerEmail = email.toLowerCase()
+            const { latitude, longitude } = await getUserLocation();
+            const lowerEmail = email.toLowerCase();
+            let businessData = [];
             const userData = await updateUser({ email: lowerEmail, latitude, longitude, uuid: uid });
-            refresh({ userData });
-            updateState({authLoaded: true, userData});
+            if (userData.businessUID) {
+                businessData = await updateBusiness({ 
+                    lastModified: new Date(),
+                    lastLogin: new Date(),
+                    uuid: userData.businessUID
+                });
+            }
+            refresh({ userData, businessData });
+            updateState({ authLoaded: true, userData });
         } 
         else {
-            console.log('user not found')
-            refresh({userData: []});
-            updateState({authLoaded: true, userData: []});
+            console.log('user not found');
+            updateState({ authLoaded: true, userData: null });
+            refresh({ userData: [] });
         }
     });
 }
