@@ -50,8 +50,7 @@ class Feed extends React.Component {
         }
         else {
             let whatsPoppinData = await getWhatsPoppinFeed({ ...userLocation });
-            console.log(whatsPoppinData)
-            //whatsPoppinData = whatsPoppinData.filter(obj => withinRadius({ ...userLocation, busLat: parseFloat(obj.latitude), busLong: parseFloat(obj.longitude) }));
+            whatsPoppinData = whatsPoppinData.filter(obj => withinRadius({ ...userLocation, busLat: parseFloat(obj.latitude), busLong: parseFloat(obj.longitude) }));
             const userData = await getUser(email);
             this.props.refresh({ userData, whatsPoppinData });
         }
