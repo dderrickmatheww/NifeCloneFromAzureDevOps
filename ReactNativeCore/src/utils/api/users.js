@@ -128,6 +128,46 @@ export const deleteCheckIn = async (id) => {
     }
 }
 
+export const removeFavoriteDrink = async (id) => {
+    // if not adding, add id to update obj
+    console.log('removeFavoriteDrink')
+    const token = 'token'
+    try {
+        const {data} = await client.post('/removeFavoriteDrink', {
+            id
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}
+
+export const addFavoriteDrink = async ({description, user}) => {
+    // if not adding, add id to update obj
+    console.log('deleteCheckIn')
+    const token = 'token'
+    try {
+        const {data} = await client.post('/addFavoriteDrink', {
+            description, user
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}
+
 
 export const uploadImage = async () => {
     try {

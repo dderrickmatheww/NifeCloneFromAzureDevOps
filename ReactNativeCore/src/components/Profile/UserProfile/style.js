@@ -10,7 +10,6 @@ export const localStyles = StyleSheet.create({
         backgroundColor: theme.generalLayout.backgroundColor,
         borderRadius: 10,
         left: 300,
-
     },
     editStatus: {
         backgroundColor: theme.generalLayout.backgroundColor,

@@ -38,6 +38,9 @@ class UserProfile extends Component {
         console.log(userEmail)
         const userData = await getUser(userEmail)
         this.setState({userData})
+        if(this.state.isCurrentUser){
+            this.props.refresh({userData})
+        }
     }
 
     async isCurrentUser() {
@@ -123,6 +126,20 @@ class UserProfile extends Component {
         }
         await this.getRegion();
         this.setState({loading: false})
+
+        //set focus listener for back navigation from EditProfile
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.setState({loading: true})
+            await this.getUserInfo()
+            this.setState({loading: false})
+        });
+    }
+
+    componentWillUnmount() {
+        // Remove the event listener
+        if (this.focusListener != null && this.focusListener.remove) {
+            this.focusListener.remove();
+        }
     }
 
     render() {
@@ -181,7 +198,6 @@ class UserProfile extends Component {
                             {/* bio */}
                             <ProfileBio userData={this.state.userData}/>
 
-                            {/*    TODO add favorite bars/drinks back */}
                             <FavoriteDrinks userData={this.state.userData}/>
                             <FavoriteBars userData={this.state.userData}/>
 

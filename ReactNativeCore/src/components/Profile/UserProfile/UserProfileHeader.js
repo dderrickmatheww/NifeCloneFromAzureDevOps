@@ -17,7 +17,9 @@ class UserProfileHeader extends Component {
                     onPress={this.props.openDrawer}
                 />
                 {/* Add Friend */}
-                {!this.props.currentUser ? !this.props.areFriends ?
+                {
+                    !this.props.currentUser ?
+                    !this.props.areFriends ?
                     <TouchableOpacity
                         onPress={this.props.addFriend}
                         style={localStyles.AddFriendOverlay}
@@ -56,8 +58,9 @@ class UserProfileHeader extends Component {
                 }
 
                 {/* Edit Button */}
-                {this.props.currentUser ?
-                    <TouchableOpacity style={localStyles.editProfile}
+                {
+                    this.props.currentUser ?
+                    <TouchableOpacity style={localStyles.addFriend}
                                       onPress={this.props.editProfile}
                     >
                         <Ionicons name="md-create" size={24} color={theme.icons.color}/>

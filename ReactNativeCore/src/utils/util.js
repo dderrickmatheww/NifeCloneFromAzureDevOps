@@ -1466,6 +1466,14 @@ export const passwordValidation = (pass1, pass2) => {
     }
 }
 
+export const TouchableOpacity =  () => {
+    if (Device.osName === "Android") {
+        return require('react-native-gesture-handler').TouchableOpacity;
+    } else {
+        return require('react-native').TouchableOpacity;
+    }
+}
+
 export const defaultPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken
 
 export default Util;
