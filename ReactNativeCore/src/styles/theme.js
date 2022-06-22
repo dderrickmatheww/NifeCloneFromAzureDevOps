@@ -8,6 +8,7 @@ var theme = function () {
   this.LIGHT_PINK = "#7286F6";
   this.GOLD = '#F1BF42';
   this.TEXT_COLOR = '#FFFFFF';
+  this.FADED_TEXT = '#a8a8a8';
   this.mainFont = 'Comfortaa';
   this.mainFontLight = 'ComfortaaLight';
   this.mainFontBold = 'ComfortaaBold';
@@ -27,11 +28,12 @@ var theme = function () {
   this.generalLayout = {
     backgroundColor: this.DARK,
     textColor: this.TEXT_COLOR,
+    fadedText: this.FADED_TEXT,
     font: this.mainFont,
     fontLight: this.mainFontLight,
     secondaryColor: this.LIGHT_PINK,
     highlight: this.GOLD,
-    fontBold: this.mainFontBold
+    fontBold: this.mainFontBold,
   }
 };
 var AppTheme = new theme();
