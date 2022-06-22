@@ -350,7 +350,6 @@ class EditProfile extends Component {
 function mapStateToProps(state) {
     return {
         userData: state.userData,
-        requests: state.friendRequests,
         friends: state.friendData,
         businessData: state.businessData,
     }

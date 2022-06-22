@@ -111,6 +111,18 @@ export function DrawerContent(props) {
                                         )}
                             />
 
+                            <DrawerItem
+                                icon={() => (
+                                    <Ionicons
+                                        name="md-qr-code"
+                                        color={theme.icons.color}
+                                        size={20}
+                                    />
+                                )}
+                                label={()=> <Text style={styles.text}>Scan Friends Code</Text>}
+                                onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
+                            />
+
                         </List.Accordion>
 
                         <DrawerItem

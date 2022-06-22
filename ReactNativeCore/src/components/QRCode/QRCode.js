@@ -10,9 +10,10 @@ class QRCodeScreen extends Component {
   state = {
     userData:  null,
   }
-  generateQRCode(userEmail){
-      let email = encodeURI(userEmail);
-      return "http://api.qrserver.com/v1/create-qr-code/?data=" + email + "&size=500x500&bgcolor=301E48&color=F1BF42";
+  generateQRCode(id, displayName){
+      const url = `http://api.qrserver.com/v1/create-qr-code/?data=${JSON.stringify({friendId: id, displayName})}&size=500x500&bgcolor=301E48&color=F1BF42`;
+      console.log(url)
+      return url;
   }
    render () {
       return ( 
@@ -24,7 +25,7 @@ class QRCodeScreen extends Component {
               </View>
               
               <Image
-                source={{uri:this.generateQRCode(this.props.user.email)}}
+                source={{uri:this.generateQRCode(this.props.user.id, this.props.user.displayName)}}
                 style={{width:300,height:300, marginTop:30}}
               />
               <DrawerButton

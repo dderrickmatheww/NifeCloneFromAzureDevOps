@@ -23,6 +23,7 @@ export const createFriendRequest = async ({ userId, friendId }) => {
 
 export const acceptFriendRequest = async ({ userId, friendId }) => {
     try {
+        const token = 'token'
         const { data } = await client.post('/acceptFriendRequest', {
             userId, 
             friendId
@@ -41,6 +42,8 @@ export const acceptFriendRequest = async ({ userId, friendId }) => {
 
 export const rejectFriendRequest = async ({ userId, friendId }) => {
     try {
+
+        const token = 'token'
         const { data } = await client.post('/rejectFriendRequest', {
             userId, 
             friendId
@@ -59,6 +62,8 @@ export const rejectFriendRequest = async ({ userId, friendId }) => {
 
 export const cancelFriendRequest = async ({ userId, friendId }) => {
     try {
+
+        const token = 'token'
         const { data } = await client.post('/cancelFriendRequest', {
             userId, 
             friendId
@@ -77,6 +82,8 @@ export const cancelFriendRequest = async ({ userId, friendId }) => {
 
 export const getUserSentFriendRequests = async ({ userId }) => {
     try {
+
+        const token = 'token'
         const { data } = await client.post('/getUserSentFriendRequests', {
             userId
         },{

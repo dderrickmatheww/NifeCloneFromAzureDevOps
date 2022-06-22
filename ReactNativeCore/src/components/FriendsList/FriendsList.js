@@ -10,6 +10,8 @@ import {
 import {connect} from "react-redux";
 import DrawerButton from "../Drawer/DrawerButton";
 import {getUserFriendsPaginated} from "../../utils/api/friends";
+import RequestModal from "./Request Modal";
+import {getUser} from "../../utils/api/users";
 
 const defPhoto = {uri: Util.basicUtil.defaultPhotoUrl};
 
@@ -20,17 +22,13 @@ class FriendsList extends React.Component {
         modalVisible: false,
         friends: null,
         searchQuery: null,
-        requests: null,
+        requests: [],
         loading: false,
     }
 
 
     handleOpenModal = () => {
         this.setState({modalVisible: true});
-    }
-
-    handleRequests = (friendsData) => {
-
     }
 
     async componentDidMount() {
@@ -40,13 +38,23 @@ class FriendsList extends React.Component {
             skip: 0,
             take: 50,
         })
-        this.setState({friends, loading: false})
+        const requests = this.props.userData.user_friends_user_friends_friendIdTousers.filter(friend => friend.isRequest)
+        console.log('requests: ', requests)
+        this.setState({friends, loading: false, requests})
     }
 
 
-    closeModal = () => {
-        this.setState({modalVisible: false});
-
+    closeModal = async () => {
+        this.setState({modalVisible: false, loading: true});
+        const userData = await getUser(this.props.userData.email)
+        this.props.refresh({userData})
+        const requests = userData.user_friends_user_friends_friendIdTousers.filter(friend => friend.isRequest)
+        const friends = await getUserFriendsPaginated({
+            userId: this.props.userData.id,
+            skip: 0,
+            take: 50,
+        })
+        this.setState({friends, loading: false, requests})
     }
 
     render() {
@@ -108,7 +116,7 @@ class FriendsList extends React.Component {
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
-                    {/*<RequestModal onDismiss={this.closeModal} isVisible={this.state.modalVisible} ></RequestModal>*/}
+                    <RequestModal onDismiss={this.closeModal} isVisible={this.state.modalVisible} requests={this.state.requests} />
                 </View>
                 :
                 <View style={localStyles.loggedInContainer}>
@@ -179,7 +187,7 @@ const localStyles = StyleSheet.create({
             },
             android: {
                 position: "relative",
-                left: 175,
+                left: 225,
                 alignSelf: "flex-end",
                 opacity: 0.75,
                 backgroundColor: theme.generalLayout.backgroundColor,
@@ -196,7 +204,7 @@ const localStyles = StyleSheet.create({
 
     },
     navHeader: {
-        marginTop: 55,
+        marginVertical: 30,
         flexDirection: "row",
         width: "98%",
         maxHeight: "10%",
