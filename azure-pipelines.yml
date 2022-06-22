@@ -5,18 +5,23 @@
 
 trigger:
 - dev
+- master
+- release/*
+
+variables:
+  - group: expo-variables
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
 
 - script: |
+    npm install -g eas-cli
+    cd ReactNativeCore
     npm install
-    node builds/scripts/deploy.js deploy ios
-    node builds/scripts/deploy.js deploy android
-  displayName: 'Run build scripts'
+  displayName: 'Installing dependencies'
+
+- script: |
+    npx eas-cli build --platform all --non-interactive
+  displayName: 'Building using EAS CLI'
