@@ -23,5 +23,6 @@ steps:
   displayName: 'Installing dependencies'
 
 - script: |
+    cd ReactNativeCore
     npx eas-cli build --platform all --non-interactive
   displayName: 'Building using EAS CLI'
