@@ -42,6 +42,25 @@ export const getUser = async (email) => {
     }
 }
 
+export const searchUsers = async (query) => {
+    // TODO send UUID instead of email
+    const token = 'token'
+    try {
+        const {data} = await client.post('/searchUsers', {
+            query
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}
+
 export const getUserById = async (userId) => {
     // TODO send UUID instead of email
     const token = 'token'

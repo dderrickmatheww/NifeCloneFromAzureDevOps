@@ -114,6 +114,18 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={() => (
                                     <Ionicons
+                                        name="md-search"
+                                        color={theme.icons.color}
+                                        size={20}
+                                    />
+                                )}
+                                label={()=> <Text style={styles.text}>Find your friends or bars!</Text>}
+                                onPress={() => {props.navigation.navigate('Profile', {screen:'Search',  params:{currentUser: props.user}})}}
+                            />
+
+                            <DrawerItem
+                                icon={() => (
+                                    <Ionicons
                                         name="md-qr-code"
                                         color={theme.icons.color}
                                         size={20}

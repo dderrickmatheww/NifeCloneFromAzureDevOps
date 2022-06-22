@@ -4,6 +4,7 @@ import UserProfile from './UserProfile/UserProfile'
 import FriendsList from "../FriendsList/FriendsList";
 import EditProfile from "./UserProfile/EditProfile";
 import ScanQRCode from "../QRCode/ScanQRCode";
+import UserSearch from "../UserSearch/UserSearch";
 
 
 const Stack = createStackNavigator();
@@ -18,7 +19,7 @@ class ProfileNavigator extends React.Component  {
         <Stack.Screen name="Friends" component={FriendsList} options={{title: 'Friends'}} initialParams={{openDrawer: this.props.navigation.openDrawer}} />
         <Stack.Screen name="Edit" component={EditProfile} options={{title: 'Edit'}} />
         {/*<Stack.Screen name="EditBusiness" component={EditBusiness} options={{title: 'Edit'}}   initialParams={{user: this.props.user,  requests: this.props.requests, friends: this.props.friends, refresh: this.props.refresh, business: this.props.business}}/>*/}
-        {/*<Stack.Screen name="Search" component={Search} options={{title: 'Search'}}  />*/}
+        <Stack.Screen name="Search" component={UserSearch} options={{title: 'Search'}}  />
         {/*<Stack.Screen name="QRCode" component={QRCode} options={{title: 'QRCode'}} />*/}
         <Stack.Screen name="ScanQR" component={ScanQRCode} options={{title: 'ScanQR'}} />
       </Stack.Navigator>
