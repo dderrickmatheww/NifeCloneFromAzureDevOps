@@ -648,11 +648,7 @@ const Util = {
                     alert('Function QueryPublicUsers - Error message:', error.message, null);
                 });
         },
-        GenerateQRCode: (userEmail) => {
-            let email = encodeURI(userEmail);
-            let QRSource = "http://api.qrserver.com/v1/create-qr-code/?data=" + email + "&size=500x500&bgcolor=301E48&color=F1BF42"
-            return QRSource;
-        },
+
         UploadImage: async (uri, email, callback, isProof, isStatusImage) => {
             const blob = await new Promise((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
@@ -1456,5 +1452,12 @@ export const passwordValidation = (pass1, pass2) => {
 }
 
 export const defaultPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + FIREBASE_PHOTO_URL_TOKEN
+export const TouchableOpacity =  () => {
+    if (Device.osName === "Android") {
+        return require('react-native-gesture-handler').TouchableOpacity;
+    } else {
+        return require('react-native').TouchableOpacity;
+    }
+}
 
 export default Util;

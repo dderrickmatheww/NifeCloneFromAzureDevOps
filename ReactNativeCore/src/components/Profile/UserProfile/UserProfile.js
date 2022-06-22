@@ -17,8 +17,8 @@ import {ProfileStatus} from "./ProfileStatus";
 import {ProfileBio} from "./ProfileBio";
 import {FavoriteDrinks} from "./FavoriteDrinks";
 import {FavoriteBars} from "./FavoriteBars";
-import {Portal, Provider} from "react-native-paper";
-import StatusModal from "../../StatusModal/StatusModal";
+import {createFriendRequest} from "../../../utils/api/friend.requests";
+import {deleteUserFriendship} from "../../../utils/api/friends";
 
 class UserProfile extends Component {
 
@@ -38,6 +38,9 @@ class UserProfile extends Component {
         console.log(userEmail)
         const userData = await getUser(userEmail)
         this.setState({userData})
+        if(this.state.isCurrentUser){
+            this.props.refresh({userData})
+        }
     }
 
     async isCurrentUser() {
@@ -48,19 +51,31 @@ class UserProfile extends Component {
 
     async areFriends() {
         this.setState({
-            areFriends: this.state.userData.user_friends.some(friend => friend.friendId === this.props.currentUser.id)
+            areFriends:
+                this.state.userData.user_friends.some(friend => friend.friendId === this.props.currentUser.id) ||
+                this.props.currentUser.user_friends.some(friend => friend.friendId === this.state.userData.id)
         })
     }
 
     async addFriend() {
-        this.setState({isAddingFriend: true})
-        console.log('Add Friend')
-        this.setState({isAddingFriend: false})
+        this.setState({loading: true})
+        await createFriendRequest({
+            userId: this.props.currentUser.id,
+            friendId: this.state.userData.id,
+        })
+        await this.getUserInfo()
+        this.setState({areFriends: true})
+        this.setState({loading: false})
     }
 
     async removeFriend() {
         this.setState({loading: true})
-        console.log('Add Friend')
+        await deleteUserFriendship({
+            userId: this.props.currentUser.id,
+            friendId: this.state.userData.id,
+        })
+        await this.getUserInfo()
+        this.setState({areFriends: false})
         this.setState({loading: false})
     }
 
@@ -111,6 +126,20 @@ class UserProfile extends Component {
         }
         await this.getRegion();
         this.setState({loading: false})
+
+        //set focus listener for back navigation from EditProfile
+        this.focusListener = this.props.navigation.addListener('focus', async () => {
+            this.setState({loading: true})
+            await this.getUserInfo()
+            this.setState({loading: false})
+        });
+    }
+
+    componentWillUnmount() {
+        // Remove the event listener
+        if (this.focusListener != null && this.focusListener.remove) {
+            this.focusListener.remove();
+        }
     }
 
     render() {
@@ -169,7 +198,6 @@ class UserProfile extends Component {
                             {/* bio */}
                             <ProfileBio userData={this.state.userData}/>
 
-                            {/*    TODO add favorite bars/drinks back */}
                             <FavoriteDrinks userData={this.state.userData}/>
                             <FavoriteBars userData={this.state.userData}/>
 
