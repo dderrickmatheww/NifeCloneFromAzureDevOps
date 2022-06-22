@@ -10,12 +10,24 @@
       },
       "ios": {
         "buildConfiguration": "Debug"
+      },
+      "env": {
+        "CLOUD_FUNCTIONS_BASE_URL_PROD": "https://us-central1-nife-75d60.cloudfunctions.net"
       }
     },
     "preview": {
-      "distribution": "internal"
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "CLOUD_FUNCTIONS_BASE_URL_PROD": "https://us-central1-nife-75d60.cloudfunctions.net"
+      }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "CLOUD_FUNCTIONS_BASE_URL_PROD": "https://us-central1-nife-75d60.cloudfunctions.net"
+      }
+    }
   },
   "submit": {
     "production": {
@@ -25,12 +37,12 @@
       },
       "ios": {
         "appleId": "iceboxdevelopment@gmail.com",
-        "ascAppId": "1627098994",
+        "ascAppId": "1630848128",
         "appleTeamId": "64DXV63QXR",
         "ascApiKeyPath": "C:\\Users\\dderr\\OneDrive\\Documents\\Nife Docs\\Apple Dev Account Docs\\AuthKey_3AZGC6KM27.p8",
         "ascApiKeyIssuerId": "f1bf0dd2-9aec-4f56-8f68-fdf33d2457a5",
         "ascApiKeyId": "3AZGC6KM27",
-        "sku": "com.nifellc.nife"
+        "sku": "com.nife.mobile"
       }
     }
   }

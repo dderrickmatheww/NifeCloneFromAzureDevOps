@@ -1,29 +1,15 @@
 import { Alert } from 'react-native';
-import {
-    YELP_PLACE_KEY,
-    ClientKey,
-    AndroidClientKey,
-    IOSClientKeyStandAlone,
-    IOSClientKey,
-    apiKey,
-    authDomain,
-    databaseURL,
-    projectId,
-    storageBucket,
-    messagingSenderId,
-    appId,
-    measurementId,
-    photoUrlToken
-} from 'react-native-dotenv';
-import * as Google from 'expo-google-app-auth';
 import * as Device from 'expo-device';
 import * as Location from 'expo-location';
-import { isPointWithinRadius, getDistance } from 'geolib';
+import { isPointWithinRadius } from 'geolib';
 import * as ImagePicker from 'expo-image-picker';
-import * as Constants from "expo-device";
+//import * as Constants from "expo-device";
 import * as Notifications from "expo-notifications";
 import uuid from 'react-native-uuid';
-
+import Constants from 'expo-constants';
+const { 
+    FIREBASE_PHOTO_URL_TOKEN
+ } = Constants.manifest.extra.firebase;
 // const YELP_PLACE_KEY = process.env.YelpApiKey,
 //     ClientKey = process.env.GoogleAndroidStandAloneClientKey,
 //     AndroidClientKey = process.env.GoogleAndroidClientKey,
@@ -697,31 +683,31 @@ const Util = {
             }
         },
         registerForPushNotificationsAsync: async (cb) => {
-            if (Constants.isDevice) {
-                const {status: existingStatus} = await Notifications.getPermissionsAsync();
-                let finalStatus = existingStatus;
-                if (existingStatus !== 'granted') {
-                    const {status} = await Notifications.requestPermissionsAsync();
-                    finalStatus = status;
-                }
-                if (finalStatus !== 'granted') {
-                    alert('Failed to get push token for push notification!');
-                    return;
-                }
-                const token = (await Notifications.getExpoPushTokenAsync()).data;
-                cb({expoPushToken: token});
-            } else {
-                alert('Must use physical device for Push Notifications');
-            }
+            // if (Constants.isDevice) {
+            //     const {status: existingStatus} = await Notifications.getPermissionsAsync();
+            //     let finalStatus = existingStatus;
+            //     if (existingStatus !== 'granted') {
+            //         const {status} = await Notifications.requestPermissionsAsync();
+            //         finalStatus = status;
+            //     }
+            //     if (finalStatus !== 'granted') {
+            //         alert('Failed to get push token for push notification!');
+            //         return;
+            //     }
+            //     const token = (await Notifications.getExpoPushTokenAsync()).data;
+            //     cb({expoPushToken: token});
+            // } else {
+            //     alert('Must use physical device for Push Notifications');
+            // }
 
-            if (Platform.OS === 'android') {
-                await Notifications.setNotificationChannelAsync('default', {
-                    name: 'default',
-                    importance: Notifications.AndroidImportance.MAX,
-                    vibrationPattern: [0, 250, 250, 250],
-                    lightColor: '#FF231F7C',
-                });
-            }
+            // if (Platform.OS === 'android') {
+            //     await Notifications.setNotificationChannelAsync('default', {
+            //         name: 'default',
+            //         importance: Notifications.AndroidImportance.MAX,
+            //         vibrationPattern: [0, 250, 250, 250],
+            //         lightColor: '#FF231F7C',
+            //     });
+            // }
         },
         sendFriendReqNotification: async (userName, friendEmail, callback) => {
             let obj = {
@@ -1213,145 +1199,144 @@ const Util = {
                 }
 
         },
-        Yelp: {
-            placeData: (baseUrl, params, friendData, returnData) => {
-                fetch(baseUrl + params,
-                    {
-                        headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
-                    }
-                )
-                    .then((data) => data.json())
-                    .then((response) => {
-                        let friends = friendData;
-                        let bars = response.businesses;
-                        var friendArr = [];
-                        var currentlyCheckIn = [];
-                        if (typeof bars !== 'undefined' && bars.length > 0) {
-                            bars.forEach(async (bar, index) => {
-                                if (friends && friends.length > 0) {
-                                    friends.forEach((friend) => {
-                                        if ((friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private")) {
-                                            currentlyCheckIn.push(friend);
-                                        }
-                                        if ((friend.lastVisited) && (friend.lastVisited[bar.id]) && (friend.lastVisited[bar.id].privacy != "Private") && (!currentlyCheckIn.includes(friend))) {
-                                            friendArr.push(friend);
-                                        }
-                                    });
-                                }
-                                response.businesses[index].lastVisitedBy = friendArr;
-                                response.businesses[index].currentlyCheckIn = currentlyCheckIn;
-                                if (typeof response.businesses[index].distance !== 'undefined') {
-                                    let miles = parseInt(response.businesses[index].distance) / 1609;
-                                    response.businesses[index].distance = miles.toFixed(1);
-                                }
-                            });
-                        }
-                        logger("Yelp's placeData", true);
-                        returnData(response.businesses);
-                    })
-                    .catch((err) => {
-                        logger("Yelp's placeData", false);
-                        alert('Map Business Data Error (API Y PlaceData)', err.message, null);
-                    });
-            },
-            buildParameters: (lat, long, radius, isQuery, term, region) => {
-                var paramString = "";
-                //Check to see if this is a search or loading map
-                if (isQuery) {
-                    paramString += 'term=' + term;
-                    paramString += '&location=' + region[0].city + ', ' + region[0].region;
-                } else {
-                    //location, lat long
-                    paramString += "latitude=" + lat + "&longitude=" + long + "&";
-                    //radius in meters
-                    paramString += "radius=" + radius + "&";
-                }
-                //    paramString += `&categories=
-                //         bars,beergardens,musicvenues,pubs,brewpubs,
-                //         irish_pubs,whiskeybars,vermouthbars,sportsbars,
-                //         chicken_wings,barcrawl,danceclubs,pianobars,poolhalls`;
-                return paramString;
-            },
-            businessVerification: (name, address, city, state, country, callback) => {
-                fetch("https://api.yelp.com/v3/businesses/matches?match_threshold=default&name=" + name + "&address1=" + address + "&city=" + city + "&state=" + state + "&country=" + country,
-                    {
-                        headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
-                    })
-                    .then((data) => data.json())
-                    .then((response) => {
-                        logger("businessPhoneVerification", true);
-                        if (callback) {
-                            callback(response);
-                        }
-                    })
-                    .catch((err) => {
-                        logger("businessPhoneVerification", false);
-                        alert('Business Verification Error (API Y Businesses)', err.message, null);
-                    });
-            },
-            getBusinessData: (id, callback) => {
-                fetch("https://api.yelp.com/v3/businesses/" + id,
-                    {
-                        headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
-                    })
-                    .then((data) => data.json())
-                    .then((response) => {
-                        logger("getBusinessData", true);
-                        if (callback) {
-                            callback(response);
-                        }
-                    })
-                    .catch((err) => {
-                        logger("getBusinessData", false);
-                        alert('Business Verification Error (API Y Businesses)', err.message, null);
-                    });
-            },
-            isBusinessRegistered:  async (businessId) => {
-                let obj = {
-                    businessId
-                }
-                let ret = await fetch('https://us-central1-nife-75d60.cloudfunctions.net/isBusinessRegistered',
-                    {
-                        method: 'POST',
-                        body: JSON.stringify(obj)
-                    })
-                let isBusinessRegistered = await ret.json()
-                return isBusinessRegistered.result
-            }
-        },
-        Firebase: {
-            config: {
-                apiKey: apiKey,
-                authDomain: authDomain,
-                databaseURL: databaseURL,
-                projectId: projectId,
-                storageBucket: storageBucket,
-                messagingSenderId: messagingSenderId,
-                appId: appId,
-                measurementId: measurementId
-            },
-            databaseInstance: () => {
-                return
-            },
-            signOut: async (callback) => {
-                firebase.auth().signOut();
-                if (callback) {
-                    callback();
-                }
-            },
-            passwordReset: async (email) => {
-                var auth = firebase.auth();
-                auth.sendPasswordResetEmail(email).then(function () {
-                    logger("Firebase's Reset Password", true);
-                    alert('Nife - Reset Password', 'Email was sent! Please check your email for further directions!', null);
-                }).catch(function (error) {
-                    logger("Firebase's Reset Password", false);
-                    alert('Firebase Reset Password', error.message, null);
-                });
-            }
-        },
+        // Yelp: {
+        //     placeData: (baseUrl, params, friendData, returnData) => {
+        //         fetch(baseUrl + params,
+        //             {
+        //                 headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
+        //             }
+        //         )
+        //             .then((data) => data.json())
+        //             .then((response) => {
+        //                 let friends = friendData;
+        //                 let bars = response.businesses;
+        //                 var friendArr = [];
+        //                 var currentlyCheckIn = [];
+        //                 if (typeof bars !== 'undefined' && bars.length > 0) {
+        //                     bars.forEach(async (bar, index) => {
+        //                         if (friends && friends.length > 0) {
+        //                             friends.forEach((friend) => {
+        //                                 if ((friend.checkIn) && (friend.checkIn.buisnessUID == bar.id) && (friend.checkIn.privacy != "Private")) {
+        //                                     currentlyCheckIn.push(friend);
+        //                                 }
+        //                                 if ((friend.lastVisited) && (friend.lastVisited[bar.id]) && (friend.lastVisited[bar.id].privacy != "Private") && (!currentlyCheckIn.includes(friend))) {
+        //                                     friendArr.push(friend);
+        //                                 }
+        //                             });
+        //                         }
+        //                         response.businesses[index].lastVisitedBy = friendArr;
+        //                         response.businesses[index].currentlyCheckIn = currentlyCheckIn;
+        //                         if (typeof response.businesses[index].distance !== 'undefined') {
+        //                             let miles = parseInt(response.businesses[index].distance) / 1609;
+        //                             response.businesses[index].distance = miles.toFixed(1);
+        //                         }
+        //                     });
+        //                 }
+        //                 logger("Yelp's placeData", true);
+        //                 returnData(response.businesses);
+        //             })
+        //             .catch((err) => {
+        //                 logger("Yelp's placeData", false);
+        //                 alert('Map Business Data Error (API Y PlaceData)', err.message, null);
+        //             });
+        //     },
+        //     buildParameters: (lat, long, radius, isQuery, term, region) => {
+        //         var paramString = "";
+        //         //Check to see if this is a search or loading map
+        //         if (isQuery) {
+        //             paramString += 'term=' + term;
+        //             paramString += '&location=' + region[0].city + ', ' + region[0].region;
+        //         } else {
+        //             //location, lat long
+        //             paramString += "latitude=" + lat + "&longitude=" + long + "&";
+        //             //radius in meters
+        //             paramString += "radius=" + radius + "&";
+        //         }
+        //         //    paramString += `&categories=
+        //         //         bars,beergardens,musicvenues,pubs,brewpubs,
+        //         //         irish_pubs,whiskeybars,vermouthbars,sportsbars,
+        //         //         chicken_wings,barcrawl,danceclubs,pianobars,poolhalls`;
+        //         return paramString;
+        //     },
+        //     businessVerification: (name, address, city, state, country, callback) => {
+        //         fetch("https://api.yelp.com/v3/businesses/matches?match_threshold=default&name=" + name + "&address1=" + address + "&city=" + city + "&state=" + state + "&country=" + country,
+        //             {
+        //                 headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
+        //             })
+        //             .then((data) => data.json())
+        //             .then((response) => {
+        //                 logger("businessPhoneVerification", true);
+        //                 if (callback) {
+        //                     callback(response);
+        //                 }
+        //             })
+        //             .catch((err) => {
+        //                 logger("businessPhoneVerification", false);
+        //                 alert('Business Verification Error (API Y Businesses)', err.message, null);
+        //             });
+        //     },
+        //     getBusinessData: (id, callback) => {
+        //         fetch("https://api.yelp.com/v3/businesses/" + id,
+        //             {
+        //                 headers: new Headers({'Authorization': "Bearer " + YELP_PLACE_KEY})
+        //             })
+        //             .then((data) => data.json())
+        //             .then((response) => {
+        //                 logger("getBusinessData", true);
+        //                 if (callback) {
+        //                     callback(response);
+        //                 }
+        //             })
+        //             .catch((err) => {
+        //                 logger("getBusinessData", false);
+        //                 alert('Business Verification Error (API Y Businesses)', err.message, null);
+        //             });
+        //     },
+        //     isBusinessRegistered:  async (businessId) => {
+        //         let obj = {
+        //             businessId
+        //         }
+        //         let ret = await fetch('https://us-central1-nife-75d60.cloudfunctions.net/isBusinessRegistered',
+        //             {
+        //                 method: 'POST',
+        //                 body: JSON.stringify(obj)
+        //             })
+        //         let isBusinessRegistered = await ret.json()
+        //         return isBusinessRegistered.result
+        //     }
+        // },
+    //     Firebase: {
+    //         config: {
+    //             apiKey: apiKey,
+    //             authDomain: authDomain,
+    //             databaseURL: databaseURL,
+    //             projectId: projectId,
+    //             storageBucket: storageBucket,
+    //             messagingSenderId: messagingSenderId,
+    //             appId: appId,
+    //             measurementId: measurementId
+    //         },
+    //         databaseInstance: () => {
+    //             return
+    //         },
+    //         signOut: async (callback) => {
+    //             firebase.auth().signOut();
+    //             if (callback) {
+    //                 callback();
+    //             }
+    //         },
+    //         passwordReset: async (email) => {
+    //             var auth = firebase.auth();
+    //             auth.sendPasswordResetEmail(email).then(function () {
+    //                 logger("Firebase's Reset Password", true);
+    //                 alert('Nife - Reset Password', 'Email was sent! Please check your email for further directions!', null);
+    //             }).catch(function (error) {
+    //                 logger("Firebase's Reset Password", false);
+    //                 alert('Firebase Reset Password', error.message, null);
+    //             });
+    //         }
+    //     },
     },
-
 },
     basicUtil: {
         mergeObject: (obj1, obj2) => {
@@ -1411,7 +1396,7 @@ const Util = {
             }
             return dest;
         },
-        defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken,
+        defaultPhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + FIREBASE_PHOTO_URL_TOKEN,
         TouchableOpacity: () => {
             if (Device.osName === "Android") {
                 return require('react-native-gesture-handler').TouchableOpacity;
@@ -1470,6 +1455,6 @@ export const passwordValidation = (pass1, pass2) => {
     }
 }
 
-export const defaultPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + photoUrlToken
+export const defaultPhotoUrl = 'https://firebasestorage.googleapis.com/v0/b/nife-75d60.appspot.com/o/Nife%20Images%2FUpdatedLogoN.jpeg?alt=media&token=' + FIREBASE_PHOTO_URL_TOKEN
 
 export default Util;

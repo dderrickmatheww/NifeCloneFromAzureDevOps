@@ -1,34 +1,36 @@
-import {initializeApp} from 'firebase/app';
-import {createUserWithEmailAndPassword, EmailAuthProvider, getAuth, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
-import {getFirestore} from 'firebase/firestore';
-import {getDownloadURL, getStorage, ref, uploadBytes} from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
+import { createUserWithEmailAndPassword, EmailAuthProvider, getAuth, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import reactUuid from 'react-native-uuid';
+import Constants from 'expo-constants';
+import { alert, logger } from "./util";
+import { updateUser } from "./api/users";
+import { updateBusiness } from "./api/businesses";
 
-import {
-    apiKey,
-    appId,
-    authDomain,
-    databaseURL,
-    measurementId,
-    messagingSenderId,
-    projectId,
-    storageBucket,
-} from 'react-native-dotenv';
-import {alert, logger} from "./util";
-import {updateUser} from "./api/users";
-import {updateBusiness} from "./api/businesses";
+const { 
+    FIREBASE_API_KEY,
+    FIREBASE_AUTH_DOMAIN,
+    FIREBASE_DATABASE_URL,
+    FIREBASE_PROJECT_ID,
+    FIREBASE_STORAGE_BUCKET,
+    FIREBASE_MESSAGING_SENDER_ID,
+    FIREBASE_APP_ID,
+    FIREBASE_PHOTO_URL_TOKEN,
+    FIREBASE_MEASUREMENT_ID,
+ } = Constants.manifest.extra.firebase;
 
 export const emailProvider = new EmailAuthProvider();
 
 export const firebaseConfig = {
-    apiKey: apiKey,
-    authDomain: authDomain,
-    databaseURL: databaseURL,
-    projectId: projectId,
-    storageBucket: storageBucket,
-    messagingSenderId: messagingSenderId,
-    appId: appId,
-    measurementId: measurementId
+    apiKey: FIREBASE_API_KEY,
+    authDomain: FIREBASE_AUTH_DOMAIN,
+    databaseURL: FIREBASE_DATABASE_URL,
+    projectId: FIREBASE_PROJECT_ID,
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+    appId: FIREBASE_APP_ID,
+    measurementId: FIREBASE_MEASUREMENT_ID
 };
 
 const Firebase = initializeApp(firebaseConfig)

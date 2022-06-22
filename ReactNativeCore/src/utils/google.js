@@ -1,22 +1,24 @@
 import * as Google from "expo-google-app-auth";
-import {AndroidClientKey, ClientKey, IOSClientKey, IOSClientKeyStandAlone} from "react-native-dotenv";
 import {
     signInWithCredential,
     GoogleAuthProvider
 } from 'firebase/auth';
-import {logger, alert} from "./util";
-import {getUser, updateUser} from "./api/users";
-import {auth} from "./firebase";
+import Constants from 'expo-constants';
+import { logger, alert } from "./util";
+import { getUser, updateUser } from "./api/users";
+import { auth } from "./firebase";
+const { ios, andriod } = Constants.manifest.extra.google.oauth;
+const { IOS_CLIENT_ID, IOS_STANDALONE_CLIENT_ID } = ios;
+const { ANDROID_CLIENT_ID, ANDRIOD_STANDALONE_CLIENT_ID } = andriod;
 
 export const googleLogin =  async () => {
     console.log('googleLogin hit!')
     try {
         let { type, accessToken, user, idToken } = await Google.logInAsync({
-            androidClientId: AndroidClientKey,
-            iosClientId: IOSClientKey,
-            clientId: ClientKey,
-            androidStandaloneAppClientId: AndroidClientKey,
-            iosStandaloneAppClientId: IOSClientKeyStandAlone
+            androidClientId: ANDROID_CLIENT_ID,
+            iosClientId: IOS_CLIENT_ID,
+            androidStandaloneAppClientId: ANDRIOD_STANDALONE_CLIENT_ID,
+            iosStandaloneAppClientId: IOS_STANDALONE_CLIENT_ID
         });
         if (type === 'success') {
             /* `accessToken` is now valid and can be used to get data from the Google API with HTTP requests */
