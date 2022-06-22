@@ -17,12 +17,8 @@ pool:
 steps:
 
 - script: |
-    npm install -g eas-cli
     cd ReactNativeCore
     npm install
-  displayName: 'Installing dependencies'
-
-- script: |
-    cd ReactNativeCore
+    npm install eas-cli
     npx eas-cli build --platform all --non-interactive
-  displayName: 'Building using EAS CLI'
+  displayName: 'Install dependencies and push build to Expo'
