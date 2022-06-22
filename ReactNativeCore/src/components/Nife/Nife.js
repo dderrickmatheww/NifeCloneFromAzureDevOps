@@ -1,17 +1,10 @@
 import * as React from 'react';
-import {connect} from "react-redux";
-import {alert} from "../../utils/util";
+import { connect } from "react-redux";
+import { alert } from "../../utils/util";
 import LoginScreen from "../Login/LoginScreen";
-import {initiateAuthObserver, loadFonts} from './helpers'
-import {Loading} from "../Loading";
+import { initiateAuthObserver, loadFonts } from './helpers'
+import { Loading } from "../Loading";
 import DrawerComponent from "../Drawer/Drawer";
-import {updateUser} from "../../utils/api/users";
-
-//TODO update store state
-
-// const Drawer = createDrawerNavigator();
-
-
 
 class NifeApp extends React.Component {
   state = {
@@ -71,11 +64,11 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
   return {
-      refresh: ({ userData, feedData }) => dispatch({
+      refresh: ({ userData, businessData }) => dispatch({
           type:'REFRESH', 
           data: {
               userData,
-              feedData 
+              businessData 
           }
       })
   }

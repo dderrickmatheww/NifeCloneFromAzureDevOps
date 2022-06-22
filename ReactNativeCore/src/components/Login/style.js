@@ -127,7 +127,8 @@ export const localStyles = StyleSheet.create({
         color: theme.generalLayout.textColor,
         fontSize: 15,
         textAlign:"center",
-        fontFamily: theme.generalLayout.font
+        fontFamily: theme.generalLayout.font,
+        margin: '3%'
     },
     loginLoginSwitchText:{
         color: theme.generalLayout.textColor,
@@ -142,6 +143,11 @@ export const localStyles = StyleSheet.create({
         }),
         textAlign:"center",
         fontFamily: theme.generalLayout.font
+    },
+    button: {
+        marginBottom: '7%',
+        width: '75%',
+        alignSelf: "center",
     },
     loginSwitch:{
         borderColor: theme.generalLayout.secondaryColor,

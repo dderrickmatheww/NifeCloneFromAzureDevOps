@@ -21,7 +21,7 @@ export const NifeMenu = (props) => {
                 onDismiss={closeMenu}
                 anchor={
                     <Button onPress={openMenu}>
-                        <Text style={{ color: theme.generalLayout.textColor }}>...</Text>
+                        <Text style={{ color: theme.generalLayout.textColor, fontSize: 25 }}>...</Text>
                     </Button>
                 }
             >

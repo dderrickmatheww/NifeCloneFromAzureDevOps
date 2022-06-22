@@ -6,7 +6,7 @@
     "slug": "Nife",
     "icon": "./src/media/Images/UpdatedLogoN.png",
     "privacy": "unlisted",
-    "version": "1.1.1",
+    "version": "1.0.0",
     "entryPoint": "node_modules/expo/AppEntry.js",
     "platforms": [
       "ios",
@@ -19,28 +19,13 @@
       "resizeMode": "contain"
     },
     "ios": {
-      "bundleIdentifier": "com.nifellc.nife",
-      "buildNumber": "1.1.1",
-      "config": {
-        "googleMapsApiKey": "AIzaSyDMhTqk52JopkK1kT4YBtUYKm7cWy2rvao",
-        "googleSignIn": {
-          "reservedClientId": "com.googleusercontent.apps.24040009982-mugkd12ks4b97bh33sml890mkb8dpouc"
-        }
-      }
+      "bundleIdentifier": "com.nife.mobile",
+      "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.nifellc.nife",
+      "package": "com.nife.mobile",
       "userInterfaceStyle": "dark",
-      "versionCode": 22,
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0"
-        },
-        "googleSignIn": {
-          "apiKey": "AIzaSyBgWYSs0r5lw1kjSKsSIqzuu9V9xjqcGB0",
-          "certificateHash": "/hOSJemwc2ou3evR5/UXf9sF12c="
-        }
-      }
+      "versionCode": 1
     },
     "androidStatusBar": {
       "barStyle": "light-content"
@@ -61,8 +46,5 @@
         "svg"
       ]
     }
-  },
-  "facebookScheme": "fb2910411615715770",
-  "facebookAppId": "2910411615715770",
-  "facebookDisplayName": "Nife Authentication"
+  }
 }

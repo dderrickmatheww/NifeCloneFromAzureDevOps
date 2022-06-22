@@ -44,6 +44,7 @@ class NavHeader extends React.Component {
                             <TouchableOpacity 
                                 onPress={() => this.props.modalTrigger({ postModal: true })}
                                 style={localStyles.StatusOverlay}
+                                disabled={ this.state.isBusiness && !!this.props.businessData.verified ? true : false }
                             >
                                 <Text 
                                     style={localStyles.statusButton}
