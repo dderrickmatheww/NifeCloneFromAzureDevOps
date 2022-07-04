@@ -2,12 +2,7 @@ import {StyleSheet} from "react-native";
 import theme from "../../../styles/theme";
 
 export const styles = StyleSheet.create({
-    NoAvatarButton: {
-        padding: 10,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: "center"
-    },
+
     drawerContent: {
         flex: 1,
     },

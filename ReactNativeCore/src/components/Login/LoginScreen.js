@@ -192,7 +192,7 @@ export class LoginScreen extends Component {
     validation = (signUpObj, password1, password2, phoneNumber) => {
         const phoneno = /^\d{10}$/;
         let returnValue = true;
-        let string = `Please fill out all feild in the form. (`;
+        let string = `Please fill out all field in the form. (`;
         for (let prop in signUpObj) {
             if (!signUpObj[prop]) {
                 string += `${prop}, `;
@@ -209,7 +209,7 @@ export class LoginScreen extends Component {
         const validPassword = passwordValidation(password1, password2);
         if (!validPassword)  {
             return false;
-        };
+        }
         if (!phoneNumber.toString().match(phoneno)) {
             alert("Please make sure your phone number is in the proper format (Ex: 8432345678)."); 
             return false;

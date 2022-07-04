@@ -32,6 +32,7 @@ Notifications.setNotificationHandler({
 
 export function DrawerContent(props) {
     const requestsCount = props.requests ? props.requests.filter(friend => friend.isRequest).length : 0;
+    const isBusiness = props.user.businessId
     return (
         <View style={{flex: 1}}>
             <DrawerContentScrollView {...props}>
@@ -59,59 +60,86 @@ export function DrawerContent(props) {
                         <List.Accordion
                             titleStyle={{color: theme.icons.textColor}}
                             title="      You"
-                            left={() =>(
-                                <Ionicons style={{marginLeft: 10}} name={'ios-person'} size={20} color={theme.icons.color} />)}
+                            left={() => (
+                                <Ionicons style={{marginLeft: 10}} name={'ios-person'} size={20}
+                                          color={theme.icons.color}/>)}
                             theme={{colors: {text: theme.icons.color}}}
                         >
-                            <DrawerItem style={styles.text}
-                                        icon={() => (
-                                            <IconWithBadge
-                                                name={'ios-person'}
-                                                color={theme.icons.color}
-                                                size={20}
-                                                type="Ionicons"
-                                                isDrawer={true}
-                                            />
-                                        )}
-                                        label={() => <Text style={styles.text}>Profile</Text>}
-                                        onPress={() => props.navigation.navigate(
-                                            'Profile',
-                                            {
-                                                screen: 'UserProfile',
-                                                params: {
-                                                    email: props.user.email,
-                                                    openDrawer: props.navigation.openDrawer,
-                                                    navigate: props.navigation.navigate
+                            {!isBusiness ?
+                                <DrawerItem style={styles.text}
+                                            icon={() => (
+                                                <IconWithBadge
+                                                    name={'ios-person'}
+                                                    color={theme.icons.color}
+                                                    size={20}
+                                                    type="Ionicons"
+                                                    isDrawer={true}
+                                                />
+                                            )}
+                                            label={() => <Text style={styles.text}>Profile</Text>}
+                                            onPress={() => props.navigation.navigate(
+                                                'Profile',
+                                                {
+                                                    screen: 'UserProfile',
+                                                    params: {
+                                                        email: props.user.email,
+                                                        openDrawer: props.navigation.openDrawer,
+                                                        navigate: props.navigation.navigate
+                                                    }
                                                 }
-                                            }
-                                        )}
-                            />
-                            <DrawerItem style={styles.text}
-                                        icon={() => (
-                                            <IconWithBadge
-                                                name={'ios-people'}
-                                                color={theme.icons.color}
-                                                size={20}
-                                                type="Ionicons"
-                                                isDrawer={true}
-                                                badgeCount={requestsCount}
-                                            />
-                                        )}
-                                        label={() => <Text style={styles.text}>Friends</Text>}
-                                        onPress={() => props.navigation.navigate(
-                                            'Profile',
-                                            {
-                                                screen: 'Friends',
-                                                params: {
-                                                    email: props.user.email,
-                                                    openDrawer: props.navigation.openDrawer,
-                                                    navigate: props.navigation.navigate
+                                            )}
+                                /> :
+                                <DrawerItem style={styles.text}
+                                            icon={() => (
+                                                <IconWithBadge
+                                                    name={'ios-person'}
+                                                    color={theme.icons.color}
+                                                    size={20}
+                                                    type="Ionicons"
+                                                    isDrawer={true}
+                                                />
+                                            )}
+                                            label={() => <Text style={styles.text}>Profile</Text>}
+                                            onPress={() => props.navigation.navigate(
+                                                'Profile',
+                                                {
+                                                    screen: 'BusinessProfile',
+                                                    params: {
+                                                        email: props.user.email,
+                                                        uuid: props.business.uuid,
+                                                        openDrawer: props.navigation.openDrawer,
+                                                        navigate: props.navigation.navigate
+                                                    }
                                                 }
-                                            }
-                                        )}
-                            />
+                                            )}
+                                />
+                            }
+                            {!isBusiness && <DrawerItem style={styles.text}
+                                                        icon={() => (
+                                                            <IconWithBadge
+                                                                name={'ios-people'}
+                                                                color={theme.icons.color}
+                                                                size={20}
+                                                                type="Ionicons"
+                                                                isDrawer={true}
+                                                                badgeCount={requestsCount}
+                                                            />
+                                                        )}
+                                                        label={() => <Text style={styles.text}>Friends</Text>}
+                                                        onPress={() => props.navigation.navigate(
+                                                            'Profile',
+                                                            {
+                                                                screen: 'Friends',
+                                                                params: {
+                                                                    email: props.user.email,
+                                                                    openDrawer: props.navigation.openDrawer,
+                                                                    navigate: props.navigation.navigate
+                                                                }
+                                                            }
+                                                        )}
+                            />}
 
-                            <DrawerItem
+                            {!isBusiness && <DrawerItem
                                 icon={() => (
                                     <Ionicons
                                         name="md-search"
@@ -119,11 +147,16 @@ export function DrawerContent(props) {
                                         size={20}
                                     />
                                 )}
-                                label={()=> <Text style={styles.text}>Find your friends or bars!</Text>}
-                                onPress={() => {props.navigation.navigate('Profile', {screen:'Search',  params:{currentUser: props.user}})}}
-                            />
+                                label={() => <Text style={styles.text}>Find your friends or bars!</Text>}
+                                onPress={() => {
+                                    props.navigation.navigate('Profile', {
+                                        screen: 'Search',
+                                        params: {currentUser: props.user}
+                                    })
+                                }}
+                            />}
 
-                            <DrawerItem
+                            {!isBusiness && <DrawerItem
                                 icon={() => (
                                     <Ionicons
                                         name="md-qr-code"
@@ -131,9 +164,11 @@ export function DrawerContent(props) {
                                         size={20}
                                     />
                                 )}
-                                label={()=> <Text style={styles.text}>Scan Friends Code</Text>}
-                                onPress={() => {props.navigation.navigate('Profile', {screen:'ScanQR'})}}
-                            />
+                                label={() => <Text style={styles.text}>Scan Friends Code</Text>}
+                                onPress={() => {
+                                    props.navigation.navigate('Profile', {screen: 'ScanQR'})
+                                }}
+                            />}
 
                         </List.Accordion>
 

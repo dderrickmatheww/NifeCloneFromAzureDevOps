@@ -38,6 +38,7 @@ class DrawerComponent extends React.Component {
                         requests={this.props.userData.user_friends_user_friends_friendIdTousers}
                         friends={this.props.userData.user_friends.filter(friend => friend.isFriend)}
                         refresh={this.props.refresh}
+                        business={this.props.businessData}
                     />
                 )}
              >
@@ -82,11 +83,12 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
     return {
-        refresh: ({ userData, feedData }) => dispatch({ 
+        refresh: ({ userData, feedData, businessData }) => dispatch({
             type:'REFRESH', 
             data: {
                 userData,
-                feedData 
+                feedData,
+                businessData
             }
         })
     }

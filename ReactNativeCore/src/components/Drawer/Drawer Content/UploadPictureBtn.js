@@ -6,21 +6,12 @@ import {styles} from "./style";
 import {defaultPhotoUrl} from "../../../utils/util";
 
 export function UploadPictureBtn(props) {
-    return <TouchableOpacity style={styles.NoAvatarButton}
-                             onPress={props.onPress}
-    >
+    return <TouchableOpacity style={styles.NoAvatarButton} onPress={props.onPress}>
         {
-            props.uploading ?
-                <View style={{alignItems: "center", padding: "2%"}}>
-                    <ActivityIndicator color={theme.loadingIcon.color} size={"large"}/>
-                </View>
-                :
-                <View style={{alignItems: "center"}}>
-                    <Avatar.Image
-                        source={{uri: defaultPhotoUrl}}
-                        size={100}
-                    />
-                </View>
+            <Avatar.Image
+                source={{uri: defaultPhotoUrl}}
+                size={100}
+            />
         }
     </TouchableOpacity>;
 }

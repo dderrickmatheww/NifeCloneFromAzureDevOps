@@ -29,10 +29,19 @@ class Clipboard extends React.Component {
     }
 
     onSubmitText = () => {
-        this.props.onAdd({
-            description: this.state.text,
-            user: this.props.userData.id
-        })
+        if(this.props.businessUUID){
+            this.props.onAdd({
+                description: this.state.text,
+                user: this.props.userData.id,
+                business: this.props.businessUUID
+            })
+        } else {
+            this.props.onAdd({
+                description: this.state.text,
+                user: this.props.userData.id
+            })
+        }
+
         this.setState({isVisible: false})
     }
 

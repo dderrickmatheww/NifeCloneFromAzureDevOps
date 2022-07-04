@@ -115,3 +115,42 @@ export const getNifeBusinessesByState = async (state) => {
         throw Error(e.message);
     }
 }
+
+export const createBusinessEvent = async (event) => {
+    // TODO write getToken func
+    const token = 'token'
+    try {
+        const {data} = await client.post('/createBusinessEvent', {
+            ...event
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}
+
+export const deleteBusinessEvent = async (id) => {
+    // TODO write getToken func
+    const token = 'token'
+    try {
+        const {data} = await client.post('/deleteBusinessEvent', {
+            id
+        },{
+            headers:{
+                authorization: `Bearer ${token}`
+            }
+        });
+        return data
+    } catch (e) {
+        console.log(e);
+        alert('API ERROR!', 'An Error occurred! Please restart!')
+        throw Error(e.message);
+    }
+}
+

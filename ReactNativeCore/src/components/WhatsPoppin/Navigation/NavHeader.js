@@ -2,7 +2,6 @@ import React from 'react';
 import {
     View,
     StyleSheet,
-    TouchableOpacity
 } from 'react-native';
 import {
     Text,
@@ -11,6 +10,8 @@ import {
 import theme from '../../../styles/theme';
 import { connect } from "react-redux";
 import DrawerButton from "../../Drawer/DrawerButton";
+import Util from "../../../utils/util";
+const TouchableOpacity = Util.basicUtil.TouchableOpacity();
 
 
 class NavHeader extends React.Component {
@@ -44,7 +45,7 @@ class NavHeader extends React.Component {
                             <TouchableOpacity 
                                 onPress={() => this.props.modalTrigger({ postModal: true })}
                                 style={localStyles.StatusOverlay}
-                                disabled={ this.state.isBusiness && !!this.props.businessData.verified ? true : false }
+                                disabled={ this.state.isBusiness && !!this.props.businessData.verified }
                             >
                                 <Text 
                                     style={localStyles.statusButton}

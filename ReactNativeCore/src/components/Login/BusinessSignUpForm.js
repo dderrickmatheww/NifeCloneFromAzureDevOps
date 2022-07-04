@@ -10,16 +10,16 @@ import { alert } from "../../utils/util";
 
 
 export const BusinessSignUpForm = ({ processBusinessSignUp, handleBackToLogin }) => {
-    const [displayName, setDisplayName] = useState('')
-    const [ownerName, setOwnerName] = useState('')
-    const [email, setEmail] = useState('')
-    const [phoneNumber, setPhone] = useState('')
-    const [street, setStreet] = useState('')
-    const [city, setCity] = useState('')
-    const [state, setState] = useState('')
-    const [zip, setZip] = useState('')
-    const [password1, setPassword1] = useState('')
-    const [password2, setPassword2] = useState('')
+    const [displayName, setDisplayName] = useState('Luxe Espresso And Wine Bar')
+    const [ownerName, setOwnerName] = useState('Matt P')
+    const [email, setEmail] = useState('mpalumbofifa@gmail.com')
+    const [phoneNumber, setPhone] = useState('8432858508')
+    const [street, setStreet] = useState('1430 Central Ave')
+    const [city, setCity] = useState('Summerville')
+    const [state, setState] = useState('SC')
+    const [zip, setZip] = useState('29483')
+    const [password1, setPassword1] = useState('Chicago1!')
+    const [password2, setPassword2] = useState('Chicago1!')
     const [saving, isSaving] = useState(false)
     const [proofOfAddress, setProofOfAddress] = useState('')
 

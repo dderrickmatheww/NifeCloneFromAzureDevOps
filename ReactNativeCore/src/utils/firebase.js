@@ -77,7 +77,7 @@ export const firebaseSignUp = async ({
                     phoneNumber, 
                     zip, 
                     proofOfAddress, 
-                    userId: initialUser.id,
+                    userId: userData.id,
                     created: new Date(),
                     lastLogin: new Date(),
                     uuid,
@@ -86,7 +86,7 @@ export const firebaseSignUp = async ({
                 userData = await updateUser({ 
                     email: lowerEmail, 
                     displayName: businessName,
-                    businessId: business.businessId, 
+                    businessId: businessData.businessId,
                     businessUID: uuid,  
                     lastModified: new Date()
                 });
