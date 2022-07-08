@@ -21,7 +21,6 @@ export const initiateAuthObserver = async (refresh, updateState, callback) => {
             const { latitude, longitude } = await getUserLocation();
             const lowerEmail = email.toLowerCase();
             let businessData = [];
-            console.log('Before update user')
             const userData = await updateUser({ email: lowerEmail, latitude, longitude, uuid: uid });
             if (userData.businessUID) {
                 businessData = await updateBusiness({ 
@@ -30,7 +29,6 @@ export const initiateAuthObserver = async (refresh, updateState, callback) => {
                     uuid: userData.businessUID
                 });
             }
-            console.log('After update user')
             refresh({ userData, businessData });
             updateState({ authLoaded: true, userData });
         } 
