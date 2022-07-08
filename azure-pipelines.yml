@@ -19,11 +19,11 @@ steps:
 - script: |
     cd ReactNativeCore
     npm install eas-cli
-displayName: 'Installing EAS command line interface'
+  displayName: 'Installing EAS command line interface'
 
 - script: |
     cd ReactNativeCore
     npx eas-cli build --platform all --non-interactive
-displayName: 'Pushing build to Expo servers'
+  displayName: 'Pushing build to Expo servers'
 
 
