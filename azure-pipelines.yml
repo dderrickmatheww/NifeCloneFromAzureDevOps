@@ -14,6 +14,16 @@ steps:
 - script: |
     cd ReactNativeCore
     npm install
-    npm install eas-cli
-    npx eas-cli build --platform all --non-interactive
-  displayName: 'Install dependencies and push build to Expo'
+  displayName: 'Installing dependencies'
+
+- script: |
+  cd ReactNativeCore
+  npm install eas-cli
+displayName: 'Installing EAS command line interface'
+
+- script: |
+  cd ReactNativeCore
+  npx eas-cli build --platform all --non-interactive
+displayName: 'Pushing build to Expo servers'
+
+
