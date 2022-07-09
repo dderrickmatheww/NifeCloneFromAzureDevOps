@@ -52,11 +52,28 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - script: |
-        if ("%DEV%" == "True") ##vso[task.setvariable variable=profile]development
-        if ("%STAGE%"" == "True") ##vso[task.setvariable variable=profile]stage
-        if ("%PROD%" == "True") ##vso[task.setvariable variable=profile]production
+        ##vso[task.setvariable variable=profile]development
         echo $(profile)
-      displayName: 'Selecting build profile'
+      displayName: 'Selected development build profile'
+      condition: eq($(DEV), 'true')
+
+    # A task given to us by Azure DevOps that executes a command line script
+    # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+    # Sets the profile variable based on the branch being built
+    - script: |
+        ##vso[task.setvariable variable=profile]stage
+        echo $(profile)
+      displayName: 'Selected stage build profile'
+      condition: eq($(STAGE), 'true')
+
+    # A task given to us by Azure DevOps that executes a command line script
+    # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+    # Sets the profile variable based on the branch being built
+    - script: |
+        ##vso[task.setvariable variable=profile]production
+        echo $(profile)
+      displayName: 'Selected production build profile'
+      condition: eq($(PROD), 'true')
 
     # A task given to us by Azure DevOps that executes a command line script
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
