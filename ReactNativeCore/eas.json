@@ -10,26 +10,29 @@
       },
       "ios": {
         "buildConfiguration": "Debug"
-      },
-      "env": {
-        "CLOUD_FUNCTIONS_BASE_URL_PROD": "https://us-central1-nife-75d60.cloudfunctions.net"
       }
     },
-    "preview": {
-      "ios": {
-        "simulator": true
-      },
-      "env": {
-        "CLOUD_FUNCTIONS_BASE_URL_PROD": "https://us-central1-nife-75d60.cloudfunctions.net"
-      }
+    "stage": {
+      "distribution": "internal"
     },
-    "production": {
-      "env": {
-        "CLOUD_FUNCTIONS_BASE_URL_PROD": "https://us-central1-nife-75d60.cloudfunctions.net"
-      }
-    }
+    "production": {}
   },
   "submit": {
+    "stage": {
+      "android": {
+        "serviceAccountKeyPath": "C:\\Users\\dderr\\OneDrive\\Documents\\Nife Docs\\Android Dev Account Docs\\pc-api-5220441203366805899-512-dbea12e6869d.json",
+        "track": "internal"
+      },
+      "ios": {
+        "appleId": "iceboxdevelopment@gmail.com",
+        "ascAppId": "1630848128",
+        "appleTeamId": "64DXV63QXR",
+        "ascApiKeyPath": "C:\\Users\\dderr\\OneDrive\\Documents\\Nife Docs\\Apple Dev Account Docs\\AuthKey_3AZGC6KM27.p8",
+        "ascApiKeyIssuerId": "f1bf0dd2-9aec-4f56-8f68-fdf33d2457a5",
+        "ascApiKeyId": "3AZGC6KM27",
+        "sku": "com.nife.mobile"
+      }
+    },
     "production": {
       "android": {
         "serviceAccountKeyPath": "C:\\Users\\dderr\\OneDrive\\Documents\\Nife Docs\\Android Dev Account Docs\\pc-api-5220441203366805899-512-dbea12e6869d.json",
@@ -42,6 +45,7 @@
         "ascApiKeyPath": "C:\\Users\\dderr\\OneDrive\\Documents\\Nife Docs\\Apple Dev Account Docs\\AuthKey_3AZGC6KM27.p8",
         "ascApiKeyIssuerId": "f1bf0dd2-9aec-4f56-8f68-fdf33d2457a5",
         "ascApiKeyId": "3AZGC6KM27",
+        "companyName": "Nife Technologies",
         "sku": "com.nife.mobile"
       }
     }

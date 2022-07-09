@@ -1,29 +1,94 @@
+# Sets trigger on the git branches
+# If the branches below are updated, it will trigger this pipeline
+# Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops
 trigger:
 - dev
 - master
 - release/*
 
+# Variables used through out the .yml file
+# Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch
+# Variable groups are created within the projects Library tab. Pipleines -> Library (https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml)
+# Azure DevOps gives you predefined variables (https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml)
+# Azure DevOps gives you functions that can manipulate variable values (https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops)
 variables:
   - group: expo-variables
+  - name: DEV
+    value: $[contains(variables['Build.SourceBranch'], 'release/')]
+  - name: STAGE
+    value: $[eq(variables['Build.SourceBranchName'], 'dev')]
+  - name: PROD
+    value: $[eq(variables['Build.SourceBranchName'], 'master')]
+  - name: isPullRequest
+    value: $[eq(variables['Build.Reason'], 'PullRequest')]
 
+# Indicates which virtual machine image the pipeline will use
+# Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
 pool:
   vmImage: ubuntu-latest
 
-steps:
+# Stages are used as containers for jobs
+# Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml
+stages:
+- stage: buildAndSubmit
 
-- script: |
-    cd ReactNativeCore
-    npm install
-  displayName: 'Installing dependencies'
+  # Variables used through within the buildAndSubmit stage
+  # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch
+  # Variable groups are created within the projects Library tab. Pipleines -> Library (https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml)
+  # Azure DevOps gives you predefined variables (https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml)
+  # Azure DevOps gives you functions that can manipulate variable values (https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops)
+  variables:
+    ${{ if eq(variables.DEV, 'true') }}:
+      profile: 'development'
+    ${{ elseif eq(variables.STAGE, 'true')}}:
+      profile: 'stage'
+    ${{ else }}:
+      profile: 'production'
 
-- script: |
-    cd ReactNativeCore
-    npm install eas-cli
-  displayName: 'Installing EAS command line interface'
+  # Jobs are used as containers for steps
+  # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
+  # Azure DevOps offers a job specifically for deployments (https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines)
+  jobs:
+  - job: build
+    displayName: 'Building iOS and Andriod mobile applications'
+    steps:
 
-- script: |
-    cd ReactNativeCore
-    npx eas-cli build --platform all --non-interactive
-  displayName: 'Pushing build to Expo servers'
+    # A task given to us by Azure DevOps that executes a command line script
+    # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+    # Installs npm package dependencies
+    - script: |
+        cd ReactNativeCore
+        npm install
+      displayName: 'Installing dependencies'
 
+    # A task given to us by Azure DevOps that executes a command line script
+    # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+    # Installs the EAS build service command line interface (CLI)
+    - script: |
+        cd ReactNativeCore
+        npm install eas-cli
+      displayName: 'Installing EAS command line interface'
 
+    # A task given to us by Azure DevOps that executes a command line script
+    # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+    # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
+    - script: |
+        cd ReactNativeCore
+        npx eas-cli build --platform all --profile $(profile) --non-interactive --auto-submit --verbose 
+      displayName: 'Compiling code on Expo servers'
+
+  # A special job given to us Azure DevOps specifically for deployments
+  # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines
+  - deployment: deploy
+    displayName: 'Deploying to Google Play and iOS app store'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+            # A task given to us by Azure DevOps that executes a command line script
+            # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+            # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
+            - script: |
+                npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest --verbose 
+              displayName: 'Submitting build on Expo servers'

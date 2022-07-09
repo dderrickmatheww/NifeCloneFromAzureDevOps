@@ -27,7 +27,6 @@ const {
     IOS_MAPS_API_KEY,
     //Andriod
     //Cloud Functions
-    CLOUD_FUNCTIONS_BASE_URL_PROD,
     CLOUD_FUNCTIONS_BASE_URL,
     ANDRIOD_MAPS_API_KEY,
     //YELP
