@@ -21,6 +21,8 @@ variables:
     value: $[eq(variables['Build.SourceBranchName'], 'master')]
   - name: isPullRequest
     value: $[eq(variables['Build.Reason'], 'PullRequest')]
+  - name: profile
+    value: production
 
 # Indicates which virtual machine image the pipeline will use
 # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
@@ -31,14 +33,6 @@ pool:
 # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml
 stages:
 - stage: buildAndSubmit
-
-  # Variables used through within the buildAndSubmit stage
-  # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch
-  # Variable groups are created within the projects Library tab. Pipleines -> Library (https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml)
-  # Azure DevOps gives you predefined variables (https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml)
-  # Azure DevOps gives you functions that can manipulate variable values (https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops)
-  variables:
-    profile: 'production'
 
   # Jobs are used as containers for steps
   # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
