@@ -82,6 +82,8 @@ stages:
   # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines
   - deployment: deploy
     environment: Application Stores
+    dependsOn: build
+    condition: eq(succeeded(), 'true')
     displayName: 'Deploying to Google Play and iOS application store'
     strategy:
       runOnce:
@@ -90,7 +92,7 @@ stages:
 
             # A task given to us by Azure DevOps that executes a command line script
             # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
-            # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
+            # Using EAS build service CLI, compiling the code for both Google Play and iOS app stores
             - script: |
                 echo $(profile)
                 npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest
