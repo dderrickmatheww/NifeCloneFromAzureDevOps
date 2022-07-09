@@ -50,7 +50,7 @@ stages:
   # Azure DevOps offers a job specifically for deployments (https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines)
   jobs:
   - job: build
-    displayName: 'Building iOS and Andriod mobile applications'
+    displayName: 'Building Google Play and iOS mobile applications'
     steps:
 
     # A task given to us by Azure DevOps that executes a command line script
@@ -74,13 +74,14 @@ stages:
     # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
     - script: |
         cd ReactNativeCore
-        npx eas-cli build --platform all --profile $(profile) --non-interactive --auto-submit --verbose 
+        npx eas-cli build --platform all --profile $(profile) --non-interactive
       displayName: 'Compiling code on Expo servers'
 
   # A special job given to us Azure DevOps specifically for deployments
   # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines
   - deployment: deploy
-    displayName: 'Deploying to Google Play and iOS app store'
+    displayName: 'Deploying to Google Play and iOS application store'
+    dependsOn: build
     strategy:
       runOnce:
         deploy:
@@ -90,5 +91,5 @@ stages:
             # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
             # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
             - script: |
-                npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest --verbose 
+                npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest
               displayName: 'Submitting build on Expo servers'
