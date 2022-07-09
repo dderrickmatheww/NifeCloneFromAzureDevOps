@@ -73,6 +73,7 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
     - script: |
+        echo $(profile)
         cd ReactNativeCore
         npx eas-cli build --platform all --profile $(profile) --non-interactive
       displayName: 'Compiling code on Expo servers'
@@ -91,5 +92,6 @@ stages:
             # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
             # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
             - script: |
+                echo $(profile)
                 npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest
               displayName: 'Submitting build on Expo servers'
