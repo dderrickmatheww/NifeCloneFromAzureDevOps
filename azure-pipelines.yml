@@ -21,8 +21,6 @@ variables:
     value: $[eq(variables['Build.SourceBranchName'], 'master')]
   - name: isPullRequest
     value: $[eq(variables['Build.Reason'], 'PullRequest')]
-  - name: profile
-    value: production
 
 # Indicates which virtual machine image the pipeline will use
 # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
@@ -46,7 +44,7 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - bash: |
-        ##vso[task.setvariable variable=profile;]development
+        "##vso[task.setvariable variable=profile;]development"
         echo $(profile)
       displayName: 'Selected development build profile'
       condition: eq(variables['DEV'], 'true')
@@ -55,7 +53,7 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - bash: |
-        ##vso[task.setvariable variable=profile;]stage
+        "##vso[task.setvariable variable=profile;]stage"
         echo $(profile)
       displayName: 'Selected stage build profile'
       condition: eq(variables['STAGE'], 'true')
@@ -64,7 +62,7 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - bash: |
-        ##vso[task.setvariable variable=profile;]production
+        "##vso[task.setvariable variable=profile;]production"
         echo $(profile)
       displayName: 'Selected production build profile'
       condition: eq(variables['PROD'], 'true')
