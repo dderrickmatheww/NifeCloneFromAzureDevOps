@@ -44,8 +44,8 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - bash: |
-        "##vso[task.setvariable variable=profile;]development"
-        echo $(profile)
+        "##vso[task.setvariable variable=profileVar]development"
+        echo $(profileVar)
       displayName: 'Selected development build profile'
       condition: eq(variables['DEV'], 'true')
 
@@ -53,8 +53,8 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - bash: |
-        "##vso[task.setvariable variable=profile;]stage"
-        echo $(profile)
+        "##vso[task.setvariable variable=profileVar]stage"
+        echo $(profileVar)
       displayName: 'Selected stage build profile'
       condition: eq(variables['STAGE'], 'true')
 
@@ -62,8 +62,8 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - bash: |
-        "##vso[task.setvariable variable=profile;]production"
-        echo $(profile)
+        "##vso[task.setvariable variable=profileVar]production"
+        echo $(profileVar)
       displayName: 'Selected production build profile'
       condition: eq(variables['PROD'], 'true')
 
@@ -87,9 +87,9 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Using EAS build service CLI, compiling the code for both Google Play and iOS app store
     - script: |
-        echo $(profile)
+        echo $(profileVar)
         cd ReactNativeCore
-        npx eas-cli build --platform all --profile $(profile) --non-interactive
+        npx eas-cli build --platform all --profile $(profileVar) --non-interactive
       displayName: 'Compiling code on Expo servers'
 
   # A special job given to us Azure DevOps specifically for deployments
@@ -116,7 +116,7 @@ stages:
             # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
             # Using EAS build service CLI, compiling the code for both Google Play and iOS app stores
             - script: |
-                echo $(profile)
+                echo $(profileVar)
                 cd ReactNativeCore
-                npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest
+                npx eas-cli submit --platform all --profile $(profileVar) --non-interactive --latest
               displayName: 'Submitting build on Expo servers'
