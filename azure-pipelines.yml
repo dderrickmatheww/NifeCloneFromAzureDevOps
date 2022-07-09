@@ -21,6 +21,8 @@ variables:
     value: $[eq(variables['Build.SourceBranchName'], 'master')]
   - name: isPullRequest
     value: $[eq(variables['Build.Reason'], 'PullRequest')]
+  - name: profileVar
+    value: production
 
 # Indicates which virtual machine image the pipeline will use
 # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/pool?view=azure-pipelines
