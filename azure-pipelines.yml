@@ -38,12 +38,7 @@ stages:
   # Azure DevOps gives you predefined variables (https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml)
   # Azure DevOps gives you functions that can manipulate variable values (https://docs.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops)
   variables:
-    ${{ if eq(variables.DEV, 'true') }}:
-      profile: 'development'
-    ${{ elseif eq(variables.STAGE, 'true')}}:
-      profile: 'stage'
-    ${{ else }}:
-      profile: 'production'
+    profile: 'production'
 
   # Jobs are used as containers for steps
   # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
@@ -52,6 +47,16 @@ stages:
   - job: build
     displayName: 'Building Google Play and iOS mobile applications'
     steps:
+
+    # A task given to us by Azure DevOps that executes a command line script
+    # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+    # Sets the profile variable based on the branch being built
+    - script: |
+        if ($(DEV) == True) ##vso[task.setvariable variable=profile]development
+        if ($(STAGE) == True) ##vso[task.setvariable variable=profile]stage
+        if ($(PROD) == True) ##vso[task.setvariable variable=profile]production
+        echo $(profile)
+      displayName: 'Selecting build profile'
 
     # A task given to us by Azure DevOps that executes a command line script
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
