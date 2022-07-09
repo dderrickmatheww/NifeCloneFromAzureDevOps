@@ -14,7 +14,7 @@ trigger:
 variables:
   - group: expo-variables
   - name: DEV
-    value: $[contains(variables['Build.SourceBranch'], 'release/')]
+    value: $[contains(variables['Build.SourceBranch'], 'switch')]
   - name: STAGE
     value: $[eq(variables['Build.SourceBranchName'], 'dev')]
   - name: PROD
