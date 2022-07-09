@@ -52,9 +52,9 @@ stages:
     # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
     # Sets the profile variable based on the branch being built
     - script: |
-        if ($(DEV) == True) ##vso[task.setvariable variable=profile]development
-        if ($(STAGE) == True) ##vso[task.setvariable variable=profile]stage
-        if ($(PROD) == True) ##vso[task.setvariable variable=profile]production
+        if ("%DEV%" == "True") ##vso[task.setvariable variable=profile]development
+        if ("%STAGE%"" == "True") ##vso[task.setvariable variable=profile]stage
+        if ("%PROD%" == "True") ##vso[task.setvariable variable=profile]production
         echo $(profile)
       displayName: 'Selecting build profile'
 
