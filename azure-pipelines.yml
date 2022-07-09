@@ -80,6 +80,7 @@ stages:
   # A special job given to us Azure DevOps specifically for deployments
   # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-deployment?view=azure-pipelines
   - deployment: deploy
+    environment: Application App Stores
     displayName: 'Deploying to Google Play and iOS app store'
     strategy:
       runOnce:
