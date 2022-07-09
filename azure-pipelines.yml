@@ -106,8 +106,17 @@ stages:
 
             # A task given to us by Azure DevOps that executes a command line script
             # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
+            # Installs the EAS build service command line interface (CLI)
+            - script: |
+                cd ReactNativeCore
+                npm install eas-cli
+              displayName: 'Installing EAS command line interface'
+
+            # A task given to us by Azure DevOps that executes a command line script
+            # Documentation: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml
             # Using EAS build service CLI, compiling the code for both Google Play and iOS app stores
             - script: |
                 echo $(profile)
+                cd ReactNativeCore
                 npx eas-cli submit --platform all --profile $(profile) --non-interactive --latest
               displayName: 'Submitting build on Expo servers'
